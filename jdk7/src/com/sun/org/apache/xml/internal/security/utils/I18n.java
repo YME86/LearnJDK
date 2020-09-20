@@ -10,9 +10,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -35,9 +35,9 @@ public class I18n {
 
     /** Field NOT_INITIALIZED_MSG */
     public static final String NOT_INITIALIZED_MSG =
-        "You must initialize the xml-security library correctly before you use it. "
-        + "Call the static method \"com.sun.org.apache.xml.internal.security.Init.init();\" to do that "
-        + "before you use any functionality from that library.";
+            "You must initialize the xml-security library correctly before you use it. "
+                    + "Call the static method \"com.sun.org.apache.xml.internal.security.Init.init();\" to do that "
+                    + "before you use any functionality from that library.";
 
     /** Field resourceBundle */
     private static ResourceBundle resourceBundle;
@@ -96,8 +96,8 @@ public class I18n {
         } catch (Throwable t) {
             if (com.sun.org.apache.xml.internal.security.Init.isInitialized()) {
                 return "No message with ID \"" + msgID
-                + "\" found in resource bundle \""
-                + Constants.exceptionMessagesResourceBundleBase + "\"";
+                        + "\" found in resource bundle \""
+                        + Constants.exceptionMessagesResourceBundleBase + "\"";
             }
             return I18n.NOT_INITIALIZED_MSG;
         }
@@ -112,16 +112,16 @@ public class I18n {
      */
     public static String getExceptionMessage(String msgID, Exception originalException) {
         try {
-            Object exArgs[] = { originalException.getMessage() };
+            Object exArgs[] = {originalException.getMessage()};
             return MessageFormat.format(resourceBundle.getString(msgID), exArgs);
         } catch (Throwable t) {
             if (com.sun.org.apache.xml.internal.security.Init.isInitialized()) {
                 return "No message with ID \"" + msgID
-                + "\" found in resource bundle \""
-                + Constants.exceptionMessagesResourceBundleBase
-                + "\". Original Exception was a "
-                + originalException.getClass().getName() + " and message "
-                + originalException.getMessage();
+                        + "\" found in resource bundle \""
+                        + Constants.exceptionMessagesResourceBundleBase
+                        + "\". Original Exception was a "
+                        + originalException.getClass().getName() + " and message "
+                        + originalException.getMessage();
             }
             return I18n.NOT_INITIALIZED_MSG;
         }
@@ -140,8 +140,8 @@ public class I18n {
         } catch (Throwable t) {
             if (com.sun.org.apache.xml.internal.security.Init.isInitialized()) {
                 return "No message with ID \"" + msgID
-                + "\" found in resource bundle \""
-                + Constants.exceptionMessagesResourceBundleBase + "\"";
+                        + "\" found in resource bundle \""
+                        + Constants.exceptionMessagesResourceBundleBase + "\"";
             }
             return I18n.NOT_INITIALIZED_MSG;
         }
@@ -159,10 +159,10 @@ public class I18n {
         }
 
         I18n.resourceBundle =
-            ResourceBundle.getBundle(
-                Constants.exceptionMessagesResourceBundleBase,
-                new Locale(languageCode, countryCode)
-            );
+                ResourceBundle.getBundle(
+                        Constants.exceptionMessagesResourceBundleBase,
+                        new Locale(languageCode, countryCode)
+                );
         alreadyInitialized = true;
     }
 }

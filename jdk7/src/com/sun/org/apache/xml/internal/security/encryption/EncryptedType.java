@@ -33,17 +33,17 @@ import com.sun.org.apache.xml.internal.security.keys.KeyInfo;
  * Its schema definition is as follows:
  * <xmp>
  * <complexType name='EncryptedType' abstract='true'>
- *     <sequence>
- *         <element name='EncryptionMethod' type='xenc:EncryptionMethodType'
- *             minOccurs='0'/>
- *         <element ref='ds:KeyInfo' minOccurs='0'/>
- *         <element ref='xenc:CipherData'/>
- *         <element ref='xenc:EncryptionProperties' minOccurs='0'/>
- *     </sequence>
- *     <attribute name='Id' type='ID' use='optional'/>
- *     <attribute name='Type' type='anyURI' use='optional'/>
- *     <attribute name='MimeType' type='string' use='optional'/>
- *     <attribute name='Encoding' type='anyURI' use='optional'/>
+ * <sequence>
+ * <element name='EncryptionMethod' type='xenc:EncryptionMethodType'
+ * minOccurs='0'/>
+ * <element ref='ds:KeyInfo' minOccurs='0'/>
+ * <element ref='xenc:CipherData'/>
+ * <element ref='xenc:EncryptionProperties' minOccurs='0'/>
+ * </sequence>
+ * <attribute name='Id' type='ID' use='optional'/>
+ * <attribute name='Type' type='anyURI' use='optional'/>
+ * <attribute name='MimeType' type='string' use='optional'/>
+ * <attribute name='Encoding' type='anyURI' use='optional'/>
  * </complexType>
  * </xmp>
  *
@@ -77,7 +77,7 @@ public interface EncryptedType {
      * XML document to its original cleartext form.
      *
      * @return the identifier for the type of information in plaintext form of
-     *   encrypted content.
+     * encrypted content.
      */
     String getType();
 
@@ -85,7 +85,7 @@ public interface EncryptedType {
      * Sets the type.
      *
      * @param type an <code>URI</code> identifying type information about the
-     *   plaintext form of the encrypted content.
+     *             plaintext form of the encrypted content.
      */
     void setType(String type);
 
@@ -112,7 +112,7 @@ public interface EncryptedType {
      * Sets the mime type.
      *
      * @param type a <code>String</code> which describes the media type of the
-     *   data which has been encrypted.
+     *             data which has been encrypted.
      */
     void setMimeType(String type);
 
@@ -163,7 +163,7 @@ public interface EncryptedType {
      * Sets the encryption key information.
      *
      * @param info the <code>ds:KeyInfo</code>, that carries information about
-     *   the key used to encrypt the data.
+     *             the key used to encrypt the data.
      */
     void setKeyInfo(KeyInfo info);
 
@@ -181,7 +181,7 @@ public interface EncryptedType {
      * <code>EncryptedType</code>.
      *
      * @return information relating to the generation of the
-     *   <code>EncryptedType</code>.
+     * <code>EncryptedType</code>.
      */
     EncryptionProperties getEncryptionProperties();
 

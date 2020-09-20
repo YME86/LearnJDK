@@ -34,7 +34,7 @@ import com.sun.org.apache.xml.internal.dtm.Axis;
  * @author Santiago Pericas-Geertsen
  */
 public abstract class SingleNodeCounter extends NodeCounter {
-    static private final int[] EmptyArray = new int[] { };
+    static private final int[] EmptyArray = new int[]{};
     DTMAxisIterator _countSiblings = null;
 
     public SingleNodeCounter(Translet translet,
@@ -53,21 +53,20 @@ public abstract class SingleNodeCounter extends NodeCounter {
     public NodeCounter setStartNode(int node) {
         _node = node;
         _nodeType = _document.getExpandedTypeID(node);
-    _countSiblings = _document.getAxisIterator(Axis.PRECEDINGSIBLING);
+        _countSiblings = _document.getAxisIterator(Axis.PRECEDINGSIBLING);
         return this;
     }
 
     public String getCounter() {
         int result;
         if (_value != Integer.MIN_VALUE) {
-                //See Errata E24
-                if (_value == 0) return "0";
-                else if (Double.isNaN(_value)) return "NaN";
-                else if (_value < 0 && Double.isInfinite(_value)) return "-Infinity";
-                else if (Double.isInfinite(_value)) return "Infinity";
-                else result = (int) _value;
-        }
-        else {
+            //See Errata E24
+            if (_value == 0) return "0";
+            else if (Double.isNaN(_value)) return "NaN";
+            else if (_value < 0 && Double.isInfinite(_value)) return "-Infinity";
+            else if (Double.isInfinite(_value)) return "Infinity";
+            else result = (int) _value;
+        } else {
             int next = _node;
             result = 0;
             boolean matchesCount = matchesCount(next);
@@ -129,8 +128,8 @@ public abstract class SingleNodeCounter extends NodeCounter {
             _node = node;
             _nodeType = _document.getExpandedTypeID(node);
             _countSiblings =
-        _document.getTypedAxisIterator(Axis.PRECEDINGSIBLING,
-                                               _document.getExpandedTypeID(node));
+                    _document.getTypedAxisIterator(Axis.PRECEDINGSIBLING,
+                            _document.getExpandedTypeID(node));
             return this;
         }
 
@@ -143,8 +142,7 @@ public abstract class SingleNodeCounter extends NodeCounter {
                 else if (_value < 0 && Double.isInfinite(_value)) return "-Infinity";
                 else if (Double.isInfinite(_value)) return "Infinity";
                 else result = (int) _value;
-            }
-            else {
+            } else {
                 int next;
                 result = 1;
                 _countSiblings.setStartNode(_node);

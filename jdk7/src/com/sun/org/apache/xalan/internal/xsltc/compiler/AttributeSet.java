@@ -49,11 +49,11 @@ final class AttributeSet extends TopLevelElement {
     private static final String AttributeSetPrefix = "$as$";
 
     // Element contents
-    private QName            _name;
+    private QName _name;
     private UseAttributeSets _useSets;
-    private AttributeSet     _mergeSet;
-    private String           _method;
-    private boolean          _ignore = false;
+    private AttributeSet _mergeSet;
+    private String _method;
+    private boolean _ignore = false;
 
     /**
      * Returns the QName of this attribute set
@@ -113,16 +113,14 @@ final class AttributeSet extends TopLevelElement {
         // <xsl:attribute> elements. Other elements cause an error.
         final Vector contents = getContents();
         final int count = contents.size();
-        for (int i=0; i<count; i++) {
-            SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
+        for (int i = 0; i < count; i++) {
+            SyntaxTreeNode child = (SyntaxTreeNode) contents.elementAt(i);
             if (child instanceof XslAttribute) {
                 parser.getSymbolTable().setCurrentNode(child);
                 child.parseContents(parser);
-            }
-            else if (child instanceof Text) {
+            } else if (child instanceof Text) {
                 // ignore
-            }
-            else {
+            } else {
                 ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_CHILD_ERR, this);
                 parser.reportError(Constants.ERROR, msg);
             }
@@ -172,7 +170,7 @@ final class AttributeSet extends TopLevelElement {
             il.append(methodGen.loadHandler());
             il.append(methodGen.loadCurrentNode());
             final int method = cpg.addMethodref(classGen.getClassName(),
-                                                methodName, ATTR_SET_SIG);
+                    methodName, ATTR_SET_SIG);
             il.append(new INVOKESPECIAL(method));
         }
 
@@ -183,9 +181,9 @@ final class AttributeSet extends TopLevelElement {
         // Translate all local attributes
         final Enumeration attributes = elements();
         while (attributes.hasMoreElements()) {
-            SyntaxTreeNode element = (SyntaxTreeNode)attributes.nextElement();
+            SyntaxTreeNode element = (SyntaxTreeNode) attributes.nextElement();
             if (element instanceof XslAttribute) {
-                final XslAttribute attribute = (XslAttribute)element;
+                final XslAttribute attribute = (XslAttribute) element;
                 attribute.translate(classGen, methodGen);
             }
         }
@@ -201,9 +199,9 @@ final class AttributeSet extends TopLevelElement {
         final Enumeration attributes = elements();
         while (attributes.hasMoreElements()) {
             final XslAttribute attribute =
-                (XslAttribute)attributes.nextElement();
+                    (XslAttribute) attributes.nextElement();
             buf.append(attribute);
         }
-        return(buf.toString());
+        return (buf.toString());
     }
 }

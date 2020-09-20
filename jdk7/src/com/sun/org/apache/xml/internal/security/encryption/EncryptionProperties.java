@@ -36,10 +36,10 @@ import java.util.Iterator;
  * <xmp>
  * <element name='EncryptionProperties' type='xenc:EncryptionPropertiesType'/>
  * <complexType name='EncryptionPropertiesType'>
- *     <sequence>
- *         <element ref='xenc:EncryptionProperty' maxOccurs='unbounded'/>
- *     </sequence>
- *     <attribute name='Id' type='ID' use='optional'/>
+ * <sequence>
+ * <element ref='xenc:EncryptionProperty' maxOccurs='unbounded'/>
+ * </sequence>
+ * <attribute name='Id' type='ID' use='optional'/>
  * </complexType>
  * </xmp>
  *

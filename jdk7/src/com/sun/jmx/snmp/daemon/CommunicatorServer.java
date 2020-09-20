@@ -27,9 +27,9 @@
 package com.sun.jmx.snmp.daemon;
 
 
-
 // java import
 //
+
 import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -113,8 +113,8 @@ import javax.management.remote.MBeanServerForwarder;
  */
 
 public abstract class CommunicatorServer
-    implements Runnable, MBeanRegistration, NotificationBroadcaster,
-               CommunicatorServerMBean {
+        implements Runnable, MBeanRegistration, NotificationBroadcaster,
+        CommunicatorServerMBean {
 
     //
     // States of a CommunicatorServer
@@ -123,22 +123,22 @@ public abstract class CommunicatorServer
     /**
      * Represents an <CODE>ONLINE</CODE> state.
      */
-    public static final int ONLINE = 0 ;
+    public static final int ONLINE = 0;
 
     /**
      * Represents an <CODE>OFFLINE</CODE> state.
      */
-    public static final int OFFLINE = 1 ;
+    public static final int OFFLINE = 1;
 
     /**
      * Represents a <CODE>STOPPING</CODE> state.
      */
-    public static final int STOPPING = 2 ;
+    public static final int STOPPING = 2;
 
     /**
      * Represents a <CODE>STARTING</CODE> state.
      */
-    public static final int STARTING = 3 ;
+    public static final int STARTING = 3;
 
     //
     // Types of connectors.
@@ -162,7 +162,7 @@ public abstract class CommunicatorServer
     /**
      * Indicates that it is an SNMP connector type.
      */
-    public static final int SNMP_TYPE = 4 ;
+    public static final int SNMP_TYPE = 4;
 
     /**
      * Indicates that it is an HTTPS connector type.
@@ -176,43 +176,49 @@ public abstract class CommunicatorServer
     /**
      * The state of the connector server.
      */
-     transient volatile int state = OFFLINE ;
+    transient volatile int state = OFFLINE;
 
     /**
      * The object name of the connector server.
+     *
      * @serial
      */
-    ObjectName objectName ;
+    ObjectName objectName;
 
     MBeanServer topMBS;
     MBeanServer bottomMBS;
 
     /**
+     *
      */
-    transient String dbgTag = null ;
+    transient String dbgTag = null;
 
     /**
      * The maximum number of clients that the CommunicatorServer can
      * process concurrently.
+     *
      * @serial
      */
-    int maxActiveClientCount = 1 ;
+    int maxActiveClientCount = 1;
 
     /**
+     *
      */
-    transient int servedClientCount = 0 ;
+    transient int servedClientCount = 0;
 
     /**
      * The host name used by this CommunicatorServer.
+     *
      * @serial
      */
-    String host = null ;
+    String host = null;
 
     /**
      * The port number used by this CommunicatorServer.
+     *
      * @serial
      */
-    int port = -1 ;
+    int port = -1;
 
 
     //
@@ -225,19 +231,19 @@ public abstract class CommunicatorServer
     private transient Object stateLock = new Object();
 
     private transient Vector<ClientHandler>
-            clientHandlerVector = new Vector<ClientHandler>() ;
+            clientHandlerVector = new Vector<ClientHandler>();
 
-    private transient Thread fatherThread = Thread.currentThread() ;
-    private transient Thread mainThread = null ;
+    private transient Thread fatherThread = Thread.currentThread();
+    private transient Thread mainThread = null;
 
-    private volatile boolean stopRequested = false ;
+    private volatile boolean stopRequested = false;
     private boolean interrupted = false;
     private transient Exception startException = null;
 
     // Notifs count, broadcaster and info
     private transient long notifCount = 0;
     private transient NotificationBroadcasterSupport notifBroadcaster =
-        new NotificationBroadcasterSupport();
+            new NotificationBroadcasterSupport();
     private transient MBeanNotificationInfo[] notifInfos = null;
 
 
@@ -245,25 +251,23 @@ public abstract class CommunicatorServer
      * Instantiates a <CODE>CommunicatorServer</CODE>.
      *
      * @param connectorType Indicates the connector type. Possible values are:
-     * SNMP_TYPE.
-     *
-     * @exception <CODE>java.lang.IllegalArgumentException</CODE>
-     *            This connector type is not correct.
+     *                      SNMP_TYPE.
+     * @throws <CODE>java.lang.IllegalArgumentException</CODE> This connector type is not correct.
      */
     public CommunicatorServer(int connectorType)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         switch (connectorType) {
-        case SNMP_TYPE :
-            //No op. int Type deciding debugging removed.
-            break;
-        default:
-            throw new IllegalArgumentException("Invalid connector Type") ;
+            case SNMP_TYPE:
+                //No op. int Type deciding debugging removed.
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid connector Type");
         }
-        dbgTag = makeDebugTag() ;
+        dbgTag = makeDebugTag();
     }
 
     protected Thread createMainThread() {
-        return new Thread (this, makeThreadName());
+        return new Thread(this, makeThreadName());
     }
 
     /**
@@ -271,20 +275,21 @@ public abstract class CommunicatorServer
      * <p>
      * Has no effect if this <CODE>CommunicatorServer</CODE> is
      * <CODE>ONLINE</CODE> or <CODE>STOPPING</CODE>.
+     *
      * @param timeout Time in ms to wait for the connector to start.
-     *        If <code>timeout</code> is positive, wait for at most
-     *        the specified time. An infinite timeout can be specified
-     *        by passing a <code>timeout</code> value equals
-     *        <code>Long.MAX_VALUE</code>. In that case the method
-     *        will wait until the connector starts or fails to start.
-     *        If timeout is negative or zero, returns as soon as possible
-     *        without waiting.
-     * @exception CommunicationException if the connectors fails to start.
-     * @exception InterruptedException if the thread is interrupted or the
-     *            timeout expires.
+     *                If <code>timeout</code> is positive, wait for at most
+     *                the specified time. An infinite timeout can be specified
+     *                by passing a <code>timeout</code> value equals
+     *                <code>Long.MAX_VALUE</code>. In that case the method
+     *                will wait until the connector starts or fails to start.
+     *                If timeout is negative or zero, returns as soon as possible
+     *                without waiting.
+     * @throws CommunicationException if the connectors fails to start.
+     * @throws InterruptedException   if the thread is interrupted or the
+     *                                timeout expires.
      */
     public void start(long timeout)
-        throws CommunicationException, InterruptedException {
+            throws CommunicationException, InterruptedException {
         boolean start;
 
         synchronized (stateLock) {
@@ -305,19 +310,19 @@ public abstract class CommunicatorServer
         if (!start) {
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                    "start","Connector is not OFFLINE");
+                        "start", "Connector is not OFFLINE");
             }
             return;
         }
 
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                "start","--> Start connector ");
+                    "start", "--> Start connector ");
         }
 
         mainThread = createMainThread();
 
-        mainThread.start() ;
+        mainThread.start();
 
         if (timeout > 0) waitForStart(timeout);
     }
@@ -335,7 +340,7 @@ public abstract class CommunicatorServer
             // cannot happen because of `0'
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                    "start","interrupted", x);
+                        "start", "interrupted", x);
             }
         }
     }
@@ -351,7 +356,7 @@ public abstract class CommunicatorServer
             if (state == OFFLINE || state == STOPPING) {
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                        "stop","Connector is not ONLINE");
+                            "stop", "Connector is not ONLINE");
                 }
                 return;
             }
@@ -361,9 +366,9 @@ public abstract class CommunicatorServer
             //
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                    "stop","Interrupt main thread");
+                        "stop", "Interrupt main thread");
             }
-            stopRequested = true ;
+            stopRequested = true;
             if (!interrupted) {
                 interrupted = true;
                 mainThread.interrupt();
@@ -375,9 +380,9 @@ public abstract class CommunicatorServer
         //
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                "stop","terminateAllClient");
+                    "stop", "terminateAllClient");
         }
-        terminateAllClient() ;
+        terminateAllClient();
 
         // ----------------------
         // changeState
@@ -410,32 +415,31 @@ public abstract class CommunicatorServer
      *
      * <p>Two special cases for the <VAR>timeOut</VAR> parameter value are:</p>
      * <UL><LI> if <VAR>timeOut</VAR> is negative then <CODE>waitState</CODE>
-     *     returns immediately (i.e. does not wait at all),</LI>
+     * returns immediately (i.e. does not wait at all),</LI>
      * <LI> if <VAR>timeOut</VAR> equals zero then <CODE>waitState</CODE>
-     *     waits untill the value of this MBean's State attribute
-     *     is the same as the <VAR>wantedState</VAR> parameter (i.e. will wait
-     *     indefinitely if this condition is never met).</LI></UL>
+     * waits untill the value of this MBean's State attribute
+     * is the same as the <VAR>wantedState</VAR> parameter (i.e. will wait
+     * indefinitely if this condition is never met).</LI></UL>
      *
      * @param wantedState The value of this MBean's State attribute to wait
-     *        for. <VAR>wantedState</VAR> can be one of:
-     * <ul>
-     * <li><CODE>CommunicatorServer.OFFLINE</CODE>,</li>
-     * <li><CODE>CommunicatorServer.ONLINE</CODE>,</li>
-     * <li><CODE>CommunicatorServer.STARTING</CODE>,</li>
-     * <li><CODE>CommunicatorServer.STOPPING</CODE>.</li>
-     * </ul>
-     * @param timeOut The maximum time to wait for, in milliseconds,
-     *        if positive.
-     * Infinite time out if 0, or no waiting at all if negative.
-     *
+     *                    for. <VAR>wantedState</VAR> can be one of:
+     *                    <ul>
+     *                    <li><CODE>CommunicatorServer.OFFLINE</CODE>,</li>
+     *                    <li><CODE>CommunicatorServer.ONLINE</CODE>,</li>
+     *                    <li><CODE>CommunicatorServer.STARTING</CODE>,</li>
+     *                    <li><CODE>CommunicatorServer.STOPPING</CODE>.</li>
+     *                    </ul>
+     * @param timeOut     The maximum time to wait for, in milliseconds,
+     *                    if positive.
+     *                    Infinite time out if 0, or no waiting at all if negative.
      * @return true if the value of this MBean's State attribute is the
-     *      same as the <VAR>wantedState</VAR> parameter; false otherwise.
+     * same as the <VAR>wantedState</VAR> parameter; false otherwise.
      */
     public boolean waitState(int wantedState, long timeOut) {
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                "waitState", wantedState + "(0on,1off,2st) TO=" + timeOut +
-                  " ; current state = " + getStateString());
+                    "waitState", wantedState + "(0on,1off,2st) TO=" + timeOut +
+                            " ; current state = " + getStateString());
         }
 
         long endTime = 0;
@@ -447,7 +451,7 @@ public abstract class CommunicatorServer
                 if (timeOut < 0) {
                     if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                         SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                            "waitState", "timeOut < 0, return without wait");
+                                "waitState", "timeOut < 0, return without wait");
                     }
                     return false;
                 } else {
@@ -457,7 +461,7 @@ public abstract class CommunicatorServer
                             if (toWait <= 0) {
                                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                                     SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                                        "waitState", "timed out");
+                                            "waitState", "timed out");
                                 }
                                 return false;
                             }
@@ -468,7 +472,7 @@ public abstract class CommunicatorServer
                     } catch (InterruptedException e) {
                         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                             SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                                "waitState", "wait interrupted");
+                                    "waitState", "wait interrupted");
                         }
                         return (state == wantedState);
                     }
@@ -476,7 +480,7 @@ public abstract class CommunicatorServer
             }
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                    "waitState","returning in desired state");
+                        "waitState", "returning in desired state");
             }
             return true;
         }
@@ -486,25 +490,23 @@ public abstract class CommunicatorServer
      * <p>Waits until the communicator is started or timeout expires.
      *
      * @param timeout Time in ms to wait for the connector to start.
-     *        If <code>timeout</code> is positive, wait for at most
-     *        the specified time. An infinite timeout can be specified
-     *        by passing a <code>timeout</code> value equals
-     *        <code>Long.MAX_VALUE</code>. In that case the method
-     *        will wait until the connector starts or fails to start.
-     *        If timeout is negative or zero, returns as soon as possible
-     *        without waiting.
-     *
-     * @exception CommunicationException if the connectors fails to start.
-     * @exception InterruptedException if the thread is interrupted or the
-     *            timeout expires.
-     *
+     *                If <code>timeout</code> is positive, wait for at most
+     *                the specified time. An infinite timeout can be specified
+     *                by passing a <code>timeout</code> value equals
+     *                <code>Long.MAX_VALUE</code>. In that case the method
+     *                will wait until the connector starts or fails to start.
+     *                If timeout is negative or zero, returns as soon as possible
+     *                without waiting.
+     * @throws CommunicationException if the connectors fails to start.
+     * @throws InterruptedException   if the thread is interrupted or the
+     *                                timeout expires.
      */
     private void waitForStart(long timeout)
-        throws CommunicationException, InterruptedException {
+            throws CommunicationException, InterruptedException {
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                "waitForStart", "Timeout=" + timeout +
-                 " ; current state = " + getStateString());
+                    "waitForStart", "Timeout=" + timeout +
+                            " ; current state = " + getStateString());
         }
 
         final long startTime = System.currentTimeMillis();
@@ -520,14 +522,14 @@ public abstract class CommunicatorServer
                 // like 292271023 years - which is pretty close to
                 // forever as far as we are concerned ;-)
                 //
-                final long remainingTime = timeout-elapsed;
+                final long remainingTime = timeout - elapsed;
 
                 // If remainingTime is negative, the timeout has elapsed.
                 //
                 if (remainingTime < 0) {
                     if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                         SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                            "waitForStart", "timeout < 0, return without wait");
+                                "waitForStart", "timeout < 0, return without wait");
                     }
                     throw new InterruptedException("Timeout expired");
                 }
@@ -541,7 +543,7 @@ public abstract class CommunicatorServer
                 } catch (InterruptedException e) {
                     if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                         SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                            "waitForStart", "wait interrupted");
+                                "waitForStart", "wait interrupted");
                     }
 
                     // If we are now ONLINE, then no need to rethrow the
@@ -559,32 +561,32 @@ public abstract class CommunicatorServer
                 //
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                        "waitForStart", "started");
+                            "waitForStart", "started");
                 }
                 return;
             } else if (startException instanceof CommunicationException) {
                 // There was some exception during the starting phase.
                 // Cast and throw...
                 //
-                throw (CommunicationException)startException;
+                throw (CommunicationException) startException;
             } else if (startException instanceof InterruptedException) {
                 // There was some exception during the starting phase.
                 // Cast and throw...
                 //
-                throw (InterruptedException)startException;
+                throw (InterruptedException) startException;
             } else if (startException != null) {
                 // There was some exception during the starting phase.
                 // Wrap and throw...
                 //
                 throw new CommunicationException(startException,
-                                                 "Failed to start: "+
-                                                 startException);
+                        "Failed to start: " +
+                                startException);
             } else {
                 // We're not ONLINE, and there's no exception...
                 // Something went wrong but we don't know what...
                 //
-                throw new CommunicationException("Failed to start: state is "+
-                                                 getStringForState(state));
+                throw new CommunicationException("Failed to start: state is " +
+                        getStringForState(state));
             }
         }
     }
@@ -593,11 +595,11 @@ public abstract class CommunicatorServer
      * Gets the state of this <CODE>CommunicatorServer</CODE> as an integer.
      *
      * @return <CODE>ONLINE</CODE>, <CODE>OFFLINE</CODE>,
-     *         <CODE>STARTING</CODE> or <CODE>STOPPING</CODE>.
+     * <CODE>STARTING</CODE> or <CODE>STOPPING</CODE>.
      */
     public int getState() {
         synchronized (stateLock) {
-            return state ;
+            return state;
         }
     }
 
@@ -605,10 +607,10 @@ public abstract class CommunicatorServer
      * Gets the state of this <CODE>CommunicatorServer</CODE> as a string.
      *
      * @return One of the strings "ONLINE", "OFFLINE", "STARTING" or
-     *         "STOPPING".
+     * "STOPPING".
      */
     public String getStateString() {
-        return getStringForState(state) ;
+        return getStringForState(state);
     }
 
     /**
@@ -622,7 +624,7 @@ public abstract class CommunicatorServer
         } catch (Exception e) {
             host = "Unknown host";
         }
-        return host ;
+        return host;
     }
 
     /**
@@ -632,7 +634,7 @@ public abstract class CommunicatorServer
      */
     public int getPort() {
         synchronized (stateLock) {
-            return port ;
+            return port;
         }
     }
 
@@ -641,15 +643,14 @@ public abstract class CommunicatorServer
      *
      * @param port The port number used by this
      *             <CODE>CommunicatorServer</CODE>.
-     *
-     * @exception java.lang.IllegalStateException This method has been invoked
-     * while the communicator was ONLINE or STARTING.
+     * @throws java.lang.IllegalStateException This method has been invoked
+     *                                         while the communicator was ONLINE or STARTING.
      */
     public void setPort(int port) throws java.lang.IllegalStateException {
         synchronized (stateLock) {
             if ((state == ONLINE) || (state == STARTING))
                 throw new IllegalStateException("Stop server before " +
-                                                "carrying out this operation");
+                        "carrying out this operation");
             this.port = port;
             dbgTag = makeDebugTag();
         }
@@ -657,21 +658,22 @@ public abstract class CommunicatorServer
 
     /**
      * Gets the protocol being used by this <CODE>CommunicatorServer</CODE>.
+     *
      * @return The protocol as a string.
      */
-    public abstract String getProtocol() ;
+    public abstract String getProtocol();
 
     /**
      * Gets the number of clients that have been processed by this
      * <CODE>CommunicatorServer</CODE>  since its creation.
      *
      * @return The number of clients handled by this
-     *         <CODE>CommunicatorServer</CODE>
-     *         since its creation. This counter is not reset by the
-     *         <CODE>stop</CODE> method.
+     * <CODE>CommunicatorServer</CODE>
+     * since its creation. This counter is not reset by the
+     * <CODE>stop</CODE> method.
      */
     int getServedClientCount() {
-        return servedClientCount ;
+        return servedClientCount;
     }
 
     /**
@@ -679,11 +681,11 @@ public abstract class CommunicatorServer
      * <CODE>CommunicatorServer</CODE>.
      *
      * @return The number of clients currently being processed by this
-     *         <CODE>CommunicatorServer</CODE>.
+     * <CODE>CommunicatorServer</CODE>.
      */
     int getActiveClientCount() {
-        int result = clientHandlerVector.size() ;
-        return result ;
+        int result = clientHandlerVector.size();
+        return result;
     }
 
     /**
@@ -691,11 +693,11 @@ public abstract class CommunicatorServer
      * <CODE>CommunicatorServer</CODE> can  process concurrently.
      *
      * @return The maximum number of clients that this
-     *         <CODE>CommunicatorServer</CODE> can
-     *         process concurrently.
+     * <CODE>CommunicatorServer</CODE> can
+     * process concurrently.
      */
     int getMaxActiveClientCount() {
-        return maxActiveClientCount ;
+        return maxActiveClientCount;
     }
 
     /**
@@ -703,18 +705,17 @@ public abstract class CommunicatorServer
      * <CODE>CommunicatorServer</CODE> can process concurrently.
      *
      * @param c The number of clients.
-     *
-     * @exception java.lang.IllegalStateException This method has been invoked
-     * while the communicator was ONLINE or STARTING.
+     * @throws java.lang.IllegalStateException This method has been invoked
+     *                                         while the communicator was ONLINE or STARTING.
      */
     void setMaxActiveClientCount(int c)
-        throws java.lang.IllegalStateException {
+            throws java.lang.IllegalStateException {
         synchronized (stateLock) {
             if ((state == ONLINE) || (state == STARTING)) {
                 throw new IllegalStateException(
-                          "Stop server before carrying out this operation");
+                        "Stop server before carrying out this operation");
             }
-            maxActiveClientCount = c ;
+            maxActiveClientCount = c;
         }
     }
 
@@ -722,7 +723,7 @@ public abstract class CommunicatorServer
      * For SNMP Runtime internal use only.
      */
     void notifyClientHandlerCreated(ClientHandler h) {
-        clientHandlerVector.addElement(h) ;
+        clientHandlerVector.addElement(h);
     }
 
     /**
@@ -770,8 +771,8 @@ public abstract class CommunicatorServer
         try {
             // Fix for bug 4352451: "java.net.BindException: Address in use".
             //
-            final int  bindRetries = getBindTries();
-            final long sleepTime   = getBindSleepTime();
+            final int bindRetries = getBindTries();
+            final long sleepTime = getBindSleepTime();
             while (i < bindRetries && !success) {
                 try {
                     // Try socket connection.
@@ -795,18 +796,18 @@ public abstract class CommunicatorServer
                 doBind();
             }
 
-        } catch(Exception x) {
+        } catch (Exception x) {
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, dbgTag,
-                    "run", "Got unexpected exception", x);
+                        "run", "Got unexpected exception", x);
             }
-            synchronized(stateLock) {
+            synchronized (stateLock) {
                 startException = x;
                 changeState(OFFLINE);
             }
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                    "run","State is OFFLINE");
+                        "run", "State is OFFLINE");
             }
             doError(x);
             return;
@@ -816,10 +817,10 @@ public abstract class CommunicatorServer
             // ----------------------
             // State change
             // ----------------------
-            changeState(ONLINE) ;
+            changeState(ONLINE);
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                    "run","State is ONLINE");
+                        "run", "State is ONLINE");
             }
 
             // ----------------------
@@ -827,25 +828,25 @@ public abstract class CommunicatorServer
             // ----------------------
             while (!stopRequested) {
                 servedClientCount++;
-                doReceive() ;
-                waitIfTooManyClients() ;
-                doProcess() ;
+                doReceive();
+                waitIfTooManyClients();
+                doProcess();
             }
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                    "run","Stop has been requested");
+                        "run", "Stop has been requested");
             }
 
-        } catch(InterruptedException x) {
+        } catch (InterruptedException x) {
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, dbgTag,
-                    "run","Interrupt caught");
+                        "run", "Interrupt caught");
             }
             changeState(STOPPING);
-        } catch(Exception x) {
+        } catch (Exception x) {
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, dbgTag,
-                    "run","Got unexpected exception", x);
+                        "run", "Got unexpected exception", x);
             }
             changeState(STOPPING);
         } finally {
@@ -858,17 +859,17 @@ public abstract class CommunicatorServer
             // unBind
             // ----------------------
             try {
-                doUnbind() ;
-                waitClientTermination() ;
+                doUnbind();
+                waitClientTermination();
                 changeState(OFFLINE);
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                        "run","State is OFFLINE");
+                            "run", "State is OFFLINE");
                 }
-            } catch(Exception x) {
+            } catch (Exception x) {
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, dbgTag,
-                        "run","Got unexpected exception", x);
+                            "run", "Got unexpected exception", x);
                 }
                 changeState(OFFLINE);
             }
@@ -877,6 +878,7 @@ public abstract class CommunicatorServer
     }
 
     /**
+     *
      */
     protected abstract void doError(Exception e) throws CommunicationException;
 
@@ -901,9 +903,10 @@ public abstract class CommunicatorServer
     //
 
     /**
+     *
      */
     protected abstract void doBind()
-        throws CommunicationException, InterruptedException ;
+            throws CommunicationException, InterruptedException;
 
     /**
      * <CODE>doReceive()</CODE> should block until a client is available.
@@ -912,7 +915,7 @@ public abstract class CommunicatorServer
      * stops.
      */
     protected abstract void doReceive()
-        throws CommunicationException, InterruptedException ;
+            throws CommunicationException, InterruptedException;
 
     /**
      * <CODE>doProcess()</CODE> is called after <CODE>doReceive()</CODE>:
@@ -921,7 +924,7 @@ public abstract class CommunicatorServer
      * <CODE>run()</CODE> stops.
      */
     protected abstract void doProcess()
-        throws CommunicationException, InterruptedException ;
+            throws CommunicationException, InterruptedException;
 
     /**
      * <CODE>doUnbind()</CODE> is called whenever the connector goes
@@ -929,7 +932,7 @@ public abstract class CommunicatorServer
      * exception.
      */
     protected abstract void doUnbind()
-        throws CommunicationException, InterruptedException ;
+            throws CommunicationException, InterruptedException;
 
     /**
      * Get the <code>MBeanServer</code> object to which incoming requests are
@@ -952,24 +955,23 @@ public abstract class CommunicatorServer
      * or an <code>MBeanServerForwarder</code> leading to
      * <code>mbs</code>.
      *
-     * @exception IllegalArgumentException if <code>newMBS</code> is neither
-     * the MBean server in which this connector is registered nor an
-     * <code>MBeanServerForwarder</code> leading to that server.
-     *
-     * @exception IllegalStateException This method has been invoked
-     * while the communicator was ONLINE or STARTING.
+     * @throws IllegalArgumentException if <code>newMBS</code> is neither
+     *                                  the MBean server in which this connector is registered nor an
+     *                                  <code>MBeanServerForwarder</code> leading to that server.
+     * @throws IllegalStateException    This method has been invoked
+     *                                  while the communicator was ONLINE or STARTING.
      */
     public synchronized void setMBeanServer(MBeanServer newMBS)
             throws IllegalArgumentException, IllegalStateException {
         synchronized (stateLock) {
             if (state == ONLINE || state == STARTING)
                 throw new IllegalStateException("Stop server before " +
-                                                "carrying out this operation");
+                        "carrying out this operation");
         }
         final String error =
-            "MBeanServer argument must be MBean server where this " +
-            "server is registered, or an MBeanServerForwarder " +
-            "leading to that server";
+                "MBeanServer argument must be MBean server where this " +
+                        "server is registered, or an MBeanServerForwarder " +
+                        "leading to that server";
         Vector<MBeanServer> seenMBS = new Vector<MBeanServer>();
         for (MBeanServer mbs = newMBS;
              mbs != bottomMBS;
@@ -978,7 +980,7 @@ public abstract class CommunicatorServer
                 throw new IllegalArgumentException(error);
             if (seenMBS.contains(mbs))
                 throw new IllegalArgumentException("MBeanServerForwarder " +
-                                                   "loop");
+                        "loop");
             seenMBS.addElement(mbs);
         }
         topMBS = newMBS;
@@ -987,11 +989,12 @@ public abstract class CommunicatorServer
     //
     // To be called by the subclass if needed
     //
+
     /**
      * For internal use only.
      */
     ObjectName getObjectName() {
-        return objectName ;
+        return objectName;
     }
 
     /**
@@ -1013,21 +1016,21 @@ public abstract class CommunicatorServer
      * Returns the string used in debug traces.
      */
     String makeDebugTag() {
-        return "CommunicatorServer["+ getProtocol() + ":" + getPort() + "]" ;
+        return "CommunicatorServer[" + getProtocol() + ":" + getPort() + "]";
     }
 
     /**
      * Returns the string used to name the connector thread.
      */
     String makeThreadName() {
-        String result ;
+        String result;
 
         if (objectName == null)
-            result = "CommunicatorServer" ;
+            result = "CommunicatorServer";
         else
-            result = objectName.toString() ;
+            result = objectName.toString();
 
-        return result ;
+        return result;
     }
 
     /**
@@ -1036,11 +1039,11 @@ public abstract class CommunicatorServer
      * thread calls <CODE>notifyClientHandlerDeleted(this)</CODE> ;
      */
     private synchronized void waitIfTooManyClients()
-        throws InterruptedException {
+            throws InterruptedException {
         while (getActiveClientCount() >= maxActiveClientCount) {
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                    "waitIfTooManyClients","Waiting for a client to terminate");
+                        "waitIfTooManyClients", "Waiting for a client to terminate");
             }
             wait();
         }
@@ -1050,12 +1053,12 @@ public abstract class CommunicatorServer
      * This method blocks until there is no more active client.
      */
     private void waitClientTermination() {
-        int s = clientHandlerVector.size() ;
+        int s = clientHandlerVector.size();
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
             if (s >= 1) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                "waitClientTermination","waiting for " +
-                      s + " clients to terminate");
+                        "waitClientTermination", "waiting for " +
+                                s + " clients to terminate");
             }
         }
 
@@ -1071,13 +1074,13 @@ public abstract class CommunicatorServer
         // What we *MUST NOT DO* is locking the clientHandlerVector, because
         // this would most probably cause a deadlock.
         //
-        while (! clientHandlerVector.isEmpty()) {
+        while (!clientHandlerVector.isEmpty()) {
             try {
                 clientHandlerVector.firstElement().join();
             } catch (NoSuchElementException x) {
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                        "waitClientTermination","No elements left",  x);
+                            "waitClientTermination", "No elements left", x);
                 }
             }
         }
@@ -1085,7 +1088,7 @@ public abstract class CommunicatorServer
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
             if (s >= 1) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                    "waitClientTermination","Ok, let's go...");
+                        "waitClientTermination", "Ok, let's go...");
             }
         }
     }
@@ -1094,11 +1097,11 @@ public abstract class CommunicatorServer
      * Call <CODE>interrupt()</CODE> on each pending client.
      */
     private void terminateAllClient() {
-        final int s = clientHandlerVector.size() ;
+        final int s = clientHandlerVector.size();
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
             if (s >= 1) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                    "terminateAllClient","Interrupting " + s + " clients");
+                        "terminateAllClient", "Interrupting " + s + " clients");
             }
         }
 
@@ -1119,18 +1122,18 @@ public abstract class CommunicatorServer
         // What we *MUST NOT DO* is locking the clientHandlerVector, because
         // this would most probably cause a deadlock.
         //
-        final  ClientHandler[] handlers =
+        final ClientHandler[] handlers =
                 clientHandlerVector.toArray(new ClientHandler[0]);
-         for (ClientHandler h : handlers) {
-             try {
-                 h.interrupt() ;
-             } catch (Exception x) {
-                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
-                     SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
-                             "terminateAllClient",
-                             "Failed to interrupt pending request. " +
-                             "Ignore the exception.", x);
-                 }
+        for (ClientHandler h : handlers) {
+            try {
+                h.interrupt();
+            } catch (Exception x) {
+                if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+                    SNMP_ADAPTOR_LOGGER.logp(Level.FINER, dbgTag,
+                            "terminateAllClient",
+                            "Failed to interrupt pending request. " +
+                                    "Ignore the exception.", x);
+                }
             }
         }
     }
@@ -1139,7 +1142,7 @@ public abstract class CommunicatorServer
      * Controls the way the CommunicatorServer service is deserialized.
      */
     private void readObject(ObjectInputStream stream)
-        throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException {
 
         // Call the default deserialization of the object.
         //
@@ -1176,23 +1179,22 @@ public abstract class CommunicatorServer
      * changes.
      *
      * @param listener The listener object which will handle the emitted
-     *        notifications.
-     * @param filter The filter object. If filter is null, no filtering
-     *        will be performed before handling notifications.
+     *                 notifications.
+     * @param filter   The filter object. If filter is null, no filtering
+     *                 will be performed before handling notifications.
      * @param handback An object which will be sent back unchanged to the
-     *        listener when a notification is emitted.
-     *
-     * @exception IllegalArgumentException Listener parameter is null.
+     *                 listener when a notification is emitted.
+     * @throws IllegalArgumentException Listener parameter is null.
      */
     public void addNotificationListener(NotificationListener listener,
                                         NotificationFilter filter,
                                         Object handback)
-        throws java.lang.IllegalArgumentException {
+            throws java.lang.IllegalArgumentException {
 
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, dbgTag,
-                "addNotificationListener","Adding listener "+ listener +
-                  " with filter "+ filter + " and handback "+ handback);
+                    "addNotificationListener", "Adding listener " + listener +
+                            " with filter " + filter + " and handback " + handback);
         }
         notifBroadcaster.addNotificationListener(listener, filter, handback);
     }
@@ -1204,15 +1206,14 @@ public abstract class CommunicatorServer
      * to the listener will be removed.
      *
      * @param listener The listener object to be removed.
-     *
-     * @exception ListenerNotFoundException The listener is not registered.
+     * @throws ListenerNotFoundException The listener is not registered.
      */
     public void removeNotificationListener(NotificationListener listener)
-        throws ListenerNotFoundException {
+            throws ListenerNotFoundException {
 
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, dbgTag,
-                "removeNotificationListener","Removing listener "+ listener);
+                    "removeNotificationListener", "Removing listener " + listener);
         }
         notifBroadcaster.removeNotificationListener(listener);
     }
@@ -1232,11 +1233,11 @@ public abstract class CommunicatorServer
         if (notifInfos == null) {
             notifInfos = new MBeanNotificationInfo[1];
             String[] notifTypes = {
-                AttributeChangeNotification.ATTRIBUTE_CHANGE};
-            notifInfos[0] = new MBeanNotificationInfo( notifTypes,
-                     AttributeChangeNotification.class.getName(),
-                     "Sent to notify that the value of the State attribute "+
-                     "of this CommunicatorServer instance has changed.");
+                    AttributeChangeNotification.ATTRIBUTE_CHANGE};
+            notifInfos[0] = new MBeanNotificationInfo(notifTypes,
+                    AttributeChangeNotification.class.getName(),
+                    "Sent to notify that the value of the State attribute " +
+                            "of this CommunicatorServer instance has changed.");
         }
 
         return notifInfos;
@@ -1250,25 +1251,25 @@ public abstract class CommunicatorServer
         String oldStateString = getStringForState(oldState);
         String newStateString = getStringForState(newState);
         String message = new StringBuffer().append(dbgTag)
-            .append(" The value of attribute State has changed from ")
-            .append(oldState).append(" (").append(oldStateString)
-            .append(") to ").append(newState).append(" (")
-            .append(newStateString).append(").").toString();
+                .append(" The value of attribute State has changed from ")
+                .append(oldState).append(" (").append(oldStateString)
+                .append(") to ").append(newState).append(" (")
+                .append(newStateString).append(").").toString();
 
         notifCount++;
         AttributeChangeNotification notif =
-            new AttributeChangeNotification(this,    // source
-                         notifCount,                 // sequence number
-                         System.currentTimeMillis(), // time stamp
-                         message,                    // message
-                         "State",                    // attribute name
-                         "int",                      // attribute type
-                         new Integer(oldState),      // old value
-                         new Integer(newState) );    // new value
+                new AttributeChangeNotification(this,    // source
+                        notifCount,                 // sequence number
+                        System.currentTimeMillis(), // time stamp
+                        message,                    // message
+                        "State",                    // attribute name
+                        "int",                      // attribute type
+                        new Integer(oldState),      // old value
+                        new Integer(newState));    // new value
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, dbgTag,
-                "sendStateChangeNotification","Sending AttributeChangeNotification #"
-                    + notifCount + " with message: "+ message);
+                    "sendStateChangeNotification", "Sending AttributeChangeNotification #"
+                            + notifCount + " with message: " + message);
         }
         notifBroadcaster.sendNotification(notif);
     }
@@ -1278,11 +1279,16 @@ public abstract class CommunicatorServer
      */
     private static String getStringForState(int s) {
         switch (s) {
-        case ONLINE:   return "ONLINE";
-        case STARTING: return "STARTING";
-        case OFFLINE:  return "OFFLINE";
-        case STOPPING: return "STOPPING";
-        default:       return "UNDEFINED";
+            case ONLINE:
+                return "ONLINE";
+            case STARTING:
+                return "STARTING";
+            case OFFLINE:
+                return "OFFLINE";
+            case STOPPING:
+                return "STOPPING";
+            default:
+                return "UNDEFINED";
         }
     }
 
@@ -1294,15 +1300,13 @@ public abstract class CommunicatorServer
     /**
      * Preregister method of connector.
      *
-     *@param server The <CODE>MBeanServer</CODE> in which the MBean will
-     *       be registered.
-     *@param name The object name of the MBean.
-     *
-     *@return  The name of the MBean registered.
-     *
-     *@exception java.langException This exception should be caught by
-     *           the <CODE>MBeanServer</CODE> and re-thrown
-     *           as an <CODE>MBeanRegistrationException</CODE>.
+     * @param server The <CODE>MBeanServer</CODE> in which the MBean will
+     *               be registered.
+     * @param name   The object name of the MBean.
+     * @return The name of the MBean registered.
+     * @throws java.langException This exception should be caught by
+     *                            the <CODE>MBeanServer</CODE> and re-thrown
+     *                            as an <CODE>MBeanRegistrationException</CODE>.
      */
     public ObjectName preRegister(MBeanServer server, ObjectName name)
             throws java.lang.Exception {
@@ -1310,8 +1314,8 @@ public abstract class CommunicatorServer
         synchronized (this) {
             if (bottomMBS != null) {
                 throw new IllegalArgumentException("connector already " +
-                                                   "registered in an MBean " +
-                                                   "server");
+                        "registered in an MBean " +
+                        "server");
             }
             topMBS = bottomMBS = server;
         }
@@ -1320,10 +1324,9 @@ public abstract class CommunicatorServer
     }
 
     /**
-     *
-     *@param registrationDone Indicates whether or not the MBean has been
-     *       successfully registered in the <CODE>MBeanServer</CODE>.
-     *       The value false means that the registration phase has failed.
+     * @param registrationDone Indicates whether or not the MBean has been
+     *                         successfully registered in the <CODE>MBeanServer</CODE>.
+     *                         The value false means that the registration phase has failed.
      */
     public void postRegister(Boolean registrationDone) {
         if (!registrationDone.booleanValue()) {
@@ -1336,37 +1339,37 @@ public abstract class CommunicatorServer
     /**
      * Stop the connector.
      *
-     * @exception java.langException This exception should be caught by
-     *            the <CODE>MBeanServer</CODE> and re-thrown
-     *            as an <CODE>MBeanRegistrationException</CODE>.
+     * @throws java.langException This exception should be caught by
+     *                            the <CODE>MBeanServer</CODE> and re-thrown
+     *                            as an <CODE>MBeanRegistrationException</CODE>.
      */
     public void preDeregister() throws java.lang.Exception {
         synchronized (this) {
             topMBS = bottomMBS = null;
         }
-        objectName = null ;
+        objectName = null;
         final int cstate = getState();
-        if ((cstate == ONLINE) || ( cstate == STARTING)) {
-            stop() ;
+        if ((cstate == ONLINE) || (cstate == STARTING)) {
+            stop();
         }
     }
 
     /**
      * Do nothing.
      */
-    public void postDeregister(){
+    public void postDeregister() {
     }
 
     /**
      * Load a class using the default loader repository
      **/
     Class loadClass(String className)
-        throws ClassNotFoundException {
+            throws ClassNotFoundException {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
             final ClassLoaderRepository clr =
-                MBeanServerFactory.getClassLoaderRepository(bottomMBS);
+                    MBeanServerFactory.getClassLoaderRepository(bottomMBS);
             if (clr == null) throw new ClassNotFoundException(className);
             return clr.loadClass(className);
         }

@@ -24,6 +24,7 @@
 package com.sun.org.apache.xalan.internal.xsltc.runtime.output;
 
 import com.sun.org.apache.xalan.internal.utils.SecuritySupport;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -58,8 +59,7 @@ class WriterOutputBuffer implements OutputBuffer {
     public String close() {
         try {
             _writer.flush();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e.toString());
         }
         return "";
@@ -68,8 +68,7 @@ class WriterOutputBuffer implements OutputBuffer {
     public OutputBuffer append(String s) {
         try {
             _writer.write(s);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e.toString());
         }
         return this;
@@ -78,8 +77,7 @@ class WriterOutputBuffer implements OutputBuffer {
     public OutputBuffer append(char[] s, int from, int to) {
         try {
             _writer.write(s, from, to);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e.toString());
         }
         return this;
@@ -88,8 +86,7 @@ class WriterOutputBuffer implements OutputBuffer {
     public OutputBuffer append(char ch) {
         try {
             _writer.write(ch);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e.toString());
         }
         return this;

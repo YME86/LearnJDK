@@ -62,8 +62,7 @@ package com.sun.org.apache.bcel.internal.generic;
  * Denotes an unparameterized instruction to produce a value on top of the stack,
  * such as ILOAD, LDC, SIPUSH, DUP, ICONST, etc.
  *
- * @author  <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
-
+ * @author <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
  * @see ILOAD
  * @see ICONST
  * @see LDC

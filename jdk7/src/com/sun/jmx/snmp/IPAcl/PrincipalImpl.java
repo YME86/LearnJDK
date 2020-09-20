@@ -27,7 +27,6 @@
 package com.sun.jmx.snmp.IPAcl;
 
 
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.io.Serializable;
@@ -35,7 +34,6 @@ import java.io.Serializable;
 
 /**
  * Principal represents a host.
- *
  */
 
 class PrincipalImpl implements java.security.Principal, Serializable {
@@ -46,14 +44,14 @@ class PrincipalImpl implements java.security.Principal, Serializable {
     /**
      * Constructs a principal with the local host.
      */
-    public PrincipalImpl () throws UnknownHostException {
+    public PrincipalImpl() throws UnknownHostException {
         add = new InetAddress[1];
         add[0] = java.net.InetAddress.getLocalHost();
     }
 
     /**
      * Construct a principal using the specified host.
-     * <P>
+     * <p>
      * The host can be either:
      * <UL>
      * <LI> a host name
@@ -66,9 +64,8 @@ class PrincipalImpl implements java.security.Principal, Serializable {
         if ((hostName.equals("localhost")) || (hostName.equals("127.0.0.1"))) {
             add = new InetAddress[1];
             add[0] = java.net.InetAddress.getByName(hostName);
-        }
-        else
-            add = java.net.InetAddress.getAllByName( hostName );
+        } else
+            add = java.net.InetAddress.getAllByName(hostName);
     }
 
     /**
@@ -99,9 +96,9 @@ class PrincipalImpl implements java.security.Principal, Serializable {
      * @return true if the principal passed in is the same as that encapsulated by this principal, false otherwise.
      */
     public boolean equals(Object a) {
-        if (a instanceof PrincipalImpl){
-            for(int i = 0; i < add.length; i++) {
-                if(add[i].equals (((PrincipalImpl) a).getAddress()))
+        if (a instanceof PrincipalImpl) {
+            for (int i = 0; i < add.length; i++) {
+                if (add[i].equals(((PrincipalImpl) a).getAddress()))
                     return true;
             }
             return false;
@@ -115,7 +112,7 @@ class PrincipalImpl implements java.security.Principal, Serializable {
      *
      * @return a hashcode for this principal.
      */
-    public int hashCode(){
+    public int hashCode() {
         return add[0].hashCode();
     }
 
@@ -125,7 +122,7 @@ class PrincipalImpl implements java.security.Principal, Serializable {
      * @return a string representation of this principal.
      */
     public String toString() {
-        return ("PrincipalImpl :"+add[0].toString());
+        return ("PrincipalImpl :" + add[0].toString());
     }
 
     /**
@@ -133,7 +130,7 @@ class PrincipalImpl implements java.security.Principal, Serializable {
      *
      * @return the Internet Protocol (IP) address for this principal.
      */
-    public InetAddress getAddress(){
+    public InetAddress getAddress() {
         return add[0];
     }
 
@@ -142,7 +139,7 @@ class PrincipalImpl implements java.security.Principal, Serializable {
      *
      * @return the array of Internet Protocol (IP) addresses for this principal.
      */
-    public InetAddress[] getAddresses(){
+    public InetAddress[] getAddresses() {
         return add;
     }
 }

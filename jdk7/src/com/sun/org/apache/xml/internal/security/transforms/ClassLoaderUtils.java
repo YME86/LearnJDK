@@ -10,9 +10,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -43,7 +43,7 @@ final class ClassLoaderUtils {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static final java.util.logging.Logger log =
-        java.util.logging.Logger.getLogger(ClassLoaderUtils.class.getName());
+            java.util.logging.Logger.getLogger(ClassLoaderUtils.class.getName());
 
     private ClassLoaderUtils() {
     }
@@ -65,9 +65,9 @@ final class ClassLoaderUtils {
         if (url == null && resourceName.startsWith("/")) {
             //certain classloaders need it without the leading /
             url =
-                Thread.currentThread().getContextClassLoader().getResource(
-                    resourceName.substring(1)
-                );
+                    Thread.currentThread().getContextClassLoader().getResource(
+                            resourceName.substring(1)
+                    );
         }
 
         ClassLoader cluClassloader = ClassLoaderUtils.class.getClassLoader();
@@ -119,6 +119,7 @@ final class ClassLoaderUtils {
             public boolean hasMoreElements() {
                 return false;
             }
+
             public URL nextElement() {
                 return null;
             }
@@ -136,9 +137,9 @@ final class ClassLoaderUtils {
             //certain classloaders need it without the leading /
             try {
                 urls =
-                    Thread.currentThread().getContextClassLoader().getResources(
-                        resourceName.substring(1)
-                    );
+                        Thread.currentThread().getContextClassLoader().getResources(
+                                resourceName.substring(1)
+                        );
             } catch (IOException e) {
                 if (log.isLoggable(java.util.logging.Level.FINE)) {
                     log.log(java.util.logging.Level.FINE, e.getMessage(), e);
@@ -241,7 +242,7 @@ final class ClassLoaderUtils {
      * @throws ClassNotFoundException If the class cannot be found anywhere.
      */
     static Class<?> loadClass(String className, Class<?> callingClass)
-        throws ClassNotFoundException {
+            throws ClassNotFoundException {
         try {
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
@@ -258,7 +259,7 @@ final class ClassLoaderUtils {
     }
 
     private static Class<?> loadClass2(String className, Class<?> callingClass)
-        throws ClassNotFoundException {
+            throws ClassNotFoundException {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException ex) {

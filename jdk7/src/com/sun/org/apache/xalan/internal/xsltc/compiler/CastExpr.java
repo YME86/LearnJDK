@@ -131,7 +131,7 @@ final class CastExpr extends Expression {
         _type = type;           // use inherited field
 
         if ((_left instanceof Step) && (_type == Type.Boolean)) {
-            Step step = (Step)_left;
+            Step step = (Step) _left;
             if ((step.getAxis() == Axis.SELF) && (step.getNodeType() != -1))
                 _typeTest = true;
         }
@@ -152,11 +152,11 @@ final class CastExpr extends Expression {
      * needed for context changes in node steps containing multiple predicates.
      */
     public boolean hasPositionCall() {
-        return(_left.hasPositionCall());
+        return (_left.hasPositionCall());
     }
 
     public boolean hasLastCall() {
-        return(_left.hasLastCall());
+        return (_left.hasLastCall());
     }
 
     public String toString() {
@@ -176,8 +176,7 @@ final class CastExpr extends Expression {
         }
         if (tleft instanceof NodeType) {
             tleft = Type.Node;  // multiple instances
-        }
-        else if (tleft instanceof ResultTreeType) {
+        } else if (tleft instanceof ResultTreeType) {
             tleft = Type.ResultTree; // multiple instances
         }
         if (InternalTypeMap.maps(tleft, _type) != null) {
@@ -185,7 +184,7 @@ final class CastExpr extends Expression {
         }
         // throw new TypeCheckError(this);
         throw new TypeCheckError(new ErrorMsg(
-            ErrorMsg.DATA_CONVERSION_ERR, tleft.toString(), _type.toString()));
+                ErrorMsg.DATA_CONVERSION_ERR, tleft.toString(), _type.toString()));
     }
 
     public void translateDesynthesized(ClassGenerator classGen,
@@ -201,27 +200,25 @@ final class CastExpr extends Expression {
             final InstructionList il = methodGen.getInstructionList();
 
             final int idx = cpg.addInterfaceMethodref(DOM_INTF,
-                                                      "getExpandedTypeID",
-                                                      "(I)I");
-            il.append(new SIPUSH((short)((Step)_left).getNodeType()));
+                    "getExpandedTypeID",
+                    "(I)I");
+            il.append(new SIPUSH((short) ((Step) _left).getNodeType()));
             il.append(methodGen.loadDOM());
             il.append(methodGen.loadContextNode());
             il.append(new INVOKEINTERFACE(idx, 2));
             _falseList.add(il.append(new IF_ICMPNE(null)));
-        }
-        else {
+        } else {
 
             _left.translate(classGen, methodGen);
             if (_type != ltype) {
                 _left.startIterator(classGen, methodGen);
                 if (_type instanceof BooleanType) {
                     fl = ltype.translateToDesynthesized(classGen, methodGen,
-                                                        _type);
+                            _type);
                     if (fl != null) {
                         _falseList.append(fl);
                     }
-                }
-                else {
+                } else {
                     ltype.translateTo(classGen, methodGen, _type);
                 }
             }

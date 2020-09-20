@@ -48,12 +48,12 @@ public final class DOMAdapter implements DOM {
 
     private String[] _namesArray;
     private String[] _urisArray;
-    private int[]    _typesArray;
+    private int[] _typesArray;
     private String[] _namespaceArray;
 
     // Cached mappings
     private short[] _mapping = null;
-    private int[]   _reverse = null;
+    private int[] _reverse = null;
     private short[] _NSmapping = null;
     private short[] _NSreverse = null;
 
@@ -66,7 +66,7 @@ public final class DOMAdapter implements DOM {
                       String[] urisArray,
                       int[] typesArray,
                       String[] namespaceArray) {
-        if (dom instanceof DOMEnhancedForDTM){
+        if (dom instanceof DOMEnhancedForDTM) {
             _enhancedDOM = (DOMEnhancedForDTM) dom;
         }
 
@@ -109,7 +109,7 @@ public final class DOMAdapter implements DOM {
         if (_mapping == null) {
             if (_enhancedDOM != null) {
                 _mapping = _enhancedDOM.getMapping(_namesArray, _urisArray,
-                                                   _typesArray);
+                        _typesArray);
             }
         }
         return _mapping;
@@ -119,8 +119,8 @@ public final class DOMAdapter implements DOM {
         if (_reverse == null) {
             if (_enhancedDOM != null) {
                 _reverse = _enhancedDOM.getReverseMapping(_namesArray,
-                                                          _urisArray,
-                                                          _typesArray);
+                        _urisArray,
+                        _typesArray);
             }
         }
         return _reverse;
@@ -139,15 +139,15 @@ public final class DOMAdapter implements DOM {
         if (_NSreverse == null) {
             if (_enhancedDOM != null) {
                 _NSreverse = _enhancedDOM
-                                  .getReverseNamespaceMapping(_namespaceArray);
+                        .getReverseNamespaceMapping(_namespaceArray);
             }
         }
         return _NSreverse;
     }
 
     /**
-      * Returns singleton iterator containg the document root
-      */
+     * Returns singleton iterator containg the document root
+     */
     public DTMAxisIterator getIterator() {
         return _dom.getIterator();
     }
@@ -159,8 +159,7 @@ public final class DOMAdapter implements DOM {
     public DTMAxisIterator getChildren(final int node) {
         if (_enhancedDOM != null) {
             return _enhancedDOM.getChildren(node);
-        }
-        else {
+        } else {
             DTMAxisIterator iterator = _dom.getChildren(node);
             return iterator.setStartNode(node);
         }
@@ -175,8 +174,7 @@ public final class DOMAdapter implements DOM {
 
         if (_enhancedDOM != null) {
             return _enhancedDOM.getTypedChildren(reverse[type]);
-        }
-        else {
+        } else {
             return _dom.getTypedChildren(type);
         }
     }
@@ -189,8 +187,7 @@ public final class DOMAdapter implements DOM {
     public DTMAxisIterator getAxisIterator(final int axis) {
         if (_enhancedDOM != null) {
             return _enhancedDOM.getAxisIterator(axis);
-        }
-        else {
+        } else {
             return _dom.getAxisIterator(axis);
         }
     }
@@ -233,16 +230,12 @@ public final class DOMAdapter implements DOM {
         final int type;
         if (_enhancedDOM != null) {
             type = mapping[_enhancedDOM.getExpandedTypeID2(node)];
-        }
-        else {
-                if(null != mapping)
-                {
+        } else {
+            if (null != mapping) {
                 type = mapping[_dom.getExpandedTypeID(node)];
-                }
-                else
-                {
-                        type = _dom.getExpandedTypeID(node);
-                }
+            } else {
+                type = _dom.getExpandedTypeID(node);
+            }
         }
         return type;
     }
@@ -270,28 +263,24 @@ public final class DOMAdapter implements DOM {
         return _dom.getNodeName(node);
     }
 
-    public String getNodeNameX(final int node)
-    {
+    public String getNodeNameX(final int node) {
         if (node == DTM.NULL) {
             return "";
         }
         return _dom.getNodeNameX(node);
     }
 
-    public String getNamespaceName(final int node)
-    {
+    public String getNamespaceName(final int node) {
         if (node == DTM.NULL) {
             return "";
         }
         return _dom.getNamespaceName(node);
     }
 
-    public String getStringValueX(final int node)
-    {
+    public String getStringValueX(final int node) {
         if (_enhancedDOM != null) {
             return _enhancedDOM.getStringValueX(node);
-        }
-        else {
+        } else {
             if (node == DTM.NULL) {
                 return "";
             }
@@ -300,130 +289,106 @@ public final class DOMAdapter implements DOM {
     }
 
     public void copy(final int node, SerializationHandler handler)
-        throws TransletException
-    {
+            throws TransletException {
         _dom.copy(node, handler);
     }
 
-    public void copy(DTMAxisIterator nodes,SerializationHandler handler)
-        throws TransletException
-    {
+    public void copy(DTMAxisIterator nodes, SerializationHandler handler)
+            throws TransletException {
         _dom.copy(nodes, handler);
     }
 
     public String shallowCopy(final int node, SerializationHandler handler)
-        throws TransletException
-    {
+            throws TransletException {
         if (_enhancedDOM != null) {
             return _enhancedDOM.shallowCopy(node, handler);
-        }
-        else {
+        } else {
             return _dom.shallowCopy(node, handler);
         }
     }
 
-    public boolean lessThan(final int node1, final int node2)
-    {
+    public boolean lessThan(final int node1, final int node2) {
         return _dom.lessThan(node1, node2);
     }
 
     public void characters(final int textNode, SerializationHandler handler)
-      throws TransletException
-    {
+            throws TransletException {
         if (_enhancedDOM != null) {
             _enhancedDOM.characters(textNode, handler);
-        }
-        else {
+        } else {
             _dom.characters(textNode, handler);
         }
     }
 
-    public Node makeNode(int index)
-    {
+    public Node makeNode(int index) {
         return _dom.makeNode(index);
     }
 
-    public Node makeNode(DTMAxisIterator iter)
-    {
+    public Node makeNode(DTMAxisIterator iter) {
         return _dom.makeNode(iter);
     }
 
-    public NodeList makeNodeList(int index)
-    {
+    public NodeList makeNodeList(int index) {
         return _dom.makeNodeList(index);
     }
 
-    public NodeList makeNodeList(DTMAxisIterator iter)
-    {
+    public NodeList makeNodeList(DTMAxisIterator iter) {
         return _dom.makeNodeList(iter);
     }
 
-    public String getLanguage(int node)
-    {
+    public String getLanguage(int node) {
         return _dom.getLanguage(node);
     }
 
-    public int getSize()
-    {
+    public int getSize() {
         return _dom.getSize();
     }
 
-    public void setDocumentURI(String uri)
-    {
+    public void setDocumentURI(String uri) {
         if (_enhancedDOM != null) {
             _enhancedDOM.setDocumentURI(uri);
         }
     }
 
-    public String getDocumentURI()
-    {
+    public String getDocumentURI() {
         if (_enhancedDOM != null) {
             return _enhancedDOM.getDocumentURI();
-        }
-        else {
+        } else {
             return "";
         }
     }
 
-    public String getDocumentURI(int node)
-    {
+    public String getDocumentURI(int node) {
         return _dom.getDocumentURI(node);
     }
 
-    public int getDocument()
-    {
+    public int getDocument() {
         return _dom.getDocument();
     }
 
-    public boolean isElement(final int node)
-    {
-        return(_dom.isElement(node));
+    public boolean isElement(final int node) {
+        return (_dom.isElement(node));
     }
 
-    public boolean isAttribute(final int node)
-    {
-        return(_dom.isAttribute(node));
+    public boolean isAttribute(final int node) {
+        return (_dom.isAttribute(node));
     }
 
-    public int getNodeIdent(int nodeHandle)
-    {
+    public int getNodeIdent(int nodeHandle) {
         return _dom.getNodeIdent(nodeHandle);
     }
 
-    public int getNodeHandle(int nodeId)
-    {
+    public int getNodeHandle(int nodeId) {
         return _dom.getNodeHandle(nodeId);
     }
 
     /**
      * Return a instance of a DOM class to be used as an RTF
      */
-    public DOM getResultTreeFrag(int initSize, int rtfType)
-    {
+    public DOM getResultTreeFrag(int initSize, int rtfType) {
         if (_enhancedDOM != null) {
             return _enhancedDOM.getResultTreeFrag(initSize, rtfType);
-        }
-        else {
+        } else {
             return _dom.getResultTreeFrag(initSize, rtfType);
         }
     }
@@ -432,13 +397,11 @@ public final class DOMAdapter implements DOM {
      * Return a instance of a DOM class to be used as an RTF
      */
     public DOM getResultTreeFrag(int initSize, int rtfType,
-                                 boolean addToManager)
-    {
+                                 boolean addToManager) {
         if (_enhancedDOM != null) {
             return _enhancedDOM.getResultTreeFrag(initSize, rtfType,
-                                                  addToManager);
-        }
-        else {
+                    addToManager);
+        } else {
             return _dom.getResultTreeFrag(initSize, rtfType, addToManager);
         }
     }
@@ -447,14 +410,12 @@ public final class DOMAdapter implements DOM {
     /**
      * Returns a SerializationHandler class wrapped in a SAX adapter.
      */
-    public SerializationHandler getOutputDomBuilder()
-    {
+    public SerializationHandler getOutputDomBuilder() {
         return _dom.getOutputDomBuilder();
     }
 
     public String lookupNamespace(int node, String prefix)
-        throws TransletException
-    {
+            throws TransletException {
         return _dom.lookupNamespace(node, prefix);
     }
 

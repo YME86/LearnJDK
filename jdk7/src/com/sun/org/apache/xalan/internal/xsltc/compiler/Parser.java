@@ -34,6 +34,7 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.util.MethodType;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.TypeCheckError;
 import com.sun.org.apache.xml.internal.serializer.utils.SystemIDResolver;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -48,6 +49,7 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -77,20 +79,21 @@ public class Parser implements Constants, ContentHandler {
     private Vector _errors;           // Contains all compilation errors
     private Vector _warnings;         // Contains all compilation errors
 
-    private Hashtable   _instructionClasses; // Maps instructions to classes
-    private Hashtable   _instructionAttrs;;  // reqd and opt attrs
-    private Hashtable   _qNames;
-    private Hashtable   _namespaces;
-    private QName       _useAttributeSets;
-    private QName       _excludeResultPrefixes;
-    private QName       _extensionElementPrefixes;
-    private Hashtable   _variableScope;
-    private Stylesheet  _currentStylesheet;
+    private Hashtable _instructionClasses; // Maps instructions to classes
+    private Hashtable _instructionAttrs;
+    ;  // reqd and opt attrs
+    private Hashtable _qNames;
+    private Hashtable _namespaces;
+    private QName _useAttributeSets;
+    private QName _excludeResultPrefixes;
+    private QName _extensionElementPrefixes;
+    private Hashtable _variableScope;
+    private Stylesheet _currentStylesheet;
     private SymbolTable _symbolTable; // Maps QNames to syntax-tree nodes
-    private Output      _output;
-    private Template    _template;    // Reference to the template being parsed.
+    private Output _output;
+    private Template _template;    // Reference to the template being parsed.
 
-    private boolean     _rootNamespaceDef; // Used for validity check
+    private boolean _rootNamespaceDef; // Used for validity check
 
     private SyntaxTreeNode _root;
 
@@ -106,20 +109,20 @@ public class Parser implements Constants, ContentHandler {
     }
 
     public void init() {
-        _qNames              = new Hashtable(512);
-        _namespaces          = new Hashtable();
-        _instructionClasses  = new Hashtable();
-        _instructionAttrs    = new Hashtable();
-        _variableScope       = new Hashtable();
-        _template            = null;
-        _errors              = new Vector();
-        _warnings            = new Vector();
-        _symbolTable         = new SymbolTable();
-        _xpathParser         = new XPathParser(this);
-        _currentStylesheet   = null;
-        _output              = null;
-        _root                = null;
-        _rootNamespaceDef    = false;
+        _qNames = new Hashtable(512);
+        _namespaces = new Hashtable();
+        _instructionClasses = new Hashtable();
+        _instructionAttrs = new Hashtable();
+        _variableScope = new Hashtable();
+        _template = null;
+        _errors = new Vector();
+        _warnings = new Vector();
+        _symbolTable = new SymbolTable();
+        _xpathParser = new XPathParser(this);
+        _currentStylesheet = null;
+        _output = null;
+        _root = null;
+        _rootNamespaceDef = false;
         _currentImportPrecedence = 1;
 
         initStdClasses();
@@ -128,11 +131,11 @@ public class Parser implements Constants, ContentHandler {
         initSymbolTable();
 
         _useAttributeSets =
-            getQName(XSLT_URI, XSL, "use-attribute-sets");
+                getQName(XSLT_URI, XSL, "use-attribute-sets");
         _excludeResultPrefixes =
-            getQName(XSLT_URI, XSL, "exclude-result-prefixes");
+                getQName(XSLT_URI, XSL, "exclude-result-prefixes");
         _extensionElementPrefixes =
-            getQName(XSLT_URI, XSL, "extension-element-prefixes");
+                getQName(XSLT_URI, XSL, "extension-element-prefixes");
     }
 
     public void setOutput(Output output) {
@@ -142,12 +145,10 @@ public class Parser implements Constants, ContentHandler {
                 output.mergeOutput(_output);
                 _output.disable();
                 _output = output;
-            }
-            else {
+            } else {
                 output.disable();
             }
-        }
-        else {
+        } else {
             _output = output;
         }
     }
@@ -172,17 +173,15 @@ public class Parser implements Constants, ContentHandler {
         Object existing = _variableScope.get(var.getName());
         if (existing != null) {
             if (existing instanceof Stack) {
-                Stack stack = (Stack)existing;
+                Stack stack = (Stack) existing;
                 stack.push(var);
-            }
-            else if (existing instanceof VariableBase) {
+            } else if (existing instanceof VariableBase) {
                 Stack stack = new Stack();
                 stack.push(existing);
                 stack.push(var);
                 _variableScope.put(var.getName(), stack);
             }
-        }
-        else {
+        } else {
             _variableScope.put(var.getName(), var);
         }
     }
@@ -190,7 +189,7 @@ public class Parser implements Constants, ContentHandler {
     public void removeVariable(QName name) {
         Object existing = _variableScope.get(name);
         if (existing instanceof Stack) {
-            Stack stack = (Stack)existing;
+            Stack stack = (Stack) existing;
             if (!stack.isEmpty()) stack.pop();
             if (!stack.isEmpty()) return;
         }
@@ -200,13 +199,12 @@ public class Parser implements Constants, ContentHandler {
     public VariableBase lookupVariable(QName name) {
         Object existing = _variableScope.get(name);
         if (existing instanceof VariableBase) {
-            return((VariableBase)existing);
+            return ((VariableBase) existing);
+        } else if (existing instanceof Stack) {
+            Stack stack = (Stack) existing;
+            return ((VariableBase) stack.peek());
         }
-        else if (existing instanceof Stack) {
-            Stack stack = (Stack)existing;
-            return((VariableBase)stack.peek());
-        }
-        return(null);
+        return (null);
     }
 
     public void setXSLTC(XSLTC xsltc) {
@@ -251,10 +249,9 @@ public class Parser implements Constants, ContentHandler {
                 if (namespace == null) namespace = EMPTYSTRING;
             }
             return getQName(namespace, prefix, localname);
-        }
-        else {
+        } else {
             final String uri = stringRep.equals(XMLNS_PREFIX) ? null
-                : _symbolTable.lookupNamespace(EMPTYSTRING);
+                    : _symbolTable.lookupNamespace(EMPTYSTRING);
             return getQName(uri, null, stringRep);
         }
     }
@@ -272,8 +269,7 @@ public class Parser implements Constants, ContentHandler {
     }
 
     private QName getQName(final String stringRep, boolean reportError,
-        boolean ignoreDefaultNs)
-    {
+                           boolean ignoreDefaultNs) {
         // parse and retrieve namespace
         final int colon = stringRep.lastIndexOf(':');
         if (colon != -1) {
@@ -287,35 +283,33 @@ public class Parser implements Constants, ContentHandler {
                 if (namespace == null && reportError) {
                     final int line = getLineNumber();
                     ErrorMsg err = new ErrorMsg(ErrorMsg.NAMESPACE_UNDEF_ERR,
-                                                line, prefix);
+                            line, prefix);
                     reportError(ERROR, err);
                 }
             }
             return getQName(namespace, prefix, localname);
-        }
-        else {
+        } else {
             if (stringRep.equals(XMLNS_PREFIX)) {
                 ignoreDefaultNs = true;
             }
             final String defURI = ignoreDefaultNs ? null
-                                  : _symbolTable.lookupNamespace(EMPTYSTRING);
+                    : _symbolTable.lookupNamespace(EMPTYSTRING);
             return getQName(defURI, null, stringRep);
         }
     }
 
     public QName getQName(String namespace, String prefix, String localname) {
         if (namespace == null || namespace.equals(EMPTYSTRING)) {
-            QName name = (QName)_qNames.get(localname);
+            QName name = (QName) _qNames.get(localname);
             if (name == null) {
                 name = new QName(null, prefix, localname);
                 _qNames.put(localname, name);
             }
             return name;
-        }
-        else {
-            Dictionary space = (Dictionary)_namespaces.get(namespace);
+        } else {
+            Dictionary space = (Dictionary) _namespaces.get(namespace);
             String lexicalQName =
-                       (prefix == null || prefix.length() == 0)
+                    (prefix == null || prefix.length() == 0)
                             ? localname
                             : (prefix + ':' + localname);
 
@@ -324,9 +318,8 @@ public class Parser implements Constants, ContentHandler {
                 _namespaces.put(namespace, space = new Hashtable());
                 space.put(lexicalQName, name);
                 return name;
-            }
-            else {
-                QName name = (QName)space.get(lexicalQName);
+            } else {
+                QName name = (QName) space.get(lexicalQName);
                 if (name == null) {
                     name = new QName(namespace, prefix, localname);
                     space.put(lexicalQName, name);
@@ -362,14 +355,13 @@ public class Parser implements Constants, ContentHandler {
      * Must be called after <code>parse()</code>.
      */
     public Stylesheet makeStylesheet(SyntaxTreeNode element)
-        throws CompilerException {
+            throws CompilerException {
         try {
             Stylesheet stylesheet;
 
             if (element instanceof Stylesheet) {
-                stylesheet = (Stylesheet)element;
-            }
-            else {
+                stylesheet = (Stylesheet) element;
+            } else {
                 stylesheet = new Stylesheet();
                 stylesheet.setSimplified();
                 stylesheet.addElement(element);
@@ -382,8 +374,7 @@ public class Parser implements Constants, ContentHandler {
             }
             stylesheet.setParser(this);
             return stylesheet;
-        }
-        catch (ClassCastException e) {
+        } catch (ClassCastException e) {
             ErrorMsg err = new ErrorMsg(ErrorMsg.NOT_STYLESHEET_ERR, element);
             throw new CompilerException(err.toString());
         }
@@ -403,7 +394,7 @@ public class Parser implements Constants, ContentHandler {
                     if (child instanceof Text) {
                         final int l = getLineNumber();
                         ErrorMsg err =
-                            new ErrorMsg(ErrorMsg.ILLEGAL_TEXT_NODE_ERR,l,null);
+                                new ErrorMsg(ErrorMsg.ILLEGAL_TEXT_NODE_ERR, l, null);
                         reportError(ERROR, err);
                     }
                 }
@@ -411,16 +402,16 @@ public class Parser implements Constants, ContentHandler {
                     stylesheet.typeCheck(_symbolTable);
                 }
             }
-        }
-        catch (TypeCheckError e) {
+        } catch (TypeCheckError e) {
             reportError(ERROR, new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR, e));
         }
     }
 
     /**
      * Parses a stylesheet and builds the internal abstract syntax tree
+     *
      * @param reader A SAX2 SAXReader (parser)
-     * @param input A SAX2 InputSource can be passed to a SAX reader
+     * @param input  A SAX2 InputSource can be passed to a SAX reader
      * @return The root of the abstract syntax tree
      */
     public SyntaxTreeNode parse(XMLReader reader, InputSource input) {
@@ -429,25 +420,21 @@ public class Parser implements Constants, ContentHandler {
             reader.setContentHandler(this);
             reader.parse(input);
             // Find the start of the stylesheet within the tree
-            return (SyntaxTreeNode)getStylesheet(_root);
-        }
-        catch (IOException e) {
+            return (SyntaxTreeNode) getStylesheet(_root);
+        } catch (IOException e) {
             if (_xsltc.debug()) e.printStackTrace();
-            reportError(ERROR,new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR, e));
-        }
-        catch (SAXException e) {
+            reportError(ERROR, new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR, e));
+        } catch (SAXException e) {
             Throwable ex = e.getException();
             if (_xsltc.debug()) {
                 e.printStackTrace();
                 if (ex != null) ex.printStackTrace();
             }
             reportError(ERROR, new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR, e));
-        }
-        catch (CompilerException e) {
+        } catch (CompilerException e) {
             if (_xsltc.debug()) e.printStackTrace();
             reportError(ERROR, new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR, e));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (_xsltc.debug()) e.printStackTrace();
             reportError(ERROR, new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR, e));
         }
@@ -456,6 +443,7 @@ public class Parser implements Constants, ContentHandler {
 
     /**
      * Parses a stylesheet and builds the internal abstract syntax tree
+     *
      * @param input A SAX2 InputSource can be passed to a SAX reader
      * @return The root of the abstract syntax tree
      */
@@ -467,14 +455,13 @@ public class Parser implements Constants, ContentHandler {
             if (_xsltc.isSecureProcessing()) {
                 try {
                     factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+                } catch (SAXException e) {
                 }
-                catch (SAXException e) {}
             }
 
             try {
-                factory.setFeature(Constants.NAMESPACE_FEATURE,true);
-            }
-            catch (Exception e) {
+                factory.setFeature(Constants.NAMESPACE_FEATURE, true);
+            } catch (Exception e) {
                 factory.setNamespaceAware(true);
             }
             final SAXParser parser = factory.newSAXParser();
@@ -490,7 +477,7 @@ public class Parser implements Constants, ContentHandler {
             final XMLReader reader = parser.getXMLReader();
             try {
                 XMLSecurityManager securityManager =
-                        (XMLSecurityManager)_xsltc.getProperty(XalanConstants.SECURITY_MANAGER);
+                        (XMLSecurityManager) _xsltc.getProperty(XalanConstants.SECURITY_MANAGER);
                 for (XMLSecurityManager.Limit limit : XMLSecurityManager.Limit.values()) {
                     reader.setProperty(limit.apiProperty(), securityManager.getLimitValueAsString(limit));
                 }
@@ -499,19 +486,16 @@ public class Parser implements Constants, ContentHandler {
                 }
             } catch (SAXException se) {
                 System.err.println("Warning:  " + reader.getClass().getName() + ": "
-                            + se.getMessage());
+                        + se.getMessage());
             }
 
-            return(parse(reader, input));
-        }
-        catch (ParserConfigurationException e) {
+            return (parse(reader, input));
+        } catch (ParserConfigurationException e) {
             ErrorMsg err = new ErrorMsg(ErrorMsg.SAX_PARSER_CONFIG_ERR);
             reportError(ERROR, err);
-        }
-        catch (SAXParseException e){
-            reportError(ERROR, new ErrorMsg(e.getMessage(),e.getLineNumber()));
-        }
-        catch (SAXException e) {
+        } catch (SAXParseException e) {
+            reportError(ERROR, new ErrorMsg(e.getMessage(), e.getLineNumber()));
+        } catch (SAXException e) {
             reportError(ERROR, new ErrorMsg(e.getMessage()));
         }
         return null;
@@ -529,9 +513,10 @@ public class Parser implements Constants, ContentHandler {
      * Set the parameters to use to locate the correct <?xml-stylesheet ...?>
      * processing instruction in the case where the input document is an
      * XML document with one or more references to a stylesheet.
-     * @param media The media attribute to be matched. May be null, in which
-     * case the prefered templates will be used (i.e. alternate = no).
-     * @param title The value of the title attribute to match. May be null.
+     *
+     * @param media   The media attribute to be matched. May be null, in which
+     *                case the prefered templates will be used (i.e. alternate = no).
+     * @param title   The value of the title attribute to match. May be null.
      * @param charset The value of the charset attribute to match. May be null.
      */
     protected void setPIParameters(String media, String title, String charset) {
@@ -550,7 +535,7 @@ public class Parser implements Constants, ContentHandler {
      * stylesheet is returned as an Element object.
      */
     private SyntaxTreeNode getStylesheet(SyntaxTreeNode root)
-        throws CompilerException {
+            throws CompilerException {
 
         // Assume that this is a pure XSL stylesheet if there is not
         // <?xml-stylesheet ....?> processing instruction
@@ -559,7 +544,7 @@ public class Parser implements Constants, ContentHandler {
                 ErrorMsg msg = new ErrorMsg(ErrorMsg.MISSING_XSLT_URI_ERR);
                 throw new CompilerException(msg.toString());
             }
-            return(root);
+            return (root);
         }
 
         // Find the xsl:stylesheet or xsl:transform with this reference
@@ -567,20 +552,19 @@ public class Parser implements Constants, ContentHandler {
             SyntaxTreeNode element = findStylesheet(root, _target.substring(1));
             if (element == null) {
                 ErrorMsg msg = new ErrorMsg(ErrorMsg.MISSING_XSLT_TARGET_ERR,
-                                            _target, root);
+                        _target, root);
                 throw new CompilerException(msg.toString());
             }
-            return(element);
-        }
-        else {
+            return (element);
+        } else {
             try {
                 String path = _target;
-                if (path.indexOf(":")==-1) {
+                if (path.indexOf(":") == -1) {
                     path = "file:" + path;
                 }
                 path = SystemIDResolver.getAbsoluteURI(path);
                 String accessError = SecuritySupport.checkAccess(path,
-                        (String)_xsltc.getProperty(XMLConstants.ACCESS_EXTERNAL_STYLESHEET),
+                        (String) _xsltc.getProperty(XMLConstants.ACCESS_EXTERNAL_STYLESHEET),
                         XalanConstants.ACCESS_EXTERNAL_ALL);
                 if (accessError != null) {
                     ErrorMsg msg = new ErrorMsg(ErrorMsg.ACCESSING_XSLT_TARGET_ERR,
@@ -592,7 +576,7 @@ public class Parser implements Constants, ContentHandler {
                 throw new CompilerException(ex);
             }
 
-            return(loadExternalStylesheet(_target));
+            return (loadExternalStylesheet(_target));
         }
     }
 
@@ -613,7 +597,7 @@ public class Parser implements Constants, ContentHandler {
         if (children != null) {
             final int count = children.size();
             for (int i = 0; i < count; i++) {
-                SyntaxTreeNode child = (SyntaxTreeNode)children.elementAt(i);
+                SyntaxTreeNode child = (SyntaxTreeNode) children.elementAt(i);
                 SyntaxTreeNode node = findStylesheet(child, href);
                 if (node != null) return node;
             }
@@ -625,82 +609,81 @@ public class Parser implements Constants, ContentHandler {
      * For embedded stylesheets: Load an external file with stylesheet
      */
     private SyntaxTreeNode loadExternalStylesheet(String location)
-        throws CompilerException {
+            throws CompilerException {
 
         InputSource source;
 
         // Check if the location is URL or a local file
         if ((new File(location)).exists())
-            source = new InputSource("file:"+location);
+            source = new InputSource("file:" + location);
         else
             source = new InputSource(location);
 
-        SyntaxTreeNode external = (SyntaxTreeNode)parse(source);
-        return(external);
+        SyntaxTreeNode external = (SyntaxTreeNode) parse(source);
+        return (external);
     }
 
     private void initAttrTable(String elementName, String[] attrs) {
         _instructionAttrs.put(getQName(XSLT_URI, XSL, elementName),
-                                attrs);
+                attrs);
     }
 
     private void initInstructionAttrs() {
         initAttrTable("template",
-            new String[] {"match", "name", "priority", "mode"});
+                new String[]{"match", "name", "priority", "mode"});
         initAttrTable("stylesheet",
-            new String[] {"id", "version", "extension-element-prefixes",
-                "exclude-result-prefixes"});
+                new String[]{"id", "version", "extension-element-prefixes",
+                        "exclude-result-prefixes"});
         initAttrTable("transform",
-            new String[] {"id", "version", "extension-element-prefixes",
-                "exclude-result-prefixes"});
-        initAttrTable("text", new String[] {"disable-output-escaping"});
-        initAttrTable("if", new String[] {"test"});
-        initAttrTable("choose", new String[] {});
-        initAttrTable("when", new String[] {"test"});
-        initAttrTable("otherwise", new String[] {});
-        initAttrTable("for-each", new String[] {"select"});
-        initAttrTable("message", new String[] {"terminate"});
+                new String[]{"id", "version", "extension-element-prefixes",
+                        "exclude-result-prefixes"});
+        initAttrTable("text", new String[]{"disable-output-escaping"});
+        initAttrTable("if", new String[]{"test"});
+        initAttrTable("choose", new String[]{});
+        initAttrTable("when", new String[]{"test"});
+        initAttrTable("otherwise", new String[]{});
+        initAttrTable("for-each", new String[]{"select"});
+        initAttrTable("message", new String[]{"terminate"});
         initAttrTable("number",
-            new String[] {"level", "count", "from", "value", "format", "lang",
-                "letter-value", "grouping-separator", "grouping-size"});
-                initAttrTable("comment", new String[] {});
-        initAttrTable("copy", new String[] {"use-attribute-sets"});
-        initAttrTable("copy-of", new String[] {"select"});
-        initAttrTable("param", new String[] {"name", "select"});
-        initAttrTable("with-param", new String[] {"name", "select"});
-        initAttrTable("variable", new String[] {"name", "select"});
+                new String[]{"level", "count", "from", "value", "format", "lang",
+                        "letter-value", "grouping-separator", "grouping-size"});
+        initAttrTable("comment", new String[]{});
+        initAttrTable("copy", new String[]{"use-attribute-sets"});
+        initAttrTable("copy-of", new String[]{"select"});
+        initAttrTable("param", new String[]{"name", "select"});
+        initAttrTable("with-param", new String[]{"name", "select"});
+        initAttrTable("variable", new String[]{"name", "select"});
         initAttrTable("output",
-            new String[] {"method", "version", "encoding",
-                "omit-xml-declaration", "standalone", "doctype-public",
-                "doctype-system", "cdata-section-elements", "indent",
-                "media-type"});
+                new String[]{"method", "version", "encoding",
+                        "omit-xml-declaration", "standalone", "doctype-public",
+                        "doctype-system", "cdata-section-elements", "indent",
+                        "media-type"});
         initAttrTable("sort",
-           new String[] {"select", "order", "case-order", "lang", "data-type"});
-        initAttrTable("key", new String[] {"name", "match", "use"});
-        initAttrTable("fallback", new String[] {});
-        initAttrTable("attribute", new String[] {"name", "namespace"});
+                new String[]{"select", "order", "case-order", "lang", "data-type"});
+        initAttrTable("key", new String[]{"name", "match", "use"});
+        initAttrTable("fallback", new String[]{});
+        initAttrTable("attribute", new String[]{"name", "namespace"});
         initAttrTable("attribute-set",
-            new String[] {"name", "use-attribute-sets"});
+                new String[]{"name", "use-attribute-sets"});
         initAttrTable("value-of",
-            new String[] {"select", "disable-output-escaping"});
+                new String[]{"select", "disable-output-escaping"});
         initAttrTable("element",
-            new String[] {"name", "namespace", "use-attribute-sets"});
-        initAttrTable("call-template", new String[] {"name"});
-        initAttrTable("apply-templates", new String[] {"select", "mode"});
-        initAttrTable("apply-imports", new String[] {});
+                new String[]{"name", "namespace", "use-attribute-sets"});
+        initAttrTable("call-template", new String[]{"name"});
+        initAttrTable("apply-templates", new String[]{"select", "mode"});
+        initAttrTable("apply-imports", new String[]{});
         initAttrTable("decimal-format",
-            new String[] {"name", "decimal-separator", "grouping-separator",
-                "infinity", "minus-sign", "NaN", "percent", "per-mille",
-                "zero-digit", "digit", "pattern-separator"});
-        initAttrTable("import", new String[] {"href"});
-        initAttrTable("include", new String[] {"href"});
-        initAttrTable("strip-space", new String[] {"elements"});
-        initAttrTable("preserve-space", new String[] {"elements"});
-        initAttrTable("processing-instruction", new String[] {"name"});
+                new String[]{"name", "decimal-separator", "grouping-separator",
+                        "infinity", "minus-sign", "NaN", "percent", "per-mille",
+                        "zero-digit", "digit", "pattern-separator"});
+        initAttrTable("import", new String[]{"href"});
+        initAttrTable("include", new String[]{"href"});
+        initAttrTable("strip-space", new String[]{"elements"});
+        initAttrTable("preserve-space", new String[]{"elements"});
+        initAttrTable("processing-instruction", new String[]{"name"});
         initAttrTable("namespace-alias",
-           new String[] {"stylesheet-prefix", "result-prefix"});
+                new String[]{"stylesheet-prefix", "result-prefix"});
     }
-
 
 
     /**
@@ -747,15 +730,15 @@ public class Parser implements Constants, ContentHandler {
 
     private void initStdClass(String elementName, String className) {
         _instructionClasses.put(getQName(XSLT_URI, XSL, elementName),
-                                COMPILER_PACKAGE + '.' + className);
+                COMPILER_PACKAGE + '.' + className);
     }
 
     public boolean elementSupported(String namespace, String localName) {
-        return(_instructionClasses.get(getQName(namespace, XSL, localName)) != null);
+        return (_instructionClasses.get(getQName(namespace, XSL, localName)) != null);
     }
 
     public boolean functionSupported(String fname) {
-        return(_symbolTable.lookupPrimop(fname) != null);
+        return (_symbolTable.lookupPrimop(fname) != null);
     }
 
     private void initExtClasses() {
@@ -765,43 +748,43 @@ public class Parser implements Constants, ContentHandler {
 
     private void initExtClass(String elementName, String className) {
         _instructionClasses.put(getQName(TRANSLET_URI, TRANSLET, elementName),
-                                COMPILER_PACKAGE + '.' + className);
+                COMPILER_PACKAGE + '.' + className);
     }
 
     private void initExtClass(String namespace, String elementName, String className) {
         _instructionClasses.put(getQName(namespace, TRANSLET, elementName),
-                                COMPILER_PACKAGE + '.' + className);
+                COMPILER_PACKAGE + '.' + className);
     }
 
     /**
      * Add primops and base functions to the symbol table.
      */
     private void initSymbolTable() {
-        MethodType I_V  = new MethodType(Type.Int, Type.Void);
-        MethodType I_R  = new MethodType(Type.Int, Type.Real);
-        MethodType I_S  = new MethodType(Type.Int, Type.String);
-        MethodType I_D  = new MethodType(Type.Int, Type.NodeSet);
-        MethodType R_I  = new MethodType(Type.Real, Type.Int);
-        MethodType R_V  = new MethodType(Type.Real, Type.Void);
-        MethodType R_R  = new MethodType(Type.Real, Type.Real);
-        MethodType R_D  = new MethodType(Type.Real, Type.NodeSet);
-        MethodType R_O  = new MethodType(Type.Real, Type.Reference);
-        MethodType I_I  = new MethodType(Type.Int, Type.Int);
-        MethodType D_O  = new MethodType(Type.NodeSet, Type.Reference);
-        MethodType D_V  = new MethodType(Type.NodeSet, Type.Void);
-        MethodType D_S  = new MethodType(Type.NodeSet, Type.String);
-        MethodType D_D  = new MethodType(Type.NodeSet, Type.NodeSet);
-        MethodType A_V  = new MethodType(Type.Node, Type.Void);
-        MethodType S_V  = new MethodType(Type.String, Type.Void);
-        MethodType S_S  = new MethodType(Type.String, Type.String);
-        MethodType S_A  = new MethodType(Type.String, Type.Node);
-        MethodType S_D  = new MethodType(Type.String, Type.NodeSet);
-        MethodType S_O  = new MethodType(Type.String, Type.Reference);
-        MethodType B_O  = new MethodType(Type.Boolean, Type.Reference);
-        MethodType B_V  = new MethodType(Type.Boolean, Type.Void);
-        MethodType B_B  = new MethodType(Type.Boolean, Type.Boolean);
-        MethodType B_S  = new MethodType(Type.Boolean, Type.String);
-        MethodType D_X  = new MethodType(Type.NodeSet, Type.Object);
+        MethodType I_V = new MethodType(Type.Int, Type.Void);
+        MethodType I_R = new MethodType(Type.Int, Type.Real);
+        MethodType I_S = new MethodType(Type.Int, Type.String);
+        MethodType I_D = new MethodType(Type.Int, Type.NodeSet);
+        MethodType R_I = new MethodType(Type.Real, Type.Int);
+        MethodType R_V = new MethodType(Type.Real, Type.Void);
+        MethodType R_R = new MethodType(Type.Real, Type.Real);
+        MethodType R_D = new MethodType(Type.Real, Type.NodeSet);
+        MethodType R_O = new MethodType(Type.Real, Type.Reference);
+        MethodType I_I = new MethodType(Type.Int, Type.Int);
+        MethodType D_O = new MethodType(Type.NodeSet, Type.Reference);
+        MethodType D_V = new MethodType(Type.NodeSet, Type.Void);
+        MethodType D_S = new MethodType(Type.NodeSet, Type.String);
+        MethodType D_D = new MethodType(Type.NodeSet, Type.NodeSet);
+        MethodType A_V = new MethodType(Type.Node, Type.Void);
+        MethodType S_V = new MethodType(Type.String, Type.Void);
+        MethodType S_S = new MethodType(Type.String, Type.String);
+        MethodType S_A = new MethodType(Type.String, Type.Node);
+        MethodType S_D = new MethodType(Type.String, Type.NodeSet);
+        MethodType S_O = new MethodType(Type.String, Type.Reference);
+        MethodType B_O = new MethodType(Type.Boolean, Type.Reference);
+        MethodType B_V = new MethodType(Type.Boolean, Type.Void);
+        MethodType B_B = new MethodType(Type.Boolean, Type.Boolean);
+        MethodType B_S = new MethodType(Type.Boolean, Type.String);
+        MethodType D_X = new MethodType(Type.NodeSet, Type.Object);
         MethodType R_RR = new MethodType(Type.Real, Type.Real, Type.Real);
         MethodType I_II = new MethodType(Type.Int, Type.Int, Type.Int);
         MethodType B_RR = new MethodType(Type.Boolean, Type.Real, Type.Real);
@@ -812,21 +795,21 @@ public class Parser implements Constants, ContentHandler {
         MethodType O_SO = new MethodType(Type.Reference, Type.String, Type.Reference);
 
         MethodType D_SS =
-            new MethodType(Type.NodeSet, Type.String, Type.String);
+                new MethodType(Type.NodeSet, Type.String, Type.String);
         MethodType D_SD =
-            new MethodType(Type.NodeSet, Type.String, Type.NodeSet);
+                new MethodType(Type.NodeSet, Type.String, Type.NodeSet);
         MethodType B_BB =
-            new MethodType(Type.Boolean, Type.Boolean, Type.Boolean);
+                new MethodType(Type.Boolean, Type.Boolean, Type.Boolean);
         MethodType B_SS =
-            new MethodType(Type.Boolean, Type.String, Type.String);
+                new MethodType(Type.Boolean, Type.String, Type.String);
         MethodType S_SD =
-            new MethodType(Type.String, Type.String, Type.NodeSet);
+                new MethodType(Type.String, Type.String, Type.NodeSet);
         MethodType S_DSS =
-            new MethodType(Type.String, Type.Real, Type.String, Type.String);
+                new MethodType(Type.String, Type.Real, Type.String, Type.String);
         MethodType S_SRR =
-            new MethodType(Type.String, Type.String, Type.Real, Type.Real);
+                new MethodType(Type.String, Type.String, Type.Real, Type.Real);
         MethodType S_SSS =
-            new MethodType(Type.String, Type.String, Type.String, Type.String);
+                new MethodType(Type.String, Type.String, Type.String, Type.String);
 
         /*
          * Standard functions: implemented but not in this table concat().
@@ -905,22 +888,22 @@ public class Parser implements Constants, ContentHandler {
         _symbolTable.addPrimop("-", I_II);
         _symbolTable.addPrimop("*", I_II);
 
-         // Operators <, <= >, >= defined on real types.
-        _symbolTable.addPrimop("<",  B_RR);
+        // Operators <, <= >, >= defined on real types.
+        _symbolTable.addPrimop("<", B_RR);
         _symbolTable.addPrimop("<=", B_RR);
-        _symbolTable.addPrimop(">",  B_RR);
+        _symbolTable.addPrimop(">", B_RR);
         _symbolTable.addPrimop(">=", B_RR);
 
         // Operators <, <= >, >= defined on int types.
-        _symbolTable.addPrimop("<",  B_II);
+        _symbolTable.addPrimop("<", B_II);
         _symbolTable.addPrimop("<=", B_II);
-        _symbolTable.addPrimop(">",  B_II);
+        _symbolTable.addPrimop(">", B_II);
         _symbolTable.addPrimop(">=", B_II);
 
         // Operators <, <= >, >= defined on boolean types.
-        _symbolTable.addPrimop("<",  B_BB);
+        _symbolTable.addPrimop("<", B_BB);
         _symbolTable.addPrimop("<=", B_BB);
-        _symbolTable.addPrimop(">",  B_BB);
+        _symbolTable.addPrimop(">", B_BB);
         _symbolTable.addPrimop(">=", B_BB);
 
         // Operators 'and' and 'or'.
@@ -947,16 +930,16 @@ public class Parser implements Constants, ContentHandler {
     private int _templateIndex = 0;
 
     public int getTemplateIndex() {
-        return(_templateIndex++);
+        return (_templateIndex++);
     }
 
     /**
      * Creates a new node in the abstract syntax tree. This node can be
-     *  o) a supported XSLT 1.0 element
-     *  o) an unsupported XSLT element (post 1.0)
-     *  o) a supported XSLT extension
-     *  o) an unsupported XSLT extension
-     *  o) a literal result element (not an XSLT element and not an extension)
+     * o) a supported XSLT 1.0 element
+     * o) an unsupported XSLT element (post 1.0)
+     * o) a supported XSLT extension
+     * o) an unsupported XSLT extension
+     * o) a literal result element (not an XSLT element and not an extension)
      * Unsupported elements do not directly generate an error. We have to wait
      * until we have received all child elements of an unsupported element to
      * see if any <xsl:fallback> elements exist.
@@ -965,68 +948,64 @@ public class Parser implements Constants, ContentHandler {
     private boolean versionIsOne = true;
 
     public SyntaxTreeNode makeInstance(String uri, String prefix,
-        String local, Attributes attributes)
-    {
+                                       String local, Attributes attributes) {
         SyntaxTreeNode node = null;
-        QName  qname = getQName(uri, prefix, local);
-        String className = (String)_instructionClasses.get(qname);
+        QName qname = getQName(uri, prefix, local);
+        String className = (String) _instructionClasses.get(qname);
 
         if (className != null) {
             try {
                 final Class clazz = ObjectFactory.findProviderClass(className, true);
-                node = (SyntaxTreeNode)clazz.newInstance();
+                node = (SyntaxTreeNode) clazz.newInstance();
                 node.setQName(qname);
                 node.setParser(this);
                 if (_locator != null) {
                     node.setLineNumber(getLineNumber());
                 }
                 if (node instanceof Stylesheet) {
-                    _xsltc.setStylesheet((Stylesheet)node);
+                    _xsltc.setStylesheet((Stylesheet) node);
                 }
                 checkForSuperfluousAttributes(node, attributes);
-            }
-            catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException e) {
                 ErrorMsg err = new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, node);
                 reportError(ERROR, err);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 ErrorMsg err = new ErrorMsg(ErrorMsg.INTERNAL_ERR,
-                                            e.getMessage(), node);
+                        e.getMessage(), node);
                 reportError(FATAL, err);
             }
-        }
-        else {
+        } else {
             if (uri != null) {
                 // Check if the element belongs in our namespace
                 if (uri.equals(XSLT_URI)) {
                     node = new UnsupportedElement(uri, prefix, local, false);
-                    UnsupportedElement element = (UnsupportedElement)node;
+                    UnsupportedElement element = (UnsupportedElement) node;
                     ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_XSL_ERR,
-                                                getLineNumber(),local);
+                            getLineNumber(), local);
                     element.setErrorMessage(msg);
                     if (versionIsOne) {
-                        reportError(UNSUPPORTED,msg);
+                        reportError(UNSUPPORTED, msg);
                     }
                 }
                 // Check if this is an XSLTC extension element
                 else if (uri.equals(TRANSLET_URI)) {
                     node = new UnsupportedElement(uri, prefix, local, true);
-                    UnsupportedElement element = (UnsupportedElement)node;
+                    UnsupportedElement element = (UnsupportedElement) node;
                     ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_EXT_ERR,
-                                                getLineNumber(),local);
+                            getLineNumber(), local);
                     element.setErrorMessage(msg);
                 }
                 // Check if this is an extension of some other XSLT processor
                 else {
                     Stylesheet sheet = _xsltc.getStylesheet();
                     if ((sheet != null) && (sheet.isExtension(uri))) {
-                        if (sheet != (SyntaxTreeNode)_parentStack.peek()) {
+                        if (sheet != (SyntaxTreeNode) _parentStack.peek()) {
                             node = new UnsupportedElement(uri, prefix, local, true);
-                            UnsupportedElement elem = (UnsupportedElement)node;
+                            UnsupportedElement elem = (UnsupportedElement) node;
                             ErrorMsg msg =
-                                new ErrorMsg(ErrorMsg.UNSUPPORTED_EXT_ERR,
-                                             getLineNumber(),
-                                             prefix+":"+local);
+                                    new ErrorMsg(ErrorMsg.UNSUPPORTED_EXT_ERR,
+                                            getLineNumber(),
+                                            prefix + ":" + local);
                             elem.setErrorMessage(msg);
                         }
                     }
@@ -1038,9 +1017,9 @@ public class Parser implements Constants, ContentHandler {
             }
         }
         if ((node != null) && (node instanceof LiteralElement)) {
-            ((LiteralElement)node).setQName(qname);
+            ((LiteralElement) node).setQName(qname);
         }
-        return(node);
+        return (node);
     }
 
     /**
@@ -1048,8 +1027,7 @@ public class Parser implements Constants, ContentHandler {
      * for a particular element node.
      */
     private void checkForSuperfluousAttributes(SyntaxTreeNode node,
-        Attributes attrs)
-    {
+                                               Attributes attrs) {
         QName qname = node.getQName();
         boolean isStylesheet = (node instanceof Stylesheet);
         String[] legal = (String[]) _instructionAttrs.get(qname);
@@ -1066,7 +1044,7 @@ public class Parser implements Constants, ContentHandler {
 
                 // Ignore if special or if it has a prefix
                 if (attrQName.startsWith("xml") ||
-                    attrQName.indexOf(':') > 0) continue;
+                        attrQName.indexOf(':') > 0) continue;
 
                 for (j = 0; j < legal.length; j++) {
                     if (attrQName.equalsIgnoreCase(legal[j])) {
@@ -1075,8 +1053,8 @@ public class Parser implements Constants, ContentHandler {
                 }
                 if (j == legal.length) {
                     final ErrorMsg err =
-                        new ErrorMsg(ErrorMsg.ILLEGAL_ATTRIBUTE_ERR,
-                                attrQName, node);
+                            new ErrorMsg(ErrorMsg.ILLEGAL_ATTRIBUTE_ERR,
+                                    attrQName, node);
                     // Workaround for the TCK failure ErrorListener.errorTests.error001..
                     err.setWarningError(true);
                     reportError(WARNING, err);
@@ -1088,18 +1066,20 @@ public class Parser implements Constants, ContentHandler {
 
     /**
      * Parse an XPath expression:
-     *  @param parent - XSL element where the expression occured
-     *  @param exp    - textual representation of the expression
+     *
+     * @param parent - XSL element where the expression occured
+     * @param exp    - textual representation of the expression
      */
     public Expression parseExpression(SyntaxTreeNode parent, String exp) {
-        return (Expression)parseTopLevel(parent, "<EXPRESSION>"+exp, null);
+        return (Expression) parseTopLevel(parent, "<EXPRESSION>" + exp, null);
     }
 
     /**
      * Parse an XPath expression:
-     *  @param parent - XSL element where the expression occured
-     *  @param attr   - name of this element's attribute to get expression from
-     *  @param def    - default expression (if the attribute was not found)
+     *
+     * @param parent - XSL element where the expression occured
+     * @param attr   - name of this element's attribute to get expression from
+     * @param def    - default expression (if the attribute was not found)
      */
     public Expression parseExpression(SyntaxTreeNode parent,
                                       String attr, String def) {
@@ -1108,23 +1088,25 @@ public class Parser implements Constants, ContentHandler {
         // Use the default expression if none was found
         if ((exp.length() == 0) && (def != null)) exp = def;
         // Invoke the XPath parser
-        return (Expression)parseTopLevel(parent, "<EXPRESSION>"+exp, exp);
+        return (Expression) parseTopLevel(parent, "<EXPRESSION>" + exp, exp);
     }
 
     /**
      * Parse an XPath pattern:
-     *  @param parent  - XSL element where the pattern occured
-     *  @param pattern - textual representation of the pattern
+     *
+     * @param parent  - XSL element where the pattern occured
+     * @param pattern - textual representation of the pattern
      */
     public Pattern parsePattern(SyntaxTreeNode parent, String pattern) {
-        return (Pattern)parseTopLevel(parent, "<PATTERN>"+pattern, pattern);
+        return (Pattern) parseTopLevel(parent, "<PATTERN>" + pattern, pattern);
     }
 
     /**
      * Parse an XPath pattern:
-     *  @param parent - XSL element where the pattern occured
-     *  @param attr   - name of this element's attribute to get pattern from
-     *  @param def    - default pattern (if the attribute was not found)
+     *
+     * @param parent - XSL element where the pattern occured
+     * @param attr   - name of this element's attribute to get pattern from
+     * @param def    - default pattern (if the attribute was not found)
      */
     public Pattern parsePattern(SyntaxTreeNode parent,
                                 String attr, String def) {
@@ -1133,7 +1115,7 @@ public class Parser implements Constants, ContentHandler {
         // Use the default pattern if none was found
         if ((pattern.length() == 0) && (def != null)) pattern = def;
         // Invoke the XPath parser
-        return (Pattern)parseTopLevel(parent, "<PATTERN>"+pattern, pattern);
+        return (Pattern) parseTopLevel(parent, "<PATTERN>" + pattern, pattern);
     }
 
     /**
@@ -1148,7 +1130,7 @@ public class Parser implements Constants, ContentHandler {
             _xpathParser.setScanner(new XPathLexer(new StringReader(text)));
             Symbol result = _xpathParser.parse(expression, line);
             if (result != null) {
-                final SyntaxTreeNode node = (SyntaxTreeNode)result.value;
+                final SyntaxTreeNode node = (SyntaxTreeNode) result.value;
                 if (node != null) {
                     node.setParser(this);
                     node.setParent(parent);
@@ -1158,12 +1140,11 @@ public class Parser implements Constants, ContentHandler {
                 }
             }
             reportError(ERROR, new ErrorMsg(ErrorMsg.XPATH_PARSER_ERR,
-                                            expression, parent));
-        }
-        catch (Exception e) {
+                    expression, parent));
+        } catch (Exception e) {
             if (_xsltc.debug()) e.printStackTrace();
             reportError(ERROR, new ErrorMsg(ErrorMsg.XPATH_PARSER_ERR,
-                                            expression, parent));
+                    expression, parent));
         }
 
         // Return a dummy pattern (which is an expression)
@@ -1211,31 +1192,31 @@ public class Parser implements Constants, ContentHandler {
      */
     public void reportError(final int category, final ErrorMsg error) {
         switch (category) {
-        case Constants.INTERNAL:
-            // Unexpected internal errors, such as null-ptr exceptions, etc.
-            // Immediately terminates compilation, no translet produced
-            _errors.addElement(error);
-            break;
-        case Constants.UNSUPPORTED:
-            // XSLT elements that are not implemented and unsupported ext.
-            // Immediately terminates compilation, no translet produced
-            _errors.addElement(error);
-            break;
-        case Constants.FATAL:
-            // Fatal error in the stylesheet input (parsing or content)
-            // Immediately terminates compilation, no translet produced
-            _errors.addElement(error);
-            break;
-        case Constants.ERROR:
-            // Other error in the stylesheet input (parsing or content)
-            // Does not terminate compilation, no translet produced
-            _errors.addElement(error);
-            break;
-        case Constants.WARNING:
-            // Other error in the stylesheet input (content errors only)
-            // Does not terminate compilation, a translet is produced
-            _warnings.addElement(error);
-            break;
+            case Constants.INTERNAL:
+                // Unexpected internal errors, such as null-ptr exceptions, etc.
+                // Immediately terminates compilation, no translet produced
+                _errors.addElement(error);
+                break;
+            case Constants.UNSUPPORTED:
+                // XSLT elements that are not implemented and unsupported ext.
+                // Immediately terminates compilation, no translet produced
+                _errors.addElement(error);
+                break;
+            case Constants.FATAL:
+                // Fatal error in the stylesheet input (parsing or content)
+                // Immediately terminates compilation, no translet produced
+                _errors.addElement(error);
+                break;
+            case Constants.ERROR:
+                // Other error in the stylesheet input (parsing or content)
+                // Does not terminate compilation, no translet produced
+                _errors.addElement(error);
+                break;
+            case Constants.WARNING:
+                // Other error in the stylesheet input (content errors only)
+                // Does not terminate compilation, a translet is produced
+                _warnings.addElement(error);
+                break;
         }
     }
 
@@ -1265,12 +1246,13 @@ public class Parser implements Constants, ContentHandler {
     /**
      * SAX2: Receive notification of the end of a document.
      */
-    public void endDocument() { }
+    public void endDocument() {
+    }
 
 
     /**
      * SAX2: Begin the scope of a prefix-URI Namespace mapping.
-     *       This has to be passed on to the symbol table!
+     * This has to be passed on to the symbol table!
      */
     public void startPrefixMapping(String prefix, String uri) {
         if (_prefixMapping == null) {
@@ -1281,26 +1263,27 @@ public class Parser implements Constants, ContentHandler {
 
     /**
      * SAX2: End the scope of a prefix-URI Namespace mapping.
-     *       This has to be passed on to the symbol table!
+     * This has to be passed on to the symbol table!
      */
-    public void endPrefixMapping(String prefix) { }
+    public void endPrefixMapping(String prefix) {
+    }
 
     /**
      * SAX2: Receive notification of the beginning of an element.
-     *       The parser may re-use the attribute list that we're passed so
-     *       we clone the attributes in our own Attributes implementation
+     * The parser may re-use the attribute list that we're passed so
+     * we clone the attributes in our own Attributes implementation
      */
     public void startElement(String uri, String localname,
                              String qname, Attributes attributes)
-        throws SAXException {
+            throws SAXException {
         final int col = qname.lastIndexOf(':');
         final String prefix = (col == -1) ? null : qname.substring(0, col);
 
         SyntaxTreeNode element = makeInstance(uri, prefix,
-                                        localname, attributes);
+                localname, attributes);
         if (element == null) {
             ErrorMsg err = new ErrorMsg(ErrorMsg.ELEMENT_PARSE_ERR,
-                                        prefix+':'+localname);
+                    prefix + ':' + localname);
             throw new SAXException(err.toString());
         }
 
@@ -1308,14 +1291,13 @@ public class Parser implements Constants, ContentHandler {
         // that it contains a definition of the XSL namespace URI
         if (_root == null) {
             if ((_prefixMapping == null) ||
-                (_prefixMapping.containsValue(Constants.XSLT_URI) == false))
+                    (_prefixMapping.containsValue(Constants.XSLT_URI) == false))
                 _rootNamespaceDef = false;
             else
                 _rootNamespaceDef = true;
             _root = element;
-        }
-        else {
-            SyntaxTreeNode parent = (SyntaxTreeNode)_parentStack.peek();
+        } else {
+            SyntaxTreeNode parent = (SyntaxTreeNode) _parentStack.peek();
             parent.addElement(element);
             element.setParent(parent);
         }
@@ -1327,7 +1309,7 @@ public class Parser implements Constants, ContentHandler {
             // handled at this point in order to correctly generate
             // Fallback elements from <xsl:fallback>s.
             getSymbolTable().setCurrentNode(element);
-            ((Stylesheet)element).declareExtensionPrefixes(this);
+            ((Stylesheet) element).declareExtensionPrefixes(this);
         }
 
         _prefixMapping = null;
@@ -1346,14 +1328,14 @@ public class Parser implements Constants, ContentHandler {
      */
     public void characters(char[] ch, int start, int length) {
         String string = new String(ch, start, length);
-        SyntaxTreeNode parent = (SyntaxTreeNode)_parentStack.peek();
+        SyntaxTreeNode parent = (SyntaxTreeNode) _parentStack.peek();
 
         if (string.length() == 0) return;
 
         // If this text occurs within an <xsl:text> element we append it
         // as-is to the existing text element
         if (parent instanceof Text) {
-            ((Text)parent).setText(string);
+            ((Text) parent).setText(string);
             return;
         }
 
@@ -1362,9 +1344,9 @@ public class Parser implements Constants, ContentHandler {
 
         SyntaxTreeNode bro = parent.lastChild();
         if ((bro != null) && (bro instanceof Text)) {
-            Text text = (Text)bro;
+            Text text = (Text) bro;
             if (!text.isTextElement()) {
-                if ((length > 1) || ( ((int)ch[0]) < 0x100)) {
+                if ((length > 1) || (((int) ch[0]) < 0x100)) {
                     text.setText(string);
                     return;
                 }
@@ -1378,12 +1360,12 @@ public class Parser implements Constants, ContentHandler {
     private String getTokenValue(String token) {
         final int start = token.indexOf('"');
         final int stop = token.lastIndexOf('"');
-        return token.substring(start+1, stop);
+        return token.substring(start + 1, stop);
     }
 
     /**
      * SAX2: Receive notification of a processing instruction.
-     *       These require special handling for stylesheet PIs.
+     * These require special handling for stylesheet PIs.
      */
     public void processingInstruction(String name, String value) {
         // We only handle the <?xml-stylesheet ...?> PI
@@ -1397,7 +1379,7 @@ public class Parser implements Constants, ContentHandler {
             // Get the attributes from the processing instruction
             StringTokenizer tokens = new StringTokenizer(value);
             while (tokens.hasMoreElements()) {
-                String token = (String)tokens.nextElement();
+                String token = (String) tokens.nextElement();
                 if (token.startsWith("href"))
                     href = getTokenValue(token);
                 else if (token.startsWith("media"))
@@ -1410,9 +1392,9 @@ public class Parser implements Constants, ContentHandler {
 
             // Set the target to this PI's href if the parameters are
             // null or match the corresponding attributes of this PI.
-            if ( ((_PImedia == null) || (_PImedia.equals(media))) &&
-                 ((_PItitle == null) || (_PImedia.equals(title))) &&
-                 ((_PIcharset == null) || (_PImedia.equals(charset))) ) {
+            if (((_PImedia == null) || (_PImedia.equals(media))) &&
+                    ((_PItitle == null) || (_PImedia.equals(title))) &&
+                    ((_PIcharset == null) || (_PImedia.equals(charset)))) {
                 _target = href;
             }
         }
@@ -1421,12 +1403,14 @@ public class Parser implements Constants, ContentHandler {
     /**
      * IGNORED - all ignorable whitespace is ignored
      */
-    public void ignorableWhitespace(char[] ch, int start, int length) { }
+    public void ignorableWhitespace(char[] ch, int start, int length) {
+    }
 
     /**
      * IGNORED - we do not have to do anything with skipped entities
      */
-    public void skippedEntity(String name) { }
+    public void skippedEntity(String name) {
+    }
 
     /**
      * Store the document locator to later retrieve line numbers of all
@@ -1443,7 +1427,7 @@ public class Parser implements Constants, ContentHandler {
     private int getLineNumber() {
         int line = 0;
         if (_locator != null)
-                line = _locator.getLineNumber();
+            line = _locator.getLineNumber();
         return line;
     }
 

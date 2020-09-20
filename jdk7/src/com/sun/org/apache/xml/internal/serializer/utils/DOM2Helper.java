@@ -39,10 +39,10 @@ import org.xml.sax.InputSource;
 /**
  * This class provides a DOM level 2 "helper", which provides services currently
  * not provided be the DOM standard.
- *
+ * <p>
  * This class is a copy of the one in com.sun.org.apache.xml.internal.utils.
  * It exists to cut the serializers dependancy on that package.
- *
+ * <p>
  * The differences from the original class are:
  * it doesn't extend DOMHelper, not depricated,
  * dropped method isNodeAfter(Node node1, Node node2)
@@ -55,82 +55,76 @@ import org.xml.sax.InputSource;
  * dropped method getParentOfNode(Node node)
  * dropped field Document m_doc;
  * made class non-public
- *
+ * <p>
  * This class is not a public API, it is only public because it is
  * used in com.sun.org.apache.xml.internal.serializer.
  *
  * @xsl.usage internal
  */
-public final class DOM2Helper
-{
+public final class DOM2Helper {
 
-  /**
-   * Construct an instance.
-   */
-  public DOM2Helper(){}
+    /**
+     * Construct an instance.
+     */
+    public DOM2Helper() {
+    }
 
-  /**
-   * Returns the local name of the given node, as defined by the
-   * XML Namespaces specification. This is prepared to handle documents
-   * built using DOM Level 1 methods by falling back upon explicitly
-   * parsing the node name.
-   *
-   * @param n Node to be examined
-   *
-   * @return String containing the local name, or null if the node
-   * was not assigned a Namespace.
-   */
-  public String getLocalNameOfNode(Node n)
-  {
+    /**
+     * Returns the local name of the given node, as defined by the
+     * XML Namespaces specification. This is prepared to handle documents
+     * built using DOM Level 1 methods by falling back upon explicitly
+     * parsing the node name.
+     *
+     * @param n Node to be examined
+     * @return String containing the local name, or null if the node
+     * was not assigned a Namespace.
+     */
+    public String getLocalNameOfNode(Node n) {
 
-    String name = n.getLocalName();
+        String name = n.getLocalName();
 
-    return (null == name) ? getLocalNameOfNodeFallback(n) : name;
-  }
+        return (null == name) ? getLocalNameOfNodeFallback(n) : name;
+    }
 
-  /**
-   * Returns the local name of the given node. If the node's name begins
-   * with a namespace prefix, this is the part after the colon; otherwise
-   * it's the full node name.
-   *
-   * This method is copied from com.sun.org.apache.xml.internal.utils.DOMHelper
-   *
-   * @param n the node to be examined.
-   *
-   * @return String containing the Local Name
-   */
-  private String getLocalNameOfNodeFallback(Node n)
-  {
+    /**
+     * Returns the local name of the given node. If the node's name begins
+     * with a namespace prefix, this is the part after the colon; otherwise
+     * it's the full node name.
+     * <p>
+     * This method is copied from com.sun.org.apache.xml.internal.utils.DOMHelper
+     *
+     * @param n the node to be examined.
+     * @return String containing the Local Name
+     */
+    private String getLocalNameOfNodeFallback(Node n) {
 
-    String qname = n.getNodeName();
-    int index = qname.indexOf(':');
+        String qname = n.getNodeName();
+        int index = qname.indexOf(':');
 
-    return (index < 0) ? qname : qname.substring(index + 1);
-  }
+        return (index < 0) ? qname : qname.substring(index + 1);
+    }
 
-  /**
-   * Returns the Namespace Name (Namespace URI) for the given node.
-   * In a Level 2 DOM, you can ask the node itself. Note, however, that
-   * doing so conflicts with our decision in getLocalNameOfNode not
-   * to trust the that the DOM was indeed created using the Level 2
-   * methods. If Level 1 methods were used, these two functions will
-   * disagree with each other.
-   * <p>
-   * TODO: Reconcile with getLocalNameOfNode.
-   *
-   * @param n Node to be examined
-   *
-   * @return String containing the Namespace URI bound to this DOM node
-   * at the time the Node was created.
-   */
-  public String getNamespaceOfNode(Node n)
-  {
-    return n.getNamespaceURI();
-  }
+    /**
+     * Returns the Namespace Name (Namespace URI) for the given node.
+     * In a Level 2 DOM, you can ask the node itself. Note, however, that
+     * doing so conflicts with our decision in getLocalNameOfNode not
+     * to trust the that the DOM was indeed created using the Level 2
+     * methods. If Level 1 methods were used, these two functions will
+     * disagree with each other.
+     * <p>
+     * TODO: Reconcile with getLocalNameOfNode.
+     *
+     * @param n Node to be examined
+     * @return String containing the Namespace URI bound to this DOM node
+     * at the time the Node was created.
+     */
+    public String getNamespaceOfNode(Node n) {
+        return n.getNamespaceURI();
+    }
 
-  /** Field m_useDOM2getNamespaceURI is a compile-time flag which
-   *  gates some of the parser options used to build a DOM -- but
-   * that code is commented out at this time and nobody else
-   * references it, so I've commented this out as well. */
-  //private boolean m_useDOM2getNamespaceURI = false;
+    /** Field m_useDOM2getNamespaceURI is a compile-time flag which
+     *  gates some of the parser options used to build a DOM -- but
+     * that code is commented out at this time and nobody else
+     * references it, so I've commented this out as well. */
+    //private boolean m_useDOM2getNamespaceURI = false;
 }

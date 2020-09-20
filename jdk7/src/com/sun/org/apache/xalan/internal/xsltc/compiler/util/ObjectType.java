@@ -43,21 +43,21 @@ import com.sun.org.apache.xalan.internal.utils.ObjectFactory;
 public final class ObjectType extends Type {
 
     private String _javaClassName = "java.lang.Object";
-    private Class  _clazz = java.lang.Object.class;
+    private Class _clazz = java.lang.Object.class;
 
     /**
      * Used to represent a Java Class type such is required to support
      * non-static java functions.
+     *
      * @param javaClassName name of the class such as 'com.foo.Processor'
      */
     protected ObjectType(String javaClassName) {
         _javaClassName = javaClassName;
 
         try {
-          _clazz = ObjectFactory.findProviderClass(javaClassName, true);
-        }
-        catch (ClassNotFoundException e) {
-          _clazz = null;
+            _clazz = ObjectFactory.findProviderClass(javaClassName, true);
+        } catch (ClassNotFoundException e) {
+            _clazz = null;
         }
     }
 
@@ -109,16 +109,15 @@ public final class ObjectType extends Type {
      * This translation is needed when calling external functions
      * that return void.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             Type type) {
         if (type == Type.String) {
             translateTo(classGen, methodGen, (StringType) type);
-        }
-        else {
+        } else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                        toString(), type.toString());
+                    toString(), type.toString());
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }
@@ -127,7 +126,7 @@ public final class ObjectType extends Type {
      * Expects an integer on the stack and pushes its string value by calling
      * <code>Integer.toString(int i)</code>.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             StringType type) {
@@ -137,8 +136,8 @@ public final class ObjectType extends Type {
         il.append(DUP);
         final BranchHandle ifNull = il.append(new IFNULL(null));
         il.append(new INVOKEVIRTUAL(cpg.addMethodref(_javaClassName,
-                                                    "toString",
-                                                    "()" + STRING_SIG)));
+                "toString",
+                "()" + STRING_SIG)));
         final BranchHandle gotobh = il.append(new GOTO(null));
         ifNull.setTarget(il.append(POP));
         il.append(new PUSH(cpg, ""));
@@ -156,7 +155,7 @@ public final class ObjectType extends Type {
             methodGen.getInstructionList().append(NOP);
         else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                               toString(), clazz.getClass().toString());
+                    toString(), clazz.getClass().toString());
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }

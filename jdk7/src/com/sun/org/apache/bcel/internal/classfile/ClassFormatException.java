@@ -63,9 +63,14 @@ package com.sun.org.apache.bcel.internal.classfile;
  * that the file is malformed or otherwise cannot be interpreted as a
  * class file.
  *
- * @author  <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
+ * @author <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
  */
 public class ClassFormatException extends RuntimeException {
-  public ClassFormatException() { super(); }
-  public ClassFormatException(String s) { super(s); }
+    public ClassFormatException() {
+        super();
+    }
+
+    public ClassFormatException(String s) {
+        super(s);
+    }
 }

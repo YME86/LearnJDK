@@ -328,7 +328,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
     // If the user sets the fields using set(), the data flow is as follows.
     // This is implemented by the Calendar subclass's computeTime() method.
     // During this process, certain fields may be ignored.  The disambiguation
-    // algorithm for resolving which fields to pay attention to is described
+    // algorithm for resolving which fields to pay attentio n to is described
     // in the class documentation.
 
     //   local fields (YEAR, MONTH, DATE, HOUR, MINUTE, etc.)

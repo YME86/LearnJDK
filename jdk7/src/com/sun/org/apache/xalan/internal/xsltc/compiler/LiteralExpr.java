@@ -42,6 +42,7 @@ final class LiteralExpr extends Expression {
 
     /**
      * Creates a new literal expression node.
+     *
      * @param value the literal expression content/value.
      */
     public LiteralExpr(String value) {
@@ -51,7 +52,8 @@ final class LiteralExpr extends Expression {
 
     /**
      * Creates a new literal expression node.
-     * @param value the literal expression content/value.
+     *
+     * @param value     the literal expression content/value.
      * @param namespace the namespace in which the expression exists.
      */
     public LiteralExpr(String value, String namespace) {

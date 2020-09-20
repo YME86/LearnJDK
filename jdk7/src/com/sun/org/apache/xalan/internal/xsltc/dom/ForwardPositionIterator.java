@@ -32,13 +32,13 @@ import com.sun.org.apache.xml.internal.dtm.ref.DTMAxisIteratorBase;
  * a node in document order. It is needed for the case where
  * a call to position() occurs in the context of an XSLT element
  * such as xsl:for-each, xsl:apply-templates, etc.
- *
+ * <p>
  * The getPosition() methods in DTMAxisIterators defined
  * in DTMDefaultBaseIterators always return the position
  * in document order, which is backwards for XPath in the
  * case of the ancestor, ancestor-or-self, previous and
  * previous-sibling.
- *
+ * <p>
  * XSLTC implements position() with the
  * BasisLibrary.positionF() method, and uses the
  * DTMAxisIterator.isReverse() method to determine
@@ -47,20 +47,20 @@ import com.sun.org.apache.xml.internal.dtm.ref.DTMAxisIteratorBase;
  * But when the expression appears in apply-templates of
  * for-each, the position() function operates in document
  * order.
- *
+ * <p>
  * The only effect of the ForwardPositionIterator is to force
  * the result of isReverse() to false, so that
  * BasisLibrary.positionF() calculates position() in a way
  * that's consistent with the context in which the
  * iterator is being used."
- *
+ * <p>
  * (Apparently the correction of isReverse() occurs
  * implicitly, by inheritance. This class also appears
  * to maintain its own position counter, which seems
  * redundant.)
  *
  * @deprecated This class exists only for backwards compatibility with old
- *             translets.  New code should not reference it.
+ * translets.  New code should not reference it.
  */
 public final class ForwardPositionIterator extends DTMAxisIteratorBase {
 
@@ -73,14 +73,13 @@ public final class ForwardPositionIterator extends DTMAxisIteratorBase {
     public DTMAxisIterator cloneIterator() {
         try {
             final ForwardPositionIterator clone =
-                (ForwardPositionIterator) super.clone();
+                    (ForwardPositionIterator) super.clone();
             clone._source = _source.cloneIterator();
             clone._isRestartable = false;
             return clone.reset();
-        }
-        catch (CloneNotSupportedException e) {
+        } catch (CloneNotSupportedException e) {
             BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
-                                      e.toString());
+                    e.toString());
             return null;
         }
     }

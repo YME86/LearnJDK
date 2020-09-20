@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -42,6 +43,7 @@ import org.xml.sax.SAXException;
 
 import java.util.logging.Logger;
 import java.util.logging.Logger;
+
 import com.sun.org.apache.xml.internal.security.c14n.CanonicalizationException;
 import com.sun.org.apache.xml.internal.security.c14n.helper.C14nHelper;
 import com.sun.org.apache.xml.internal.security.signature.XMLSignatureInput;
@@ -69,12 +71,16 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
         int currentLevel = 0;
         int lastlevel = 0;
         XmlsStackElement cur;
+
         static class XmlsStackElement {
             int level;
             boolean rendered = false;
             List nodes = new ArrayList();
-        };
+        }
+
+        ;
         List levels = new ArrayList();
+
         void push(int level) {
             currentLevel = level;
             if (currentLevel == -1)
@@ -86,9 +92,10 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
                     lastlevel = 0;
                     return;
                 }
-                lastlevel=((XmlsStackElement)levels.get(levels.size()-1)).level;
+                lastlevel = ((XmlsStackElement) levels.get(levels.size() - 1)).level;
             }
         }
+
         void addXmlnsAttr(Attr n) {
             if (cur == null) {
                 cur = new XmlsStackElement();
@@ -98,6 +105,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
             }
             cur.nodes.add(n);
         }
+
         void getXmlnsAttr(Collection col) {
             if (cur == null) {
                 cur = new XmlsStackElement();
@@ -112,7 +120,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
                 parentRendered = true;
             } else {
                 e = (XmlsStackElement) levels.get(size);
-                if (e.rendered && e.level+1 == currentLevel)
+                if (e.rendered && e.level + 1 == currentLevel)
                     parentRendered = true;
             }
             if (parentRendered) {
@@ -124,7 +132,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
             Map loa = new HashMap();
             List baseAttrs = new ArrayList();
             boolean successiveOmitted = true;
-            for (;size>=0;size--) {
+            for (; size >= 0; size--) {
                 e = (XmlsStackElement) levels.get(size);
                 if (e.rendered) {
                     successiveOmitted = false;
@@ -175,7 +183,9 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
             cur.rendered = true;
             col.addAll(loa.values());
         }
-    };
+    }
+
+    ;
     XmlAttrStack xmlattrStack = new XmlAttrStack();
 
     /**
@@ -203,7 +213,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
      * @throws CanonicalizationException
      */
     Iterator handleAttributesSubtree(Element E, NameSpaceSymbTable ns)
-        throws CanonicalizationException {
+            throws CanonicalizationException {
         if (!E.hasAttributes() && !firstCall) {
             return null;
         }
@@ -227,7 +237,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
             String NName = N.getLocalName();
             String NValue = N.getValue();
             if (XML.equals(NName)
-                && XML_LANG_URI.equals(NValue)) {
+                    && XML_LANG_URI.equals(NValue)) {
                 // The default mapping for xml must not be output.
                 continue;
             }
@@ -240,7 +250,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
                 if (C14nHelper.namespaceIsRelative(N)) {
                     Object exArgs[] = {E.getTagName(), NName, N.getNodeValue()};
                     throw new CanonicalizationException(
-                        "c14n.Canonicalizer.RelativeNamespace", exArgs);
+                            "c14n.Canonicalizer.RelativeNamespace", exArgs);
                 }
             }
         }
@@ -264,7 +274,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
      * IMPORTANT: This method expects to work on a modified DOM tree, i.e. a
      * DOM which has been prepared using
      * {@link com.sun.org.apache.xml.internal.security.utils.XMLUtils#circumventBug2650(
-     * org.w3c.dom.Document)}.
+     *org.w3c.dom.Document)}.
      *
      * @param E
      * @param ns
@@ -272,7 +282,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
      * @throws CanonicalizationException
      */
     Iterator handleAttributes(Element E, NameSpaceSymbTable ns)
-        throws CanonicalizationException {
+            throws CanonicalizationException {
         // result will contain the attrs which have to be output
         xmlattrStack.push(ns.getLevel());
         boolean isRealVisible = isVisibleDO(E, ns.getLevel()) == 1;
@@ -314,7 +324,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
             String NName = N.getLocalName();
             String NValue = N.getValue();
             if ("xml".equals(NName)
-                && XML_LANG_URI.equals(NValue)) {
+                    && XML_LANG_URI.equals(NValue)) {
                 /* except omit namespace node with local name xml, which defines
                  * the xml prefix, if its string value is
                  * http://www.w3.org/XML/1998/namespace.
@@ -323,7 +333,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
             }
             // add the prefix binding to the ns symb table.
             // ns.addInclusiveMapping(NName,NValue,N,isRealVisible);
-            if (isVisible(N))  {
+            if (isVisible(N)) {
                 if (!isRealVisible && ns.removeMappingIfRender(NName)) {
                     continue;
                 }
@@ -335,9 +345,9 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
                     result.add(n);
                     if (C14nHelper.namespaceIsRelative(N)) {
                         Object exArgs[] =
-                            { E.getTagName(), NName, N.getNodeValue() };
+                                {E.getTagName(), NName, N.getNodeValue()};
                         throw new CanonicalizationException(
-                            "c14n.Canonicalizer.RelativeNamespace", exArgs);
+                                "c14n.Canonicalizer.RelativeNamespace", exArgs);
                     }
                 }
             } else {
@@ -383,9 +393,9 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
      * @throws CanonicalizationException always
      */
     public byte[] engineCanonicalizeXPathNodeSet(Set xpathNodeSet,
-        String inclusiveNamespaces) throws CanonicalizationException {
+                                                 String inclusiveNamespaces) throws CanonicalizationException {
         throw new CanonicalizationException(
-         "c14n.Canonicalizer.UnsupportedOperation");
+                "c14n.Canonicalizer.UnsupportedOperation");
     }
 
     /**
@@ -397,14 +407,14 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
      * @throws CanonicalizationException
      */
     public byte[] engineCanonicalizeSubTree(Node rootNode,
-        String inclusiveNamespaces) throws CanonicalizationException {
+                                            String inclusiveNamespaces) throws CanonicalizationException {
         throw new CanonicalizationException(
-            "c14n.Canonicalizer.UnsupportedOperation");
+                "c14n.Canonicalizer.UnsupportedOperation");
     }
 
     void circumventBugIfNeeded(XMLSignatureInput input)
-        throws CanonicalizationException, ParserConfigurationException,
-        IOException, SAXException {
+            throws CanonicalizationException, ParserConfigurationException,
+            IOException, SAXException {
         if (!input.isNeedsToBeExpanded())
             return;
         Document doc = null;
@@ -436,15 +446,15 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
             String NName = N.getLocalName();
             String NValue = N.getNodeValue();
             if (XML.equals(NName)
-                && Constants.XML_LANG_SPACE_SpecNS.equals(NValue)) {
+                    && Constants.XML_LANG_SPACE_SpecNS.equals(NValue)) {
                 continue;
             }
-            ns.addMapping(NName,NValue,N);
+            ns.addMapping(NName, NValue, N);
         }
     }
 
     private static String joinURI(String baseURI, String relativeURI)
-        throws URISyntaxException {
+            throws URISyntaxException {
         String bscheme = null;
         String bauthority = null;
         String bpath = "";
@@ -504,7 +514,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
                             if (last == -1) {
                                 tpath = rpath;
                             } else {
-                                tpath = bpath.substring(0, last+1) + rpath;
+                                tpath = bpath.substring(0, last + 1) + rpath;
                             }
                         }
                         tpath = removeDotSegments(tpath);
@@ -560,9 +570,9 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
                     output.append("../");
                 }
                 printStep("2A", output.toString(), input);
-            // 2B. if the input buffer begins with a prefix of "/./" or "/.",
-            // where "." is a complete path segment, then replace that prefix
-            // with "/" in the input buffer; otherwise,
+                // 2B. if the input buffer begins with a prefix of "/./" or "/.",
+                // where "." is a complete path segment, then replace that prefix
+                // with "/" in the input buffer; otherwise,
             } else if (input.startsWith("/./")) {
                 input = input.substring(2);
                 printStep("2B", output.toString(), input);
@@ -570,16 +580,16 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
                 // FIXME: what is complete path segment?
                 input = input.replaceFirst("/.", "/");
                 printStep("2B", output.toString(), input);
-            // 2C. if the input buffer begins with a prefix of "/../" or "/..",
-            // where ".." is a complete path segment, then replace that prefix
-            // with "/" in the input buffer and if also the output buffer is
-            // empty, last segment in the output buffer equals "../" or "..",
-            // where ".." is a complete path segment, then append ".." or "/.."
-            // for the latter case respectively to the output buffer else
-            // remove the last segment and its preceding "/" (if any) from the
-            // output buffer and if hereby the first character in the output
-            // buffer was removed and it was not the root slash then delete a
-            // leading slash from the input buffer; otherwise,
+                // 2C. if the input buffer begins with a prefix of "/../" or "/..",
+                // where ".." is a complete path segment, then replace that prefix
+                // with "/" in the input buffer and if also the output buffer is
+                // empty, last segment in the output buffer equals "../" or "..",
+                // where ".." is a complete path segment, then append ".." or "/.."
+                // for the latter case respectively to the output buffer else
+                // remove the last segment and its preceding "/" (if any) from the
+                // output buffer and if hereby the first character in the output
+                // buffer was removed and it was not the root slash then delete a
+                // leading slash from the input buffer; otherwise,
             } else if (input.startsWith("/../")) {
                 input = input.substring(3);
                 if (output.length() == 0) {
@@ -621,11 +631,11 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
                     }
                 }
                 printStep("2C", output.toString(), input);
-            // 2D. if the input buffer consists only of ".", then remove
-            // that from the input buffer else if the input buffer consists
-            // only of ".." and if the output buffer does not contain only
-            // the root slash "/", then move the ".." to the output buffer
-            // else delte it.; otherwise,
+                // 2D. if the input buffer consists only of ".", then remove
+                // that from the input buffer else if the input buffer consists
+                // only of ".." and if the output buffer does not contain only
+                // the root slash "/", then move the ".." to the output buffer
+                // else delte it.; otherwise,
             } else if (input.equals(".")) {
                 input = "";
                 printStep("2D", output.toString(), input);
@@ -634,10 +644,10 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
                     output.append("..");
                 input = "";
                 printStep("2D", output.toString(), input);
-            // 2E. move the first path segment (if any) in the input buffer
-            // to the end of the output buffer, including the initial "/"
-            // character (if any) and any subsequent characters up to, but not
-            // including, the next "/" character or the end of the input buffer.
+                // 2E. move the first path segment (if any) in the input buffer
+                // to the end of the output buffer, including the initial "/"
+                // character (if any) and any subsequent characters up to, but not
+                // including, the next "/" character or the end of the input buffer.
             } else {
                 int end = -1;
                 int begin = input.indexOf('/');

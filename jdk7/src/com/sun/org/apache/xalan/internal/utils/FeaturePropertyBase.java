@@ -29,7 +29,6 @@ import com.sun.org.apache.xalan.internal.XalanConstants;
 
 /**
  * This is the base class for features and properties
- *
  */
 public abstract class FeaturePropertyBase {
 
@@ -58,8 +57,8 @@ public abstract class FeaturePropertyBase {
      * Set the value for a specific property.
      *
      * @param property the property
-     * @param state the state of the property
-     * @param value the value of the property
+     * @param state    the state of the property
+     * @param value    the value of the property
      */
     public void setValue(Enum property, State state, String value) {
         //only update if it shall override
@@ -71,6 +70,7 @@ public abstract class FeaturePropertyBase {
 
     /**
      * Set the value of a property by its index
+     *
      * @param index the index of the property
      * @param state the state of the property
      * @param value the value of the property
@@ -83,30 +83,32 @@ public abstract class FeaturePropertyBase {
         }
     }
 
-     /**
+    /**
      * Set value by property name and state
+     *
      * @param propertyName property name
-     * @param state the state of the property
-     * @param value the value of the property
+     * @param state        the state of the property
+     * @param value        the value of the property
      * @return true if the property is managed by the security property manager;
-     *         false if otherwise.
+     * false if otherwise.
      */
     public boolean setValue(String propertyName, State state, Object value) {
         int index = getIndex(propertyName);
         if (index > -1) {
-            setValue(index, state, (String)value);
+            setValue(index, state, (String) value);
             return true;
         }
         return false;
     }
 
-     /**
+    /**
      * Set value by property name and state
+     *
      * @param propertyName property name
-     * @param state the state of the property
-     * @param value the value of the property
+     * @param state        the state of the property
+     * @param value        the value of the property
      * @return true if the property is managed by the security property manager;
-     *         false if otherwise.
+     * false if otherwise.
      */
     public boolean setValue(String propertyName, State state, boolean value) {
         int index = getIndex(propertyName);
@@ -163,6 +165,7 @@ public abstract class FeaturePropertyBase {
 
     /**
      * Return the value of a property by its ordinal
+     *
      * @param index the index of a property
      * @return value of a property
      */
@@ -172,6 +175,7 @@ public abstract class FeaturePropertyBase {
 
     /**
      * Get the index by property name
+     *
      * @param propertyName property name
      * @return the index of the property if found; return -1 if not
      */
@@ -185,13 +189,15 @@ public abstract class FeaturePropertyBase {
             }
         }
         return -1;
-    };
+    }
+
+    ;
 
 
     /**
      * Read from system properties, or those in jaxp.properties
      *
-     * @param property the property
+     * @param property       the property
      * @param systemProperty the name of the system property
      */
     void getSystemProperty(Enum property, String systemProperty) {

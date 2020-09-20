@@ -41,7 +41,7 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
 final class If extends Instruction {
 
     private Expression _test;
-    private boolean    _ignore = false;
+    private boolean _ignore = false;
 
     /**
      * Display the contents of this element

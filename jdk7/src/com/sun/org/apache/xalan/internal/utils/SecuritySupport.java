@@ -124,7 +124,7 @@ public final class SecuritySupport {
                 }
             });
         } catch (PrivilegedActionException e) {
-            throw (FileNotFoundException)e.getException();
+            throw (FileNotFoundException) e.getException();
         }
     }
 
@@ -133,7 +133,7 @@ public final class SecuritySupport {
      * default or bootclassloader when Security Manager is in place
      */
     public static InputStream getResourceAsStream(final String name) {
-        if (System.getSecurityManager()!=null) {
+        if (System.getSecurityManager() != null) {
             return getResourceAsStream(null, name);
         } else {
             return getResourceAsStream(ObjectFactory.findClassLoader(), name);
@@ -141,12 +141,12 @@ public final class SecuritySupport {
     }
 
     public static InputStream getResourceAsStream(final ClassLoader cl,
-            final String name) {
+                                                  final String name) {
         return (InputStream) AccessController.doPrivileged(new PrivilegedAction() {
             public Object run() {
                 InputStream ris;
                 if (cl == null) {
-                    ris = Object.class.getResourceAsStream("/"+name);
+                    ris = Object.class.getResourceAsStream("/" + name);
                 } else {
                     ris = cl.getResourceAsStream(name);
                 }
@@ -157,6 +157,7 @@ public final class SecuritySupport {
 
     /**
      * Gets a resource bundle using the specified base name, the default locale, and the caller's class loader.
+     *
      * @param bundle the base name of the resource bundle, a fully qualified class name
      * @return a resource bundle for the given base name and the default locale
      */
@@ -166,6 +167,7 @@ public final class SecuritySupport {
 
     /**
      * Gets a resource bundle using the specified base name and locale, and the caller's class loader.
+     *
      * @param bundle the base name of the resource bundle, a fully qualified class name
      * @param locale the locale for which a resource bundle is desired
      * @return a resource bundle for the given base name and locale
@@ -174,10 +176,10 @@ public final class SecuritySupport {
         return AccessController.doPrivileged(new PrivilegedAction<ListResourceBundle>() {
             public ListResourceBundle run() {
                 try {
-                    return (ListResourceBundle)ResourceBundle.getBundle(bundle, locale);
+                    return (ListResourceBundle) ResourceBundle.getBundle(bundle, locale);
                 } catch (MissingResourceException e) {
                     try {
-                        return (ListResourceBundle)ResourceBundle.getBundle(bundle, new Locale("en", "US"));
+                        return (ListResourceBundle) ResourceBundle.getBundle(bundle, new Locale("en", "US"));
                     } catch (MissingResourceException e2) {
                         throw new MissingResourceException(
                                 "Could not load any resource bundle by " + bundle, bundle, "");
@@ -189,18 +191,18 @@ public final class SecuritySupport {
 
     public static boolean getFileExists(final File f) {
         return ((Boolean) AccessController.doPrivileged(new PrivilegedAction() {
-                    public Object run() {
-                        return f.exists() ? Boolean.TRUE : Boolean.FALSE;
-                    }
-                })).booleanValue();
+            public Object run() {
+                return f.exists() ? Boolean.TRUE : Boolean.FALSE;
+            }
+        })).booleanValue();
     }
 
     static long getLastModified(final File f) {
         return ((Long) AccessController.doPrivileged(new PrivilegedAction() {
-                    public Object run() {
-                        return new Long(f.lastModified());
-                    }
-                })).longValue();
+            public Object run() {
+                return new Long(f.lastModified());
+            }
+        })).longValue();
     }
 
     /**
@@ -215,7 +217,7 @@ public final class SecuritySupport {
         }
         int i = uri.lastIndexOf("/");
         if (i > 0) {
-            return uri.substring(i+1, uri.length());
+            return uri.substring(i + 1, uri.length());
         }
         return "";
     }
@@ -223,9 +225,9 @@ public final class SecuritySupport {
     /**
      * Check the protocol used in the systemId against allowed protocols
      *
-     * @param systemId the Id of the URI
+     * @param systemId         the Id of the URI
      * @param allowedProtocols a list of allowed protocols separated by comma
-     * @param accessAny keyword to indicate allowing any protocol
+     * @param accessAny        keyword to indicate allowing any protocol
      * @return the name of the protocol if rejected, null otherwise
      */
     public static String checkAccess(String systemId, String allowedProtocols, String accessAny) throws IOException {
@@ -235,7 +237,7 @@ public final class SecuritySupport {
         }
 
         String protocol;
-        if (systemId.indexOf(":")==-1) {
+        if (systemId.indexOf(":") == -1) {
             protocol = "file";
         } else {
             URL url = new URL(systemId);
@@ -258,23 +260,23 @@ public final class SecuritySupport {
      * Check if the protocol is in the allowed list of protocols. The check
      * is case-insensitive while ignoring whitespaces.
      *
-     * @param protocol a protocol
+     * @param protocol         a protocol
      * @param allowedProtocols a list of allowed protocols
      * @return true if the protocol is in the list
      */
     private static boolean isProtocolAllowed(String protocol, String allowedProtocols) {
-         if (allowedProtocols == null) {
-             return false;
-         }
-         String temp[] = allowedProtocols.split(",");
-         for (String t : temp) {
-             t = t.trim();
-             if (t.equalsIgnoreCase(protocol)) {
-                 return true;
-             }
-         }
-         return false;
-     }
+        if (allowedProtocols == null) {
+            return false;
+        }
+        String temp[] = allowedProtocols.split(",");
+        for (String t : temp) {
+            t = t.trim();
+            if (t.equalsIgnoreCase(protocol)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Read JAXP system property in this order: system property,
@@ -306,7 +308,7 @@ public final class SecuritySupport {
                 synchronized (cacheProps) {
                     if (firstTime) {
                         String configFile = getSystemProperty("java.home") + File.separator +
-                            "lib" + File.separator + "jaxp.properties";
+                                "lib" + File.separator + "jaxp.properties";
                         File f = new File(configFile);
                         if (getFileExists(f)) {
                             is = getFileInputStream(f);
@@ -318,13 +320,13 @@ public final class SecuritySupport {
             }
             value = cacheProps.getProperty(propertyId);
 
-        }
-        catch (Exception ex) {}
-        finally {
+        } catch (Exception ex) {
+        } finally {
             if (is != null) {
                 try {
                     is.close();
-                } catch (IOException ex) {}
+                } catch (IOException ex) {
+                }
             }
         }
 
@@ -341,5 +343,6 @@ public final class SecuritySupport {
      */
     static volatile boolean firstTime = true;
 
-    private SecuritySupport () {}
+    private SecuritySupport() {
+    }
 }

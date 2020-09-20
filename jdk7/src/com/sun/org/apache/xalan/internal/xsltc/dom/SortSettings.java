@@ -68,14 +68,15 @@ final class SortSettings {
 
     /**
      * Create an instance of <code>SortSettings</code>.
-     * @param translet {@link com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet}
-     *                 object for the transformation
+     *
+     * @param translet   {@link com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet}
+     *                   object for the transformation
      * @param sortOrders an array specifying the sort order for each sort level
-     * @param types an array specifying the type of comparison for each sort
-     *              level (text or number)
-     * @param locales an array specifying the Locale for each sort level
-     * @param collators an array specifying the Collation in effect for each
-     *                  sort level
+     * @param types      an array specifying the type of comparison for each sort
+     *                   level (text or number)
+     * @param locales    an array specifying the Locale for each sort level
+     * @param collators  an array specifying the Collation in effect for each
+     *                   sort level
      * @param caseOrders an array specifying whether upper-case, lower-case
      *                   or neither is to take precedence for each sort level.
      *                   The value of each element is equal to one of
@@ -100,7 +101,7 @@ final class SortSettings {
 
     /**
      * @return An array containing the sort order (ascending or descending)
-     *         for each level of <code>xsl:sort</code>
+     * for each level of <code>xsl:sort</code>
      */
     int[] getSortOrders() {
         return _sortOrders;
@@ -108,7 +109,7 @@ final class SortSettings {
 
     /**
      * @return An array containing the type of comparison (text or number)
-     *         to perform for each level of <code>xsl:sort</code>
+     * to perform for each level of <code>xsl:sort</code>
      */
     int[] getTypes() {
         return _types;
@@ -116,7 +117,7 @@ final class SortSettings {
 
     /**
      * @return An array containing the Locale object in effect for each level
-     *         of <code>xsl:sort</code>
+     * of <code>xsl:sort</code>
      */
     Locale[] getLocales() {
         return _locales;
@@ -124,7 +125,7 @@ final class SortSettings {
 
     /**
      * @return An array containing the Collator object in effect for each level
-     *         of <code>xsl:sort</code>
+     * of <code>xsl:sort</code>
      */
     Collator[] getCollators() {
         return _collators;
@@ -132,7 +133,7 @@ final class SortSettings {
 
     /**
      * @return An array specifying the case ordering for each level of
-     *         <code>xsl:sort</code>.
+     * <code>xsl:sort</code>.
      */
     String[] getCaseOrders() {
         return _caseOrders;

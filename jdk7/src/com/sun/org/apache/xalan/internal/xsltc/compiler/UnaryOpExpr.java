@@ -46,14 +46,14 @@ final class UnaryOpExpr extends Expression {
      * needed for context changes in node steps containing multiple predicates.
      */
     public boolean hasPositionCall() {
-        return(_left.hasPositionCall());
+        return (_left.hasPositionCall());
     }
 
     /**
      * Returns true if this expressions contains a call to last()
      */
     public boolean hasLastCall() {
-            return(_left.hasLastCall());
+        return (_left.hasLastCall());
     }
 
     public void setParser(Parser parser) {
@@ -64,8 +64,8 @@ final class UnaryOpExpr extends Expression {
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
         final Type tleft = _left.typeCheck(stable);
         final MethodType ptype = lookupPrimop(stable, "u-",
-                                              new MethodType(Type.Void,
-                                                             tleft));
+                new MethodType(Type.Void,
+                        tleft));
 
         if (ptype != null) {
             final Type arg1 = (Type) ptype.argsType().elementAt(0);

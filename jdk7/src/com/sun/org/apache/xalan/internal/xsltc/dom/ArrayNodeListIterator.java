@@ -25,7 +25,7 @@ package com.sun.org.apache.xalan.internal.xsltc.dom;
 
 import com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;
 
-public class ArrayNodeListIterator implements DTMAxisIterator  {
+public class ArrayNodeListIterator implements DTMAxisIterator {
 
     private int _pos = 0;
 
@@ -33,7 +33,7 @@ public class ArrayNodeListIterator implements DTMAxisIterator  {
 
     private int _nodes[];
 
-    private static final int[] EMPTY = { };
+    private static final int[] EMPTY = {};
 
     public ArrayNodeListIterator(int[] nodes) {
         _nodes = nodes;

@@ -71,19 +71,17 @@ public abstract class LocationPathPattern extends Pattern {
      * This method is used by the Mode class to prioritise patterns and
      * template. This method is called for templates that are in the same
      * mode and that match on the same core pattern. The rules used are:
-     *  o) first check precedence - highest precedence wins
-     *  o) then check priority - highest priority wins
-     *  o) then check the position - the template that occured last wins
+     * o) first check precedence - highest precedence wins
+     * o) then check priority - highest priority wins
+     * o) then check the position - the template that occured last wins
      */
     public boolean noSmallerThan(LocationPathPattern other) {
         if (_importPrecedence > other._importPrecedence) {
             return true;
-        }
-        else if (_importPrecedence == other._importPrecedence) {
+        } else if (_importPrecedence == other._importPrecedence) {
             if (_priority > other._priority) {
                 return true;
-            }
-            else if (_priority == other._priority) {
+            } else if (_priority == other._priority) {
                 if (_position > other._position) {
                     return true;
                 }

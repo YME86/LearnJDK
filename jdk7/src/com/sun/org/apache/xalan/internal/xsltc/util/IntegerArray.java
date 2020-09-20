@@ -30,8 +30,8 @@ public final class IntegerArray {
     private static final int InitialSize = 32;
 
     private int[] _array;
-    private int   _size;
-    private int   _free = 0;
+    private int _size;
+    private int _free = 0;
 
     public IntegerArray() {
         this(InitialSize);
@@ -124,14 +124,13 @@ public final class IntegerArray {
             if (x < y) {
                 newArray[k] = x;
                 i++;
-            }
-            else if (x > y) {
+            } else if (x > y) {
                 newArray[k] = y;
                 j++;
-            }
-            else {
+            } else {
                 newArray[k] = x;
-                i++; j++;
+                i++;
+                j++;
             }
         }
 
@@ -140,8 +139,7 @@ public final class IntegerArray {
             while (j < other._free) {
                 newArray[k++] = other._array[j++];
             }
-        }
-        else {
+        } else {
             while (i < _free) {
                 newArray[k++] = _array[i++];
             }
@@ -167,17 +165,17 @@ public final class IntegerArray {
 
     private static int partition(int[] array, int p, int r) {
         final int x = array[(p + r) >>> 1];
-        int i = p - 1; int j = r + 1;
+        int i = p - 1;
+        int j = r + 1;
 
         while (true) {
-            while (x < array[--j]);
-            while (x > array[++i]);
+            while (x < array[--j]) ;
+            while (x > array[++i]) ;
             if (i < j) {
                 int temp = array[i];
                 array[i] = array[j];
                 array[j] = temp;
-            }
-            else {
+            } else {
                 return j;
             }
         }
@@ -220,8 +218,7 @@ public final class IntegerArray {
                 out.print(' ');
             }
             out.println(_array[_free - 1]);
-        }
-        else {
+        } else {
             out.println("IntegerArray: empty");
         }
     }

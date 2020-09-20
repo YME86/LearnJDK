@@ -23,6 +23,7 @@
  *
  */
 package com.sun.jmx.snmp;
+
 /**
  * Represents a <CODE>get-bulk</CODE> PDU as defined in RFC 1448.
  * <P>
@@ -32,25 +33,28 @@ package com.sun.jmx.snmp;
  *
  * <p><b>This API is a Sun Microsystems internal API  and is subject
  * to change without notice.</b></p>
+ *
  * @since 1.5
  */
 
 public class SnmpScopedPduBulk extends SnmpScopedPduPacket
-    implements SnmpPduBulkType {
+        implements SnmpPduBulkType {
     private static final long serialVersionUID = -1648623646227038885L;
 
     /**
      * The <CODE>non-repeaters</CODE> value.
+     *
      * @serial
      */
-    int            nonRepeaters;
+    int nonRepeaters;
 
 
     /**
      * The <CODE>max-repetitions</CODE> value.
+     *
      * @serial
      */
-    int            maxRepetitions;
+    int maxRepetitions;
 
     public SnmpScopedPduBulk() {
         type = pduGetBulkRequestPdu;
@@ -59,6 +63,7 @@ public class SnmpScopedPduBulk extends SnmpScopedPduPacket
 
     /**
      * The <CODE>max-repetitions</CODE> setter.
+     *
      * @param max Maximum repetition.
      */
     public void setMaxRepetitions(int max) {
@@ -67,6 +72,7 @@ public class SnmpScopedPduBulk extends SnmpScopedPduPacket
 
     /**
      * The <CODE>non-repeaters</CODE> setter.
+     *
      * @param nr Non repeaters.
      */
     public void setNonRepeaters(int nr) {
@@ -75,25 +81,32 @@ public class SnmpScopedPduBulk extends SnmpScopedPduPacket
 
     /**
      * The <CODE>max-repetitions</CODE> getter.
+     *
      * @return Maximum repetition.
      */
-    public int getMaxRepetitions() { return maxRepetitions; }
+    public int getMaxRepetitions() {
+        return maxRepetitions;
+    }
 
     /**
      * The <CODE>non-repeaters</CODE> getter.
+     *
      * @return Non repeaters.
      */
-    public int getNonRepeaters() { return nonRepeaters; }
+    public int getNonRepeaters() {
+        return nonRepeaters;
+    }
 
     /**
      * Generates the pdu to use for response.
+     *
      * @return Response pdu.
      */
     public SnmpPdu getResponsePdu() {
         SnmpScopedPduRequest result = new SnmpScopedPduRequest();
-        result.address = address ;
-        result.port = port ;
-        result.version = version ;
+        result.address = address;
+        result.port = port;
+        result.version = version;
         result.requestId = requestId;
         result.msgId = msgId;
         result.msgMaxSize = msgMaxSize;
@@ -102,9 +115,9 @@ public class SnmpScopedPduBulk extends SnmpScopedPduPacket
         result.contextEngineId = contextEngineId;
         result.contextName = contextName;
         result.securityParameters = securityParameters;
-        result.type = pduGetResponsePdu ;
-        result.errorStatus = SnmpDefinitions.snmpRspNoError ;
-        result.errorIndex = 0 ;
+        result.type = pduGetResponsePdu;
+        result.errorStatus = SnmpDefinitions.snmpRspNoError;
+        result.errorIndex = 0;
         return result;
     }
 }

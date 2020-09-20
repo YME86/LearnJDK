@@ -27,6 +27,7 @@ package com.sun.jmx.mbeanserver;
 
 
 import static com.sun.jmx.defaults.JmxProperties.MBEANSERVER_LOGGER;
+
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +39,7 @@ import javax.management.MBeanPermission;
 
 import javax.management.ObjectName;
 import javax.management.loading.PrivateClassLoader;
+
 import sun.reflect.misc.ReflectUtil;
 
 /**
@@ -48,7 +50,7 @@ import sun.reflect.misc.ReflectUtil;
  * @since 1.5
  */
 final class ClassLoaderRepositorySupport
-    implements ModifiableClassLoaderRepository {
+        implements ModifiableClassLoaderRepository {
 
     /* We associate an optional ObjectName with each entry so that
        we can remove the correct entry when unregistering an MBean
@@ -60,7 +62,7 @@ final class ClassLoaderRepositorySupport
         ObjectName name; // can be null
         ClassLoader loader;
 
-        LoaderEntry(ObjectName name,  ClassLoader loader) {
+        LoaderEntry(ObjectName name, ClassLoader loader) {
             this.name = name;
             this.loader = loader;
         }
@@ -71,7 +73,7 @@ final class ClassLoaderRepositorySupport
     /**
      * List of class loaders
      * Only read-only actions should be performed on this object.
-     *
+     * <p>
      * We do O(n) operations on this array, e.g. when removing
      * a ClassLoader.  The assumption is that the number of elements
      * is small, probably less than ten, and that the vast majority
@@ -87,7 +89,7 @@ final class ClassLoaderRepositorySupport
      **/
     private synchronized boolean add(ObjectName name, ClassLoader cl) {
         List<LoaderEntry> l =
-            new ArrayList<LoaderEntry>(Arrays.asList(loaders));
+                new ArrayList<LoaderEntry>(Arrays.asList(loaders));
         l.add(new LoaderEntry(name, cl));
         loaders = l.toArray(EMPTY_LOADER_ARRAY);
         return true;
@@ -97,7 +99,7 @@ final class ClassLoaderRepositorySupport
      * Same behavior as remove(Object o) in {@link java.util.List}.
      * Replace the loader list with a new one in which the old loader
      * has been removed.
-     *
+     * <p>
      * The ObjectName may be null, in which case the entry to
      * be removed must also have a null ObjectName and the ClassLoader
      * values must match.  If the ObjectName is not null, then
@@ -110,14 +112,14 @@ final class ClassLoaderRepositorySupport
         for (int i = 0; i < size; i++) {
             LoaderEntry entry = loaders[i];
             boolean match =
-                (name == null) ?
-                cl == entry.loader :
-                name.equals(entry.name);
+                    (name == null) ?
+                            cl == entry.loader :
+                            name.equals(entry.name);
             if (match) {
                 LoaderEntry[] newloaders = new LoaderEntry[size - 1];
                 System.arraycopy(loaders, 0, newloaders, 0, i);
                 System.arraycopy(loaders, i + 1, newloaders, i,
-                                 size - 1 - i);
+                        size - 1 - i);
                 loaders = newloaders;
                 return true;
             }
@@ -129,19 +131,19 @@ final class ClassLoaderRepositorySupport
     /**
      * List of valid search
      */
-    private final Map<String,List<ClassLoader>> search =
-        new Hashtable<String,List<ClassLoader>>(10);
+    private final Map<String, List<ClassLoader>> search =
+            new Hashtable<String, List<ClassLoader>>(10);
 
     /**
      * List of named class loaders.
      */
-    private final Map<ObjectName,ClassLoader> loadersWithNames =
-        new Hashtable<ObjectName,ClassLoader>(10);
+    private final Map<ObjectName, ClassLoader> loadersWithNames =
+            new Hashtable<ObjectName, ClassLoader>(10);
 
     // from javax.management.loading.DefaultLoaderRepository
     public final Class<?> loadClass(String className)
-        throws ClassNotFoundException {
-        return  loadClass(loaders, className, null, null);
+            throws ClassNotFoundException {
+        return loadClass(loaders, className, null, null);
     }
 
 
@@ -197,7 +199,7 @@ final class ClassLoaderRepositorySupport
             throws ClassNotFoundException {
         ReflectUtil.checkPackageAccess(className);
         final int size = list.length;
-        for(int i=0; i<size; i++) {
+        for (int i = 0; i < size; i++) {
             try {
                 final ClassLoader cl = list[i].loader;
                 if (cl == null) // bootstrap class loader
@@ -234,16 +236,16 @@ final class ClassLoaderRepositorySupport
 
     private synchronized void startValidSearch(ClassLoader aloader,
                                                String className)
-        throws ClassNotFoundException {
+            throws ClassNotFoundException {
         // Check if we have such a current search
         //
         List<ClassLoader> excluded = search.get(className);
-        if ((excluded!= null) && (excluded.contains(aloader))) {
+        if ((excluded != null) && (excluded.contains(aloader))) {
             if (MBEANSERVER_LOGGER.isLoggable(Level.FINER)) {
                 MBEANSERVER_LOGGER.logp(Level.FINER,
                         ClassLoaderRepositorySupport.class.getName(),
                         "startValidSearch", "Already requested loader = " +
-                        aloader + " class = " + className);
+                                aloader + " class = " + className);
             }
             throw new ClassNotFoundException(className);
         }
@@ -308,9 +310,9 @@ final class ClassLoaderRepositorySupport
             if (sm != null) {
                 Permission perm =
                         new MBeanPermission(instance.getClass().getName(),
-                        null,
-                        name,
-                        "getClassLoader");
+                                null,
+                                name,
+                                "getClassLoader");
                 sm.checkPermission(perm);
             }
         }

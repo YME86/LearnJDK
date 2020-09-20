@@ -32,11 +32,11 @@ public class ClassLoaderWithRepository extends ClassLoader {
                                      ClassLoader cl2) {
 
         if (clr == null) throw new
-            IllegalArgumentException("Null ClassLoaderRepository object.");
+                IllegalArgumentException("Null ClassLoaderRepository object.");
 
         repository = clr;
         this.cl2 = cl2;
-   }
+    }
 
     protected Class<?> findClass(String name) throws ClassNotFoundException {
         try {

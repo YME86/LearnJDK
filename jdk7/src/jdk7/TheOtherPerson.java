@@ -1,6 +1,5 @@
 package jdk7;
 
-
 import java.util.Objects;
 
 /**

@@ -20,23 +20,23 @@ public interface TraceDestination {
      * selected by a listener.
      *
      * <P>It is strongly recommended to call this method before sending
-     *    information to this Trace class.
+     * information to this Trace class.
      *
      * @param level the level of trace information.
-     * @param type the type of the trace information.
+     * @param type  the type of the trace information.
      */
     public boolean isSelected(int level, int type);
 
     /**
      * Send a new information to this Trace destination
      *
-     * @param level the level of trace information to be sent.
-     * @param type the type of trace information to be sent.
+     * @param level      the level of trace information to be sent.
+     * @param type       the type of trace information to be sent.
      * @param className  the name of the class from which the trace
      *                   information is from.
      * @param methodName the name of the method from which the trace
      *                   information is from.
-     * @param info the trace information to be sent.
+     * @param info       the trace information to be sent.
      * @return false if the level and the type are not selected.
      */
     public boolean send(int level,
@@ -45,16 +45,16 @@ public interface TraceDestination {
                         String methodName,
                         String info);
 
-   /**
+    /**
      * Send an exception to this Trace class.
      *
-     * @param level the level of trace information to be sent.
-     * @param type the type of trace information to be sent.
-     * @param className the name of the class from which the trace
-     *        information is from.
+     * @param level      the level of trace information to be sent.
+     * @param type       the type of trace information to be sent.
+     * @param className  the name of the class from which the trace
+     *                   information is from.
      * @param methodName the name of the method from which the trace
-     *        information is from.
-     * @param exception exception sent as the trace information.
+     *                   information is from.
+     * @param exception  exception sent as the trace information.
      */
     public boolean send(int level,
                         int type,

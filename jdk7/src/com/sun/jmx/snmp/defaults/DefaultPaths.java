@@ -28,6 +28,7 @@ package com.sun.jmx.snmp.defaults;
 
 // java import
 //
+
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -39,10 +40,12 @@ import java.util.StringTokenizer;
  *
  * <p><b>This API is a Sun Microsystems internal API  and is subject
  * to change without notice.</b></p>
+ *
  * @since 1.5
  */
 public class DefaultPaths {
     private static final String INSTALL_PATH_RESOURCE_NAME = "com/sun/jdmk/defaults/install.path";
+
     // private constructor defined to "hide" the default public constructor
     private DefaultPaths() {
 
@@ -53,7 +56,7 @@ public class DefaultPaths {
 
     /**
      * Returns the installation directory for Java DMK.
-     *
+     * <p>
      * The default value of the installation directory is:
      * <CODE>&lt;base_dir&gt; + File.separator + SUNWjdmk + File.separator + jdmk5.0 </CODE>
      *
@@ -68,12 +71,11 @@ public class DefaultPaths {
 
     /**
      * Returns the installation directory for Java DMK concatenated with dirname.
-     *
+     * <p>
      * The default value of the installation directory is:
      * <CODE>&lt;base_dir&gt; + File.separator + SUNWjdmk + File.separator + jdmk5.0 </CODE>
      *
      * @param dirname The directory to be appended.
-     *
      * @return Java DMK installation directory + <CODE>File.separator</CODE> + <CODE>dirname</CODE>.
      */
     public static String getInstallDir(String dirname) {
@@ -103,7 +105,7 @@ public class DefaultPaths {
 
     /**
      * Returns the <CODE>etc</CODE> directory for Java DMK.
-     * <P>
+     * <p>
      * The default value of the <CODE>etc</CODE> directory is:
      * <UL>
      * <LI><CODE>DefaultPaths.getInstallDir("etc")</CODE>.
@@ -120,14 +122,13 @@ public class DefaultPaths {
 
     /**
      * Returns the <CODE>etc</CODE> directory for Java DMK concatenated with dirname.
-     * <P>
+     * <p>
      * The default value of the <CODE>etc</CODE> directory is:
      * <UL>
      * <LI><CODE>DefaultPaths.getInstallDir("etc")</CODE>.
      * </UL>
      *
      * @param dirname The directory to be appended.
-     *
      * @return Java DMK <CODE>etc</CODE> directory + <CODE>File.separator</CODE> + <CODE>dirname</CODE>.
      */
     public static String getEtcDir(String dirname) {
@@ -157,7 +158,7 @@ public class DefaultPaths {
 
     /**
      * Returns the <CODE>tmp</CODE> directory for the product.
-     * <P>
+     * <p>
      * The default value of the <CODE>tmp</CODE> directory is:
      * <UL>
      * <LI><CODE>DefaultPaths.getInstallDir("tmp")</CODE>.
@@ -166,7 +167,7 @@ public class DefaultPaths {
      * @return Java DMK <CODE>tmp</CODE> directory.
      */
     public static String getTmpDir() {
-         if (tmpDir == null)
+        if (tmpDir == null)
             return getInstallDir("tmp");
         else
             return tmpDir;
@@ -174,14 +175,13 @@ public class DefaultPaths {
 
     /**
      * Returns the <CODE>tmp</CODE> directory for Java DMK concatenated with dirname.
-     * <P>
+     * <p>
      * The default value of the <CODE>tmp</CODE> directory is:
      * <UL>
      * <LI><CODE>DefaultPaths.getInstallDir("tmp")</CODE>.
      * </UL>
      *
      * @param dirname The directory to be appended.
-     *
      * @return Java DMK <CODE>tmp</CODE> directory + <CODE>File.separator</CODE> + <CODE>dirname</CODE>.
      */
     public static String getTmpDir(String dirname) {
@@ -218,17 +218,17 @@ public class DefaultPaths {
         BufferedReader r = null;
         try {
             in =
-                DefaultPaths.class.getClassLoader().getResourceAsStream(INSTALL_PATH_RESOURCE_NAME);
-            if(in == null) return null;
+                    DefaultPaths.class.getClassLoader().getResourceAsStream(INSTALL_PATH_RESOURCE_NAME);
+            if (in == null) return null;
             r = new BufferedReader(new InputStreamReader(in));
             installDir = r.readLine();
-        }catch(Exception e) {
-        }
-        finally {
+        } catch (Exception e) {
+        } finally {
             try {
-                if(in != null) in.close();
-                if(r != null) r.close();
-            }catch(Exception e) {}
+                if (in != null) in.close();
+                if (r != null) r.close();
+            } catch (Exception e) {
+            }
         }
         return installDir;
     }

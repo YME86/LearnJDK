@@ -26,8 +26,10 @@
 package com.sun.jmx.mbeanserver;
 
 import javax.management.openmbean.*;
+
 import com.sun.jmx.mbeanserver.MXBeanMapping;
 import com.sun.jmx.mbeanserver.DefaultMXBeanMappingFactory;
+
 import java.lang.reflect.Type;
 
 /**
@@ -92,7 +94,8 @@ public abstract class MXBeanMappingFactory {
     /**
      * <p>Construct an instance of this class.</p>
      */
-    protected MXBeanMappingFactory() {}
+    protected MXBeanMappingFactory() {
+    }
 
     /**
      * <p>Mapping factory that applies the default rules for MXBean
@@ -107,18 +110,19 @@ public abstract class MXBeanMappingFactory {
      * mapping factory will return mappings for types it handles, and
      * forward other types to another mapping factory, most often
      * the {@linkplain #DEFAULT default one}.</p>
+     *
      * @param t the Java type to be mapped.
      * @param f the original mapping factory that was consulted to do
-     * the mapping.  A mapping factory should pass this parameter intact
-     * if it forwards a type to another mapping factory.  In the example,
-     * this is how {@code MyLinkedListMappingFactory} works for types
-     * like {@code MyLinkedList[]} and {@code List<MyLinkedList>}.
+     *          the mapping.  A mapping factory should pass this parameter intact
+     *          if it forwards a type to another mapping factory.  In the example,
+     *          this is how {@code MyLinkedListMappingFactory} works for types
+     *          like {@code MyLinkedList[]} and {@code List<MyLinkedList>}.
      * @return the mapping for the given type.
      * @throws OpenDataException if this type cannot be mapped.  This
-     * exception is appropriate if the factory is supposed to handle
-     * all types of this sort (for example, all linked lists), but
-     * cannot handle this particular type.
+     *                           exception is appropriate if the factory is supposed to handle
+     *                           all types of this sort (for example, all linked lists), but
+     *                           cannot handle this particular type.
      */
     public abstract MXBeanMapping mappingForType(Type t, MXBeanMappingFactory f)
-    throws OpenDataException;
+            throws OpenDataException;
 }

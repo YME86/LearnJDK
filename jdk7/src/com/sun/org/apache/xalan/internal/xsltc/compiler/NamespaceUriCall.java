@@ -61,8 +61,8 @@ final class NamespaceUriCall extends NameBase {
 
         // Returns the string value for a node in the DOM
         final int getNamespace = cpg.addInterfaceMethodref(DOM_INTF,
-                                                           "getNamespaceName",
-                                                           "(I)"+STRING_SIG);
+                "getNamespaceName",
+                "(I)" + STRING_SIG);
         super.translate(classGen, methodGen);
         il.append(new INVOKEINTERFACE(getNamespace, 2));
     }

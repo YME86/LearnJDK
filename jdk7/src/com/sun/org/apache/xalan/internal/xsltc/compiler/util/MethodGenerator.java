@@ -26,7 +26,7 @@ package com.sun.org.apache.xalan.internal.xsltc.compiler.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
- import java.util.Hashtable;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
@@ -80,19 +80,19 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.XSLTC;
  * @author Santiago Pericas-Geertsen
  */
 public class MethodGenerator extends MethodGen
-    implements com.sun.org.apache.xalan.internal.xsltc.compiler.Constants {
-    protected static final int INVALID_INDEX   = -1;
+        implements com.sun.org.apache.xalan.internal.xsltc.compiler.Constants {
+    protected static final int INVALID_INDEX = -1;
 
     private static final String START_ELEMENT_SIG
-        = "(" + STRING_SIG + ")V";
+            = "(" + STRING_SIG + ")V";
     private static final String END_ELEMENT_SIG
-        = START_ELEMENT_SIG;
+            = START_ELEMENT_SIG;
 
     private InstructionList _mapTypeSub;
 
-    private static final int DOM_INDEX       = 1;
-    private static final int ITERATOR_INDEX  = 2;
-    private static final int HANDLER_INDEX   = 3;
+    private static final int DOM_INDEX = 1;
+    private static final int ITERATOR_INDEX = 2;
+    private static final int HANDLER_INDEX = 3;
 
     private static final int MAX_METHOD_SIZE = 65535;
     private static final int MAX_BRANCH_TARGET_OFFSET = 32767;
@@ -101,8 +101,8 @@ public class MethodGenerator extends MethodGen
     private static final int TARGET_METHOD_SIZE = 60000;
     private static final int MINIMUM_OUTLINEABLE_CHUNK_SIZE = 1000;
 
-    private Instruction       _iloadCurrent;
-    private Instruction       _istoreCurrent;
+    private Instruction _iloadCurrent;
+    private Instruction _istoreCurrent;
     private final Instruction _astoreHandler;
     private final Instruction _aloadHandler;
     private final Instruction _astoreIterator;
@@ -125,13 +125,13 @@ public class MethodGenerator extends MethodGen
     private SlotAllocator _slotAllocator;
     private boolean _allocatorInit = false;
     private LocalVariableRegistry _localVariableRegistry;
-        /**
-                 * A mapping between patterns and instruction lists used by
-                 * test sequences to avoid compiling the same pattern multiple
-                 * times. Note that patterns whose kernels are "*", "node()"
-                 * and "@*" can between shared by test sequences.
-                 */
-        private Hashtable _preCompiled = new Hashtable();
+    /**
+     * A mapping between patterns and instruction lists used by
+     * test sequences to avoid compiling the same pattern multiple
+     * times. Note that patterns whose kernels are "*", "node()"
+     * and "@*" can between shared by test sequences.
+     */
+    private Hashtable _preCompiled = new Hashtable();
 
 
     public MethodGenerator(int access_flags, Type return_type,
@@ -139,72 +139,72 @@ public class MethodGenerator extends MethodGen
                            String method_name, String class_name,
                            InstructionList il, ConstantPoolGen cpg) {
         super(access_flags, return_type, arg_types, arg_names, method_name,
-              class_name, il, cpg);
+                class_name, il, cpg);
 
-        _astoreHandler  = new ASTORE(HANDLER_INDEX);
-        _aloadHandler   = new ALOAD(HANDLER_INDEX);
+        _astoreHandler = new ASTORE(HANDLER_INDEX);
+        _aloadHandler = new ALOAD(HANDLER_INDEX);
         _astoreIterator = new ASTORE(ITERATOR_INDEX);
-        _aloadIterator  = new ALOAD(ITERATOR_INDEX);
-        _aloadDom       = new ALOAD(DOM_INDEX);
-        _astoreDom      = new ASTORE(DOM_INDEX);
+        _aloadIterator = new ALOAD(ITERATOR_INDEX);
+        _aloadDom = new ALOAD(DOM_INDEX);
+        _astoreDom = new ASTORE(DOM_INDEX);
 
         final int startElement =
-            cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
-                                      "startElement",
-                                      START_ELEMENT_SIG);
+                cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
+                        "startElement",
+                        START_ELEMENT_SIG);
         _startElement = new INVOKEINTERFACE(startElement, 2);
 
         final int endElement =
-            cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
-                                      "endElement",
-                                      END_ELEMENT_SIG);
+                cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
+                        "endElement",
+                        END_ELEMENT_SIG);
         _endElement = new INVOKEINTERFACE(endElement, 2);
 
         final int attribute =
-            cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
-                                      "addAttribute",
-                                      "("
-                                      + STRING_SIG
-                                      + STRING_SIG
-                                      + ")V");
+                cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
+                        "addAttribute",
+                        "("
+                                + STRING_SIG
+                                + STRING_SIG
+                                + ")V");
         _attribute = new INVOKEINTERFACE(attribute, 3);
 
         final int uniqueAttribute =
-            cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
-                                      "addUniqueAttribute",
-                                      "("
-                                      + STRING_SIG
-                                      + STRING_SIG
-                                      + "I)V");
+                cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
+                        "addUniqueAttribute",
+                        "("
+                                + STRING_SIG
+                                + STRING_SIG
+                                + "I)V");
         _uniqueAttribute = new INVOKEINTERFACE(uniqueAttribute, 4);
 
         final int namespace =
-            cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
-                                      "namespaceAfterStartElement",
-                                      "("
-                                      + STRING_SIG
-                                      + STRING_SIG
-                                      + ")V");
+                cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
+                        "namespaceAfterStartElement",
+                        "("
+                                + STRING_SIG
+                                + STRING_SIG
+                                + ")V");
         _namespace = new INVOKEINTERFACE(namespace, 3);
 
         int index = cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
-                                              "startDocument",
-                                              "()V");
+                "startDocument",
+                "()V");
         _startDocument = new INVOKEINTERFACE(index, 1);
 
         index = cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
-                                          "endDocument",
-                                          "()V");
+                "endDocument",
+                "()V");
         _endDocument = new INVOKEINTERFACE(index, 1);
 
 
         index = cpg.addInterfaceMethodref(NODE_ITERATOR,
-                                          SET_START_NODE,
-                                          SET_START_NODE_SIG);
+                SET_START_NODE,
+                SET_START_NODE_SIG);
         _setStartNode = new INVOKEINTERFACE(index, 2);
 
         index = cpg.addInterfaceMethodref(NODE_ITERATOR,
-                                          "reset", "()"+NODE_ITERATOR_SIG);
+                "reset", "()" + NODE_ITERATOR_SIG);
         _reset = new INVOKEINTERFACE(index, 1);
 
         index = cpg.addInterfaceMethodref(NODE_ITERATOR, NEXT, NEXT_SIG);
@@ -223,8 +223,7 @@ public class MethodGenerator extends MethodGen
      */
     public LocalVariableGen addLocalVariable(String name, Type type,
                                              InstructionHandle start,
-                                             InstructionHandle end)
-    {
+                                             InstructionHandle end) {
         LocalVariableGen lvg;
 
         if (_allocatorInit) {
@@ -237,14 +236,14 @@ public class MethodGenerator extends MethodGen
     }
 
     public LocalVariableGen addLocalVariable2(String name, Type type,
-                                              InstructionHandle start)
-    {
+                                              InstructionHandle start) {
         LocalVariableGen lvg = super.addLocalVariable(name, type,
-                                              _slotAllocator.allocateSlot(type),
-                                              start, null);
+                _slotAllocator.allocateSlot(type),
+                start, null);
         getLocalVariableRegistry().registerLocalVariable(lvg);
         return lvg;
     }
+
     private LocalVariableRegistry getLocalVariableRegistry() {
         if (_localVariableRegistry == null) {
             _localVariableRegistry = new LocalVariableRegistry();
@@ -256,15 +255,15 @@ public class MethodGenerator extends MethodGen
     /**
      * Keeps track of all local variables used in the method.
      * <p>The
-     * {@link MethodGen#addLocalVariable(String,Type,InstructionHandle,InstructionHandle)}</code>
+     * {@link MethodGen#addLocalVariable(String, Type, InstructionHandle, InstructionHandle)}</code>
      * and
-     * {@link MethodGen#addLocalVariable(String,Type,int,InstructionHandle,InstructionHandle)}</code>
+     * {@link MethodGen#addLocalVariable(String, Type, int, InstructionHandle, InstructionHandle)}</code>
      * methods of {@link MethodGen} will only keep track of
      * {@link LocalVariableGen} object until it'ss removed by a call to
      * {@link MethodGen#removeLocalVariable(LocalVariableGen)}.</p>
      * <p>In order to support efficient copying of local variables to outlined
      * methods by
-     * {@link #outline(InstructionHandle,InstructionHandle,String,ClassGenerator)},
+     * {@link #outline(InstructionHandle, InstructionHandle, String, ClassGenerator)},
      * this class keeps track of all local variables defined by the method.</p>
      */
     protected class LocalVariableRegistry {
@@ -299,6 +298,7 @@ public class MethodGenerator extends MethodGen
          * <code>LocalVariableGen</code> with the same slot index previously
          * registered for this method.  <b><em>(Unchecked.)</em></b></li>
          * </ul></p>
+         *
          * @param lvg The variable to be registered
          */
         protected void registerLocalVariable(LocalVariableGen lvg) {
@@ -348,7 +348,8 @@ public class MethodGenerator extends MethodGen
          * the {@link InstructionList} associated with this
          * {@link MethodGenerator}.</li>
          * </ul></p>
-         * @param slot the JVM local stack frame slot number
+         *
+         * @param slot   the JVM local stack frame slot number
          * @param offset the position in the byte code
          * @return the <code>LocalVariableGen</code> for the local variable
          * stored in the relevant slot at the relevant offset; <code>null</code>
@@ -357,7 +358,7 @@ public class MethodGenerator extends MethodGen
         protected LocalVariableGen lookupRegisteredLocalVariable(int slot,
                                                                  int offset) {
             Object localsInSlot = (_variables != null) ? _variables.get(slot)
-                                                       : null;
+                    : null;
 
             // If this slot index was never used, _variables.get will return
             // null; if it was used once, it will return the LocalVariableGen;
@@ -367,7 +368,7 @@ public class MethodGenerator extends MethodGen
             // specified offset, and return the first such encountered.
             if (localsInSlot != null) {
                 if (localsInSlot instanceof LocalVariableGen) {
-                    LocalVariableGen lvg = (LocalVariableGen)localsInSlot;
+                    LocalVariableGen lvg = (LocalVariableGen) localsInSlot;
                     if (offsetInLocalVariableGenRange(lvg, offset)) {
                         return lvg;
                     }
@@ -377,7 +378,7 @@ public class MethodGenerator extends MethodGen
 
                     for (int i = 0; i < size; i++) {
                         LocalVariableGen lvg =
-                            (LocalVariableGen)listOfLocalsInSlot.get(i);
+                                (LocalVariableGen) listOfLocalsInSlot.get(i);
                         if (offsetInLocalVariableGenRange(lvg, offset)) {
                             return lvg;
                         }
@@ -404,6 +405,7 @@ public class MethodGenerator extends MethodGen
          * set, which causes problems for outlining..</p>
          * <p>See also {@link #lookUpByName(String)} and
          * {@link #removeByNameTracking(LocalVariableGen)}</P
+         *
          * @param lvg a <code>LocalVariableGen</code>
          */
         protected void registerByName(LocalVariableGen lvg) {
@@ -432,6 +434,7 @@ public class MethodGenerator extends MethodGen
          * {@link LocalVariableGen} to itself.
          * See also {@link #registerByName(LocalVariableGen)} and
          * {@link #lookUpByName(String)}
+         *
          * @param lvg a <code>LocalVariableGen</code>
          */
         protected void removeByNameTracking(LocalVariableGen lvg) {
@@ -455,6 +458,7 @@ public class MethodGenerator extends MethodGen
          * corresponding to it.</p>
          * <p>See also {@link #registerByName(LocalVariableGen)} and
          * {@link #removeByNameTracking(LocalVariableGen)}</p>
+         *
          * @param name
          * @return
          */
@@ -466,7 +470,7 @@ public class MethodGenerator extends MethodGen
                 ArrayList sameNameList = (ArrayList) duplicateNameEntry;
 
                 for (int i = 0; i < sameNameList.size(); i++) {
-                    lvg = (LocalVariableGen)sameNameList.get(i);
+                    lvg = (LocalVariableGen) sameNameList.get(i);
                     if (lvg.getName() == name) {
                         break;
                     }
@@ -486,9 +490,10 @@ public class MethodGenerator extends MethodGen
          * a side-effect of setting the start and end range for any
          * <code>LocalVariableGen</code> if either was <code>null</code>.  That
          * side-effect causes problems for outlining of code in XSLTC.
+         *
          * @param includeRemoved Specifies whether all local variables ever
-         * declared should be returned (<code>true</code>) or only those not
-         * removed (<code>false</code>)
+         *                       declared should be returned (<code>true</code>) or only those not
+         *                       removed (<code>false</code>)
          * @return an array of <code>LocalVariableGen</code> containing all the
          * local variables
          */
@@ -518,7 +523,7 @@ public class MethodGenerator extends MethodGen
 
                 while (nameVarsPairsIter.hasNext()) {
                     Map.Entry nameVarsPair =
-                                  (Map.Entry) nameVarsPairsIter.next();
+                            (Map.Entry) nameVarsPairsIter.next();
                     Object vars = nameVarsPair.getValue();
                     if (vars != null) {
                         if (vars instanceof ArrayList) {
@@ -548,7 +553,8 @@ public class MethodGenerator extends MethodGen
      * <li>The {@link InstructionList#setPositions()} has been called for the
      * {@link InstructionList} associated with this {@link MethodGenerator}.
      * </li></ul></p>
-     * @param lvg the {@link LocalVariableGen} for the variable
+     *
+     * @param lvg    the {@link LocalVariableGen} for the variable
      * @param offset the position in the byte code
      * @return <code>true</code> if and only if the specified variable is in
      * use at the particular byte code offset.
@@ -576,8 +582,8 @@ public class MethodGenerator extends MethodGen
         // length must be taken into consideration in computing whether the
         // varible is in range at a particular offset.
         return ((lvgStart.getPosition() <= offset)
-                    && (lvgEnd.getPosition()
-                            + lvgEnd.getInstruction().getLength() >= offset));
+                && (lvgEnd.getPosition()
+                + lvgEnd.getInstruction().getLength() >= offset));
     }
 
     public void removeLocalVariable(LocalVariableGen lvg) {
@@ -663,11 +669,13 @@ public class MethodGenerator extends MethodGen
 
     public Instruction storeCurrentNode() {
         return _istoreCurrent != null
-            ? _istoreCurrent
-            : (_istoreCurrent = new ISTORE(getLocalIndex("current")));
+                ? _istoreCurrent
+                : (_istoreCurrent = new ISTORE(getLocalIndex("current")));
     }
 
-    /** by default context node is the same as current node. MK437 */
+    /**
+     * by default context node is the same as current node. MK437
+     */
     public Instruction loadContextNode() {
         return loadCurrentNode();
     }
@@ -750,10 +758,11 @@ public class MethodGenerator extends MethodGen
          * the {@link InstructionList} associated with this
          * {@link MethodGenerator}.</li>
          * </ul></p>
+         *
          * @param start The {@link InstructionHandle} of the first
          *              instruction in the outlineable chunk.
-         * @param end The {@link InstructionHandle} of the last
-         *            instruction in the outlineable chunk.
+         * @param end   The {@link InstructionHandle} of the last
+         *              instruction in the outlineable chunk.
          */
         Chunk(InstructionHandle start, InstructionHandle end) {
             m_start = start;
@@ -767,6 +776,7 @@ public class MethodGenerator extends MethodGen
          * <code>MethodGenerator.Chunk</code>, with no other intervening
          * instructions, including {@link OutlineableChunkStart} or
          * {@link OutlineableChunkEnd} instructions.
+         *
          * @param neighbour an outlineable {@link MethodGenerator.Chunk}
          * @return <code>true</code> if and only if the argument chunk
          * immediately follows <code>this</code> chunk
@@ -777,6 +787,7 @@ public class MethodGenerator extends MethodGen
 
         /**
          * Getter method for the start of this {@linke MethodGenerator.Chunk}
+         *
          * @return the {@link org.apache.bcel.generic.InstructionHandle} of the
          * start of this chunk
          */
@@ -786,6 +797,7 @@ public class MethodGenerator extends MethodGen
 
         /**
          * Getter method for the end of this {@link MethodGenerator.Chunk}
+         *
          * @return the {@link InstructionHandle} of the start of this chunk
          */
         InstructionHandle getChunkEnd() {
@@ -794,8 +806,9 @@ public class MethodGenerator extends MethodGen
 
         /**
          * The size of this {@link MethodGenerator.Chunk}
+         *
          * @return the number of bytes in the byte code represented by this
-         *         chunk.
+         * chunk.
          */
         int getChunkSize() {
             return m_size;
@@ -804,8 +817,8 @@ public class MethodGenerator extends MethodGen
         /**
          * Implements the <code>java.util.Comparable.compareTo(Object)</code>
          * method.
-         * @return
-         * <ul>
+         *
+         * @return <ul>
          * <li>A positive <code>int</code> if the length of <code>this</code>
          * chunk in bytes is greater than that of <code>comparand</code></li>
          * <li>A negative <code>int</code> if the length of <code>this</code>
@@ -814,18 +827,19 @@ public class MethodGenerator extends MethodGen
          * </ul>
          */
         public int compareTo(Object comparand) {
-            return getChunkSize() - ((Chunk)comparand).getChunkSize();
+            return getChunkSize() - ((Chunk) comparand).getChunkSize();
         }
     }
 
     /**
      * Find the outlineable chunks in this method that would be the best choices
      * to outline, based on size and position in the method.
-     * @param classGen The {@link ClassGen} with which the generated methods
-     *                 will be associated
+     *
+     * @param classGen        The {@link ClassGen} with which the generated methods
+     *                        will be associated
      * @param totalMethodSize the size of the bytecode in the original method
      * @return a <code>java.util.ArrayList</code> containing the
-     *  {@link MethodGenerator.Chunk}s that may be outlined from this method
+     * {@link MethodGenerator.Chunk}s that may be outlined from this method
      */
     private ArrayList getCandidateChunks(ClassGenerator classGen,
                                          int totalMethodSize) {
@@ -840,8 +854,8 @@ public class MethodGenerator extends MethodGen
 
         if (m_openChunks != 0) {
             String msg =
-                (new ErrorMsg(ErrorMsg.OUTLINE_ERR_UNBALANCED_MARKERS))
-                    .toString();
+                    (new ErrorMsg(ErrorMsg.OUTLINE_ERR_UNBALANCED_MARKERS))
+                            .toString();
             throw new InternalError(msg);
         }
 
@@ -864,11 +878,11 @@ public class MethodGenerator extends MethodGen
             // iteration after it reaches the end of the InstructionList, with
             // currentHandle set to null.
             currentHandle = instructions.hasNext()
-                                    ? (InstructionHandle) instructions.next()
-                                    : null;
+                    ? (InstructionHandle) instructions.next()
+                    : null;
             Instruction inst =
                     (currentHandle != null) ? currentHandle.getInstruction()
-                                            : null;
+                            : null;
 
             // At the first iteration, create a chunk representing all the
             // code in the method.  This is done just to simplify the logic -
@@ -892,9 +906,9 @@ public class MethodGenerator extends MethodGen
 
                 openChunkAtCurrLevel = true;
                 currLevelChunks.add(currentHandle);
-            // Close off an open chunk
+                // Close off an open chunk
             } else if (currentHandle == null
-                           || inst instanceof OutlineableChunkEnd) {
+                    || inst instanceof OutlineableChunkEnd) {
                 ArrayList nestedSubChunks = null;
 
                 // If the last MarkerInstruction encountered was an
@@ -904,18 +918,18 @@ public class MethodGenerator extends MethodGen
                 // are better candidates for outlining than the current chunk.
                 if (!openChunkAtCurrLevel) {
                     nestedSubChunks = currLevelChunks;
-                    currLevelChunks = (ArrayList)subChunkStack.pop();
+                    currLevelChunks = (ArrayList) subChunkStack.pop();
                 }
 
                 // Get the handle for the start of this chunk (the last entry
                 // in currLevelChunks)
                 InstructionHandle chunkStart =
                         (InstructionHandle) currLevelChunks.get(
-                                                      currLevelChunks.size()-1);
+                                currLevelChunks.size() - 1);
 
                 int chunkEndPosition =
                         (currentHandle != null) ? currentHandle.getPosition()
-                                                : totalMethodSize;
+                                : totalMethodSize;
                 int chunkSize = chunkEndPosition - chunkStart.getPosition();
 
                 // Two ranges of chunk size to consider:
@@ -941,24 +955,24 @@ public class MethodGenerator extends MethodGen
                             // Gather all the child chunks of the current chunk
                             for (int i = 0; i < childChunkCount; i++) {
                                 InstructionHandle start =
-                                    (InstructionHandle) nestedSubChunks
-                                                            .get(i*2);
+                                        (InstructionHandle) nestedSubChunks
+                                                .get(i * 2);
                                 InstructionHandle end =
-                                    (InstructionHandle) nestedSubChunks
-                                                            .get(i*2+1);
+                                        (InstructionHandle) nestedSubChunks
+                                                .get(i * 2 + 1);
 
                                 childChunks[i] = new Chunk(start, end);
                             }
 
                             // Merge adjacent siblings
                             ArrayList mergedChildChunks =
-                                        mergeAdjacentChunks(childChunks);
+                                    mergeAdjacentChunks(childChunks);
 
                             // Add chunks that mean minimum size requirements
                             // to the list of candidate chunks for outlining
                             for (int i = 0; i < mergedChildChunks.size(); i++) {
                                 Chunk mergedChunk =
-                                    (Chunk)mergedChildChunks.get(i);
+                                        (Chunk) mergedChildChunks.get(i);
                                 int mergedSize = mergedChunk.getChunkSize();
 
                                 if (mergedSize >= MINIMUM_OUTLINEABLE_CHUNK_SIZE
@@ -987,11 +1001,12 @@ public class MethodGenerator extends MethodGen
     /**
      * Merge adjacent sibling chunks to produce larger candidate chunks for
      * outlining
+     *
      * @param chunks array of sibling {@link MethodGenerator.Chunk}s that are
      *               under consideration for outlining.  Chunks must be in
      *               the order encountered in the {@link InstructionList}
      * @return a <code>java.util.ArrayList</code> of
-     *         <code>MethodGenerator.Chunk</code>s maximally merged
+     * <code>MethodGenerator.Chunk</code>s maximally merged
      */
     private ArrayList mergeAdjacentChunks(Chunk[] chunks) {
         int[] adjacencyRunStart = new int[chunks.length];
@@ -1013,7 +1028,7 @@ public class MethodGenerator extends MethodGen
         //   adjacencyRunStart[0] == 0; adjacencyRunLength[0] == 2
         //   adjacencyRunStart[1] == 2; adjacencyRunLength[1] == 4
         for (int i = 1; i < chunks.length; i++) {
-            if (!chunks[i-1].isAdjacentTo(chunks[i])) {
+            if (!chunks[i - 1].isAdjacentTo(chunks[i])) {
                 int lengthOfRun = i - startOfCurrentRun;
 
                 // Track the longest run of chunks found
@@ -1021,7 +1036,7 @@ public class MethodGenerator extends MethodGen
                     maximumRunOfChunks = lengthOfRun;
                 }
 
-                if (lengthOfRun > 1 ) {
+                if (lengthOfRun > 1) {
                     adjacencyRunLength[numAdjacentRuns] = lengthOfRun;
                     adjacencyRunStart[numAdjacentRuns] = startOfCurrentRun;
                     numAdjacentRuns++;
@@ -1040,7 +1055,7 @@ public class MethodGenerator extends MethodGen
             }
 
             adjacencyRunLength[numAdjacentRuns] =
-                        chunks.length - startOfCurrentRun;
+                    chunks.length - startOfCurrentRun;
             adjacencyRunStart[numAdjacentRuns] = startOfCurrentRun;
             numAdjacentRuns++;
         }
@@ -1056,7 +1071,7 @@ public class MethodGenerator extends MethodGen
 
         // Start by trying to merge the maximum number of adjacent chunks, and
         // work down from there.
-        for (int numToMerge = maximumRunOfChunks; numToMerge>1; numToMerge--) {
+        for (int numToMerge = maximumRunOfChunks; numToMerge > 1; numToMerge--) {
             // Look at each run of adjacent chunks
             for (int run = 0; run < numAdjacentRuns; run++) {
                 int runStart = adjacencyRunStart[run];
@@ -1068,7 +1083,7 @@ public class MethodGenerator extends MethodGen
                 // "subruns" of length numToMerge, until we run out or find
                 // a subrun that can be merged.
                 for (int mergeStart = runStart;
-                     mergeStart+numToMerge-1 <= runEnd && !foundChunksToMerge;
+                     mergeStart + numToMerge - 1 <= runEnd && !foundChunksToMerge;
                      mergeStart++) {
                     int mergeEnd = mergeStart + numToMerge - 1;
                     int mergeSize = 0;
@@ -1089,7 +1104,7 @@ public class MethodGenerator extends MethodGen
 
                         mergedChunks.add(
                                 new Chunk(chunks[mergeStart].getChunkStart(),
-                                          chunks[mergeEnd].getChunkEnd()));
+                                        chunks[mergeEnd].getChunkEnd()));
 
                         // Adjust the length of the current run of adjacent
                         // chunks to end at the newly merged chunk...
@@ -1104,7 +1119,7 @@ public class MethodGenerator extends MethodGen
                         if (trailingRunLength >= 2) {
                             adjacencyRunStart[numAdjacentRuns] = mergeEnd + 1;
                             adjacencyRunLength[numAdjacentRuns] =
-                                                            trailingRunLength;
+                                    trailingRunLength;
                             numAdjacentRuns++;
                         }
                     }
@@ -1127,12 +1142,13 @@ public class MethodGenerator extends MethodGen
      * Breaks up the IL for this {@link MethodGenerator} into separate
      * outlined methods so that no method exceeds the 64KB limit on the length
      * of the byte code associated with a method.
-     * @param classGen The {@link ClassGen} with which the generated methods
-     *                 will be associated
+     *
+     * @param classGen           The {@link ClassGen} with which the generated methods
+     *                           will be associated
      * @param originalMethodSize The number of bytes of bytecode represented by
-     *                 the {@link InstructionList} of this method
+     *                           the {@link InstructionList} of this method
      * @return an array of the outlined <code>Method</code>s and the original
-     *         method itself
+     * method itself
      */
     public Method[] outlineChunks(ClassGenerator classGen,
                                   int originalMethodSize) {
@@ -1158,7 +1174,7 @@ public class MethodGenerator extends MethodGen
             // Get all the best candidates for outlining, and sort them in
             // ascending order of size
             ArrayList candidateChunks = getCandidateChunks(classGen,
-                                                           currentMethodSize);
+                    currentMethodSize);
             Collections.sort(candidateChunks);
 
             moreMethodsOutlined = false;
@@ -1167,16 +1183,16 @@ public class MethodGenerator extends MethodGen
             // smallest and outline them one at a time, until the loop has
             // outlined all or the original method comes in under the JVM
             // limit on the size of a method.
-            for (int i = candidateChunks.size()-1;
+            for (int i = candidateChunks.size() - 1;
                  i >= 0 && currentMethodSize > TARGET_METHOD_SIZE;
                  i--) {
-                Chunk chunkToOutline = (Chunk)candidateChunks.get(i);
+                Chunk chunkToOutline = (Chunk) candidateChunks.get(i);
 
                 methodsOutlined.add(outline(chunkToOutline.getChunkStart(),
-                                            chunkToOutline.getChunkEnd(),
-                                            originalMethodName + "$outline$"
-                                                               + outlinedCount,
-                                            classGen));
+                        chunkToOutline.getChunkEnd(),
+                        originalMethodName + "$outline$"
+                                + outlinedCount,
+                        classGen));
                 outlinedCount++;
                 moreMethodsOutlined = true;
 
@@ -1195,7 +1211,7 @@ public class MethodGenerator extends MethodGen
         // sufficiently.  Throw an internal error.
         if (currentMethodSize > MAX_METHOD_SIZE) {
             String msg = (new ErrorMsg(ErrorMsg.OUTLINE_ERR_METHOD_TOO_BIG))
-                                  .toString();
+                    .toString();
             throw new InternalError(msg);
         }
 
@@ -1213,13 +1229,14 @@ public class MethodGenerator extends MethodGen
      * old method with a reference to that new method.  No
      * {@link OutlineableChunkStart} or {@link OutlineableChunkEnd} instructions
      * are copied.
-     * @param first The {@link InstructionHandle} of the first instruction in
-     *              the chunk to outline
-     * @param last The <code>InstructionHandle</code> of the last instruction in
-     *             the chunk to outline
+     *
+     * @param first              The {@link InstructionHandle} of the first instruction in
+     *                           the chunk to outline
+     * @param last               The <code>InstructionHandle</code> of the last instruction in
+     *                           the chunk to outline
      * @param outlinedMethodName The name of the new method
-     * @param classGen The {@link ClassGenerator} of which the original
-     *              and new methods will be members
+     * @param classGen           The {@link ClassGenerator} of which the original
+     *                           and new methods will be members
      * @return The new {@link Method} containing the outlined code.
      */
     private Method outline(InstructionHandle first, InstructionHandle last,
@@ -1227,13 +1244,13 @@ public class MethodGenerator extends MethodGen
         // We're not equipped to deal with exception handlers yet.  Bail out!
         if (getExceptionHandlers().length != 0) {
             String msg = (new ErrorMsg(ErrorMsg.OUTLINE_ERR_TRY_CATCH))
-                                  .toString();
+                    .toString();
             throw new InternalError(msg);
         }
 
         int outlineChunkStartOffset = first.getPosition();
         int outlineChunkEndOffset = last.getPosition()
-                                        + last.getInstruction().getLength();
+                + last.getInstruction().getLength();
 
         ConstantPoolGen cpg = getConstantPool();
 
@@ -1252,12 +1269,12 @@ public class MethodGenerator extends MethodGen
         // class, and will never be overridden, so we mark it private final.
         final InstructionList newIL = new InstructionList();
 
-        final XSLTC  xsltc = classGen.getParser().getXSLTC();
+        final XSLTC xsltc = classGen.getParser().getXSLTC();
         final String argTypeName = xsltc.getHelperClassName();
         final Type[] argTypes =
-            new Type[] {(new ObjectType(argTypeName)).toJCType()};
+                new Type[]{(new ObjectType(argTypeName)).toJCType()};
         final String argName = "copyLocals";
-        final String[] argNames = new String[] {argName};
+        final String[] argNames = new String[]{argName};
 
         int methodAttributes = ACC_PRIVATE | ACC_FINAL;
         final boolean isStaticMethod = (getAccessFlags() & ACC_STATIC) != 0;
@@ -1267,22 +1284,22 @@ public class MethodGenerator extends MethodGen
         }
 
         final MethodGenerator outlinedMethodGen =
-            new MethodGenerator(methodAttributes,
-                                com.sun.org.apache.bcel.internal.generic.Type.VOID,
-                                argTypes, argNames, outlinedMethodName,
-                                getClassName(), newIL, cpg);
+                new MethodGenerator(methodAttributes,
+                        com.sun.org.apache.bcel.internal.generic.Type.VOID,
+                        argTypes, argNames, outlinedMethodName,
+                        getClassName(), newIL, cpg);
 
         // Create class for copying local variables to the outlined method.
         // The fields the class will need to contain will be determined as the
         // code in the outlineable chunk is examined.
         ClassGenerator copyAreaCG
-            = new ClassGenerator(argTypeName, OBJECT_CLASS, argTypeName+".java",
-                                 ACC_FINAL | ACC_PUBLIC | ACC_SUPER, null,
-                                 classGen.getStylesheet()) {
-                      public boolean isExternal() {
-                          return true;
-                      }
-                  };
+                = new ClassGenerator(argTypeName, OBJECT_CLASS, argTypeName + ".java",
+                ACC_FINAL | ACC_PUBLIC | ACC_SUPER, null,
+                classGen.getStylesheet()) {
+            public boolean isExternal() {
+                return true;
+            }
+        };
         ConstantPoolGen copyAreaCPG = copyAreaCG.getConstantPool();
         copyAreaCG.addEmptyConstructor(ACC_PUBLIC);
 
@@ -1306,20 +1323,20 @@ public class MethodGenerator extends MethodGen
         //                         method
         //      newMethCopyOutIL - from locals in new method into the instance
         //                         of the CopyLocals class
-        InstructionList oldMethCopyInIL  = new InstructionList();
+        InstructionList oldMethCopyInIL = new InstructionList();
         InstructionList oldMethCopyOutIL = new InstructionList();
-        InstructionList newMethCopyInIL  = new InstructionList();
+        InstructionList newMethCopyInIL = new InstructionList();
         InstructionList newMethCopyOutIL = new InstructionList();
 
         // Allocate instance of class in which we'll copy in or copy out locals
         // and make two copies:  last copy is used to invoke constructor;
         // other two are used for references to fields in the CopyLocals object
         InstructionHandle outlinedMethodCallSetup =
-            oldMethCopyInIL.append(new NEW(cpg.addClass(argTypeName)));
+                oldMethCopyInIL.append(new NEW(cpg.addClass(argTypeName)));
         oldMethCopyInIL.append(InstructionConstants.DUP);
         oldMethCopyInIL.append(InstructionConstants.DUP);
         oldMethCopyInIL.append(
-            new INVOKESPECIAL(cpg.addMethodref(argTypeName, "<init>", "()V")));
+                new INVOKESPECIAL(cpg.addMethodref(argTypeName, "<init>", "()V")));
 
         // Generate code to invoke the new outlined method, and place the code
         // on oldMethCopyOutIL
@@ -1327,20 +1344,20 @@ public class MethodGenerator extends MethodGen
 
         if (isStaticMethod) {
             outlinedMethodRef =
-                oldMethCopyOutIL.append(
-                    new INVOKESTATIC(cpg.addMethodref(
-                                          classGen.getClassName(),
-                                          outlinedMethodName,
-                                          outlinedMethodGen.getSignature())));
+                    oldMethCopyOutIL.append(
+                            new INVOKESTATIC(cpg.addMethodref(
+                                    classGen.getClassName(),
+                                    outlinedMethodName,
+                                    outlinedMethodGen.getSignature())));
         } else {
             oldMethCopyOutIL.append(InstructionConstants.THIS);
             oldMethCopyOutIL.append(InstructionConstants.SWAP);
             outlinedMethodRef =
-                oldMethCopyOutIL.append(
-                    new INVOKEVIRTUAL(cpg.addMethodref(
-                                          classGen.getClassName(),
-                                          outlinedMethodName,
-                                          outlinedMethodGen.getSignature())));
+                    oldMethCopyOutIL.append(
+                            new INVOKEVIRTUAL(cpg.addMethodref(
+                                    classGen.getClassName(),
+                                    outlinedMethodName,
+                                    outlinedMethodGen.getSignature())));
         }
 
         // Used to keep track of the first in a sequence of
@@ -1355,7 +1372,7 @@ public class MethodGenerator extends MethodGen
         // method to instruction handles in the outlined method.  Only need
         // to track instructions that are targeted by something else in the
         // generated BCEL
-        HashMap targetMap   = new HashMap();
+        HashMap targetMap = new HashMap();
 
         // Keeps track of the mapping from local variables in the old method
         // to local variables in the outlined method.
@@ -1387,7 +1404,7 @@ public class MethodGenerator extends MethodGen
                     if (inst instanceof OutlineableChunkEnd) {
                         targetMap.put(ih, lastCopyHandle);
                     } else {
-                        if (!chunkStartTargetMappingsPending)  {
+                        if (!chunkStartTargetMappingsPending) {
                             chunkStartTargetMappingsPending = true;
                             pendingTargetMappingHandle = ih;
                         }
@@ -1399,7 +1416,7 @@ public class MethodGenerator extends MethodGen
                 Instruction c = inst.copy(); // Use clone for shallow copy
 
                 if (c instanceof BranchInstruction) {
-                    lastCopyHandle = newIL.append((BranchInstruction)c);
+                    lastCopyHandle = newIL.append((BranchInstruction) c);
                 } else {
                     lastCopyHandle = newIL.append(c);
                 }
@@ -1412,14 +1429,14 @@ public class MethodGenerator extends MethodGen
                     // generate the code to perform the necessary copying, and
                     // use localVarMap to map the variable in the original
                     // method to the variable in the new method.
-                    IndexedInstruction lvi = (IndexedInstruction)c;
+                    IndexedInstruction lvi = (IndexedInstruction) c;
                     int oldLocalVarIndex = lvi.getIndex();
                     LocalVariableGen oldLVG =
                             getLocalVariableRegistry()
-                                .lookupRegisteredLocalVariable(oldLocalVarIndex,
-                                                              ih.getPosition());
+                                    .lookupRegisteredLocalVariable(oldLocalVarIndex,
+                                            ih.getPosition());
                     LocalVariableGen newLVG =
-                            (LocalVariableGen)localVarMap.get(oldLVG);
+                            (LocalVariableGen) localVarMap.get(oldLVG);
 
                     // Has the code already mapped this local variable to a
                     // local in the new method?
@@ -1436,13 +1453,13 @@ public class MethodGenerator extends MethodGen
                         // at offset zero is sufficient to know that the value
                         // must be copied in to the outlined method.
                         boolean copyInLocalValue =
-                            offsetInLocalVariableGenRange(oldLVG,
-                                                (outlineChunkStartOffset != 0)
-                                                    ? outlineChunkStartOffset-1
-                                                    : 0);
+                                offsetInLocalVariableGenRange(oldLVG,
+                                        (outlineChunkStartOffset != 0)
+                                                ? outlineChunkStartOffset - 1
+                                                : 0);
                         boolean copyOutLocalValue =
-                            offsetInLocalVariableGenRange(oldLVG,
-                                                outlineChunkEndOffset+1);
+                                offsetInLocalVariableGenRange(oldLVG,
+                                        outlineChunkEndOffset + 1);
 
                         // For any variable that needs to be copied into or out
                         // of the outlined method, create a field in the
@@ -1452,9 +1469,9 @@ public class MethodGenerator extends MethodGen
                             String varName = oldLVG.getName();
                             Type varType = oldLVG.getType();
                             newLVG = outlinedMethodGen.addLocalVariable(varName,
-                                                                        varType,
-                                                                        null,
-                                                                        null);
+                                    varType,
+                                    null,
+                                    null);
                             int newLocalVarIndex = newLVG.getIndex();
                             String varSignature = varType.getSignature();
 
@@ -1463,16 +1480,16 @@ public class MethodGenerator extends MethodGen
 
                             copyAreaFieldCount++;
                             String copyAreaFieldName =
-                                           "field" + copyAreaFieldCount;
+                                    "field" + copyAreaFieldCount;
                             copyAreaCG.addField(
-                                new Field(ACC_PUBLIC,
-                                        copyAreaCPG.addUtf8(copyAreaFieldName),
-                                        copyAreaCPG.addUtf8(varSignature),
-                                        null, copyAreaCPG.getConstantPool()));
+                                    new Field(ACC_PUBLIC,
+                                            copyAreaCPG.addUtf8(copyAreaFieldName),
+                                            copyAreaCPG.addUtf8(varSignature),
+                                            null, copyAreaCPG.getConstantPool()));
 
                             int fieldRef = cpg.addFieldref(argTypeName,
-                                                           copyAreaFieldName,
-                                                           varSignature);
+                                    copyAreaFieldName,
+                                    varSignature);
 
                             if (copyInLocalValue) {
                                 // Generate code for the old method to store the
@@ -1482,8 +1499,8 @@ public class MethodGenerator extends MethodGen
                                 oldMethCopyInIL.append(
                                         InstructionConstants.DUP);
                                 InstructionHandle copyInLoad =
-                                    oldMethCopyInIL.append(
-                                        loadLocal(oldLocalVarIndex, varType));
+                                        oldMethCopyInIL.append(
+                                                loadLocal(oldLocalVarIndex, varType));
                                 oldMethCopyInIL.append(new PUTFIELD(fieldRef));
 
                                 // If the end of the live range of the old
@@ -1524,8 +1541,8 @@ public class MethodGenerator extends MethodGen
                                         InstructionConstants.DUP);
                                 oldMethCopyOutIL.append(new GETFIELD(fieldRef));
                                 InstructionHandle copyOutStore =
-                                    oldMethCopyOutIL.append(
-                                        storeLocal(oldLocalVarIndex, varType));
+                                        oldMethCopyOutIL.append(
+                                                storeLocal(oldLocalVarIndex, varType));
 
                                 // If the start of the live range of the old
                                 // variable was in the middle of the outlined
@@ -1533,7 +1550,7 @@ public class MethodGenerator extends MethodGen
                                 // of its range.
                                 if (!copyInLocalValue) {
                                     revisedLocalVarStart.put(oldLVG,
-                                                             copyOutStore);
+                                            copyOutStore);
                                 }
                             }
                         }
@@ -1550,11 +1567,11 @@ public class MethodGenerator extends MethodGen
                 // instruction
                 if (chunkStartTargetMappingsPending) {
                     do {
-                         targetMap.put(pendingTargetMappingHandle,
-                                       lastCopyHandle);
-                         pendingTargetMappingHandle =
-                                 pendingTargetMappingHandle.getNext();
-                    } while(pendingTargetMappingHandle != ih);
+                        targetMap.put(pendingTargetMappingHandle,
+                                lastCopyHandle);
+                        pendingTargetMappingHandle =
+                                pendingTargetMappingHandle.getNext();
+                    } while (pendingTargetMappingHandle != ih);
 
                     chunkStartTargetMappingsPending = false;
                 }
@@ -1572,41 +1589,41 @@ public class MethodGenerator extends MethodGen
             Instruction c = ch.getInstruction();
 
             if (i instanceof BranchInstruction) {
-                BranchInstruction bc      = (BranchInstruction)c;
-                BranchInstruction bi      = (BranchInstruction)i;
+                BranchInstruction bc = (BranchInstruction) c;
+                BranchInstruction bi = (BranchInstruction) i;
                 InstructionHandle itarget = bi.getTarget(); // old target
 
                 // New target must be in targetMap
                 InstructionHandle newTarget =
-                    (InstructionHandle)targetMap.get(itarget);
+                        (InstructionHandle) targetMap.get(itarget);
 
                 bc.setTarget(newTarget);
 
                 // Handle LOOKUPSWITCH or TABLESWITCH which may have many
                 // target instructions
                 if (bi instanceof Select) {
-                    InstructionHandle[] itargets = ((Select)bi).getTargets();
-                    InstructionHandle[] ctargets = ((Select)bc).getTargets();
+                    InstructionHandle[] itargets = ((Select) bi).getTargets();
+                    InstructionHandle[] ctargets = ((Select) bc).getTargets();
 
                     // Update all targets
-                    for (int j=0; j < itargets.length; j++) {
+                    for (int j = 0; j < itargets.length; j++) {
                         ctargets[j] =
-                            (InstructionHandle)targetMap.get(itargets[j]);
+                                (InstructionHandle) targetMap.get(itargets[j]);
                     }
                 }
-            }  else if (i instanceof LocalVariableInstruction
-                            || i instanceof RET) {
+            } else if (i instanceof LocalVariableInstruction
+                    || i instanceof RET) {
                 // For any instruction that touches a local variable,
                 // map the location of the variable in the original
                 // method to its location in the new method.
-                IndexedInstruction lvi = (IndexedInstruction)c;
+                IndexedInstruction lvi = (IndexedInstruction) c;
                 int oldLocalVarIndex = lvi.getIndex();
                 LocalVariableGen oldLVG =
                         getLocalVariableRegistry()
                                 .lookupRegisteredLocalVariable(oldLocalVarIndex,
-                                                              ih.getPosition());
+                                        ih.getPosition());
                 LocalVariableGen newLVG =
-                        (LocalVariableGen)localVarMap.get(oldLVG);
+                        (LocalVariableGen) localVarMap.get(oldLVG);
                 int newLocalVarIndex;
 
                 if (newLVG == null) {
@@ -1617,9 +1634,9 @@ public class MethodGenerator extends MethodGen
                     String varName = oldLVG.getName();
                     Type varType = oldLVG.getType();
                     newLVG = outlinedMethodGen.addLocalVariable(varName,
-                                                                varType,
-                                                                null,
-                                                                null);
+                            varType,
+                            null,
+                            null);
                     newLocalVarIndex = newLVG.getIndex();
                     localVarMap.put(oldLVG, newLVG);
 
@@ -1647,11 +1664,11 @@ public class MethodGenerator extends MethodGen
                     InstructionTargeter targeter = targeters[idx];
 
                     if (targeter instanceof LocalVariableGen
-                            && ((LocalVariableGen)targeter).getEnd()==ih) {
+                            && ((LocalVariableGen) targeter).getEnd() == ih) {
                         Object newLVG = localVarMap.get(targeter);
                         if (newLVG != null) {
                             outlinedMethodGen.removeLocalVariable(
-                                                  (LocalVariableGen)newLVG);
+                                    (LocalVariableGen) newLVG);
                         }
                     }
                 }
@@ -1673,26 +1690,26 @@ public class MethodGenerator extends MethodGen
         // Now that the generation of the outlined code is complete, update
         // the old local variables with new start and end ranges, as required.
         Iterator revisedLocalVarStartPairIter = revisedLocalVarStart.entrySet()
-                                                                    .iterator();
+                .iterator();
         while (revisedLocalVarStartPairIter.hasNext()) {
             Map.Entry lvgRangeStartPair =
-                    (Map.Entry)revisedLocalVarStartPairIter.next();
-            LocalVariableGen lvg = (LocalVariableGen)lvgRangeStartPair.getKey();
+                    (Map.Entry) revisedLocalVarStartPairIter.next();
+            LocalVariableGen lvg = (LocalVariableGen) lvgRangeStartPair.getKey();
             InstructionHandle startInst =
-                    (InstructionHandle)lvgRangeStartPair.getValue();
+                    (InstructionHandle) lvgRangeStartPair.getValue();
 
             lvg.setStart(startInst);
 
         }
 
         Iterator revisedLocalVarEndPairIter = revisedLocalVarEnd.entrySet()
-                                                                .iterator();
+                .iterator();
         while (revisedLocalVarEndPairIter.hasNext()) {
             Map.Entry lvgRangeEndPair =
-                    (Map.Entry)revisedLocalVarEndPairIter.next();
-            LocalVariableGen lvg = (LocalVariableGen)lvgRangeEndPair.getKey();
+                    (Map.Entry) revisedLocalVarEndPairIter.next();
+            LocalVariableGen lvg = (LocalVariableGen) lvgRangeEndPair.getKey();
             InstructionHandle endInst =
-                    (InstructionHandle)lvgRangeEndPair.getValue();
+                    (InstructionHandle) lvgRangeEndPair.getValue();
 
             lvg.setEnd(endInst);
         }
@@ -1729,7 +1746,7 @@ public class MethodGenerator extends MethodGen
                 for (int j = 0; j < targeters.length; j++) {
                     if (targeters[j] instanceof LocalVariableGen) {
                         LocalVariableGen lvgTargeter =
-                                             (LocalVariableGen) targeters[j];
+                                (LocalVariableGen) targeters[j];
                         // In the case of any lingering variable references,
                         // just make the live range point to the outlined
                         // function reference.  Such variables should be unused
@@ -1742,7 +1759,7 @@ public class MethodGenerator extends MethodGen
                         }
                     } else {
                         targeters[j].updateTarget(lostTarget,
-                                                  outlinedMethodCallSetup);
+                                outlinedMethodCallSetup);
                     }
                 }
             }
@@ -1761,30 +1778,31 @@ public class MethodGenerator extends MethodGen
      * Helper method to generate an instance of a subclass of
      * {@link LoadInstruction} based on the specified {@link Type} that will
      * load the specified local variable
+     *
      * @param index the JVM stack frame index of the variable that is to be
-     * loaded
-     * @param type the {@link Type} of the variable
+     *              loaded
+     * @param type  the {@link Type} of the variable
      * @return the generated {@link LoadInstruction}
      */
     private static Instruction loadLocal(int index, Type type) {
         if (type == Type.BOOLEAN) {
-           return new ILOAD(index);
+            return new ILOAD(index);
         } else if (type == Type.INT) {
-           return new ILOAD(index);
+            return new ILOAD(index);
         } else if (type == Type.SHORT) {
-           return new ILOAD(index);
+            return new ILOAD(index);
         } else if (type == Type.LONG) {
-           return new LLOAD(index);
+            return new LLOAD(index);
         } else if (type == Type.BYTE) {
-           return new ILOAD(index);
+            return new ILOAD(index);
         } else if (type == Type.CHAR) {
-           return new ILOAD(index);
+            return new ILOAD(index);
         } else if (type == Type.FLOAT) {
-           return new FLOAD(index);
+            return new FLOAD(index);
         } else if (type == Type.DOUBLE) {
-           return new DLOAD(index);
+            return new DLOAD(index);
         } else {
-           return new ALOAD(index);
+            return new ALOAD(index);
         }
     }
 
@@ -1792,30 +1810,31 @@ public class MethodGenerator extends MethodGen
      * Helper method to generate an instance of a subclass of
      * {@link StoreInstruction} based on the specified {@link Type} that will
      * store a value in the specified local variable
+     *
      * @param index the JVM stack frame index of the variable that is to be
-     * stored
-     * @param type the {@link Type} of the variable
+     *              stored
+     * @param type  the {@link Type} of the variable
      * @return the generated {@link StoredInstruction}
      */
     private static Instruction storeLocal(int index, Type type) {
         if (type == Type.BOOLEAN) {
-           return new ISTORE(index);
+            return new ISTORE(index);
         } else if (type == Type.INT) {
-           return new ISTORE(index);
+            return new ISTORE(index);
         } else if (type == Type.SHORT) {
-           return new ISTORE(index);
+            return new ISTORE(index);
         } else if (type == Type.LONG) {
-           return new LSTORE(index);
+            return new LSTORE(index);
         } else if (type == Type.BYTE) {
-           return new ISTORE(index);
+            return new ISTORE(index);
         } else if (type == Type.CHAR) {
-           return new ISTORE(index);
+            return new ISTORE(index);
         } else if (type == Type.FLOAT) {
-           return new FSTORE(index);
+            return new FSTORE(index);
         } else if (type == Type.DOUBLE) {
-           return new DSTORE(index);
+            return new DSTORE(index);
         } else {
-           return new ASTORE(index);
+            return new ASTORE(index);
         }
     }
 
@@ -1857,7 +1876,7 @@ public class MethodGenerator extends MethodGen
         m_openChunks--;
         if (m_openChunks < 0) {
             String msg = (new ErrorMsg(ErrorMsg.OUTLINE_ERR_UNBALANCED_MARKERS))
-                                 .toString();
+                    .toString();
             throw new InternalError(msg);
         }
     }
@@ -1872,6 +1891,7 @@ public class MethodGenerator extends MethodGen
      * exceed the 64KB limit, this method will attempt to split the code in
      * the {@link InstructionList} associated with this
      * <code>MethodGenerator</code> into several methods.</p>
+     *
      * @param classGen the {@link ClassGenerator} of which these methods are
      *                 members
      * @return an array of all the <code>Method</code>s generated
@@ -1884,7 +1904,7 @@ public class MethodGenerator extends MethodGen
         il.setPositions();
 
         int instructionListSize =
-                    last.getPosition() + last.getInstruction().getLength();
+                last.getPosition() + last.getInstruction().getLength();
 
         // Need to look for any branch target offsets that exceed the range
         // [-32768,32767]
@@ -1904,7 +1924,7 @@ public class MethodGenerator extends MethodGen
         if (instructionListSize > MAX_METHOD_SIZE) {
             generatedMethods = outlineChunks(classGen, instructionListSize);
         } else {
-            generatedMethods = new Method[] {getThisMethod()};
+            generatedMethods = new Method[]{getThisMethod()};
         }
         return generatedMethods;
     }
@@ -1917,6 +1937,7 @@ public class MethodGenerator extends MethodGen
 
         return getMethod();
     }
+
     /**
      * <p>Rewrites branches to avoid the JVM limits of relative branch
      * offsets.  There is no need to invoke this method if the bytecode for the
@@ -1951,14 +1972,14 @@ public class MethodGenerator extends MethodGen
      * offset, as described above.  For example,
      * <code>
      * 1234:   NOP
-     *          ...
+     * ...
      * 55278:  IFEQ -54044
      * 55280:  NOP
      * </code>
      * is rewritten as
      * <code>
      * 1234:   NOP
-     *          ...
+     * ...
      * 55278:  IFNE 7
      * 55280:  GOTO_W -54046
      * 55285:  NOP
@@ -1973,6 +1994,7 @@ public class MethodGenerator extends MethodGen
      * <code>MethodGenerator</code> will invalidate the changes made by this
      * method.</li></ul>
      * </p>
+     *
      * @return <code>true</code> if the <code>InstructionList</code> was
      * modified; <code>false</code> otherwise
      * @see The Java Virtual Machine Specification, Second Edition
@@ -2046,11 +2068,11 @@ public class MethodGenerator extends MethodGen
             Instruction inst = ih.getInstruction();
 
             if (inst instanceof IfInstruction) {
-                IfInstruction oldIfInst = (IfInstruction)inst;
-                BranchHandle oldIfHandle = (BranchHandle)ih;
+                IfInstruction oldIfInst = (IfInstruction) inst;
+                BranchHandle oldIfHandle = (BranchHandle) ih;
                 InstructionHandle target = oldIfInst.getTarget();
                 int relativeTargetOffset = target.getPosition()
-                                               - oldIfHandle.getPosition();
+                        - oldIfHandle.getPosition();
 
                 // Consider the worst case scenario in which the conditional
                 // branch and its target are separated by all the instructions
@@ -2058,21 +2080,21 @@ public class MethodGenerator extends MethodGen
                 // in a relative offset that cannot be represented as a 32-bit
                 // signed quantity, rewrite the instruction as described above.
                 if ((relativeTargetOffset - maxOffsetChange
-                             < MIN_BRANCH_TARGET_OFFSET)
+                        < MIN_BRANCH_TARGET_OFFSET)
                         || (relativeTargetOffset + maxOffsetChange
-                                    > MAX_BRANCH_TARGET_OFFSET)) {
+                        > MAX_BRANCH_TARGET_OFFSET)) {
                     // Invert the logic of the IF instruction, and append
                     // that to the InstructionList following the original IF
                     // instruction
                     InstructionHandle nextHandle = oldIfHandle.getNext();
                     IfInstruction invertedIfInst = oldIfInst.negate();
                     BranchHandle invertedIfHandle = il.append(oldIfHandle,
-                                                              invertedIfInst);
+                            invertedIfInst);
 
                     // Append an unconditional branch to the target of the
                     // original IF instruction after the new IF instruction
                     BranchHandle gotoHandle = il.append(invertedIfHandle,
-                                                        new GOTO(target));
+                            new GOTO(target));
 
                     // If the original IF was the last instruction in
                     // InstructionList, add a new no-op to act as the target
@@ -2089,7 +2111,7 @@ public class MethodGenerator extends MethodGen
                     // instruction
                     if (oldIfHandle.hasTargeters()) {
                         InstructionTargeter[] targeters =
-                                                  oldIfHandle.getTargeters();
+                                oldIfHandle.getTargeters();
 
                         for (int i = 0; i < targeters.length; i++) {
                             InstructionTargeter targeter = targeters[i];
@@ -2116,7 +2138,7 @@ public class MethodGenerator extends MethodGen
                                 }
                             } else {
                                 targeter.updateTarget(oldIfHandle,
-                                                      invertedIfHandle);
+                                        invertedIfHandle);
                             }
                         }
                     }
@@ -2128,8 +2150,8 @@ public class MethodGenerator extends MethodGen
                         // instructions that target the deleted instruction
                         // prior to deleting it.
                         String msg =
-                            new ErrorMsg(ErrorMsg.OUTLINE_ERR_DELETED_TARGET,
-                                         tle.getMessage()).toString();
+                                new ErrorMsg(ErrorMsg.OUTLINE_ERR_DELETED_TARGET,
+                                        tle.getMessage()).toString();
                         throw new InternalError(msg);
                     }
 

@@ -61,8 +61,7 @@ public final class FlowList {
     public FlowList append(FlowList right) {
         if (_elements == null) {
             _elements = right._elements;
-        }
-        else {
+        } else {
             final Vector temp = right._elements;
             if (temp != null) {
                 final int n = temp.size();
@@ -81,7 +80,7 @@ public final class FlowList {
         if (_elements != null) {
             final int n = _elements.size();
             for (int i = 0; i < n; i++) {
-                BranchHandle bh = (BranchHandle)_elements.elementAt(i);
+                BranchHandle bh = (BranchHandle) _elements.elementAt(i);
                 bh.setTarget(target);
             }
             _elements.clear();          // avoid backpatching more than once
@@ -93,8 +92,7 @@ public final class FlowList {
      * is assumed to be relative to oldList.
      */
     public FlowList copyAndRedirect(InstructionList oldList,
-        InstructionList newList)
-    {
+                                    InstructionList newList) {
         final FlowList result = new FlowList();
         if (_elements == null) {
             return result;

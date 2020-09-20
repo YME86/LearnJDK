@@ -47,8 +47,8 @@ import com.sun.org.apache.xml.internal.dtm.ref.DTMAxisIteratorBase;
  */
 public abstract class MultiValuedNodeHeapIterator extends DTMAxisIteratorBase {
     /** wrapper for NodeIterators to support iterator
-        comparison on the value of their next() method
-    */
+     comparison on the value of their next() method
+     */
 
     /**
      * An abstract representation of a set of nodes that will be retrieved in
@@ -79,7 +79,7 @@ public abstract class MultiValuedNodeHeapIterator extends DTMAxisIteratorBase {
                 clone = (HeapNode) super.clone();
             } catch (CloneNotSupportedException e) {
                 BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
-                                          e.toString());
+                        e.toString());
                 return null;
             }
 
@@ -108,8 +108,8 @@ public abstract class MultiValuedNodeHeapIterator extends DTMAxisIteratorBase {
          *
          * @param heapNode the heap node against which to compare
          * @return <code>true</code> if and only if the current node for this
-         *         heap node is before the current node of the argument heap
-         *         node in document order.
+         * heap node is before the current node of the argument heap
+         * node in document order.
          */
         public abstract boolean isLessThan(HeapNode heapNode);
 
@@ -118,7 +118,7 @@ public abstract class MultiValuedNodeHeapIterator extends DTMAxisIteratorBase {
          *
          * @param node The new context node
          * @return a {@link HeapNode} which may or may not be the same as
-         *         this <code>HeapNode</code>.
+         * this <code>HeapNode</code>.
          */
         public abstract HeapNode setStartNode(int node);
 
@@ -126,17 +126,17 @@ public abstract class MultiValuedNodeHeapIterator extends DTMAxisIteratorBase {
          * Reset the heap node back to its beginning.
          *
          * @return a {@link HeapNode} which may or may not be the same as
-         *         this <code>HeapNode</code>.
+         * this <code>HeapNode</code>.
          */
         public abstract HeapNode reset();
     } // end of HeapNode
 
     private static final int InitSize = 8;
 
-    private int        _heapSize = 0;
-    private int        _size = InitSize;
+    private int _heapSize = 0;
+    private int _size = InitSize;
     private HeapNode[] _heap = new HeapNode[InitSize];
-    private int        _free = 0;
+    private int _free = 0;
 
     // Last node returned by this MultiValuedNodeHeapIterator to the caller of
     // next; used to prune duplicates
@@ -154,7 +154,7 @@ public abstract class MultiValuedNodeHeapIterator extends DTMAxisIteratorBase {
         final HeapNode[] heapCopy = new HeapNode[_heap.length];
         try {
             MultiValuedNodeHeapIterator clone =
-                    (MultiValuedNodeHeapIterator)super.clone();
+                    (MultiValuedNodeHeapIterator) super.clone();
 
             for (int i = 0; i < _free; i++) {
                 heapCopy[i] = _heap[i].cloneHeapNode();
@@ -162,10 +162,9 @@ public abstract class MultiValuedNodeHeapIterator extends DTMAxisIteratorBase {
             clone.setRestartable(false);
             clone._heap = heapCopy;
             return clone.reset();
-        }
-        catch (CloneNotSupportedException e) {
+        } catch (CloneNotSupportedException e) {
             BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
-                                      e.toString());
+                    e.toString());
             return null;
         }
     }
@@ -189,15 +188,12 @@ public abstract class MultiValuedNodeHeapIterator extends DTMAxisIteratorBase {
                     final HeapNode temp = _heap[0];
                     _heap[0] = _heap[--_heapSize];
                     _heap[_heapSize] = temp;
-                }
-                else {
+                } else {
                     return END;
                 }
-            }
-            else if (smallest == _returnedLast) {       // duplicate
+            } else if (smallest == _returnedLast) {       // duplicate
                 _heap[0].step(); // value consumed
-            }
-            else {
+            } else {
                 _heap[0].step(); // value consumed
                 heapify(0);
                 return returnNode(_returnedLast = smallest);
@@ -212,14 +208,14 @@ public abstract class MultiValuedNodeHeapIterator extends DTMAxisIteratorBase {
         if (_isRestartable) {
             _startNode = node;
             for (int i = 0; i < _free; i++) {
-                if(!_heap[i]._isStartSet){
-                   _heap[i].setStartNode(node);
-                   _heap[i].step();     // to get the first node
-                   _heap[i]._isStartSet = true;
+                if (!_heap[i]._isStartSet) {
+                    _heap[i].setStartNode(node);
+                    _heap[i].step();     // to get the first node
+                    _heap[i]._isStartSet = true;
                 }
             }
             // build heap
-            for (int i = (_heapSize = _free)/2; i >= 0; i--) {
+            for (int i = (_heapSize = _free) / 2; i >= 0; i--) {
                 heapify(i);
             }
             _returnedLast = END;
@@ -229,7 +225,7 @@ public abstract class MultiValuedNodeHeapIterator extends DTMAxisIteratorBase {
     }
 
     protected void init() {
-        for (int i =0; i < _free; i++) {
+        for (int i = 0; i < _free; i++) {
             _heap[i] = null;
         }
 
@@ -241,10 +237,11 @@ public abstract class MultiValuedNodeHeapIterator extends DTMAxisIteratorBase {
      * "smallest node" means the node before other nodes in document order
      */
     private void heapify(int i) {
-        for (int r, l, smallest;;) {
-            r = (i + 1) << 1; l = r - 1;
+        for (int r, l, smallest; ; ) {
+            r = (i + 1) << 1;
+            l = r - 1;
             smallest = l < _heapSize
-                && _heap[l].isLessThan(_heap[i]) ? l : i;
+                    && _heap[l].isLessThan(_heap[i]) ? l : i;
             if (r < _heapSize && _heap[r].isLessThan(_heap[smallest])) {
                 smallest = r;
             }
@@ -272,7 +269,7 @@ public abstract class MultiValuedNodeHeapIterator extends DTMAxisIteratorBase {
             _heap[i].gotoMark();
         }
         // rebuild heap after call last() function. fix for bug 20913
-        for (int i = (_heapSize = _cachedHeapSize)/2; i >= 0; i--) {
+        for (int i = (_heapSize = _cachedHeapSize) / 2; i >= 0; i--) {
             heapify(i);
         }
         _returnedLast = _cachedReturnedLast;
@@ -285,7 +282,7 @@ public abstract class MultiValuedNodeHeapIterator extends DTMAxisIteratorBase {
         }
 
         // build heap
-        for (int i = (_heapSize = _free)/2; i >= 0; i--) {
+        for (int i = (_heapSize = _free) / 2; i >= 0; i--) {
             heapify(i);
         }
 

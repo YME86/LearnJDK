@@ -118,12 +118,11 @@ final class WithParam extends Instruction {
         if (name.length() > 0) {
             if (!XML11Char.isXML11ValidQName(name)) {
                 ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, name,
-                                            this);
+                        this);
                 parser.reportError(Constants.ERROR, err);
             }
             setName(parser.getQNameIgnoreDefaultNs(name));
-        }
-        else {
+        } else {
             reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "name");
         }
 
@@ -145,8 +144,7 @@ final class WithParam extends Instruction {
             if (tselect instanceof ReferenceType == false) {
                 _select = new CastExpr(_select, Type.Reference);
             }
-        }
-        else {
+        } else {
             typeCheckContents(stable);
         }
         return Type.Void;
@@ -204,8 +202,8 @@ final class WithParam extends Instruction {
         il.append(new PUSH(cpg, false));
         // Pass the parameter to the template
         il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
-                                                     ADD_PARAMETER,
-                                                     ADD_PARAMETER_SIG)));
+                ADD_PARAMETER,
+                ADD_PARAMETER_SIG)));
         il.append(POP); // cleanup stack
     }
 }

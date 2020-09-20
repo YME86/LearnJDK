@@ -49,24 +49,24 @@ import com.sun.org.apache.xml.internal.utils.XML11Char;
  */
 class VariableBase extends TopLevelElement {
 
-    protected QName       _name;            // The name of the variable.
-    protected String      _escapedName;        // The escaped qname of the variable.
-    protected Type        _type;            // The type of this variable.
-    protected boolean     _isLocal;         // True if the variable is local.
+    protected QName _name;            // The name of the variable.
+    protected String _escapedName;        // The escaped qname of the variable.
+    protected Type _type;            // The type of this variable.
+    protected boolean _isLocal;         // True if the variable is local.
     protected LocalVariableGen _local;      // Reference to JVM variable
     protected Instruction _loadInstruction; // Instruction to load JVM variable
     protected Instruction _storeInstruction; // Instruction to load JVM variable
-    protected Expression  _select;          // Reference to variable expression
-    protected String      select;           // Textual repr. of variable expr.
+    protected Expression _select;          // Reference to variable expression
+    protected String select;           // Textual repr. of variable expr.
 
     // References to this variable (when local)
-    protected Vector      _refs = new Vector(2);
+    protected Vector _refs = new Vector(2);
 
     // Dependencies to other variables/parameters (for globals only)
-    protected Vector      _dependencies = null;
+    protected Vector _dependencies = null;
 
     // Used to make sure parameter field is not added twice
-    protected boolean    _ignore = false;
+    protected boolean _ignore = false;
 
     /**
      * Disable this variable/parameter
@@ -149,14 +149,14 @@ class VariableBase extends TopLevelElement {
      * Returns the expression from this variable's select attribute (if any)
      */
     public Expression getExpression() {
-        return(_select);
+        return (_select);
     }
 
     /**
      * Display variable as single string
      */
     public String toString() {
-        return("variable("+_name+")");
+        return ("variable(" + _name + ")");
     }
 
     /**
@@ -222,8 +222,7 @@ class VariableBase extends TopLevelElement {
                 parser.reportError(Constants.ERROR, err);
             }
             setName(parser.getQNameIgnoreDefaultNs(name));
-        }
-        else
+        } else
             reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "name");
 
         // Check whether variable/param of the same name is already in scope
@@ -261,10 +260,10 @@ class VariableBase extends TopLevelElement {
                 final InstructionList il = methodGen.getInstructionList();
 
                 final int initCNI = cpg.addMethodref(CACHED_NODE_LIST_ITERATOR_CLASS,
-                                            "<init>",
-                                            "("
-                                            +NODE_ITERATOR_SIG
-                                            +")V");
+                        "<init>",
+                        "("
+                                + NODE_ITERATOR_SIG
+                                + ")V");
                 il.append(new NEW(cpg.addClass(CACHED_NODE_LIST_ITERATOR_CLASS)));
                 il.append(DUP_X1);
                 il.append(SWAP);

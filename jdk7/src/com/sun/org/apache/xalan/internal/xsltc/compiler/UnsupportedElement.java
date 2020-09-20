@@ -73,7 +73,7 @@ final class UnsupportedElement extends SyntaxTreeNode {
     public void display(int indent) {
         indent(indent);
         Util.println("Unsupported element = " + _qname.getNamespace() +
-                     ":" + _qname.getLocalPart());
+                ":" + _qname.getLocalPart());
         displayContents(indent + IndentIncrement);
     }
 
@@ -87,9 +87,9 @@ final class UnsupportedElement extends SyntaxTreeNode {
         if (children != null) {
             final int count = children.size();
             for (int i = 0; i < count; i++) {
-                SyntaxTreeNode child = (SyntaxTreeNode)children.elementAt(i);
+                SyntaxTreeNode child = (SyntaxTreeNode) children.elementAt(i);
                 if (child instanceof Fallback) {
-                    Fallback fallback = (Fallback)child;
+                    Fallback fallback = (Fallback) child;
                     fallback.activate();
                     fallback.parseContents(parser);
                     if (_fallbacks == null) {
@@ -115,7 +115,7 @@ final class UnsupportedElement extends SyntaxTreeNode {
         if (_fallbacks != null) {
             int count = _fallbacks.size();
             for (int i = 0; i < count; i++) {
-                Fallback fallback = (Fallback)_fallbacks.elementAt(i);
+                Fallback fallback = (Fallback) _fallbacks.elementAt(i);
                 fallback.typeCheck(stable);
             }
         }
@@ -129,7 +129,7 @@ final class UnsupportedElement extends SyntaxTreeNode {
         if (_fallbacks != null) {
             int count = _fallbacks.size();
             for (int i = 0; i < count; i++) {
-                Fallback fallback = (Fallback)_fallbacks.elementAt(i);
+                Fallback fallback = (Fallback) _fallbacks.elementAt(i);
                 fallback.translate(classGen, methodGen);
             }
         }
@@ -143,7 +143,7 @@ final class UnsupportedElement extends SyntaxTreeNode {
             InstructionList il = methodGen.getInstructionList();
 
             final int unsupportedElem = cpg.addMethodref(BASIS_LIBRARY_CLASS, "unsupported_ElementF",
-                                                         "(" + STRING_SIG + "Z)V");
+                    "(" + STRING_SIG + "Z)V");
             il.append(new PUSH(cpg, getQName().toString()));
             il.append(new PUSH(cpg, _isExtension));
             il.append(new INVOKESTATIC(unsupportedElem));

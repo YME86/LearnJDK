@@ -36,8 +36,8 @@ package com.sun.jmx.snmp.tasks;
  *
  * <p><b>This API is a Sun Microsystems internal API  and is subject
  * to change without notice.</b></p>
- * @see com.sun.jmx.snmp.tasks.Task
  *
+ * @see com.sun.jmx.snmp.tasks.Task
  * @since 1.5
  **/
 public interface TaskServer {
@@ -51,6 +51,7 @@ public interface TaskServer {
      * another thread (e.g. <code>
      * public void submitTask(Task task) { new Thrad(task).start(); }</code>)
      * depends on the TaskServer implementation.
+     *
      * @param task The task to be executed.
      **/
     public void submitTask(Task task);

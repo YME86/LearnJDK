@@ -39,22 +39,22 @@ import org.xml.sax.SAXException;
 
 
 /**
- *This class wraps another SerializationHandler. The wrapped object will either
+ * This class wraps another SerializationHandler. The wrapped object will either
  * handler XML or HTML, which is not known until a little later when the first XML
  * tag is seen.  If the first tag is <html> then the wrapped object is an HTML
  * handler, otherwise it is an XML handler.
- *
+ * <p>
  * This class effectively caches the first few calls to it then passes them
  * on to the wrapped handler (once it exists).  After that subsequent calls a
  * simply passed directly to the wrapped handler.
- *
+ * <p>
  * The user of this class doesn't know if the output is ultimatley XML or HTML.
- *
+ * <p>
  * This class is not a public API, it is public because it is used within Xalan.
+ *
  * @xsl.usage internal
  */
-public final class ToUnknownStream extends SerializerBase
-{
+public final class ToUnknownStream extends SerializerBase {
 
     /**
      * The wrapped handler, initially XML but possibly switched to HTML
@@ -138,17 +138,15 @@ public final class ToUnknownStream extends SerializerBase
      * Initially this object wraps an XML Stream object, so _handler is never null.
      * That may change later to an HTML Stream object.
      */
-    public ToUnknownStream()
-    {
+    public ToUnknownStream() {
         m_handler = new ToXMLStream();
     }
 
     /**
-     * @see Serializer#asContentHandler()
      * @return the wrapped XML or HTML handler
+     * @see Serializer#asContentHandler()
      */
-    public ContentHandler asContentHandler() throws IOException
-    {
+    public ContentHandler asContentHandler() throws IOException {
         /* don't return the real handler ( m_handler ) because
          * that would expose the real handler to the outside.
          * Keep m_handler private so it can be internally swapped
@@ -160,58 +158,52 @@ public final class ToUnknownStream extends SerializerBase
     /**
      * @see SerializationHandler#close()
      */
-    public void close()
-    {
+    public void close() {
         m_handler.close();
     }
 
     /**
-     * @see Serializer#getOutputFormat()
      * @return the properties of the underlying handler
+     * @see Serializer#getOutputFormat()
      */
-    public Properties getOutputFormat()
-    {
+    public Properties getOutputFormat() {
         return m_handler.getOutputFormat();
     }
 
     /**
-     * @see Serializer#getOutputStream()
      * @return the OutputStream of the underlying XML or HTML handler
+     * @see Serializer#getOutputStream()
      */
-    public OutputStream getOutputStream()
-    {
+    public OutputStream getOutputStream() {
         return m_handler.getOutputStream();
     }
 
     /**
-     * @see Serializer#getWriter()
      * @return the Writer of the underlying XML or HTML handler
+     * @see Serializer#getWriter()
      */
-    public Writer getWriter()
-    {
+    public Writer getWriter() {
         return m_handler.getWriter();
     }
 
     /**
      * passes the call on to the underlying HTML or XML handler
-     * @see Serializer#reset()
+     *
      * @return ???
+     * @see Serializer#reset()
      */
-    public boolean reset()
-    {
+    public boolean reset() {
         return m_handler.reset();
     }
 
     /**
      * Converts the DOM node to output
+     *
      * @param node the DOM node to transform to output
      * @see DOMSerializer#serialize(Node)
-     *
      */
-    public void serialize(Node node) throws IOException
-    {
-        if (m_firstTagNotEmitted)
-        {
+    public void serialize(Node node) throws IOException {
+        if (m_firstTagNotEmitted) {
             flush();
         }
         m_handler.serialize(node);
@@ -220,97 +212,95 @@ public final class ToUnknownStream extends SerializerBase
     /**
      * @see SerializationHandler#setEscaping(boolean)
      */
-    public boolean setEscaping(boolean escape) throws SAXException
-    {
+    public boolean setEscaping(boolean escape) throws SAXException {
         return m_handler.setEscaping(escape);
     }
 
     /**
      * Set the properties of the handler
+     *
      * @param format the output properties to set
      * @see Serializer#setOutputFormat(Properties)
      */
-    public void setOutputFormat(Properties format)
-    {
+    public void setOutputFormat(Properties format) {
         m_handler.setOutputFormat(format);
     }
 
     /**
      * Sets the output stream to write to
+     *
      * @param output the OutputStream to write to
      * @see Serializer#setOutputStream(OutputStream)
      */
-    public void setOutputStream(OutputStream output)
-    {
+    public void setOutputStream(OutputStream output) {
         m_handler.setOutputStream(output);
     }
 
     /**
      * Sets the writer to write to
+     *
      * @param writer the writer to write to
      * @see Serializer#setWriter(Writer)
      */
-    public void setWriter(Writer writer)
-    {
+    public void setWriter(Writer writer) {
         m_handler.setWriter(writer);
     }
 
     /**
      * Adds an attribute to the currenly open tag
-     * @param uri the URI of a namespace
-     * @param localName the attribute name, without prefix
-     * @param rawName the attribute name, with prefix (if any)
-     * @param type the type of the attribute, typically "CDATA"
-     * @param value the value of the parameter
+     *
+     * @param uri          the URI of a namespace
+     * @param localName    the attribute name, without prefix
+     * @param rawName      the attribute name, with prefix (if any)
+     * @param type         the type of the attribute, typically "CDATA"
+     * @param value        the value of the parameter
      * @param XSLAttribute true if this attribute is coming from an xsl:attribute element
      * @see ExtendedContentHandler#addAttribute(String, String, String, String, String)
      */
     public void addAttribute(
-        String uri,
-        String localName,
-        String rawName,
-        String type,
-        String value)
-        throws SAXException
-    {
+            String uri,
+            String localName,
+            String rawName,
+            String type,
+            String value)
+            throws SAXException {
         addAttribute(uri, localName, rawName, type, value, false);
     }
 
     /**
      * Adds an attribute to the currenly open tag
-     * @param uri the URI of a namespace
-     * @param localName the attribute name, without prefix
-     * @param rawName the attribute name, with prefix (if any)
-     * @param type the type of the attribute, typically "CDATA"
-     * @param value the value of the parameter
+     *
+     * @param uri          the URI of a namespace
+     * @param localName    the attribute name, without prefix
+     * @param rawName      the attribute name, with prefix (if any)
+     * @param type         the type of the attribute, typically "CDATA"
+     * @param value        the value of the parameter
      * @param XSLAttribute true if this attribute is coming from an xsl:attribute element
      * @see ExtendedContentHandler#addAttribute(String, String, String, String, String)
      */
     public void addAttribute(
-        String uri,
-        String localName,
-        String rawName,
-        String type,
-        String value,
-        boolean XSLAttribute)
-        throws SAXException
-    {
-        if (m_firstTagNotEmitted)
-        {
+            String uri,
+            String localName,
+            String rawName,
+            String type,
+            String value,
+            boolean XSLAttribute)
+            throws SAXException {
+        if (m_firstTagNotEmitted) {
             flush();
         }
         m_handler.addAttribute(uri, localName, rawName, type, value, XSLAttribute);
     }
+
     /**
      * Adds an attribute to the currenly open tag
+     *
      * @param rawName the attribute name, with prefix (if any)
-     * @param value the value of the parameter
+     * @param value   the value of the parameter
      * @see ExtendedContentHandler#addAttribute(String, String)
      */
-    public void addAttribute(String rawName, String value)
-    {
-        if (m_firstTagNotEmitted)
-        {
+    public void addAttribute(String rawName, String value) {
+        if (m_firstTagNotEmitted) {
             flush();
         }
         m_handler.addAttribute(rawName, value);
@@ -321,10 +311,8 @@ public final class ToUnknownStream extends SerializerBase
      * Adds a unique attribute to the currenly open tag
      */
     public void addUniqueAttribute(String rawName, String value, int flags)
-        throws SAXException
-    {
-        if (m_firstTagNotEmitted)
-        {
+            throws SAXException {
+        if (m_firstTagNotEmitted) {
             flush();
         }
         m_handler.addUniqueAttribute(rawName, value, flags);
@@ -337,12 +325,10 @@ public final class ToUnknownStream extends SerializerBase
      *
      * @see ExtendedContentHandler#characters(String)
      */
-    public void characters(String chars) throws SAXException
-    {
+    public void characters(String chars) throws SAXException {
         final int length = chars.length();
-        if (length > m_charsBuff.length)
-        {
-            m_charsBuff = new char[length*2 + 1];
+        if (length > m_charsBuff.length) {
+            m_charsBuff = new char[length * 2 + 1];
         }
         chars.getChars(0, length, m_charsBuff, 0);
         this.characters(m_charsBuff, 0, length);
@@ -350,12 +336,11 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see ExtendedContentHandler#endElement(String)
      */
-    public void endElement(String elementName) throws SAXException
-    {
-        if (m_firstTagNotEmitted)
-        {
+    public void endElement(String elementName) throws SAXException {
+        if (m_firstTagNotEmitted) {
             flush();
         }
         m_handler.endElement(elementName);
@@ -363,13 +348,12 @@ public final class ToUnknownStream extends SerializerBase
 
 
     /**
-     * @see org.xml.sax.ContentHandler#startPrefixMapping(String, String)
      * @param prefix The prefix that maps to the URI
-     * @param uri The URI for the namespace
+     * @param uri    The URI for the namespace
+     * @see org.xml.sax.ContentHandler#startPrefixMapping(String, String)
      */
-    public void startPrefixMapping(String prefix, String uri) throws SAXException
-    {
-        this.startPrefixMapping(prefix,uri, true);
+    public void startPrefixMapping(String prefix, String uri) throws SAXException {
+        this.startPrefixMapping(prefix, uri, true);
     }
 
     /**
@@ -378,20 +362,17 @@ public final class ToUnknownStream extends SerializerBase
      * startElement() and before and endElement().
      * startPrefixMapping(prefix,uri) would be used before the
      * startElement() call.
-     * @param uri the URI of the namespace
-     * @param prefix the prefix associated with the given URI.
      *
+     * @param uri    the URI of the namespace
+     * @param prefix the prefix associated with the given URI.
      * @see ExtendedContentHandler#namespaceAfterStartElement(String, String)
      */
     public void namespaceAfterStartElement(String prefix, String uri)
-        throws SAXException
-    {
+            throws SAXException {
         // hack for XSLTC with finding URI for default namespace
-        if (m_firstTagNotEmitted && m_firstElementURI == null && m_firstElementName != null)
-        {
+        if (m_firstTagNotEmitted && m_firstElementURI == null && m_firstElementName != null) {
             String prefix1 = getPrefixPart(m_firstElementName);
-            if (prefix1 == null && EMPTYSTRING.equals(prefix))
-            {
+            if (prefix1 == null && EMPTYSTRING.equals(prefix)) {
                 // the elements URI is not known yet, and it
                 // doesn't have a prefix, and we are currently
                 // setting the uri for prefix "", so we have
@@ -399,56 +380,46 @@ public final class ToUnknownStream extends SerializerBase
                 m_firstElementURI = uri;
             }
         }
-        startPrefixMapping(prefix,uri, false);
+        startPrefixMapping(prefix, uri, false);
     }
 
     public boolean startPrefixMapping(String prefix, String uri, boolean shouldFlush)
-        throws SAXException
-    {
+            throws SAXException {
         boolean pushed = false;
-        if (m_firstTagNotEmitted)
-        {
-            if (m_firstElementName != null && shouldFlush)
-            {
+        if (m_firstTagNotEmitted) {
+            if (m_firstElementName != null && shouldFlush) {
                 /* we've already seen a startElement, and this is a prefix mapping
                  * for the up coming element, so flush the old element
                  * then send this event on its way.
                  */
                 flush();
                 pushed = m_handler.startPrefixMapping(prefix, uri, shouldFlush);
-            }
-            else
-            {
-                if (m_namespacePrefix == null)
-                {
+            } else {
+                if (m_namespacePrefix == null) {
                     m_namespacePrefix = new Vector();
                     m_namespaceURI = new Vector();
                 }
                 m_namespacePrefix.addElement(prefix);
                 m_namespaceURI.addElement(uri);
 
-                if (m_firstElementURI == null)
-                {
+                if (m_firstElementURI == null) {
                     if (prefix.equals(m_firstElementPrefix))
                         m_firstElementURI = uri;
                 }
             }
 
-        }
-        else
-        {
-           pushed = m_handler.startPrefixMapping(prefix, uri, shouldFlush);
+        } else {
+            pushed = m_handler.startPrefixMapping(prefix, uri, shouldFlush);
         }
         return pushed;
     }
 
     /**
-      * This method cannot be cached because default is different in
-      * HTML and XML (we need more than a boolean).
-      */
+     * This method cannot be cached because default is different in
+     * HTML and XML (we need more than a boolean).
+     */
 
-    public void setVersion(String version)
-    {
+    public void setVersion(String version) {
         m_handler.setVersion(version);
 
         // Cache call to setVersion()
@@ -459,50 +430,41 @@ public final class ToUnknownStream extends SerializerBase
     /**
      * @see org.xml.sax.ContentHandler#startDocument()
      */
-    public void startDocument() throws SAXException
-    {
+    public void startDocument() throws SAXException {
         m_needToCallStartDocument = true;
     }
 
 
-
-    public void startElement(String qName) throws SAXException
-    {
+    public void startElement(String qName) throws SAXException {
         this.startElement(null, null, qName, null);
     }
 
-    public void startElement(String namespaceURI, String localName, String qName) throws SAXException
-    {
+    public void startElement(String namespaceURI, String localName, String qName) throws SAXException {
         this.startElement(namespaceURI, localName, qName, null);
     }
 
     public void startElement(
-        String namespaceURI,
-        String localName,
-        String elementName,
-        Attributes atts) throws SAXException
-    {
+            String namespaceURI,
+            String localName,
+            String elementName,
+            Attributes atts) throws SAXException {
 
-        if (m_needToCallSetDocumentInfo){
+        if (m_needToCallSetDocumentInfo) {
             super.setDocumentInfo();
             m_needToCallSetDocumentInfo = false;
         }
 
         /* we are notified of the start of an element */
-        if (m_firstTagNotEmitted)
-        {
+        if (m_firstTagNotEmitted) {
             /* we have not yet sent the first element on its way */
-            if (m_firstElementName != null)
-            {
+            if (m_firstElementName != null) {
                 /* this is not the first element, but a later one.
                  * But we have the old element pending, so flush it out,
                  * then send this one on its way.
                  */
                 flush();
-                m_handler.startElement(namespaceURI, localName, elementName,  atts);
-            }
-            else
-            {
+                m_handler.startElement(namespaceURI, localName, elementName, atts);
+            } else {
                 /* this is the very first element that we have seen,
                  * so save it for flushing later.  We may yet get to know its
                  * URI due to added attributes.
@@ -540,27 +502,22 @@ public final class ToUnknownStream extends SerializerBase
                     flush();
 
             }
-        }
-        else
-        {
+        } else {
             // this is not the first element, but a later one, so just
             // send it on its way.
-            m_handler.startElement(namespaceURI, localName, elementName,  atts);
+            m_handler.startElement(namespaceURI, localName, elementName, atts);
         }
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see ExtendedLexicalHandler#comment(String)
      */
-    public void comment(String comment) throws SAXException
-    {
-        if (m_firstTagNotEmitted && m_firstElementName != null)
-        {
+    public void comment(String comment) throws SAXException {
+        if (m_firstTagNotEmitted && m_firstElementName != null) {
             emitFirstTag();
-        }
-        else if (m_needToCallStartDocument)
-        {
+        } else if (m_needToCallStartDocument) {
             m_handler.startDocument();
             m_needToCallStartDocument = false;
         }
@@ -570,91 +527,90 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see XSLOutputAttributes#getDoctypePublic()
      */
-    public String getDoctypePublic()
-    {
+    public String getDoctypePublic() {
 
         return m_handler.getDoctypePublic();
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see XSLOutputAttributes#getDoctypeSystem()
      */
-    public String getDoctypeSystem()
-    {
+    public String getDoctypeSystem() {
         return m_handler.getDoctypeSystem();
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see XSLOutputAttributes#getEncoding()
      */
-    public String getEncoding()
-    {
+    public String getEncoding() {
         return m_handler.getEncoding();
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see XSLOutputAttributes#getIndent()
      */
-    public boolean getIndent()
-    {
+    public boolean getIndent() {
         return m_handler.getIndent();
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see XSLOutputAttributes#getIndentAmount()
      */
-    public int getIndentAmount()
-    {
+    public int getIndentAmount() {
         return m_handler.getIndentAmount();
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see XSLOutputAttributes#getMediaType()
      */
-    public String getMediaType()
-    {
+    public String getMediaType() {
         return m_handler.getMediaType();
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see XSLOutputAttributes#getOmitXMLDeclaration()
      */
-    public boolean getOmitXMLDeclaration()
-    {
+    public boolean getOmitXMLDeclaration() {
         return m_handler.getOmitXMLDeclaration();
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see XSLOutputAttributes#getStandalone()
      */
-    public String getStandalone()
-    {
+    public String getStandalone() {
         return m_handler.getStandalone();
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see XSLOutputAttributes#getVersion()
      */
-    public String getVersion()
-    {
+    public String getVersion() {
         return m_handler.getVersion();
     }
 
     /**
      * @see XSLOutputAttributes#setDoctype(String, String)
      */
-    public void setDoctype(String system, String pub)
-    {
+    public void setDoctype(String system, String pub) {
         m_handler.setDoctypePublic(pub);
         m_handler.setDoctypeSystem(system);
     }
@@ -662,11 +618,11 @@ public final class ToUnknownStream extends SerializerBase
     /**
      * Set the doctype in the underlying XML handler. Remember that this method
      * was called, just in case we need to transfer this doctype to an HTML handler
+     *
      * @param doctype the public doctype to set
      * @see XSLOutputAttributes#setDoctypePublic(String)
      */
-    public void setDoctypePublic(String doctype)
-    {
+    public void setDoctypePublic(String doctype) {
         m_handler.setDoctypePublic(doctype);
         m_setDoctypePublic_called = true;
     }
@@ -674,65 +630,63 @@ public final class ToUnknownStream extends SerializerBase
     /**
      * Set the doctype in the underlying XML handler. Remember that this method
      * was called, just in case we need to transfer this doctype to an HTML handler
+     *
      * @param doctype the system doctype to set
      * @see XSLOutputAttributes#setDoctypeSystem(String)
      */
-    public void setDoctypeSystem(String doctype)
-    {
+    public void setDoctypeSystem(String doctype) {
         m_handler.setDoctypeSystem(doctype);
         m_setDoctypeSystem_called = true;
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see XSLOutputAttributes#setEncoding(String)
      */
-    public void setEncoding(String encoding)
-    {
+    public void setEncoding(String encoding) {
         m_handler.setEncoding(encoding);
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see XSLOutputAttributes#setIndent(boolean)
      */
-    public void setIndent(boolean indent)
-    {
+    public void setIndent(boolean indent) {
         m_handler.setIndent(indent);
     }
 
     /**
      * Pass the call on to the underlying handler
      */
-    public void setIndentAmount(int value)
-    {
+    public void setIndentAmount(int value) {
         m_handler.setIndentAmount(value);
     }
 
     /**
      * @see XSLOutputAttributes#setMediaType(String)
      */
-    public void setMediaType(String mediaType)
-    {
+    public void setMediaType(String mediaType) {
         m_handler.setMediaType(mediaType);
         m_setMediaType_called = true;
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see XSLOutputAttributes#setOmitXMLDeclaration(boolean)
      */
-    public void setOmitXMLDeclaration(boolean b)
-    {
+    public void setOmitXMLDeclaration(boolean b) {
         m_handler.setOmitXMLDeclaration(b);
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see XSLOutputAttributes#setStandalone(String)
      */
-    public void setStandalone(String standalone)
-    {
+    public void setStandalone(String standalone) {
         m_handler.setStandalone(standalone);
     }
 
@@ -742,27 +696,26 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ext.DeclHandler#attributeDecl(String, String, String, String, String)
      */
     public void attributeDecl(
-        String arg0,
-        String arg1,
-        String arg2,
-        String arg3,
-        String arg4)
-        throws SAXException
-    {
+            String arg0,
+            String arg1,
+            String arg2,
+            String arg3,
+            String arg4)
+            throws SAXException {
         m_handler.attributeDecl(arg0, arg1, arg2, arg3, arg4);
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ext.DeclHandler#elementDecl(String, String)
      */
-    public void elementDecl(String arg0, String arg1) throws SAXException
-    {
-        if (m_firstTagNotEmitted)
-        {
+    public void elementDecl(String arg0, String arg1) throws SAXException {
+        if (m_firstTagNotEmitted) {
             emitFirstTag();
         }
         m_handler.elementDecl(arg0, arg1);
@@ -770,16 +723,15 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ext.DeclHandler#externalEntityDecl(String, String, String)
      */
     public void externalEntityDecl(
-        String name,
-        String publicId,
-        String systemId)
-        throws SAXException
-    {
-        if (m_firstTagNotEmitted)
-        {
+            String name,
+            String publicId,
+            String systemId)
+            throws SAXException {
+        if (m_firstTagNotEmitted) {
             flush();
         }
         m_handler.externalEntityDecl(name, publicId, systemId);
@@ -787,13 +739,12 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ext.DeclHandler#internalEntityDecl(String, String)
      */
     public void internalEntityDecl(String arg0, String arg1)
-        throws SAXException
-    {
-        if (m_firstTagNotEmitted)
-        {
+            throws SAXException {
+        if (m_firstTagNotEmitted) {
             flush();
         }
         m_handler.internalEntityDecl(arg0, arg1);
@@ -801,13 +752,12 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ContentHandler#characters(char[], int, int)
      */
     public void characters(char[] characters, int offset, int length)
-        throws SAXException
-    {
-        if (m_firstTagNotEmitted)
-        {
+            throws SAXException {
+        if (m_firstTagNotEmitted) {
             flush();
         }
 
@@ -817,12 +767,11 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ContentHandler#endDocument()
      */
-    public void endDocument() throws SAXException
-    {
-        if (m_firstTagNotEmitted)
-        {
+    public void endDocument() throws SAXException {
+        if (m_firstTagNotEmitted) {
             flush();
         }
 
@@ -833,13 +782,12 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ContentHandler#endElement(String, String, String)
      */
     public void endElement(String namespaceURI, String localName, String qName)
-        throws SAXException
-    {
-        if (m_firstTagNotEmitted)
-        {
+            throws SAXException {
+        if (m_firstTagNotEmitted) {
             flush();
             if (namespaceURI == null && m_firstElementURI != null)
                 namespaceURI = m_firstElementURI;
@@ -854,22 +802,21 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ContentHandler#endPrefixMapping(String)
      */
-    public void endPrefixMapping(String prefix) throws SAXException
-    {
+    public void endPrefixMapping(String prefix) throws SAXException {
         m_handler.endPrefixMapping(prefix);
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ContentHandler#ignorableWhitespace(char[], int, int)
      */
     public void ignorableWhitespace(char[] ch, int start, int length)
-        throws SAXException
-    {
-        if (m_firstTagNotEmitted)
-        {
+            throws SAXException {
+        if (m_firstTagNotEmitted) {
             flush();
         }
         m_handler.ignorableWhitespace(ch, start, length);
@@ -877,13 +824,12 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ContentHandler#processingInstruction(String, String)
      */
     public void processingInstruction(String target, String data)
-        throws SAXException
-    {
-          if (m_firstTagNotEmitted)
-        {
+            throws SAXException {
+        if (m_firstTagNotEmitted) {
             flush();
         }
 
@@ -892,33 +838,31 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ContentHandler#setDocumentLocator(Locator)
      */
-    public void setDocumentLocator(Locator locator)
-    {
+    public void setDocumentLocator(Locator locator) {
         super.setDocumentLocator(locator);
         m_handler.setDocumentLocator(locator);
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ContentHandler#skippedEntity(String)
      */
-    public void skippedEntity(String name) throws SAXException
-    {
+    public void skippedEntity(String name) throws SAXException {
         m_handler.skippedEntity(name);
     }
 
 
-
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ext.LexicalHandler#comment(char[], int, int)
      */
-    public void comment(char[] ch, int start, int length) throws SAXException
-    {
-        if (m_firstTagNotEmitted)
-        {
+    public void comment(char[] ch, int start, int length) throws SAXException {
+        if (m_firstTagNotEmitted) {
             flush();
         }
 
@@ -927,32 +871,31 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ext.LexicalHandler#endCDATA()
      */
-    public void endCDATA() throws SAXException
-    {
+    public void endCDATA() throws SAXException {
 
         m_handler.endCDATA();
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ext.LexicalHandler#endDTD()
      */
-    public void endDTD() throws SAXException
-    {
+    public void endDTD() throws SAXException {
 
         m_handler.endDTD();
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ext.LexicalHandler#endEntity(String)
      */
-    public void endEntity(String name) throws SAXException
-    {
-        if (m_firstTagNotEmitted)
-        {
+    public void endEntity(String name) throws SAXException {
+        if (m_firstTagNotEmitted) {
             emitFirstTag();
         }
         m_handler.endEntity(name);
@@ -960,29 +903,29 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ext.LexicalHandler#startCDATA()
      */
-    public void startCDATA() throws SAXException
-    {
+    public void startCDATA() throws SAXException {
         m_handler.startCDATA();
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ext.LexicalHandler#startDTD(String, String, String)
      */
     public void startDTD(String name, String publicId, String systemId)
-        throws SAXException
-    {
+            throws SAXException {
         m_handler.startDTD(name, publicId, systemId);
     }
 
     /**
      * Pass the call on to the underlying handler
+     *
      * @see org.xml.sax.ext.LexicalHandler#startEntity(String)
      */
-    public void startEntity(String name) throws SAXException
-    {
+    public void startEntity(String name) throws SAXException {
         m_handler.startEntity(name);
     }
 
@@ -991,16 +934,13 @@ public final class ToUnknownStream extends SerializerBase
      * If the stream handler should be HTML, then replace the XML handler with
      * an HTML handler. After than send the starting method calls that were cached
      * to the wrapped handler.
-     *
      */
-    private void initStreamOutput() throws SAXException
-    {
+    private void initStreamOutput() throws SAXException {
 
         // Try to rule out if this is an not to be an HTML document based on prefix
         boolean firstElementIsHTML = isFirstElemHTML();
 
-        if (firstElementIsHTML)
-        {
+        if (firstElementIsHTML) {
             // create an HTML output handler, and initialize it
 
             // keep a reference to the old handler, ... it will soon be gone
@@ -1012,9 +952,9 @@ public final class ToUnknownStream extends SerializerBase
              */
 
             Properties htmlProperties =
-                OutputPropertiesFactory.getDefaultMethodProperties(Method.HTML);
+                    OutputPropertiesFactory.getDefaultMethodProperties(Method.HTML);
             Serializer serializer =
-                SerializerFactory.getSerializer(htmlProperties);
+                    SerializerFactory.getSerializer(htmlProperties);
 
             // The factory should be returning a ToStream
             // Don't know what to do if it doesn't
@@ -1027,8 +967,7 @@ public final class ToUnknownStream extends SerializerBase
 
             if (null != writer)
                 m_handler.setWriter(writer);
-            else
-            {
+            else {
                 OutputStream os = oldHandler.getOutputStream();
 
                 if (null != os)
@@ -1061,8 +1000,7 @@ public final class ToUnknownStream extends SerializerBase
          * pass any cached calls to it
          */
         // Call startDocument() if necessary
-        if (m_needToCallStartDocument)
-        {
+        if (m_needToCallStartDocument) {
             m_handler.startDocument();
             m_needToCallStartDocument = false;
         }
@@ -1071,12 +1009,9 @@ public final class ToUnknownStream extends SerializerBase
         m_wrapped_handler_not_initialized = false;
     }
 
-    private void emitFirstTag() throws SAXException
-    {
-        if (m_firstElementName != null)
-        {
-            if (m_wrapped_handler_not_initialized)
-            {
+    private void emitFirstTag() throws SAXException {
+        if (m_firstElementName != null) {
+            if (m_wrapped_handler_not_initialized) {
                 initStreamOutput();
                 m_wrapped_handler_not_initialized = false;
             }
@@ -1086,13 +1021,11 @@ public final class ToUnknownStream extends SerializerBase
             m_attributes = null;
 
             // Output namespaces of first tag
-            if (m_namespacePrefix != null)
-            {
+            if (m_namespacePrefix != null) {
                 final int n = m_namespacePrefix.size();
-                for (int i = 0; i < n; i++)
-                {
+                for (int i = 0; i < n; i++) {
                     final String prefix =
-                        (String) m_namespacePrefix.elementAt(i);
+                            (String) m_namespacePrefix.elementAt(i);
                     final String uri = (String) m_namespaceURI.elementAt(i);
                     m_handler.startPrefixMapping(prefix, uri, false);
                 }
@@ -1105,12 +1038,11 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Utility function for calls to local-name().
-     *
+     * <p>
      * Don't want to override static function on SerializerBase
      * So added Unknown suffix to method name.
      */
-    private String getLocalNameUnknown(String value)
-    {
+    private String getLocalNameUnknown(String value) {
         int idx = value.lastIndexOf(':');
         if (idx >= 0)
             value = value.substring(idx + 1);
@@ -1121,13 +1053,12 @@ public final class ToUnknownStream extends SerializerBase
     }
 
     /**
-         * Utility function to return prefix
-         *
-         * Don't want to override static function on SerializerBase
-         * So added Unknown suffix to method name.
-         */
-    private String getPrefixPartUnknown(String qname)
-    {
+     * Utility function to return prefix
+     * <p>
+     * Don't want to override static function on SerializerBase
+     * So added Unknown suffix to method name.
+     */
+    private String getPrefixPartUnknown(String qname) {
         final int index = qname.indexOf(':');
         return (index > 0) ? qname.substring(0, index) : EMPTYSTRING;
     }
@@ -1139,39 +1070,34 @@ public final class ToUnknownStream extends SerializerBase
      *
      * @return true if the first element is an opening <html> tag
      */
-    private boolean isFirstElemHTML()
-    {
+    private boolean isFirstElemHTML() {
         boolean isHTML;
 
         // is the first tag html, not considering the prefix ?
         isHTML =
-            getLocalNameUnknown(m_firstElementName).equalsIgnoreCase("html");
+                getLocalNameUnknown(m_firstElementName).equalsIgnoreCase("html");
 
         // Try to rule out if this is not to be an HTML document based on URI
         if (isHTML
-            && m_firstElementURI != null
-            && !EMPTYSTRING.equals(m_firstElementURI))
-        {
+                && m_firstElementURI != null
+                && !EMPTYSTRING.equals(m_firstElementURI)) {
             // the <html> element has a non-trivial namespace
             isHTML = false;
         }
         // Try to rule out if this is an not to be an HTML document based on prefix
-        if (isHTML && m_namespacePrefix != null)
-        {
+        if (isHTML && m_namespacePrefix != null) {
             /* the first element has a name of "html", but lets check the prefix.
              * If the prefix points to a namespace with a URL that is not ""
              * then the doecument doesn't start with an <html> tag, and isn't html
              */
             final int max = m_namespacePrefix.size();
-            for (int i = 0; i < max; i++)
-            {
+            for (int i = 0; i < max; i++) {
                 final String prefix = (String) m_namespacePrefix.elementAt(i);
                 final String uri = (String) m_namespaceURI.elementAt(i);
 
                 if (m_firstElementPrefix != null
-                    && m_firstElementPrefix.equals(prefix)
-                    && !EMPTYSTRING.equals(uri))
-                {
+                        && m_firstElementPrefix.equals(prefix)
+                        && !EMPTYSTRING.equals(uri)) {
                     // The first element has a prefix, so it can't be <html>
                     isHTML = false;
                     break;
@@ -1181,72 +1107,64 @@ public final class ToUnknownStream extends SerializerBase
         }
         return isHTML;
     }
+
     /**
      * @see Serializer#asDOMSerializer()
      */
-    public DOMSerializer asDOMSerializer() throws IOException
-    {
+    public DOMSerializer asDOMSerializer() throws IOException {
         return m_handler.asDOMSerializer();
     }
 
     /**
      * @param URI_and_localNames Vector a list of pairs of URI/localName
-     * specified in the cdata-section-elements attribute.
+     *                           specified in the cdata-section-elements attribute.
      * @see SerializationHandler#setCdataSectionElements(java.util.Vector)
      */
-    public void setCdataSectionElements(Vector URI_and_localNames)
-    {
+    public void setCdataSectionElements(Vector URI_and_localNames) {
         m_handler.setCdataSectionElements(URI_and_localNames);
     }
+
     /**
      * @see ExtendedContentHandler#addAttributes(org.xml.sax.Attributes)
      */
-    public void addAttributes(Attributes atts) throws SAXException
-    {
+    public void addAttributes(Attributes atts) throws SAXException {
         m_handler.addAttributes(atts);
     }
 
     /**
      * Get the current namespace mappings.
      * Simply returns the mappings of the wrapped handler.
+     *
      * @see ExtendedContentHandler#getNamespaceMappings()
      */
-    public NamespaceMappings getNamespaceMappings()
-    {
+    public NamespaceMappings getNamespaceMappings() {
         NamespaceMappings mappings = null;
-        if (m_handler != null)
-        {
+        if (m_handler != null) {
             mappings = m_handler.getNamespaceMappings();
         }
         return mappings;
     }
+
     /**
      * @see SerializationHandler#flushPending()
      */
-    public void flushPending() throws SAXException
-    {
+    public void flushPending() throws SAXException {
 
         flush();
 
         m_handler.flushPending();
     }
 
-    private void flush()
-    {
-        try
-        {
-        if (m_firstTagNotEmitted)
-        {
-            emitFirstTag();
-        }
-        if (m_needToCallStartDocument)
-        {
-            m_handler.startDocument();
-            m_needToCallStartDocument = false;
-        }
-        }
-        catch(SAXException e)
-        {
+    private void flush() {
+        try {
+            if (m_firstTagNotEmitted) {
+                emitFirstTag();
+            }
+            if (m_needToCallStartDocument) {
+                m_handler.startDocument();
+                m_needToCallStartDocument = false;
+            }
+        } catch (SAXException e) {
             throw new RuntimeException(e.toString());
         }
 
@@ -1256,67 +1174,61 @@ public final class ToUnknownStream extends SerializerBase
     /**
      * @see ExtendedContentHandler#getPrefix
      */
-    public String getPrefix(String namespaceURI)
-    {
+    public String getPrefix(String namespaceURI) {
         return m_handler.getPrefix(namespaceURI);
     }
+
     /**
      * @see ExtendedContentHandler#entityReference(java.lang.String)
      */
-    public void entityReference(String entityName) throws SAXException
-    {
+    public void entityReference(String entityName) throws SAXException {
         m_handler.entityReference(entityName);
     }
 
     /**
      * @see ExtendedContentHandler#getNamespaceURI(java.lang.String, boolean)
      */
-    public String getNamespaceURI(String qname, boolean isElement)
-    {
+    public String getNamespaceURI(String qname, boolean isElement) {
         return m_handler.getNamespaceURI(qname, isElement);
     }
 
-    public String getNamespaceURIFromPrefix(String prefix)
-    {
+    public String getNamespaceURIFromPrefix(String prefix) {
         return m_handler.getNamespaceURIFromPrefix(prefix);
     }
 
-    public void setTransformer(Transformer t)
-    {
+    public void setTransformer(Transformer t) {
         m_handler.setTransformer(t);
         if ((t instanceof SerializerTrace) &&
-            (((SerializerTrace) t).hasTraceListeners())) {
-           m_tracer = (SerializerTrace) t;
+                (((SerializerTrace) t).hasTraceListeners())) {
+            m_tracer = (SerializerTrace) t;
         } else {
-           m_tracer = null;
+            m_tracer = null;
         }
     }
-    public Transformer getTransformer()
-    {
+
+    public Transformer getTransformer() {
         return m_handler.getTransformer();
     }
 
     /**
      * @see SerializationHandler#setContentHandler(org.xml.sax.ContentHandler)
      */
-    public void setContentHandler(ContentHandler ch)
-    {
+    public void setContentHandler(ContentHandler ch) {
         m_handler.setContentHandler(ch);
     }
+
     /**
      * This method is used to set the source locator, which might be used to
      * generated an error message.
-     * @param locator the source locator
      *
+     * @param locator the source locator
      * @see ExtendedContentHandler#setSourceLocator(javax.xml.transform.SourceLocator)
      */
-    public void setSourceLocator(SourceLocator locator)
-    {
+    public void setSourceLocator(SourceLocator locator) {
         m_handler.setSourceLocator(locator);
     }
 
-    protected void firePseudoElement(String elementName)
-    {
+    protected void firePseudoElement(String elementName) {
 
         if (m_tracer != null) {
             StringBuffer sb = new StringBuffer();
@@ -1329,10 +1241,10 @@ public final class ToUnknownStream extends SerializerBase
             // be written
             char ch[] = sb.toString().toCharArray();
             m_tracer.fireGenerateEvent(
-                SerializerTrace.EVENTTYPE_OUTPUT_PSEUDO_CHARACTERS,
-                ch,
-                0,
-                ch.length);
+                    SerializerTrace.EVENTTYPE_OUTPUT_PSEUDO_CHARACTERS,
+                    ch,
+                    0,
+                    ch.length);
         }
     }
 }

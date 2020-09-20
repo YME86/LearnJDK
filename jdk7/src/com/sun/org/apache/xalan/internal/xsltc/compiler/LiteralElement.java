@@ -86,7 +86,7 @@ final class LiteralElement extends Instruction {
             }
         }
         return _accessedPrefixes != null ?
-            (String) _accessedPrefixes.get(prefix) : null;
+                (String) _accessedPrefixes.get(prefix) : null;
     }
 
     /**
@@ -108,11 +108,10 @@ final class LiteralElement extends Instruction {
         // Check if we have any declared namesaces
         if (_accessedPrefixes == null) {
             _accessedPrefixes = new Hashtable();
-        }
-        else {
+        } else {
             if (!declared) {
                 // Check if this node has a declaration for this namespace
-                final String old = (String)_accessedPrefixes.get(prefix);
+                final String old = (String) _accessedPrefixes.get(prefix);
                 if (old != null) {
                     if (old.equals(uri))
                         return;
@@ -123,7 +122,7 @@ final class LiteralElement extends Instruction {
         }
 
         if (!prefix.equals("xml")) {
-            _accessedPrefixes.put(prefix,uri);
+            _accessedPrefixes.put(prefix, uri);
         }
     }
 
@@ -141,7 +140,7 @@ final class LiteralElement extends Instruction {
         if (prefix == null)
             prefix = Constants.EMPTYSTRING;
         else if (prefix.equals(XMLNS_STRING))
-            return(XMLNS_STRING);
+            return (XMLNS_STRING);
 
         // Check if we must translate the prefix
         final String alternative = stable.lookupPrefixAlias(prefix);
@@ -152,16 +151,16 @@ final class LiteralElement extends Instruction {
 
         // Get the namespace this prefix refers to
         String uri = lookupNamespace(prefix);
-        if (uri == null) return(localname);
+        if (uri == null) return (localname);
 
         // Register the namespace as accessed
         registerNamespace(prefix, uri, stable, false);
 
         // Construct the new name for the element (may be unchanged)
         if (prefix != Constants.EMPTYSTRING)
-            return(prefix+":"+localname);
+            return (prefix + ":" + localname);
         else
-            return(localname);
+            return (localname);
     }
 
     /**
@@ -181,7 +180,7 @@ final class LiteralElement extends Instruction {
         if (_attributeElements == null) {
             _attributeElements = new Vector(2);
         }
-        _attributeElements.insertElementAt(attribute,0);
+        _attributeElements.insertElementAt(attribute, 0);
     }
 
     /**
@@ -194,7 +193,7 @@ final class LiteralElement extends Instruction {
             final int count = _attributeElements.size();
             for (int i = 0; i < count; i++) {
                 SyntaxTreeNode node =
-                    (SyntaxTreeNode)_attributeElements.elementAt(i);
+                        (SyntaxTreeNode) _attributeElements.elementAt(i);
                 node.typeCheck(stable);
             }
         }
@@ -215,7 +214,7 @@ final class LiteralElement extends Instruction {
             if (mapping != null) {
                 Enumeration prefixes = mapping.keys();
                 while (prefixes.hasMoreElements()) {
-                    String prefix = (String)prefixes.nextElement();
+                    String prefix = (String) prefixes.nextElement();
                     if (!all.containsKey(prefix)) {
                         all.put(prefix, mapping.get(prefix));
                     }
@@ -223,7 +222,7 @@ final class LiteralElement extends Instruction {
             }
             node = node.getParent();
         }
-        return(all.keys());
+        return (all.keys());
     }
 
     /**
@@ -256,7 +255,7 @@ final class LiteralElement extends Instruction {
                 if (!Util.isValidQNames(val)) {
                     ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, val, this);
                     parser.reportError(Constants.ERROR, err);
-               }
+                }
                 setFirstAttribute(new UseAttributeSets(val, parser));
             }
             // Handle xsl:extension-element-prefixes
@@ -266,14 +265,12 @@ final class LiteralElement extends Instruction {
             // Handle xsl:exclude-result-prefixes
             else if (qname.equals(parser.getExcludeResultPrefixes())) {
                 stable.excludeNamespaces(val);
-            }
-            else {
+            } else {
                 // Ignore special attributes (e.g. xmlns:prefix and xmlns)
                 final String prefix = qname.getPrefix();
                 if (prefix != null && prefix.equals(XMLNS_PREFIX) ||
-                    prefix == null && qname.getLocalPart().equals("xmlns") ||
-                    uri != null && uri.equals(XSLT_URI))
-                {
+                        prefix == null && qname.getLocalPart().equals("xmlns") ||
+                        uri != null && uri.equals(XSLT_URI)) {
                     continue;
                 }
 
@@ -290,7 +287,7 @@ final class LiteralElement extends Instruction {
         // are listed in the xsl:stylesheet element's *-prefixes attributes
         final Enumeration include = getNamespaceScope(this);
         while (include.hasMoreElements()) {
-            final String prefix = (String)include.nextElement();
+            final String prefix = (String) include.nextElement();
             if (!prefix.equals("xml")) {
                 final String uri = lookupNamespace(prefix);
                 if (uri != null && !stable.isExcludedNamespace(uri)) {
@@ -344,8 +341,8 @@ final class LiteralElement extends Instruction {
         il.append(methodGen.startElement());
 
         // The value of an attribute may depend on a (sibling) variable
-        int j=0;
-        while (j < elementCount())  {
+        int j = 0;
+        while (j < elementCount()) {
             final SyntaxTreeNode item = (SyntaxTreeNode) elementAt(j);
             if (item instanceof Variable) {
                 item.translate(classGen, methodGen);
@@ -359,18 +356,17 @@ final class LiteralElement extends Instruction {
             Enumeration e = _accessedPrefixes.keys();
 
             while (e.hasMoreElements()) {
-                final String prefix = (String)e.nextElement();
-                final String uri = (String)_accessedPrefixes.get(prefix);
+                final String prefix = (String) e.nextElement();
+                final String uri = (String) _accessedPrefixes.get(prefix);
 
                 if (uri != Constants.EMPTYSTRING ||
-                        prefix != Constants.EMPTYSTRING)
-                {
+                        prefix != Constants.EMPTYSTRING) {
                     if (prefix == Constants.EMPTYSTRING) {
                         declaresDefaultNS = true;
                     }
                     il.append(methodGen.loadHandler());
-                    il.append(new PUSH(cpg,prefix));
-                    il.append(new PUSH(cpg,uri));
+                    il.append(new PUSH(cpg, prefix));
+                    il.append(new PUSH(cpg, uri));
                     il.append(methodGen.namespace());
                 }
             }
@@ -380,8 +376,7 @@ final class LiteralElement extends Instruction {
              * element doesn't, it must be redeclared one more time.
              */
             if (!declaresDefaultNS && (_parent instanceof XslElement)
-                    && ((XslElement) _parent).declaresDefaultNS())
-            {
+                    && ((XslElement) _parent).declaresDefaultNS()) {
                 il.append(methodGen.loadHandler());
                 il.append(new PUSH(cpg, Constants.EMPTYSTRING));
                 il.append(new PUSH(cpg, Constants.EMPTYSTRING));
@@ -394,7 +389,7 @@ final class LiteralElement extends Instruction {
             final int count = _attributeElements.size();
             for (int i = 0; i < count; i++) {
                 SyntaxTreeNode node =
-                    (SyntaxTreeNode)_attributeElements.elementAt(i);
+                        (SyntaxTreeNode) _attributeElements.elementAt(i);
                 if (!(node instanceof XslAttribute)) {
                     node.translate(classGen, methodGen);
                 }
@@ -423,8 +418,7 @@ final class LiteralElement extends Instruction {
     public ElemDesc getElemDesc() {
         if (isHTMLOutput()) {
             return ToHTMLStream.getElemDesc(_name);
-        }
-        else
+        } else
             return null;
     }
 
@@ -439,49 +433,47 @@ final class LiteralElement extends Instruction {
      * Check whether all attributes are unique.
      */
     private boolean checkAttributesUnique() {
-         boolean hasHiddenXslAttribute = canProduceAttributeNodes(this, true);
-         if (hasHiddenXslAttribute)
-             return false;
+        boolean hasHiddenXslAttribute = canProduceAttributeNodes(this, true);
+        if (hasHiddenXslAttribute)
+            return false;
 
-         if (_attributeElements != null) {
-             int numAttrs = _attributeElements.size();
-             Hashtable attrsTable = null;
-             for (int i = 0; i < numAttrs; i++) {
-                 SyntaxTreeNode node = (SyntaxTreeNode)_attributeElements.elementAt(i);
+        if (_attributeElements != null) {
+            int numAttrs = _attributeElements.size();
+            Hashtable attrsTable = null;
+            for (int i = 0; i < numAttrs; i++) {
+                SyntaxTreeNode node = (SyntaxTreeNode) _attributeElements.elementAt(i);
 
-                 if (node instanceof UseAttributeSets) {
-                     return false;
-                 }
-                 else if (node instanceof XslAttribute) {
-                     if (attrsTable == null) {
+                if (node instanceof UseAttributeSets) {
+                    return false;
+                } else if (node instanceof XslAttribute) {
+                    if (attrsTable == null) {
                         attrsTable = new Hashtable();
-                         for (int k = 0; k < i; k++) {
-                             SyntaxTreeNode n = (SyntaxTreeNode)_attributeElements.elementAt(k);
-                             if (n instanceof LiteralAttribute) {
-                                 LiteralAttribute literalAttr = (LiteralAttribute)n;
-                                 attrsTable.put(literalAttr.getName(), literalAttr);
-                             }
-                         }
-                     }
+                        for (int k = 0; k < i; k++) {
+                            SyntaxTreeNode n = (SyntaxTreeNode) _attributeElements.elementAt(k);
+                            if (n instanceof LiteralAttribute) {
+                                LiteralAttribute literalAttr = (LiteralAttribute) n;
+                                attrsTable.put(literalAttr.getName(), literalAttr);
+                            }
+                        }
+                    }
 
-                     XslAttribute xslAttr = (XslAttribute)node;
-                     AttributeValue attrName = xslAttr.getName();
-                     if (attrName instanceof AttributeValueTemplate) {
-                         return false;
-                     }
-                     else if (attrName instanceof SimpleAttributeValue) {
-                         SimpleAttributeValue simpleAttr = (SimpleAttributeValue)attrName;
-                         String name = simpleAttr.toString();
-                         if (name != null && attrsTable.get(name) != null)
-                             return false;
-                         else if (name != null) {
-                             attrsTable.put(name, xslAttr);
-                         }
-                     }
-                 }
-             }
-         }
-         return true;
+                    XslAttribute xslAttr = (XslAttribute) node;
+                    AttributeValue attrName = xslAttr.getName();
+                    if (attrName instanceof AttributeValueTemplate) {
+                        return false;
+                    } else if (attrName instanceof SimpleAttributeValue) {
+                        SimpleAttributeValue simpleAttr = (SimpleAttributeValue) attrName;
+                        String name = simpleAttr.toString();
+                        if (name != null && attrsTable.get(name) != null)
+                            return false;
+                        else if (name != null) {
+                            attrsTable.put(name, xslAttr);
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -494,9 +486,9 @@ final class LiteralElement extends Instruction {
         Vector contents = node.getContents();
         int size = contents.size();
         for (int i = 0; i < size; i++) {
-            SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
+            SyntaxTreeNode child = (SyntaxTreeNode) contents.elementAt(i);
             if (child instanceof Text) {
-                Text text = (Text)child;
+                Text text = (Text) child;
                 if (text.isIgnore())
                     continue;
                 else
@@ -505,11 +497,11 @@ final class LiteralElement extends Instruction {
             // Cannot add an attribute to an element after children have been added to it.
             // We can safely return false when the instruction can produce an output node.
             else if (child instanceof LiteralElement
-                || child instanceof ValueOf
-                || child instanceof XslElement
-                || child instanceof Comment
-                || child instanceof Number
-                || child instanceof ProcessingInstruction)
+                    || child instanceof ValueOf
+                    || child instanceof XslElement
+                    || child instanceof Comment
+                    || child instanceof Number
+                    || child instanceof ProcessingInstruction)
                 return false;
             else if (child instanceof XslAttribute) {
                 if (ignoreXslAttribute)
@@ -522,20 +514,19 @@ final class LiteralElement extends Instruction {
             // <xsl:copy-of> can also copy attribute nodes to an element. Return
             // true in those cases to be safe.
             else if (child instanceof CallTemplate
-                || child instanceof ApplyTemplates
-                || child instanceof Copy
-                || child instanceof CopyOf)
+                    || child instanceof ApplyTemplates
+                    || child instanceof Copy
+                    || child instanceof CopyOf)
                 return true;
             else if ((child instanceof If
-                       || child instanceof ForEach)
-                     && canProduceAttributeNodes(child, false)) {
+                    || child instanceof ForEach)
+                    && canProduceAttributeNodes(child, false)) {
                 return true;
-            }
-            else if (child instanceof Choose) {
+            } else if (child instanceof Choose) {
                 Vector chooseContents = child.getContents();
                 int num = chooseContents.size();
                 for (int k = 0; k < num; k++) {
-                    SyntaxTreeNode chooseChild = (SyntaxTreeNode)chooseContents.elementAt(k);
+                    SyntaxTreeNode chooseChild = (SyntaxTreeNode) chooseContents.elementAt(k);
                     if (chooseChild instanceof When || chooseChild instanceof Otherwise) {
                         if (canProduceAttributeNodes(chooseChild, false))
                             return true;

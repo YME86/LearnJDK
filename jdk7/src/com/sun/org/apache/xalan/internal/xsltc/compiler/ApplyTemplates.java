@@ -48,9 +48,9 @@ import com.sun.org.apache.xml.internal.utils.XML11Char;
  */
 final class ApplyTemplates extends Instruction {
     private Expression _select;
-    private Type       _type = null;
-    private QName      _modeName;
-    private String     _functionName;
+    private Type _type = null;
+    private QName _modeName;
+    private String _functionName;
 
     public void display(int indent) {
         indent(indent);
@@ -69,7 +69,7 @@ final class ApplyTemplates extends Instruction {
 
     public void parseContents(Parser parser) {
         final String select = getAttribute("select");
-        final String mode   = getAttribute("mode");
+        final String mode = getAttribute("mode");
 
         if (select.length() > 0) {
             _select = parser.parseExpression(this, "select", null);
@@ -86,7 +86,7 @@ final class ApplyTemplates extends Instruction {
 
         // instantiate Mode if needed, cache (apply temp) function name
         _functionName =
-            parser.getTopLevelStylesheet().getMode(_modeName).functionName();
+                parser.getTopLevelStylesheet().getMode(_modeName).functionName();
         parseChildren(parser);// with-params
     }
 
@@ -97,13 +97,12 @@ final class ApplyTemplates extends Instruction {
                 _select = new CastExpr(_select, Type.NodeSet);
                 _type = Type.NodeSet;
             }
-            if (_type instanceof NodeSetType||_type instanceof ResultTreeType) {
+            if (_type instanceof NodeSetType || _type instanceof ResultTreeType) {
                 typeCheckContents(stable); // with-params
                 return Type.Void;
             }
             throw new TypeCheckError(this);
-        }
-        else {
+        } else {
             typeCheckContents(stable);          // with-params
             return Type.Void;
         }
@@ -134,8 +133,8 @@ final class ApplyTemplates extends Instruction {
         if (stylesheet.hasLocalParams() || hasContents()) {
             il.append(classGen.loadTranslet());
             final int pushFrame = cpg.addMethodref(TRANSLET_CLASS,
-                                                   PUSH_PARAM_FRAME,
-                                                   PUSH_PARAM_FRAME_SIG);
+                    PUSH_PARAM_FRAME,
+                    PUSH_PARAM_FRAME_SIG);
             il.append(new INVOKEVIRTUAL(pushFrame));
             // translate with-params
             translateContents(classGen, methodGen);
@@ -148,30 +147,28 @@ final class ApplyTemplates extends Instruction {
         if ((_type != null) && (_type instanceof ResultTreeType)) {
             // <xsl:sort> cannot be applied to a result tree - issue warning
             if (sortObjects.size() > 0) {
-                ErrorMsg err = new ErrorMsg(ErrorMsg.RESULT_TREE_SORT_ERR,this);
+                ErrorMsg err = new ErrorMsg(ErrorMsg.RESULT_TREE_SORT_ERR, this);
                 getParser().reportError(WARNING, err);
             }
             // Put the result tree (a DOM adapter) on the stack
             _select.translate(classGen, methodGen);
             // Get back the DOM and iterator (not just iterator!!!)
             _type.translateTo(classGen, methodGen, Type.NodeSet);
-        }
-        else {
+        } else {
             il.append(methodGen.loadDOM());
 
             // compute node iterator for applyTemplates
             if (sortObjects.size() > 0) {
                 Sort.translateSortIterator(classGen, methodGen,
-                                           _select, sortObjects);
+                        _select, sortObjects);
                 int setStartNode = cpg.addInterfaceMethodref(NODE_ITERATOR,
-                                                             SET_START_NODE,
-                                                             "(I)"+
-                                                             NODE_ITERATOR_SIG);
+                        SET_START_NODE,
+                        "(I)" +
+                                NODE_ITERATOR_SIG);
                 il.append(methodGen.loadCurrentNode());
-                il.append(new INVOKEINTERFACE(setStartNode,2));
+                il.append(new INVOKEINTERFACE(setStartNode, 2));
                 setStartNodeCalled = true;
-            }
-            else {
+            } else {
                 if (_select == null)
                     Mode.compileGetChildren(classGen, methodGen, current);
                 else
@@ -188,16 +185,16 @@ final class ApplyTemplates extends Instruction {
         il.append(methodGen.loadHandler());
         final String applyTemplatesSig = classGen.getApplyTemplatesSig();
         final int applyTemplates = cpg.addMethodref(className,
-                                                    _functionName,
-                                                    applyTemplatesSig);
+                _functionName,
+                applyTemplatesSig);
         il.append(new INVOKEVIRTUAL(applyTemplates));
 
         // Pop parameter frame
         if (stylesheet.hasLocalParams() || hasContents()) {
             il.append(classGen.loadTranslet());
             final int popFrame = cpg.addMethodref(TRANSLET_CLASS,
-                                                  POP_PARAM_FRAME,
-                                                  POP_PARAM_FRAME_SIG);
+                    POP_PARAM_FRAME,
+                    POP_PARAM_FRAME_SIG);
             il.append(new INVOKEVIRTUAL(popFrame));
         }
     }

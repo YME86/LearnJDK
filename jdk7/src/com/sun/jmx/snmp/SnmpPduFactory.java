@@ -27,8 +27,6 @@
 package com.sun.jmx.snmp;
 
 
-
-
 /**
  * Defines the interface of the object in charge of encoding and decoding SNMP packets.
  * <P>
@@ -50,10 +48,10 @@ package com.sun.jmx.snmp;
  *
  * <p><b>This API is a Sun Microsystems internal API  and is subject
  * to change without notice.</b></p>
+ *
  * @see SnmpPduFactory
  * @see SnmpPduPacket
  * @see SnmpMessage
- *
  */
 
 public interface SnmpPduFactory {
@@ -66,11 +64,10 @@ public interface SnmpPduFactory {
      *
      * @param msg The <CODE>SnmpMsg</CODE> to be decoded.
      * @return Null or a fully initialized <CODE>SnmpPdu</CODE>.
-     * @exception SnmpStatusException If the encoding is invalid.
-     *
+     * @throws SnmpStatusException If the encoding is invalid.
      * @since 1.5
      */
-    public SnmpPdu decodeSnmpPdu(SnmpMsg msg) throws SnmpStatusException ;
+    public SnmpPdu decodeSnmpPdu(SnmpMsg msg) throws SnmpStatusException;
 
     /**
      * Encodes the specified <CODE>SnmpPdu</CODE> and
@@ -79,16 +76,15 @@ public interface SnmpPduFactory {
      * will be dropped and the current SNMP request will be
      * aborted.
      *
-     * @param p The <CODE>SnmpPdu</CODE> to be encoded.
+     * @param p             The <CODE>SnmpPdu</CODE> to be encoded.
      * @param maxDataLength The size limit of the resulting encoding.
      * @return Null or a fully encoded <CODE>SnmpMsg</CODE>.
-     * @exception SnmpStatusException If <CODE>pdu</CODE> contains
-     *            illegal values and cannot be encoded.
-     * @exception SnmpTooBigException If the resulting encoding does not
-     *            fit into <CODE>maxPktSize</CODE> bytes.
-     *
+     * @throws SnmpStatusException If <CODE>pdu</CODE> contains
+     *                             illegal values and cannot be encoded.
+     * @throws SnmpTooBigException If the resulting encoding does not
+     *                             fit into <CODE>maxPktSize</CODE> bytes.
      * @since 1.5
      */
     public SnmpMsg encodeSnmpPdu(SnmpPdu p, int maxDataLength)
-        throws SnmpStatusException, SnmpTooBigException ;
+            throws SnmpStatusException, SnmpTooBigException;
 }

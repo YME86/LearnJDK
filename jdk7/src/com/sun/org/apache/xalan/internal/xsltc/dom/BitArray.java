@@ -38,21 +38,21 @@ public class BitArray implements Externalizable {
     static final long serialVersionUID = -4876019880708377663L;
 
     private int[] _bits;
-    private int   _bitSize;
-    private int   _intSize;
-    private int   _mask;
+    private int _bitSize;
+    private int _intSize;
+    private int _mask;
 
     // This table is used to prevent expensive shift operations
     // (These operations are inexpensive on CPUs but very expensive on JVMs.)
     private final static int[] _masks = {
-        0x80000000, 0x40000000, 0x20000000, 0x10000000,
-        0x08000000, 0x04000000, 0x02000000, 0x01000000,
-        0x00800000, 0x00400000, 0x00200000, 0x00100000,
-        0x00080000, 0x00040000, 0x00020000, 0x00010000,
-        0x00008000, 0x00004000, 0x00002000, 0x00001000,
-        0x00000800, 0x00000400, 0x00000200, 0x00000100,
-        0x00000080, 0x00000040, 0x00000020, 0x00000010,
-        0x00000008, 0x00000004, 0x00000002, 0x00000001 };
+            0x80000000, 0x40000000, 0x20000000, 0x10000000,
+            0x08000000, 0x04000000, 0x02000000, 0x01000000,
+            0x00800000, 0x00400000, 0x00200000, 0x00100000,
+            0x00080000, 0x00040000, 0x00020000, 0x00010000,
+            0x00008000, 0x00004000, 0x00002000, 0x00001000,
+            0x00000800, 0x00000400, 0x00000200, 0x00000100,
+            0x00000080, 0x00000040, 0x00000020, 0x00000010,
+            0x00000008, 0x00000004, 0x00000002, 0x00000001};
 
     private final static boolean DEBUG_ASSERTIONS = false;
 
@@ -89,14 +89,14 @@ public class BitArray implements Externalizable {
      * See setMask()
      */
     public int getMask() {
-        return(_mask);
+        return (_mask);
     }
 
     /**
      * Returns the size of this bit array (in bits).
      */
     public final int size() {
-        return(_bitSize);
+        return (_bitSize);
     }
 
     /**
@@ -106,29 +106,29 @@ public class BitArray implements Externalizable {
         if (DEBUG_ASSERTIONS) {
             if (bit >= _bitSize) {
                 throw new Error(
-                             "Programmer's assertion in  BitArray.getBit");
+                        "Programmer's assertion in  BitArray.getBit");
             }
         }
 
-        return((_bits[bit>>>5] & _masks[bit%32]) != 0);
+        return ((_bits[bit >>> 5] & _masks[bit % 32]) != 0);
     }
 
     /**
      * Returns the next set bit from a given position
      */
     public final int getNextBit(int startBit) {
-        for (int i = (startBit >>> 5) ; i<=_intSize; i++) {
+        for (int i = (startBit >>> 5); i <= _intSize; i++) {
             int bits = _bits[i];
             if (bits != 0) {
-                for (int b = (startBit % 32); b<32; b++) {
+                for (int b = (startBit % 32); b < 32; b++) {
                     if ((bits & _masks[b]) != 0) {
-                        return((i << 5) + b);
+                        return ((i << 5) + b);
                     }
                 }
             }
             startBit = 0;
         }
-        return(DTMAxisIterator.END);
+        return (DTMAxisIterator.END);
     }
 
     /**
@@ -145,7 +145,7 @@ public class BitArray implements Externalizable {
     public final int getBitNumber(int pos) {
 
         // Return last node if position we're looking for is the same
-        if (pos == _pos) return(_node);
+        if (pos == _pos) return (_node);
 
         // Start from beginning of position we're looking for is before
         // the point where we left off the last time.
@@ -154,10 +154,10 @@ public class BitArray implements Externalizable {
         }
 
         // Scan through the bit array - skip integers that have no bits set
-        for ( ; _int <= _intSize; _int++) {
+        for (; _int <= _intSize; _int++) {
             int bits = _bits[_int];
             if (bits != 0) { // Any bits set?
-                for ( ; _bit < 32; _bit++) {
+                for (; _bit < 32; _bit++) {
                     if ((bits & _masks[_bit]) != 0) {
                         if (++_pos == pos) {
                             _node = ((_int << 5) + _bit) - 1;
@@ -168,18 +168,18 @@ public class BitArray implements Externalizable {
                 _bit = 0;
             }
         }
-        return(0);
+        return (0);
     }
 
     /**
      * Returns the integer array in which the bit array is contained
      */
     public final int[] data() {
-        return(_bits);
+        return (_bits);
     }
 
     int _first = Integer.MAX_VALUE; // The index where first set bit is
-    int _last  = Integer.MIN_VALUE; // The _INTEGER INDEX_ where last set bit is
+    int _last = Integer.MIN_VALUE; // The _INTEGER INDEX_ where last set bit is
 
     /**
      * Sets a given bit
@@ -188,7 +188,7 @@ public class BitArray implements Externalizable {
         if (DEBUG_ASSERTIONS) {
             if (bit >= _bitSize) {
                 throw new Error(
-                             "Programmer's assertion in  BitArray.getBit");
+                        "Programmer's assertion in  BitArray.getBit");
             }
         }
 
@@ -211,23 +211,23 @@ public class BitArray implements Externalizable {
         // Only merge if other array has any bits set
         else if (other._last != -1) {
             int start = (_first < other._first) ? _first : other._first;
-            int stop  = (_last > other._last) ? _last : other._last;
+            int stop = (_last > other._last) ? _last : other._last;
 
             // Merge these bits into other array if other array is larger
             if (other._intSize > _intSize) {
                 if (stop > _intSize) stop = _intSize;
-                for (int i=start; i<=stop; i++)
+                for (int i = start; i <= stop; i++)
                     other._bits[i] |= _bits[i];
                 _bits = other._bits;
             }
             // Merge other bits into this array if this arrai is large/equal.
             else {
                 if (stop > other._intSize) stop = other._intSize;
-                for (int i=start; i<=stop; i++)
+                for (int i = start; i <= stop; i++)
                     _bits[i] |= other._bits[i];
             }
         }
-        return(this);
+        return (this);
     }
 
     /**
@@ -237,14 +237,14 @@ public class BitArray implements Externalizable {
         if (newSize > _bitSize) {
             _intSize = (newSize >>> 5) + 1;
             final int[] newBits = new int[_intSize + 1];
-            System.arraycopy(_bits, 0, newBits, 0, (_bitSize>>>5) + 1);
+            System.arraycopy(_bits, 0, newBits, 0, (_bitSize >>> 5) + 1);
             _bits = newBits;
             _bitSize = newSize;
         }
     }
 
     public BitArray cloneArray() {
-        return(new BitArray(_intSize, _bits));
+        return (new BitArray(_intSize, _bits));
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -258,11 +258,11 @@ public class BitArray implements Externalizable {
      * Read the whole tree from a file (serialized)
      */
     public void readExternal(ObjectInput in)
-        throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException {
         _bitSize = in.readInt();
         _intSize = (_bitSize >>> 5) + 1;
-        _mask    = in.readInt();
-        _bits    = (int[])in.readObject();
+        _mask = in.readInt();
+        _bits = (int[]) in.readObject();
     }
 
 }

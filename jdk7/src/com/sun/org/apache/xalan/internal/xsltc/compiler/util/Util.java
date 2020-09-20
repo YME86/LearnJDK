@@ -93,7 +93,7 @@ public final class Util {
             final int n = name.length();
             for (int i = 1; i < n; i++) {
                 ch = name.charAt(i);
-                result.append(Character.isJavaIdentifierPart(ch)  ? ch : '_');
+                result.append(Character.isJavaIdentifierPart(ch) ? ch : '_');
             }
             return result.toString();
         }
@@ -133,7 +133,7 @@ public final class Util {
      */
     public static String replace(String base, char ch, String str) {
         return (base.indexOf(ch) < 0) ? base :
-            replace(base, String.valueOf(ch), new String[] { str });
+                replace(base, String.valueOf(ch), new String[]{str});
     }
 
     public static String replace(String base, String delim, String[] str) {
@@ -146,8 +146,7 @@ public final class Util {
 
             if (k >= 0) {
                 result.append(str[k]);
-            }
-            else {
+            } else {
                 result.append(ch);
             }
         }
@@ -159,7 +158,7 @@ public final class Util {
      */
     public static String escape(String input) {
         return replace(input, ".-/:",
-            new String[] { "$dot$", "$dash$", "$slash$", "$colon$" });
+                new String[]{"$dot$", "$dash$", "$slash$", "$colon$"});
     }
 
     public static String getLocalName(String qname) {
@@ -170,7 +169,7 @@ public final class Util {
     public static String getPrefix(String qname) {
         final int index = qname.lastIndexOf(":");
         return (index > 0) ? qname.substring(0, index) :
-            Constants.EMPTYSTRING;
+                Constants.EMPTYSTRING;
     }
 
     /**

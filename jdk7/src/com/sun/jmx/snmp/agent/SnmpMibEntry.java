@@ -27,8 +27,11 @@ package com.sun.jmx.snmp.agent;
 
 // java imports
 //
+
 import com.sun.jmx.snmp.SnmpDefinitions;
+
 import java.io.Serializable;
+
 import com.sun.jmx.snmp.SnmpStatusException;
 
 /**
@@ -43,14 +46,13 @@ import com.sun.jmx.snmp.SnmpStatusException;
  */
 
 public abstract class SnmpMibEntry extends SnmpMibNode
-    implements Serializable {
+        implements Serializable {
 
     /**
      * Tells whether the given arc identifies a variable (scalar object) in
      * this entry.
      *
      * @param arc An OID arc.
-     *
      * @return <CODE>true</CODE> if `arc' leads to a variable.
      */
     public abstract boolean isVariable(long arc);
@@ -60,20 +62,18 @@ public abstract class SnmpMibEntry extends SnmpMibNode
      * this entry.
      *
      * @param arc An OID arc.
-     *
      * @return <CODE>true</CODE> if `arc' leads to a readable variable.
      */
     public abstract boolean isReadable(long arc);
 
     /**
      * Get the next OID arc corresponding to a readable scalar variable.
-     *
      */
     public long getNextVarId(long id, Object userData)
-        throws SnmpStatusException {
-        long nextvar = super.getNextVarId(id,userData);
+            throws SnmpStatusException {
+        long nextvar = super.getNextVarId(id, userData);
         while (!isReadable(nextvar))
-            nextvar = super.getNextVarId(nextvar,userData);
+            nextvar = super.getNextVarId(nextvar, userData);
         return nextvar;
     }
 
@@ -82,15 +82,14 @@ public abstract class SnmpMibEntry extends SnmpMibNode
      * object).
      *
      * @param userData A contextual object containing user-data.
-     *        This object is allocated through the <code>
-     *        {@link com.sun.jmx.snmp.agent.SnmpUserDataFactory}</code>
-     *        for each incoming SNMP request.
-     *
-     * @exception If the given `arc' does not identify any variable in this
-     *    group, throws an SnmpStatusException.
+     *                 This object is allocated through the <code>
+     *                 {@link com.sun.jmx.snmp.agent.SnmpUserDataFactory}</code>
+     *                 for each incoming SNMP request.
+     * @throws If the given `arc' does not identify any variable in this
+     *            group, throws an SnmpStatusException.
      */
     public void validateVarId(long arc, Object userData)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
         if (isVariable(arc) == false) throw new SnmpStatusException(SnmpDefinitions.snmpRspNoSuchName);
     }
 
@@ -114,14 +113,12 @@ public abstract class SnmpMibEntry extends SnmpMibNode
      * <p>
      *
      * @param req   The sub-request that must be handled by this node.
-     *
      * @param depth The depth reached in the OID tree.
-     *
-     * @exception SnmpStatusException An error occurred while accessing
-     *  the MIB node.
+     * @throws SnmpStatusException An error occurred while accessing
+     *                             the MIB node.
      */
     abstract public void get(SnmpMibSubRequest req, int depth)
-        throws SnmpStatusException;
+            throws SnmpStatusException;
 
     /**
      * Generic handling of the <CODE>set</CODE> operation.
@@ -143,14 +140,12 @@ public abstract class SnmpMibEntry extends SnmpMibNode
      * <p>
      *
      * @param req   The sub-request that must be handled by this node.
-     *
      * @param depth The depth reached in the OID tree.
-     *
-     * @exception SnmpStatusException An error occurred while accessing
-     *  the MIB node.
+     * @throws SnmpStatusException An error occurred while accessing
+     *                             the MIB node.
      */
     abstract public void set(SnmpMibSubRequest req, int depth)
-        throws SnmpStatusException;
+            throws SnmpStatusException;
 
     /**
      * Generic handling of the <CODE>check</CODE> operation.
@@ -174,13 +169,11 @@ public abstract class SnmpMibEntry extends SnmpMibNode
      * <p>
      *
      * @param req   The sub-request that must be handled by this node.
-     *
      * @param depth The depth reached in the OID tree.
-     *
-     * @exception SnmpStatusException An error occurred while accessing
-     *  the MIB node.
+     * @throws SnmpStatusException An error occurred while accessing
+     *                             the MIB node.
      */
     abstract public void check(SnmpMibSubRequest req, int depth)
-        throws SnmpStatusException;
+            throws SnmpStatusException;
 
 }

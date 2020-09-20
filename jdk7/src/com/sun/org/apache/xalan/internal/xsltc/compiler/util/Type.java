@@ -35,24 +35,24 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.NodeTest;
  * @author Morten Jorgensen
  */
 public abstract class Type implements Constants {
-    public static final Type Int        = new IntType();
-    public static final Type Real       = new RealType();
-    public static final Type Boolean    = new BooleanType();
-    public static final Type NodeSet    = new NodeSetType();
-    public static final Type String     = new StringType();
+    public static final Type Int = new IntType();
+    public static final Type Real = new RealType();
+    public static final Type Boolean = new BooleanType();
+    public static final Type NodeSet = new NodeSetType();
+    public static final Type String = new StringType();
     public static final Type ResultTree = new ResultTreeType();
-    public static final Type Reference  = new ReferenceType();
-    public static final Type Void       = new VoidType();
+    public static final Type Reference = new ReferenceType();
+    public static final Type Void = new VoidType();
 
-    public static final Type Object       = new ObjectType(java.lang.Object.class);
+    public static final Type Object = new ObjectType(java.lang.Object.class);
     public static final Type ObjectString = new ObjectType(java.lang.String.class);
 
-    public static final Type Node       = new NodeType(NodeTest.ANODE);
-    public static final Type Root       = new NodeType(NodeTest.ROOT);
-    public static final Type Element    = new NodeType(NodeTest.ELEMENT);
-    public static final Type Attribute  = new NodeType(NodeTest.ATTRIBUTE);
-    public static final Type Text       = new NodeType(NodeTest.TEXT);
-    public static final Type Comment    = new NodeType(NodeTest.COMMENT);
+    public static final Type Node = new NodeType(NodeTest.ANODE);
+    public static final Type Root = new NodeType(NodeTest.ROOT);
+    public static final Type Element = new NodeType(NodeTest.ELEMENT);
+    public static final Type Attribute = new NodeType(NodeTest.ATTRIBUTE);
+    public static final Type Text = new NodeType(NodeTest.TEXT);
+    public static final Type Comment = new NodeType(NodeTest.COMMENT);
     public static final Type Processing_Instruction = new NodeType(NodeTest.PI);
 
     /**
@@ -62,11 +62,9 @@ public abstract class Type implements Constants {
     public static Type newObjectType(String javaClassName) {
         if (javaClassName == "java.lang.Object") {
             return Type.Object;
-        }
-        else if (javaClassName == "java.lang.String") {
+        } else if (javaClassName == "java.lang.String") {
             return Type.ObjectString;
-        }
-        else {
+        } else {
             //
             java.security.AccessControlContext acc = java.security.AccessController.getContext();
             acc.checkPermission(new RuntimePermission("getContextClassLoader"));
@@ -74,18 +72,16 @@ public abstract class Type implements Constants {
         }
     }
 
-   /**
+    /**
      * Factory method to instantiate object types. Returns a pre-defined
      * instance for java.lang.Object.class and java.lang.String.class.
      */
     public static Type newObjectType(Class clazz) {
         if (clazz == java.lang.Object.class) {
             return Type.Object;
-        }
-        else if (clazz == java.lang.String.class) {
+        } else if (clazz == java.lang.String.class) {
             return Type.ObjectString;
-        }
-        else {
+        } else {
             return new ObjectType(clazz);
         }
     }
@@ -147,7 +143,7 @@ public abstract class Type implements Constants {
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             Type type) {
         ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                    toString(), type.toString());
+                toString(), type.toString());
         classGen.getParser().reportError(Constants.FATAL, err);
     }
 
@@ -163,9 +159,8 @@ public abstract class Type implements Constants {
         FlowList fl = null;
         if (type == Type.Boolean) {
             fl = translateToDesynthesized(classGen, methodGen,
-                                          (BooleanType)type);
-        }
-        else {
+                    (BooleanType) type);
+        } else {
             translateTo(classGen, methodGen, type);
         }
         return fl;
@@ -180,7 +175,7 @@ public abstract class Type implements Constants {
                                              MethodGenerator methodGen,
                                              BooleanType type) {
         ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                    toString(), type.toString());
+                toString(), type.toString());
         classGen.getParser().reportError(Constants.FATAL, err);
         return null;
     }
@@ -193,7 +188,7 @@ public abstract class Type implements Constants {
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             Class clazz) {
         ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                    toString(), clazz.getClass().toString());
+                toString(), clazz.getClass().toString());
         classGen.getParser().reportError(Constants.FATAL, err);
     }
 
@@ -205,7 +200,7 @@ public abstract class Type implements Constants {
     public void translateFrom(ClassGenerator classGen, MethodGenerator methodGen,
                               Class clazz) {
         ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                    clazz.getClass().toString(), toString());
+                clazz.getClass().toString(), toString());
         classGen.getParser().reportError(Constants.FATAL, err);
     }
 
@@ -215,7 +210,7 @@ public abstract class Type implements Constants {
     public void translateBox(ClassGenerator classGen,
                              MethodGenerator methodGen) {
         ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                    toString(), "["+toString()+"]");
+                toString(), "[" + toString() + "]");
         classGen.getParser().reportError(Constants.FATAL, err);
     }
 
@@ -225,7 +220,7 @@ public abstract class Type implements Constants {
     public void translateUnBox(ClassGenerator classGen,
                                MethodGenerator methodGen) {
         ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                    "["+toString()+"]", toString());
+                "[" + toString() + "]", toString());
         classGen.getParser().reportError(Constants.FATAL, err);
     }
 
@@ -233,7 +228,7 @@ public abstract class Type implements Constants {
      * Returns the class name of an internal type's external representation.
      */
     public String getClassName() {
-        return(EMPTYSTRING);
+        return (EMPTYSTRING);
     }
 
     public Instruction ADD() {

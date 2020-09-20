@@ -42,9 +42,8 @@ final class Fallback extends Instruction {
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
         if (_active) {
-            return(typeCheckContents(stable));
-        }
-        else {
+            return (typeCheckContents(stable));
+        } else {
             return Type.Void;
         }
     }
@@ -57,7 +56,7 @@ final class Fallback extends Instruction {
     }
 
     public String toString() {
-        return("fallback");
+        return ("fallback");
     }
 
     /**

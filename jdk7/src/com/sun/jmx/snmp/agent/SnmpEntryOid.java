@@ -28,7 +28,6 @@ import com.sun.jmx.snmp.SnmpOid;
 
 /**
  * This class only adds a new constructor to SnmpOid...
- *
  **/
 class SnmpEntryOid extends SnmpOid {
     private static final long serialVersionUID = 9212653887791059564L;
@@ -39,12 +38,11 @@ class SnmpEntryOid extends SnmpOid {
      *
      * @param oid   The original OID array
      * @param start The position at which to begin.
-     *
      **/
     public SnmpEntryOid(long[] oid, int start) {
         final int subLength = oid.length - start;
         final long[] subOid = new long[subLength];
-        java.lang.System.arraycopy(oid, start, subOid, 0, subLength) ;
+        java.lang.System.arraycopy(oid, start, subOid, 0, subLength);
         components = subOid;
         componentCount = subLength;
     }

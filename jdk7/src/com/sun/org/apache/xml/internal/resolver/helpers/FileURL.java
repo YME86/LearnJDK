@@ -40,40 +40,38 @@ import java.io.File;
  *
  * @author Norman Walsh
  * <a href="mailto:Norman.Walsh@Sun.COM">Norman.Walsh@Sun.COM</a>
- *
  * @version 1.0
  */
 public abstract class FileURL {
-  protected FileURL() { }
+    protected FileURL() {
+    }
 
-  /**
-   * Construct a file: URL for a path name.
-   *
-   * <p>URLs in the file: scheme can be constructed for paths on
-   * the local file system. Several possibilities need to be considered:
-   * </p>
-   *
-   * <ul>
-   * <li>If the path does not begin with a slash, then it is assumed
-   * to reside in the users current working directory
-   * (System.getProperty("user.dir")).</li>
-   * <li>On Windows machines, the current working directory uses
-   * backslashes (\\, instead of /).</li>
-   * <li>If the current working directory is "/", don't add an extra
-   * slash before the base name.</li>
-   * </ul>
-   *
-   * <p>This method is declared static so that other classes
-   * can use it directly.</p>
-   *
-   * @param pathname The path name component for which to construct a URL.
-   *
-   * @return The appropriate file: URL.
-   *
-   * @throws MalformedURLException if the pathname can't be turned into
-   *         a proper URL.
-   */
-  public static URL makeURL(String pathname) throws MalformedURLException {
+    /**
+     * Construct a file: URL for a path name.
+     *
+     * <p>URLs in the file: scheme can be constructed for paths on
+     * the local file system. Several possibilities need to be considered:
+     * </p>
+     *
+     * <ul>
+     * <li>If the path does not begin with a slash, then it is assumed
+     * to reside in the users current working directory
+     * (System.getProperty("user.dir")).</li>
+     * <li>On Windows machines, the current working directory uses
+     * backslashes (\\, instead of /).</li>
+     * <li>If the current working directory is "/", don't add an extra
+     * slash before the base name.</li>
+     * </ul>
+     *
+     * <p>This method is declared static so that other classes
+     * can use it directly.</p>
+     *
+     * @param pathname The path name component for which to construct a URL.
+     * @return The appropriate file: URL.
+     * @throws MalformedURLException if the pathname can't be turned into
+     *                               a proper URL.
+     */
+    public static URL makeURL(String pathname) throws MalformedURLException {
     /*if (pathname.startsWith("/")) {
       return new URL("file://" + pathname);
     }
@@ -87,7 +85,7 @@ public abstract class FileURL {
       return new URL("file:///" + userdir + "/" + pathname);
     }
      */
-      File file = new File(pathname);
-      return file.toURI().toURL();
-  }
+        File file = new File(pathname);
+        return file.toURI().toURL();
+    }
 }

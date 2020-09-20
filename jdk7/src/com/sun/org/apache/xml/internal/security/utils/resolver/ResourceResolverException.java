@@ -21,7 +21,6 @@
 package com.sun.org.apache.xml.internal.security.utils.resolver;
 
 
-
 import com.sun.org.apache.xml.internal.security.exceptions.XMLSecurityException;
 import org.w3c.dom.Attr;
 
@@ -34,112 +33,110 @@ import org.w3c.dom.Attr;
  */
 public class ResourceResolverException extends XMLSecurityException {
 
-   /**
-         *
-         */
-        private static final long serialVersionUID = 1L;
-   /**
-    * Constructor ResourceResolverException
-    *
-    * @param _msgID
-    * @param uri
-    * @param BaseURI
-    */
-   public ResourceResolverException(String _msgID, Attr uri, String BaseURI) {
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-      super(_msgID);
+    /**
+     * Constructor ResourceResolverException
+     *
+     * @param _msgID
+     * @param uri
+     * @param BaseURI
+     */
+    public ResourceResolverException(String _msgID, Attr uri, String BaseURI) {
 
-      this._uri = uri;
-      this._BaseURI = BaseURI;
-   }
+        super(_msgID);
 
-   /**
-    * Constructor ResourceResolverException
-    *
-    * @param _msgID
-    * @param exArgs
-    * @param uri
-    * @param BaseURI
-    */
-   public ResourceResolverException(String _msgID, Object exArgs[], Attr uri,
-                                    String BaseURI) {
+        this._uri = uri;
+        this._BaseURI = BaseURI;
+    }
 
-      super(_msgID, exArgs);
+    /**
+     * Constructor ResourceResolverException
+     *
+     * @param _msgID
+     * @param exArgs
+     * @param uri
+     * @param BaseURI
+     */
+    public ResourceResolverException(String _msgID, Object exArgs[], Attr uri,
+                                     String BaseURI) {
 
-      this._uri = uri;
-      this._BaseURI = BaseURI;
-   }
+        super(_msgID, exArgs);
 
-   /**
-    * Constructor ResourceResolverException
-    *
-    * @param _msgID
-    * @param _originalException
-    * @param uri
-    * @param BaseURI
-    */
-   public ResourceResolverException(String _msgID, Exception _originalException,
-                                    Attr uri, String BaseURI) {
+        this._uri = uri;
+        this._BaseURI = BaseURI;
+    }
 
-      super(_msgID, _originalException);
+    /**
+     * Constructor ResourceResolverException
+     *
+     * @param _msgID
+     * @param _originalException
+     * @param uri
+     * @param BaseURI
+     */
+    public ResourceResolverException(String _msgID, Exception _originalException,
+                                     Attr uri, String BaseURI) {
 
-      this._uri = uri;
-      this._BaseURI = BaseURI;
-   }
+        super(_msgID, _originalException);
 
-   /**
-    * Constructor ResourceResolverException
-    *
-    * @param _msgID
-    * @param exArgs
-    * @param _originalException
-    * @param uri
-    * @param BaseURI
-    */
-   public ResourceResolverException(String _msgID, Object exArgs[],
-                                    Exception _originalException, Attr uri,
-                                    String BaseURI) {
+        this._uri = uri;
+        this._BaseURI = BaseURI;
+    }
 
-      super(_msgID, exArgs, _originalException);
+    /**
+     * Constructor ResourceResolverException
+     *
+     * @param _msgID
+     * @param exArgs
+     * @param _originalException
+     * @param uri
+     * @param BaseURI
+     */
+    public ResourceResolverException(String _msgID, Object exArgs[],
+                                     Exception _originalException, Attr uri,
+                                     String BaseURI) {
 
-      this._uri = uri;
-      this._BaseURI = BaseURI;
-   }
+        super(_msgID, exArgs, _originalException);
 
-   //J-
-   Attr _uri = null;
-   /**
-    *
-    * @param uri
-    */
-   public void setURI(Attr uri) {
-      this._uri = uri;
-   }
+        this._uri = uri;
+        this._BaseURI = BaseURI;
+    }
 
-   /**
-    *
-    * @return the uri
-    */
-   public Attr getURI() {
-      return this._uri;
-   }
+    //J-
+    Attr _uri = null;
 
-   String _BaseURI;
+    /**
+     * @param uri
+     */
+    public void setURI(Attr uri) {
+        this._uri = uri;
+    }
 
-   /**
-    *
-    * @param BaseURI
-    */
-   public void setBaseURI(String BaseURI) {
-      this._BaseURI = BaseURI;
-   }
+    /**
+     * @return the uri
+     */
+    public Attr getURI() {
+        return this._uri;
+    }
 
-   /**
-    *
-    * @return the basUri
-    */
-   public String getBaseURI() {
-      return this._BaseURI;
-   }
-   //J+
+    String _BaseURI;
+
+    /**
+     * @param BaseURI
+     */
+    public void setBaseURI(String BaseURI) {
+        this._BaseURI = BaseURI;
+    }
+
+    /**
+     * @return the basUri
+     */
+    public String getBaseURI() {
+        return this._BaseURI;
+    }
+    //J+
 }

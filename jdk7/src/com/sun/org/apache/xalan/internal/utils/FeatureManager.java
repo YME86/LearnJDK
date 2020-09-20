@@ -30,7 +30,6 @@ import com.sun.org.apache.xalan.internal.XalanConstants;
 
 /**
  * This class manages security related properties
- *
  */
 public final class FeatureManager extends FeaturePropertyBase {
 
@@ -83,6 +82,7 @@ public final class FeatureManager extends FeaturePropertyBase {
 
     /**
      * Check if the feature is enabled
+     *
      * @param feature name of the feature
      * @return true if enabled, false otherwise
      */
@@ -92,6 +92,7 @@ public final class FeatureManager extends FeaturePropertyBase {
 
     /**
      * Check if the feature is enabled
+     *
      * @param propertyName name of the feature
      * @return true if enabled, false otherwise
      */
@@ -101,10 +102,11 @@ public final class FeatureManager extends FeaturePropertyBase {
 
     /**
      * Get the index by property name
+     *
      * @param propertyName property name
      * @return the index of the property if found; return -1 if not
      */
-    public int getIndex(String propertyName){
+    public int getIndex(String propertyName) {
         for (Feature feature : Feature.values()) {
             if (feature.equalsName(propertyName)) {
                 return feature.ordinal();

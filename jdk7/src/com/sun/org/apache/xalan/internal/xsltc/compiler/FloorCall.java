@@ -41,8 +41,8 @@ final class FloorCall extends FunctionCall {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
         argument().translate(classGen, methodGen);
         methodGen.getInstructionList()
-            .append(new INVOKESTATIC(classGen.getConstantPool()
-                                     .addMethodref(MATH_CLASS,
-                                                   "floor", "(D)D")));
+                .append(new INVOKESTATIC(classGen.getConstantPool()
+                        .addMethodref(MATH_CLASS,
+                                "floor", "(D)D")));
     }
 }

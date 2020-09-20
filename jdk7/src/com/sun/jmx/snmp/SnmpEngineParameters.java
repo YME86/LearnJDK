@@ -33,6 +33,7 @@ import java.io.Serializable;
  *
  * <p><b>This API is a Sun Microsystems internal API  and is subject
  * to change without notice.</b></p>
+ *
  * @since 1.5
  */
 public class SnmpEngineParameters implements Serializable {
@@ -52,15 +53,18 @@ public class SnmpEngineParameters implements Serializable {
 
     /**
      * Gets the file to use for SNMP Runtime Lcd.
+     *
      * @return The security file.
      */
     public String getSecurityFile() {
         return securityFile;
     }
+
     /**
      * Sets a customized user ACL. User Acl is used in order to check
      * access for SNMP V3 requests. If no ACL is provided,
      * <CODE>com.sun.jmx.snmp.usm.UserAcl.UserAcl</CODE> is instantiated.
+     *
      * @param uacl The user ACL to use.
      */
     public void setUserAcl(UserAcl uacl) {
@@ -69,6 +73,7 @@ public class SnmpEngineParameters implements Serializable {
 
     /**
      * Gets the customized user ACL.
+     *
      * @return The customized user ACL.
      */
     public UserAcl getUserAcl() {
@@ -77,7 +82,6 @@ public class SnmpEngineParameters implements Serializable {
 
     /**
      * Activate SNMP V3 encryption. By default the encryption is not activated. Be sure that the security provider classes needed for DES are in your classpath (eg:JCE classes)
-     *
      */
     public void activateEncryption() {
         this.encrypt = true;
@@ -85,7 +89,6 @@ public class SnmpEngineParameters implements Serializable {
 
     /**
      * Deactivate SNMP V3 encryption. By default the encryption is not activated. Be sure that the security provider classes needed for DES are in your classpath (eg:JCE classes)
-     *
      */
     public void deactivateEncryption() {
         this.encrypt = false;
@@ -93,6 +96,7 @@ public class SnmpEngineParameters implements Serializable {
 
     /**
      * Check if encryption is activated. By default the encryption is not activated.
+     *
      * @return The encryption activation status.
      */
     public boolean isEncryptionEnabled() {
@@ -101,6 +105,7 @@ public class SnmpEngineParameters implements Serializable {
 
     /**
      * Set the engine Id.
+     *
      * @param engineId The engine Id to use.
      */
     public void setEngineId(SnmpEngineId engineId) {
@@ -109,6 +114,7 @@ public class SnmpEngineParameters implements Serializable {
 
     /**
      * Get the engine Id.
+     *
      * @return The engineId.
      */
     public SnmpEngineId getEngineId() {

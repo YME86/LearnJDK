@@ -27,6 +27,7 @@ package com.sun.jmx.mbeanserver;
 
 
 // JMX import
+
 import javax.management.ObjectName;
 import javax.management.loading.ClassLoaderRepository;
 
@@ -40,7 +41,7 @@ import javax.management.loading.ClassLoaderRepository;
  * @since 1.5
  */
 public interface ModifiableClassLoaderRepository
-    extends ClassLoaderRepository {
+        extends ClassLoaderRepository {
 
     /**
      * Add an anonymous ClassLoader to the repository.

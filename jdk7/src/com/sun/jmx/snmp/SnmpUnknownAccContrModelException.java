@@ -32,6 +32,7 @@ import com.sun.jmx.snmp.SnmpUnknownModelException;
  *
  * <p><b>This API is a Sun Microsystems internal API  and is subject
  * to change without notice.</b></p>
+ *
  * @since 1.5
  */
 public class SnmpUnknownAccContrModelException extends SnmpUnknownModelException {
@@ -39,6 +40,7 @@ public class SnmpUnknownAccContrModelException extends SnmpUnknownModelException
 
     /**
      * Constructor.
+     *
      * @param msg The exception msg to display.
      */
     public SnmpUnknownAccContrModelException(String msg) {

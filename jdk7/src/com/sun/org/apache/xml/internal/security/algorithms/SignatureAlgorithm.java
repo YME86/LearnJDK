@@ -10,9 +10,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -52,11 +52,11 @@ public class SignatureAlgorithm extends Algorithm {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static java.util.logging.Logger log =
-        java.util.logging.Logger.getLogger(SignatureAlgorithm.class.getName());
+            java.util.logging.Logger.getLogger(SignatureAlgorithm.class.getName());
 
     /** All available algorithm classes are registered here */
     private static Map<String, Class<? extends SignatureAlgorithmSpi>> algorithmHash =
-        new ConcurrentHashMap<String, Class<? extends SignatureAlgorithmSpi>>();
+            new ConcurrentHashMap<String, Class<? extends SignatureAlgorithmSpi>>();
 
     /** Field signatureAlgorithm */
     private final SignatureAlgorithmSpi signatureAlgorithm;
@@ -87,7 +87,7 @@ public class SignatureAlgorithm extends Algorithm {
      * @throws XMLSecurityException
      */
     public SignatureAlgorithm(
-        Document doc, String algorithmURI, int hmacOutputLength
+            Document doc, String algorithmURI, int hmacOutputLength
     ) throws XMLSecurityException {
         super(doc, algorithmURI);
         this.algorithmURI = algorithmURI;
@@ -96,7 +96,7 @@ public class SignatureAlgorithm extends Algorithm {
         signatureAlgorithm.engineGetContextFromElement(this._constructionElement);
 
         signatureAlgorithm.engineSetHMACOutputLength(hmacOutputLength);
-        ((IntegrityHmac)signatureAlgorithm).engineAddContextToElement(_constructionElement);
+        ((IntegrityHmac) signatureAlgorithm).engineAddContextToElement(_constructionElement);
     }
 
     /**
@@ -119,7 +119,7 @@ public class SignatureAlgorithm extends Algorithm {
      * @throws XMLSecurityException
      */
     public SignatureAlgorithm(
-        Element element, String baseURI, boolean secureValidation
+            Element element, String baseURI, boolean secureValidation
     ) throws XMLSecurityException {
         super(element, baseURI);
         algorithmURI = this.getURI();
@@ -130,8 +130,8 @@ public class SignatureAlgorithm extends Algorithm {
         }
 
         if (secureValidation && (XMLSignature.ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5.equals(algorithmURI)
-            || XMLSignature.ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5.equals(algorithmURI))) {
-            Object exArgs[] = { algorithmURI };
+                || XMLSignature.ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5.equals(algorithmURI))) {
+            Object exArgs[] = {algorithmURI};
 
             throw new XMLSecurityException("signature.signatureAlgorithm", exArgs);
         }
@@ -144,23 +144,23 @@ public class SignatureAlgorithm extends Algorithm {
      * Get a SignatureAlgorithmSpi object corresponding to the algorithmURI argument
      */
     private static SignatureAlgorithmSpi getSignatureAlgorithmSpi(String algorithmURI)
-        throws XMLSignatureException {
+            throws XMLSignatureException {
         try {
             Class<? extends SignatureAlgorithmSpi> implementingClass =
-                algorithmHash.get(algorithmURI);
+                    algorithmHash.get(algorithmURI);
             if (log.isLoggable(java.util.logging.Level.FINE)) {
                 log.log(java.util.logging.Level.FINE, "Create URI \"" + algorithmURI + "\" class \""
-                   + implementingClass + "\"");
+                        + implementingClass + "\"");
             }
             return implementingClass.newInstance();
-        }  catch (IllegalAccessException ex) {
-            Object exArgs[] = { algorithmURI, ex.getMessage() };
+        } catch (IllegalAccessException ex) {
+            Object exArgs[] = {algorithmURI, ex.getMessage()};
             throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
         } catch (InstantiationException ex) {
-            Object exArgs[] = { algorithmURI, ex.getMessage() };
+            Object exArgs[] = {algorithmURI, ex.getMessage()};
             throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
         } catch (NullPointerException ex) {
-            Object exArgs[] = { algorithmURI, ex.getMessage() };
+            Object exArgs[] = {algorithmURI, ex.getMessage()};
             throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
         }
     }
@@ -264,14 +264,14 @@ public class SignatureAlgorithm extends Algorithm {
      * @throws XMLSignatureException
      */
     public void initSign(
-        Key signingKey, AlgorithmParameterSpec algorithmParameterSpec
+            Key signingKey, AlgorithmParameterSpec algorithmParameterSpec
     ) throws XMLSignatureException {
         signatureAlgorithm.engineInitSign(signingKey, algorithmParameterSpec);
     }
 
     /**
      * Proxy method for {@link java.security.Signature#setParameter(
-     * java.security.spec.AlgorithmParameterSpec)}
+     *java.security.spec.AlgorithmParameterSpec)}
      * which is executed on the internal {@link java.security.Signature} object.
      *
      * @param params
@@ -327,8 +327,8 @@ public class SignatureAlgorithm extends Algorithm {
      */
     @SuppressWarnings("unchecked")
     public static void register(String algorithmURI, String implementingClass)
-       throws AlgorithmAlreadyRegisteredException, ClassNotFoundException,
-           XMLSignatureException {
+            throws AlgorithmAlreadyRegisteredException, ClassNotFoundException,
+            XMLSignatureException {
         JavaUtils.checkRegisterPermission();
         if (log.isLoggable(java.util.logging.Level.FINE)) {
             log.log(java.util.logging.Level.FINE, "Try to register " + algorithmURI + " " + implementingClass);
@@ -337,18 +337,18 @@ public class SignatureAlgorithm extends Algorithm {
         // are we already registered?
         Class<? extends SignatureAlgorithmSpi> registeredClass = algorithmHash.get(algorithmURI);
         if (registeredClass != null) {
-            Object exArgs[] = { algorithmURI, registeredClass };
+            Object exArgs[] = {algorithmURI, registeredClass};
             throw new AlgorithmAlreadyRegisteredException(
-                "algorithm.alreadyRegistered", exArgs
+                    "algorithm.alreadyRegistered", exArgs
             );
         }
         try {
             Class<? extends SignatureAlgorithmSpi> clazz =
-                (Class<? extends SignatureAlgorithmSpi>)
-                    ClassLoaderUtils.loadClass(implementingClass, SignatureAlgorithm.class);
+                    (Class<? extends SignatureAlgorithmSpi>)
+                            ClassLoaderUtils.loadClass(implementingClass, SignatureAlgorithm.class);
             algorithmHash.put(algorithmURI, clazz);
         } catch (NullPointerException ex) {
-            Object exArgs[] = { algorithmURI, ex.getMessage() };
+            Object exArgs[] = {algorithmURI, ex.getMessage()};
             throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs, ex);
         }
     }
@@ -365,8 +365,8 @@ public class SignatureAlgorithm extends Algorithm {
      *    caller does not have permission to register the signature algorithm
      */
     public static void register(String algorithmURI, Class<? extends SignatureAlgorithmSpi> implementingClass)
-       throws AlgorithmAlreadyRegisteredException, ClassNotFoundException,
-           XMLSignatureException {
+            throws AlgorithmAlreadyRegisteredException, ClassNotFoundException,
+            XMLSignatureException {
         JavaUtils.checkRegisterPermission();
         if (log.isLoggable(java.util.logging.Level.FINE)) {
             log.log(java.util.logging.Level.FINE, "Try to register " + algorithmURI + " " + implementingClass);
@@ -375,9 +375,9 @@ public class SignatureAlgorithm extends Algorithm {
         // are we already registered?
         Class<? extends SignatureAlgorithmSpi> registeredClass = algorithmHash.get(algorithmURI);
         if (registeredClass != null) {
-            Object exArgs[] = { algorithmURI, registeredClass };
+            Object exArgs[] = {algorithmURI, registeredClass};
             throw new AlgorithmAlreadyRegisteredException(
-                "algorithm.alreadyRegistered", exArgs
+                    "algorithm.alreadyRegistered", exArgs
             );
         }
         algorithmHash.put(algorithmURI, implementingClass);
@@ -388,48 +388,48 @@ public class SignatureAlgorithm extends Algorithm {
      */
     public static void registerDefaultAlgorithms() {
         algorithmHash.put(
-            XMLSignature.ALGO_ID_SIGNATURE_DSA, SignatureDSA.class
+                XMLSignature.ALGO_ID_SIGNATURE_DSA, SignatureDSA.class
         );
         algorithmHash.put(
-            XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1, SignatureBaseRSA.SignatureRSASHA1.class
+                XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1, SignatureBaseRSA.SignatureRSASHA1.class
         );
         algorithmHash.put(
-            XMLSignature.ALGO_ID_MAC_HMAC_SHA1, IntegrityHmac.IntegrityHmacSHA1.class
+                XMLSignature.ALGO_ID_MAC_HMAC_SHA1, IntegrityHmac.IntegrityHmacSHA1.class
         );
         algorithmHash.put(
-            XMLSignature.ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5,
-            SignatureBaseRSA.SignatureRSAMD5.class
+                XMLSignature.ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5,
+                SignatureBaseRSA.SignatureRSAMD5.class
         );
         algorithmHash.put(
-            XMLSignature.ALGO_ID_SIGNATURE_RSA_RIPEMD160,
-            SignatureBaseRSA.SignatureRSARIPEMD160.class
+                XMLSignature.ALGO_ID_SIGNATURE_RSA_RIPEMD160,
+                SignatureBaseRSA.SignatureRSARIPEMD160.class
         );
         algorithmHash.put(
-            XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA256, SignatureBaseRSA.SignatureRSASHA256.class
+                XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA256, SignatureBaseRSA.SignatureRSASHA256.class
         );
         algorithmHash.put(
-            XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA384, SignatureBaseRSA.SignatureRSASHA384.class
+                XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA384, SignatureBaseRSA.SignatureRSASHA384.class
         );
         algorithmHash.put(
-            XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA512, SignatureBaseRSA.SignatureRSASHA512.class
+                XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA512, SignatureBaseRSA.SignatureRSASHA512.class
         );
         algorithmHash.put(
-            XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA1, SignatureECDSA.SignatureECDSASHA1.class
+                XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA1, SignatureECDSA.SignatureECDSASHA1.class
         );
         algorithmHash.put(
-            XMLSignature.ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5, IntegrityHmac.IntegrityHmacMD5.class
+                XMLSignature.ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5, IntegrityHmac.IntegrityHmacMD5.class
         );
         algorithmHash.put(
-            XMLSignature.ALGO_ID_MAC_HMAC_RIPEMD160, IntegrityHmac.IntegrityHmacRIPEMD160.class
+                XMLSignature.ALGO_ID_MAC_HMAC_RIPEMD160, IntegrityHmac.IntegrityHmacRIPEMD160.class
         );
         algorithmHash.put(
-            XMLSignature.ALGO_ID_MAC_HMAC_SHA256, IntegrityHmac.IntegrityHmacSHA256.class
+                XMLSignature.ALGO_ID_MAC_HMAC_SHA256, IntegrityHmac.IntegrityHmacSHA256.class
         );
         algorithmHash.put(
-            XMLSignature.ALGO_ID_MAC_HMAC_SHA384, IntegrityHmac.IntegrityHmacSHA384.class
+                XMLSignature.ALGO_ID_MAC_HMAC_SHA384, IntegrityHmac.IntegrityHmacSHA384.class
         );
         algorithmHash.put(
-            XMLSignature.ALGO_ID_MAC_HMAC_SHA512, IntegrityHmac.IntegrityHmacSHA512.class
+                XMLSignature.ALGO_ID_MAC_HMAC_SHA512, IntegrityHmac.IntegrityHmacSHA512.class
         );
     }
 

@@ -37,11 +37,11 @@ import javax.management.remote.rmi.RMIConnector;
 public class ClientProvider implements JMXConnectorProvider {
 
     public JMXConnector newJMXConnector(JMXServiceURL serviceURL,
-                                        Map<String,?> environment)
+                                        Map<String, ?> environment)
             throws IOException {
         if (!serviceURL.getProtocol().equals("iiop")) {
             throw new MalformedURLException("Protocol not iiop: " +
-                                            serviceURL.getProtocol());
+                    serviceURL.getProtocol());
         }
         return new RMIConnector(serviceURL, environment);
     }

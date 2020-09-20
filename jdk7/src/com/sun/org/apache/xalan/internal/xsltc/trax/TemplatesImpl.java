@@ -31,6 +31,7 @@ import com.sun.org.apache.xalan.internal.xsltc.Translet;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMsg;
 import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
 import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -61,7 +62,7 @@ public final class TemplatesImpl implements Templates, Serializable {
      * is the main one.
      */
     private static String ABSTRACT_TRANSLET
-        = "com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet";
+            = "com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet";
 
     /**
      * Name of the main class or default name if unknown.
@@ -131,14 +132,14 @@ public final class TemplatesImpl implements Templates, Serializable {
 
     static final class TransletClassLoader extends ClassLoader {
 
-        private final Map<String,Class> _loadedExternalExtensionFunctions;
+        private final Map<String, Class> _loadedExternalExtensionFunctions;
 
         TransletClassLoader(ClassLoader parent) {
             super(parent);
             _loadedExternalExtensionFunctions = null;
         }
 
-        TransletClassLoader(ClassLoader parent,Map<String, Class> mapEF) {
+        TransletClassLoader(ClassLoader parent, Map<String, Class> mapEF) {
             super(parent);
             _loadedExternalExtensionFunctions = mapEF;
         }
@@ -171,9 +172,8 @@ public final class TemplatesImpl implements Templates, Serializable {
      * the main translet class, must be supplied.
      */
     protected TemplatesImpl(byte[][] bytecodes, String transletName,
-        Properties outputProperties, int indentNumber,
-        TransformerFactoryImpl tfactory)
-    {
+                            Properties outputProperties, int indentNumber,
+                            TransformerFactoryImpl tfactory) {
         _bytecodes = bytecodes;
         init(transletName, outputProperties, indentNumber, tfactory);
     }
@@ -182,45 +182,45 @@ public final class TemplatesImpl implements Templates, Serializable {
      * Create an XSLTC template object from the translet class definition(s).
      */
     protected TemplatesImpl(Class[] transletClasses, String transletName,
-        Properties outputProperties, int indentNumber,
-        TransformerFactoryImpl tfactory)
-    {
-        _class     = transletClasses;
+                            Properties outputProperties, int indentNumber,
+                            TransformerFactoryImpl tfactory) {
+        _class = transletClasses;
         _transletIndex = 0;
         init(transletName, outputProperties, indentNumber, tfactory);
     }
 
     private void init(String transletName,
-        Properties outputProperties, int indentNumber,
-        TransformerFactoryImpl tfactory) {
-        _name      = transletName;
+                      Properties outputProperties, int indentNumber,
+                      TransformerFactoryImpl tfactory) {
+        _name = transletName;
         _outputProperties = outputProperties;
         _indentNumber = indentNumber;
         _tfactory = tfactory;
         _useServicesMechanism = tfactory.useServicesMechnism();
         _accessExternalStylesheet = (String) tfactory.getAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET);
     }
+
     /**
      * Need for de-serialization, see readObject().
      */
-    public TemplatesImpl() { }
+    public TemplatesImpl() {
+    }
 
     /**
-     *  Overrides the default readObject implementation since we decided
-     *  it would be cleaner not to serialize the entire tranformer
-     *  factory.  [ ref bugzilla 12317 ]
-     *  We need to check if the user defined class for URIResolver also
-     *  implemented Serializable
-     *  if yes then we need to deserialize the URIResolver
-     *  Fix for bugzilla bug 22438
+     * Overrides the default readObject implementation since we decided
+     * it would be cleaner not to serialize the entire tranformer
+     * factory.  [ ref bugzilla 12317 ]
+     * We need to check if the user defined class for URIResolver also
+     * implemented Serializable
+     * if yes then we need to deserialize the URIResolver
+     * Fix for bugzilla bug 22438
      */
-    private void  readObject(ObjectInputStream is)
-      throws IOException, ClassNotFoundException
-    {
+    private void readObject(ObjectInputStream is)
+            throws IOException, ClassNotFoundException {
         SecurityManager security = System.getSecurityManager();
-        if (security != null){
+        if (security != null) {
             String temp = SecuritySupport.getSystemProperty(DESERIALIZE_TRANSLET);
-            if (temp == null || !(temp.length()==0 || temp.equalsIgnoreCase("true"))) {
+            if (temp == null || !(temp.length() == 0 || temp.equalsIgnoreCase("true"))) {
                 ErrorMsg err = new ErrorMsg(ErrorMsg.DESERIALIZE_TRANSLET_ERR);
                 throw new UnsupportedOperationException(err.toString());
             }
@@ -236,18 +236,17 @@ public final class TemplatesImpl implements Templates, Serializable {
 
 
     /**
-     *  This is to fix bugzilla bug 22438
-     *  If the user defined class implements URIResolver and Serializable
-     *  then we want it to get serialized
+     * This is to fix bugzilla bug 22438
+     * If the user defined class implements URIResolver and Serializable
+     * then we want it to get serialized
      */
     private void writeObject(ObjectOutputStream os)
-        throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException {
         os.defaultWriteObject();
         if (_uriResolver instanceof Serializable) {
             os.writeBoolean(true);
             os.writeObject((Serializable) _uriResolver);
-        }
-        else {
+        } else {
             os.writeBoolean(false);
         }
     }
@@ -259,7 +258,7 @@ public final class TemplatesImpl implements Templates, Serializable {
         return _useServicesMechanism;
     }
 
-     /**
+    /**
      * Store URIResolver needed for Transformers.
      */
     public synchronized void setURIResolver(URIResolver resolver) {
@@ -269,7 +268,7 @@ public final class TemplatesImpl implements Templates, Serializable {
     /**
      * The TransformerFactory must pass us the translet bytecodes using this
      * method before we can create any translet instances
-     *
+     * <p>
      * Note: This method is private for security reasons. See
      * CR 6537898. When merging with Apache, we must ensure
      * that the privateness of this method is maintained (that
@@ -281,7 +280,7 @@ public final class TemplatesImpl implements Templates, Serializable {
 
     /**
      * Returns the translet bytecodes stored in this template
-     *
+     * <p>
      * Note: This method is private for security reasons. See
      * CR 6537898. When merging with Apache, we must ensure
      * that the privateness of this method is maintained (that
@@ -293,7 +292,7 @@ public final class TemplatesImpl implements Templates, Serializable {
 
     /**
      * Returns the translet bytecodes stored in this template
-     *
+     * <p>
      * Note: This method is private for security reasons. See
      * CR 6537898. When merging with Apache, we must ensure
      * that the privateness of this method is maintained (that
@@ -302,8 +301,7 @@ public final class TemplatesImpl implements Templates, Serializable {
     private synchronized Class[] getTransletClasses() {
         try {
             if (_class == null) defineTransletClasses();
-        }
-        catch (TransformerConfigurationException e) {
+        } catch (TransformerConfigurationException e) {
             // Falls through
         }
         return _class;
@@ -315,8 +313,7 @@ public final class TemplatesImpl implements Templates, Serializable {
     public synchronized int getTransletIndex() {
         try {
             if (_class == null) defineTransletClasses();
-        }
-        catch (TransformerConfigurationException e) {
+        } catch (TransformerConfigurationException e) {
             // Falls through
         }
         return _transletIndex;
@@ -341,7 +338,7 @@ public final class TemplatesImpl implements Templates, Serializable {
      * Returns a reference to the Class object that defines the main class
      */
     private void defineTransletClasses()
-        throws TransformerConfigurationException {
+            throws TransformerConfigurationException {
 
         if (_bytecodes == null) {
             ErrorMsg err = new ErrorMsg(ErrorMsg.NO_TRANSLET_CLASS_ERR);
@@ -349,11 +346,11 @@ public final class TemplatesImpl implements Templates, Serializable {
         }
 
         TransletClassLoader loader = (TransletClassLoader)
-            AccessController.doPrivileged(new PrivilegedAction() {
-                public Object run() {
-                    return new TransletClassLoader(ObjectFactory.findClassLoader(),_tfactory.getExternalExtensionsMap());
-                }
-            });
+                AccessController.doPrivileged(new PrivilegedAction() {
+                    public Object run() {
+                        return new TransletClassLoader(ObjectFactory.findClassLoader(), _tfactory.getExternalExtensionsMap());
+                    }
+                });
 
         try {
             final int classCount = _bytecodes.length;
@@ -370,22 +367,19 @@ public final class TemplatesImpl implements Templates, Serializable {
                 // Check if this is the main class
                 if (superClass.getName().equals(ABSTRACT_TRANSLET)) {
                     _transletIndex = i;
-                }
-                else {
+                } else {
                     _auxClasses.put(_class[i].getName(), _class[i]);
                 }
             }
 
             if (_transletIndex < 0) {
-                ErrorMsg err= new ErrorMsg(ErrorMsg.NO_MAIN_TRANSLET_ERR, _name);
+                ErrorMsg err = new ErrorMsg(ErrorMsg.NO_MAIN_TRANSLET_ERR, _name);
                 throw new TransformerConfigurationException(err.toString());
             }
-        }
-        catch (ClassFormatError e) {
+        } catch (ClassFormatError e) {
             ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_CLASS_ERR, _name);
             throw new TransformerConfigurationException(err.toString());
-        }
-        catch (LinkageError e) {
+        } catch (LinkageError e) {
             ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR, _name);
             throw new TransformerConfigurationException(err.toString());
         }
@@ -397,7 +391,7 @@ public final class TemplatesImpl implements Templates, Serializable {
      * be wrapped inside a Transformer object.
      */
     private Translet getTransletInstance()
-        throws TransformerConfigurationException {
+            throws TransformerConfigurationException {
         try {
             if (_name == null) return null;
 
@@ -415,12 +409,10 @@ public final class TemplatesImpl implements Templates, Serializable {
             }
 
             return translet;
-        }
-        catch (InstantiationException e) {
+        } catch (InstantiationException e) {
             ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR, _name);
             throw new TransformerConfigurationException(err.toString());
-        }
-        catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR, _name);
             throw new TransformerConfigurationException(err.toString());
         }
@@ -432,12 +424,11 @@ public final class TemplatesImpl implements Templates, Serializable {
      * @throws TransformerConfigurationException
      */
     public synchronized Transformer newTransformer()
-        throws TransformerConfigurationException
-    {
+            throws TransformerConfigurationException {
         TransformerImpl transformer;
 
         transformer = new TransformerImpl(getTransletInstance(), _outputProperties,
-            _indentNumber, _tfactory);
+                _indentNumber, _tfactory);
 
         if (_uriResolver != null) {
             transformer.setURIResolver(_uriResolver);
@@ -458,8 +449,7 @@ public final class TemplatesImpl implements Templates, Serializable {
     public synchronized Properties getOutputProperties() {
         try {
             return newTransformer().getOutputProperties();
-        }
-        catch (TransformerConfigurationException e) {
+        } catch (TransformerConfigurationException e) {
             return null;
         }
     }
@@ -468,7 +458,7 @@ public final class TemplatesImpl implements Templates, Serializable {
      * Return the thread local copy of the stylesheet DOM.
      */
     public DOM getStylesheetDOM() {
-        return (DOM)_sdom.get();
+        return (DOM) _sdom.get();
     }
 
     /**

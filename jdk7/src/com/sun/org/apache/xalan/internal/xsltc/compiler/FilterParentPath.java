@@ -78,7 +78,7 @@ final class FilterParentPath extends Expression {
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
         final Type ftype = _filterExpr.typeCheck(stable);
         if (ftype instanceof NodeSetType == false) {
-            if (ftype instanceof ReferenceType)  {
+            if (ftype instanceof ReferenceType) {
                 _filterExpr = new CastExpr(_filterExpr, Type.NodeSet);
             }
             /*
@@ -86,10 +86,9 @@ final class FilterParentPath extends Expression {
                 _filterExpr = new CastExpr(_filterExpr, Type.NodeSet);
             }
             */
-            else if (ftype instanceof NodeType)  {
+            else if (ftype instanceof NodeType) {
                 _filterExpr = new CastExpr(_filterExpr, Type.NodeSet);
-            }
-            else {
+            } else {
                 throw new TypeCheckError(this);
             }
         }
@@ -108,11 +107,11 @@ final class FilterParentPath extends Expression {
         final InstructionList il = methodGen.getInstructionList();
         // Create new StepIterator
         final int initSI = cpg.addMethodref(STEP_ITERATOR_CLASS,
-                                            "<init>",
-                                            "("
-                                            +NODE_ITERATOR_SIG
-                                            +NODE_ITERATOR_SIG
-                                            +")V");
+                "<init>",
+                "("
+                        + NODE_ITERATOR_SIG
+                        + NODE_ITERATOR_SIG
+                        + ")V");
 
         // Backwards branches are prohibited if an uninitialized object is
         // on the stack by section 4.9.4 of the JVM Specification, 2nd Ed.
@@ -127,15 +126,15 @@ final class FilterParentPath extends Expression {
         _filterExpr.translate(classGen, methodGen);
         LocalVariableGen filterTemp =
                 methodGen.addLocalVariable("filter_parent_path_tmp1",
-                                           Util.getJCRefType(NODE_ITERATOR_SIG),
-                                           null, null);
+                        Util.getJCRefType(NODE_ITERATOR_SIG),
+                        null, null);
         filterTemp.setStart(il.append(new ASTORE(filterTemp.getIndex())));
 
         _path.translate(classGen, methodGen);
         LocalVariableGen pathTemp =
                 methodGen.addLocalVariable("filter_parent_path_tmp2",
-                                           Util.getJCRefType(NODE_ITERATOR_SIG),
-                                           null, null);
+                        Util.getJCRefType(NODE_ITERATOR_SIG),
+                        null, null);
         pathTemp.setStart(il.append(new ASTORE(pathTemp.getIndex())));
 
         il.append(new NEW(cpg.addClass(STEP_ITERATOR_CLASS)));
@@ -149,24 +148,24 @@ final class FilterParentPath extends Expression {
         // This is a special case for the //* path with or without predicates
         if (_hasDescendantAxis) {
             final int incl = cpg.addMethodref(NODE_ITERATOR_BASE,
-                                              "includeSelf",
-                                              "()" + NODE_ITERATOR_SIG);
+                    "includeSelf",
+                    "()" + NODE_ITERATOR_SIG);
             il.append(new INVOKEVIRTUAL(incl));
         }
 
         SyntaxTreeNode parent = getParent();
 
         boolean parentAlreadyOrdered =
-            (parent instanceof RelativeLocationPath)
-                || (parent instanceof FilterParentPath)
-                || (parent instanceof KeyCall)
-                || (parent instanceof CurrentCall)
-                || (parent instanceof DocumentCall);
+                (parent instanceof RelativeLocationPath)
+                        || (parent instanceof FilterParentPath)
+                        || (parent instanceof KeyCall)
+                        || (parent instanceof CurrentCall)
+                        || (parent instanceof DocumentCall);
 
         if (!parentAlreadyOrdered) {
             final int order = cpg.addInterfaceMethodref(DOM_INTF,
-                                                        ORDER_ITERATOR,
-                                                        ORDER_ITERATOR_SIG);
+                    ORDER_ITERATOR,
+                    ORDER_ITERATOR_SIG);
             il.append(methodGen.loadDOM());
             il.append(SWAP);
             il.append(methodGen.loadContextNode());

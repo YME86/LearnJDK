@@ -51,7 +51,7 @@ public abstract class MultipleNodeCounter extends NodeCounter {
     public NodeCounter setStartNode(int node) {
         _node = node;
         _nodeType = _document.getExpandedTypeID(node);
-    _precSiblings = _document.getAxisIterator(Axis.PRECEDINGSIBLING);
+        _precSiblings = _document.getAxisIterator(Axis.PRECEDINGSIBLING);
         return this;
     }
 
@@ -62,7 +62,7 @@ public abstract class MultipleNodeCounter extends NodeCounter {
             else if (Double.isNaN(_value)) return "NaN";
             else if (_value < 0 && Double.isInfinite(_value)) return "-Infinity";
             else if (Double.isInfinite(_value)) return "Infinity";
-            else return formatNumbers((int)_value);
+            else return formatNumbers((int) _value);
         }
 
         IntegerArray ancestors = new IntegerArray();
@@ -71,7 +71,7 @@ public abstract class MultipleNodeCounter extends NodeCounter {
         int next = _node;
         ancestors.add(next);            // include self
         while ((next = _document.getParent(next)) > END &&
-               !matchesFrom(next)) {
+                !matchesFrom(next)) {
             ancestors.add(next);
         }
 
@@ -83,7 +83,7 @@ public abstract class MultipleNodeCounter extends NodeCounter {
         }
 
         // Increment array of counters according to semantics
-        for (int j = 0, i = nAncestors - 1; i >= 0 ; i--, j++) {
+        for (int j = 0, i = nAncestors - 1; i >= 0; i--, j++) {
             final int counter = counters[j];
             final int ancestor = ancestors.at(i);
 
@@ -92,13 +92,13 @@ public abstract class MultipleNodeCounter extends NodeCounter {
                 while ((next = _precSiblings.next()) != END) {
                     if (matchesCount(next)) {
                         counters[j] = (counters[j] == Integer.MIN_VALUE) ? 1
-                            : counters[j] + 1;
+                                : counters[j] + 1;
                     }
                 }
                 // Count the node itself
                 counters[j] = counters[j] == Integer.MIN_VALUE
-                    ? 1
-                    : counters[j] + 1;
+                        ? 1
+                        : counters[j] + 1;
             }
         }
         return formatNumbers(counters);

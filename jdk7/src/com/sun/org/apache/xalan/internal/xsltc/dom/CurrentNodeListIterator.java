@@ -33,11 +33,12 @@ import com.sun.org.apache.xml.internal.dtm.ref.DTMAxisIteratorBase;
  * Iterators of this kind use a CurrentNodeListFilter to filter a subset of
  * nodes from a source iterator. For each node from the source, the boolean
  * method CurrentNodeListFilter.test() is called.
- *
+ * <p>
  * All nodes from the source are read into an array upon calling setStartNode()
  * (this is needed to determine the value of last, a parameter to
  * CurrentNodeListFilter.test()). The method getLast() returns the last element
  * after applying the filter.
+ *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
@@ -82,16 +83,14 @@ public final class CurrentNodeListIterator extends DTMAxisIteratorBase {
     public CurrentNodeListIterator(DTMAxisIterator source,
                                    CurrentNodeListFilter filter,
                                    int currentNode,
-                                   AbstractTranslet translet)
-    {
+                                   AbstractTranslet translet) {
         this(source, !source.isReverse(), filter, currentNode, translet);
     }
 
     public CurrentNodeListIterator(DTMAxisIterator source, boolean docOrder,
                                    CurrentNodeListFilter filter,
                                    int currentNode,
-                                   AbstractTranslet translet)
-    {
+                                   AbstractTranslet translet) {
         _source = source;
         _filter = filter;
         _translet = translet;
@@ -116,15 +115,14 @@ public final class CurrentNodeListIterator extends DTMAxisIteratorBase {
     public DTMAxisIterator cloneIterator() {
         try {
             final CurrentNodeListIterator clone =
-                (CurrentNodeListIterator) super.clone();
+                    (CurrentNodeListIterator) super.clone();
             clone._nodes = (IntegerArray) _nodes.clone();
             clone._source = _source.cloneIterator();
             clone._isRestartable = false;
             return clone.reset();
-        }
-        catch (CloneNotSupportedException e) {
+        } catch (CloneNotSupportedException e) {
             BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
-                                      e.toString());
+                    e.toString());
             return null;
         }
     }
@@ -144,7 +142,7 @@ public final class CurrentNodeListIterator extends DTMAxisIteratorBase {
             final int node = _nodes.at(index++);        // note increment
 
             if (_filter.test(node, position, last, currentNode, translet,
-                             this)) {
+                    this)) {
                 _currentIndex = index;
                 return returnNode(node);
             }
@@ -192,7 +190,7 @@ public final class CurrentNodeListIterator extends DTMAxisIteratorBase {
             int nodeIndex = _nodes.at(index++);         // note increment
 
             if (_filter.test(nodeIndex, position, last, currNode, translet,
-                             this)) {
+                    this)) {
                 lastPosition++;
             }
         }

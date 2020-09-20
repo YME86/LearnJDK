@@ -142,13 +142,12 @@ public abstract class NodeIteratorBase implements NodeIterator {
      */
     public NodeIterator cloneIterator() {
         try {
-            final NodeIteratorBase clone = (NodeIteratorBase)super.clone();
+            final NodeIteratorBase clone = (NodeIteratorBase) super.clone();
             clone._isRestartable = false;
             return clone.reset();
-        }
-        catch (CloneNotSupportedException e) {
+        } catch (CloneNotSupportedException e) {
             BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
-                                      e.toString());
+                    e.toString());
             return null;
         }
     }

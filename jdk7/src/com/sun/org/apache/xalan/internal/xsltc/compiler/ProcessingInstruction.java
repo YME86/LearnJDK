@@ -50,7 +50,7 @@ final class ProcessingInstruction extends Instruction {
     private boolean _isLiteral = false;  // specified name is not AVT
 
     public void parseContents(Parser parser) {
-        final String name  = getAttribute("name");
+        final String name = getAttribute("name");
 
         if (name.length() > 0) {
             _isLiteral = Util.isLiteral(name);
@@ -61,8 +61,7 @@ final class ProcessingInstruction extends Instruction {
                 }
             }
             _name = AttributeValue.create(this, name, parser);
-        }
-        else
+        } else
             reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "name");
 
         if (name.equals("xml")) {
@@ -85,8 +84,8 @@ final class ProcessingInstruction extends Instruction {
             // if the ncname is an AVT, then the ncname has to be checked at runtime if it is a valid ncname
             LocalVariableGen nameValue =
                     methodGen.addLocalVariable2("nameValue",
-            Util.getJCRefType(STRING_SIG),
-                                                null);
+                            Util.getJCRefType(STRING_SIG),
+                            null);
 
             // store the name into a variable first so _name.translate only needs to be called once
             _name.translate(classGen, methodGen);
@@ -95,10 +94,10 @@ final class ProcessingInstruction extends Instruction {
 
             // call checkNCName if the name is an AVT
             final int check = cpg.addMethodref(BASIS_LIBRARY_CLASS, "checkNCName",
-                                "("
-                                +STRING_SIG
-                                +")V");
-                                il.append(new INVOKESTATIC(check));
+                    "("
+                            + STRING_SIG
+                            + ")V");
+            il.append(new INVOKESTATIC(check));
 
             // Save the current handler base on the stack
             il.append(methodGen.loadHandler());
@@ -118,8 +117,8 @@ final class ProcessingInstruction extends Instruction {
 
         il.append(classGen.loadTranslet());
         il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
-                                               "stringValueHandler",
-                                               STRING_VALUE_HANDLER_SIG)));
+                "stringValueHandler",
+                STRING_VALUE_HANDLER_SIG)));
         il.append(DUP);
         il.append(methodGen.storeHandler());
 
@@ -128,13 +127,13 @@ final class ProcessingInstruction extends Instruction {
 
         // get String out of the handler
         il.append(new INVOKEVIRTUAL(cpg.addMethodref(STRING_VALUE_HANDLER,
-                                                     "getValueOfPI",
-                                                     "()" + STRING_SIG)));
+                "getValueOfPI",
+                "()" + STRING_SIG)));
         // call "processingInstruction"
         final int processingInstruction =
-            cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
-                                      "processingInstruction",
-                                      "(" + STRING_SIG + STRING_SIG + ")V");
+                cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
+                        "processingInstruction",
+                        "(" + STRING_SIG + STRING_SIG + ")V");
         il.append(new INVOKEINTERFACE(processingInstruction, 3));
         // Restore old handler base from stack
         il.append(methodGen.storeHandler());

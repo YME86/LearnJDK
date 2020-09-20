@@ -35,30 +35,35 @@ import javax.management.loading.ClassLoaderRepository;
  * @since 1.5
  */
 final class SecureClassLoaderRepository
-    implements ClassLoaderRepository {
+        implements ClassLoaderRepository {
 
     private final ClassLoaderRepository clr;
+
     /**
      * Creates a new secure ClassLoaderRepository wrapping an
      * unsecure implementation.
+     *
      * @param clr Unsecure {@link ClassLoaderRepository} implementation
      *            to wrap.
      **/
     public SecureClassLoaderRepository(ClassLoaderRepository clr) {
-        this.clr=clr;
+        this.clr = clr;
     }
+
     public final Class<?> loadClass(String className)
-        throws ClassNotFoundException {
+            throws ClassNotFoundException {
         return clr.loadClass(className);
     }
+
     public final Class<?> loadClassWithout(ClassLoader loader,
-                                  String className)
-        throws ClassNotFoundException {
-        return clr.loadClassWithout(loader,className);
+                                           String className)
+            throws ClassNotFoundException {
+        return clr.loadClassWithout(loader, className);
     }
+
     public final Class<?> loadClassBefore(ClassLoader loader,
-                                 String className)
-        throws ClassNotFoundException {
-        return clr.loadClassBefore(loader,className);
+                                          String className)
+            throws ClassNotFoundException {
+        return clr.loadClassBefore(loader, className);
     }
 }

@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
  * only be for specific instantiations, as the key being unwrapped will
  * always be of a particular type and will always have been wrapped by
  * another key which needs to be recursively resolved.
- *
+ * <p>
  * The <code>EncryptedKeyResolver</code> can therefore only be instantiated
  * with an algorithm.  It can also be instantiated with a key (the KEK) or
  * will search the static KeyResolvers to find the appropriate key.
@@ -50,75 +50,85 @@ import org.w3c.dom.Element;
 
 public class EncryptedKeyResolver extends KeyResolverSpi {
 
-        /** {@link java.util.logging} logging facility */
+    /**
+     * {@link java.util.logging} logging facility
+     */
     static java.util.logging.Logger log =
-        java.util.logging.Logger.getLogger(
-                        RSAKeyValueResolver.class.getName());
+            java.util.logging.Logger.getLogger(
+                    RSAKeyValueResolver.class.getName());
 
 
-        Key _kek;
-        String _algorithm;
+    Key _kek;
+    String _algorithm;
 
-        /**
-         * Constructor for use when a KEK needs to be derived from a KeyInfo
-         * list
-         * @param algorithm
-         */
-        public EncryptedKeyResolver(String algorithm) {
-                _kek = null;
-        _algorithm=algorithm;
+    /**
+     * Constructor for use when a KEK needs to be derived from a KeyInfo
+     * list
+     *
+     * @param algorithm
+     */
+    public EncryptedKeyResolver(String algorithm) {
+        _kek = null;
+        _algorithm = algorithm;
+    }
+
+    /**
+     * Constructor used for when a KEK has been set
+     *
+     * @param algorithm
+     * @param kek
+     */
+
+    public EncryptedKeyResolver(String algorithm, Key kek) {
+        _algorithm = algorithm;
+        _kek = kek;
+
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public PublicKey engineLookupAndResolvePublicKey(
+            Element element, String BaseURI, StorageResolver storage) {
+
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public X509Certificate engineLookupResolveX509Certificate(
+            Element element, String BaseURI, StorageResolver storage) {
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
+            Element element, String BaseURI, StorageResolver storage) {
+        SecretKey key = null;
+        if (log.isLoggable(java.util.logging.Level.FINE))
+            log.log(java.util.logging.Level.FINE, "EncryptedKeyResolver - Can I resolve " + element.getTagName());
+
+        if (element == null) {
+            return null;
         }
 
-        /**
-         * Constructor used for when a KEK has been set
-         * @param algorithm
-         * @param kek
-         */
+        boolean isEncryptedKey = XMLUtils.elementIsInEncryptionSpace(element,
+                EncryptionConstants._TAG_ENCRYPTEDKEY);
 
-        public EncryptedKeyResolver(String algorithm, Key kek) {
-                _algorithm = algorithm;
-                _kek = kek;
-
+        if (isEncryptedKey) {
+            log.log(java.util.logging.Level.FINE, "Passed an Encrypted Key");
+            try {
+                XMLCipher cipher = XMLCipher.getInstance();
+                cipher.init(XMLCipher.UNWRAP_MODE, _kek);
+                EncryptedKey ek = cipher.loadEncryptedKey(element);
+                key = (SecretKey) cipher.decryptKey(ek, _algorithm);
+            } catch (Exception e) {
+            }
         }
 
-    /** @inheritDoc */
-   public PublicKey engineLookupAndResolvePublicKey(
-           Element element, String BaseURI, StorageResolver storage) {
-
-           return null;
-   }
-
-   /** @inheritDoc */
-   public X509Certificate engineLookupResolveX509Certificate(
-           Element element, String BaseURI, StorageResolver storage) {
-      return null;
-   }
-
-   /** @inheritDoc */
-   public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
-           Element element, String BaseURI, StorageResolver storage) {
-           SecretKey key=null;
-           if (log.isLoggable(java.util.logging.Level.FINE))
-                        log.log(java.util.logging.Level.FINE, "EncryptedKeyResolver - Can I resolve " + element.getTagName());
-
-              if (element == null) {
-                 return null;
-              }
-
-              boolean isEncryptedKey = XMLUtils.elementIsInEncryptionSpace(element,
-                                      EncryptionConstants._TAG_ENCRYPTEDKEY);
-
-              if (isEncryptedKey) {
-                          log.log(java.util.logging.Level.FINE, "Passed an Encrypted Key");
-                          try {
-                                  XMLCipher cipher = XMLCipher.getInstance();
-                                  cipher.init(XMLCipher.UNWRAP_MODE, _kek);
-                                  EncryptedKey ek = cipher.loadEncryptedKey(element);
-                                  key = (SecretKey) cipher.decryptKey(ek, _algorithm);
-                          }
-                          catch (Exception e) {}
-              }
-
-      return key;
-   }
+        return key;
+    }
 }

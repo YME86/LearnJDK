@@ -26,6 +26,7 @@
 package com.sun.jmx.mbeanserver;
 
 import static com.sun.jmx.mbeanserver.Util.*;
+
 import java.util.Map;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationHandler;
@@ -114,7 +115,7 @@ public class MXBeanLookup {
     }
 
     synchronized ObjectName mxbeanToObjectName(Object mxbean)
-    throws OpenDataException {
+            throws OpenDataException {
         String wrong;
         if (mxbean instanceof Proxy) {
             InvocationHandler ih = Proxy.getInvocationHandler(mxbean);
@@ -134,7 +135,7 @@ public class MXBeanLookup {
             wrong = "not an MXBean registered in this MBeanServer";
         }
         String s = (mxbean == null) ?
-            "null" : "object of type " + mxbean.getClass().getName();
+                "null" : "object of type " + mxbean.getClass().getName();
         throw new OpenDataException(
                 "Could not convert " + s + " to an ObjectName: " + wrong);
         // Message will be strange if mxbean is null but it is not
@@ -142,7 +143,7 @@ public class MXBeanLookup {
     }
 
     synchronized void addReference(ObjectName name, Object mxbean)
-    throws InstanceAlreadyExistsException {
+            throws InstanceAlreadyExistsException {
         ObjectName existing = mxbeanToObjectName.get(mxbean);
         if (existing != null) {
             String multiname = AccessController.doPrivileged(
@@ -179,10 +180,10 @@ public class MXBeanLookup {
 
     private final MBeanServerConnection mbsc;
     private final WeakIdentityHashMap<Object, ObjectName>
-        mxbeanToObjectName = WeakIdentityHashMap.make();
+            mxbeanToObjectName = WeakIdentityHashMap.make();
     private final Map<ObjectName, WeakReference<Object>>
-        objectNameToProxy = newMap();
+            objectNameToProxy = newMap();
     private static final WeakIdentityHashMap<MBeanServerConnection,
-                                             WeakReference<MXBeanLookup>>
-        mbscToLookup = WeakIdentityHashMap.make();
+            WeakReference<MXBeanLookup>>
+            mbscToLookup = WeakIdentityHashMap.make();
 }

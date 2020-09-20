@@ -27,9 +27,9 @@
 package com.sun.jmx.snmp.agent;
 
 
-
 // java imports
 //
+
 import java.io.Serializable;
 import java.util.Vector;
 import java.util.Hashtable;
@@ -64,47 +64,43 @@ public abstract class SnmpMibNode implements Serializable {
      * Get the next OID arc corresponding to a readable scalar variable,
      * a branch leading to a subgroub, or a table.
      *
-     * @param id Id we start from looking for the next.
+     * @param id       Id we start from looking for the next.
      * @param userData A contextual object containing user-data.
-     *        This object is allocated through the <code>
-     *        {@link com.sun.jmx.snmp.agent.SnmpUserDataFactory}</code>
-     *        for each incoming SNMP request.
-     *
+     *                 This object is allocated through the <code>
+     *                 {@link com.sun.jmx.snmp.agent.SnmpUserDataFactory}</code>
+     *                 for each incoming SNMP request.
      * @return The next id in this group.
-     *
-     * @exception SnmpStatusException If no id is found after the given id.
+     * @throws SnmpStatusException If no id is found after the given id.
      */
     public long getNextVarId(long id, Object userData)
-        throws SnmpStatusException {
-        return getNextIdentifier(varList,id);
+            throws SnmpStatusException {
+        return getNextIdentifier(varList, id);
     }
 
     /**
      * Get the next OID arc corresponding to a readable scalar variable,
      * a branch leading to a subgroub, or a table, possibly skipping over
      * those arcs that must not or cannot be returned.
+     * <p>
+     * Calls {@link #getNextVarId(long, java.lang.Object)} until
+     * {@link #skipVariable(long, java.lang.Object, int)} returns false.
      *
-     * Calls {@link #getNextVarId(long,java.lang.Object)} until
-     * {@link #skipVariable(long,java.lang.Object,int)} returns false.
-     *
-     * @param id Id we start from looking for the next.
-     * @param userData A contextual object containing user-data.
-     *        This object is allocated through the <code>
-     *        {@link com.sun.jmx.snmp.agent.SnmpUserDataFactory}</code>
-     *        for each incoming SNMP request.
+     * @param id         Id we start from looking for the next.
+     * @param userData   A contextual object containing user-data.
+     *                   This object is allocated through the <code>
+     *                   {@link com.sun.jmx.snmp.agent.SnmpUserDataFactory}</code>
+     *                   for each incoming SNMP request.
      * @param pduVersion Protocol version of the original request PDU.
-     *
      * @return The next id in this group which can be returned using
-     *         the given PDU's protocol version.
-     *
-     * @exception SnmpStatusException If no id is found after the given id.
+     * the given PDU's protocol version.
+     * @throws SnmpStatusException If no id is found after the given id.
      */
     public long getNextVarId(long id, Object userData, int pduVersion)
-        throws SnmpStatusException {
-        long varid=id;
+            throws SnmpStatusException {
+        long varid = id;
         do {
-            varid = getNextVarId(varid,userData);
-        } while (skipVariable(varid,userData,pduVersion));
+            varid = getNextVarId(varid, userData);
+        } while (skipVariable(varid, userData, pduVersion));
 
         return varid;
     }
@@ -119,15 +115,14 @@ public abstract class SnmpMibNode implements Serializable {
      *     version of the protocol (e.g. an Counter64 with SNMPv1).</li>
      * </ul>
      *
-     * @param id Id we start from looking for the next.
-     * @param userData A contextual object containing user-data.
-     *        This object is allocated through the <code>
-     *        {@link com.sun.jmx.snmp.agent.SnmpUserDataFactory}</code>
-     *        for each incoming SNMP request.
+     * @param id         Id we start from looking for the next.
+     * @param userData   A contextual object containing user-data.
+     *                   This object is allocated through the <code>
+     *                   {@link com.sun.jmx.snmp.agent.SnmpUserDataFactory}</code>
+     *                   for each incoming SNMP request.
      * @param pduVersion Protocol version of the original request PDU.
-     *
      * @return true if the variable must be skipped by the get-next
-     *         algorithm.
+     * algorithm.
      */
     protected boolean skipVariable(long id, Object userData, int pduVersion) {
         return false;
@@ -139,22 +134,18 @@ public abstract class SnmpMibNode implements Serializable {
      * never try to call it directly.
      *
      * @param varbind  The varbind to be handled
-     *
      * @param oid      The OID array extracted from the varbind
-     *
      * @param depth    The depth reached in the OID at this step of the
      *                 processing.
-     *
      * @param handlers The Hashtable in which the varbind will be registered
      *                 with its handling node. This hashtable contains
      *                 <CODE>SnmpRequestTree.Handler</CODE> items.
-     *
-     * @exception SnmpStatusException No handling node was found.
+     * @throws SnmpStatusException No handling node was found.
      **/
     void findHandlingNode(SnmpVarBind varbind,
                           long[] oid, int depth,
                           SnmpRequestTree handlers)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
         throw new SnmpStatusException(SnmpStatusException.noSuchObject);
     }
 
@@ -165,24 +156,19 @@ public abstract class SnmpMibNode implements Serializable {
      * it directly.
      *
      * @param varbind  The varbind to be handled
-     *
      * @param oid      The OID array extracted from the varbind
-     *
      * @param depth    The depth reached in the OID at this step of the
      *                 processing.
-     *
      * @param handlers The Hashtable in which the varbind will be registered
      *                 with its handling node. This hashtable contains
      *                 SnmpRequestTree.Handler items.
-     *
      * @return The SnmpOid of the next leaf.
-     *
-     * @exception SnmpStatusException No handling node was found.
+     * @throws SnmpStatusException No handling node was found.
      **/
     long[] findNextHandlingNode(SnmpVarBind varbind,
-                                 long[] oid, int pos, int depth,
-                                 SnmpRequestTree handlers, AcmChecker checker)
-        throws SnmpStatusException {
+                                long[] oid, int pos, int depth,
+                                SnmpRequestTree handlers, AcmChecker checker)
+            throws SnmpStatusException {
         throw new SnmpStatusException(SnmpStatusException.noSuchObject);
     }
 
@@ -195,14 +181,12 @@ public abstract class SnmpMibNode implements Serializable {
      * <p>
      *
      * @param req   The sub-request that must be handled by this node.
-     *
      * @param depth The depth reached in the OID tree.
-     *
-     * @exception SnmpStatusException An error occurred while accessing
-     *  the MIB node.
+     * @throws SnmpStatusException An error occurred while accessing
+     *                             the MIB node.
      */
     public abstract void get(SnmpMibSubRequest req, int depth)
-        throws SnmpStatusException;
+            throws SnmpStatusException;
 
     /**
      * Generic handling of the <CODE>set</CODE> operation.
@@ -212,14 +196,12 @@ public abstract class SnmpMibNode implements Serializable {
      * <p>
      *
      * @param req   The sub-request that must be handled by this node.
-     *
      * @param depth The depth reached in the OID tree.
-     *
-     * @exception SnmpStatusException An error occurred while accessing
-     *  the MIB node.
+     * @throws SnmpStatusException An error occurred while accessing
+     *                             the MIB node.
      */
     public abstract void set(SnmpMibSubRequest req, int depth)
-        throws SnmpStatusException;
+            throws SnmpStatusException;
 
     /**
      * Generic handling of the <CODE>check</CODE> operation.
@@ -230,14 +212,12 @@ public abstract class SnmpMibNode implements Serializable {
      * <p>
      *
      * @param req   The sub-request that must be handled by this node.
-     *
      * @param depth The depth reached in the OID tree.
-     *
-     * @exception SnmpStatusException An error occurred while accessing
-     *  the MIB node.
+     * @throws SnmpStatusException An error occurred while accessing
+     *                             the MIB node.
      */
     public abstract void check(SnmpMibSubRequest req, int depth)
-        throws SnmpStatusException;
+            throws SnmpStatusException;
 
     /**
      * Sorts the specified integer array.
@@ -263,14 +243,14 @@ public abstract class SnmpMibNode implements Serializable {
      * This is a generic version of C.A.R Hoare's Quick Sort
      * algorithm.  This will handle arrays that are already
      * sorted, and arrays with duplicate keys.
-     *
+     * <p>
      * If you think of a one dimensional array as going from
      * the lowest index on the left to the highest index on the right
      * then the parameters to this function are lowest index or
      * left and highest index or right.  The first time you call
      * this function it will be with the parameters 0, a.length - 1.
      *
-     * @param a An integer array.
+     * @param a   An integer array.
      * @param lo0 Left boundary of array partition.
      * @param hi0 Right boundary of array partition.
      */
@@ -279,29 +259,29 @@ public abstract class SnmpMibNode implements Serializable {
         int hi = hi0;
         int mid;
 
-        if ( hi0 > lo0) {
+        if (hi0 > lo0) {
 
             /* Arbitrarily establishing partition element as the midpoint of
              * the array.
              */
-            mid = a[ ( lo0 + hi0 ) / 2 ];
+            mid = a[(lo0 + hi0) / 2];
 
             // loop through the array until indices cross
-            while( lo <= hi ) {
+            while (lo <= hi) {
                 /* find the first element that is greater than or equal to
                  * the partition element starting from the left Index.
                  */
-                while( ( lo < hi0 )  && ( a[lo] < mid ))
+                while ((lo < hi0) && (a[lo] < mid))
                     ++lo;
 
                 /* find an element that is smaller than or equal to
                  * the partition element starting from the right Index.
                  */
-                while( ( hi > lo0 ) && ( a[hi] > mid ))
+                while ((hi > lo0) && (a[hi] > mid))
                     --hi;
 
                 // if the indexes have not crossed, swap
-                if( lo <= hi ) {
+                if (lo <= hi) {
                     swap(a, lo, hi);
                     ++lo;
                     --hi;
@@ -311,14 +291,14 @@ public abstract class SnmpMibNode implements Serializable {
             /* If the right index has not reached the left side of array
              * must now sort the left partition.
              */
-            if( lo0 < hi )
-                QuickSort( a, lo0, hi );
+            if (lo0 < hi)
+                QuickSort(a, lo0, hi);
 
             /* If the left index has not reached the right side of array
              * must now sort the right partition.
              */
-            if( lo < hi0 )
-                QuickSort( a, lo, hi0 );
+            if (lo < hi0)
+                QuickSort(a, lo, hi0);
 
         }
     }
@@ -334,36 +314,34 @@ public abstract class SnmpMibNode implements Serializable {
      * the method will throw a <CODE>SnmpStatusException</CODE>.
      *
      * @param table A sorted integer array.
-     *
      * @param value The greatest value.
-     *
-     * @exception SnmpStatusException If there is no element greater than
-     *     <CODE>value</CODE>.
+     * @throws SnmpStatusException If there is no element greater than
+     *                             <CODE>value</CODE>.
      */
     final static protected int getNextIdentifier(int table[], long value)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
 
         final int[] a = table;
-        final int val= (int) value;
+        final int val = (int) value;
 
         if (a == null)
             throw new SnmpStatusException(SnmpStatusException.noSuchObject);
 
-        int low= 0;
-        int max= a.length;
-        int curr= low + (max-low)/2;
-        int elmt= 0;
+        int low = 0;
+        int max = a.length;
+        int curr = low + (max - low) / 2;
+        int elmt = 0;
 
         // Basic check
         //
         if (max < 1)
             throw new SnmpStatusException(SnmpStatusException.noSuchObject);
 
-        if (a[max-1] <= val)
+        if (a[max - 1] <= val)
             throw new SnmpStatusException(SnmpStatusException.noSuchObject);
 
         while (low <= max) {
-            elmt= a[curr];
+            elmt = a[curr];
             if (val == elmt) {
                 // We ned to get the next index ...
                 //
@@ -371,11 +349,11 @@ public abstract class SnmpMibNode implements Serializable {
                 return a[curr];
             }
             if (elmt < val) {
-                low= curr +1;
+                low = curr + 1;
             } else {
-                max= curr -1;
+                max = curr - 1;
             }
-            curr= low + (max-low)/2;
+            curr = low + (max - low) / 2;
         }
         return a[curr];
     }

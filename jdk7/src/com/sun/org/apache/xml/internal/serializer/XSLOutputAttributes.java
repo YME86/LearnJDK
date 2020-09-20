@@ -27,7 +27,7 @@ import java.util.Vector;
 /**
  * This interface has methods associated with the XSLT xsl:output attribues
  * specified in the stylesheet that effect the format of the document output.
- *
+ * <p>
  * In an XSLT stylesheet these attributes appear for example as:
  * <pre>
  * <xsl:output method="xml" omit-xml-declaration="no" indent="yes"/>
@@ -44,40 +44,42 @@ import java.util.Vector;
  * indent
  * media-type
  * </pre>
- *
+ * <p>
  * The one attribute not covered in this interface is <code>method</code> as
  * this value is implicitly chosen by the serializer that is created, for
  * example ToXMLStream vs. ToHTMLStream or another one.
- *
+ * <p>
  * This interface is only used internally within Xalan.
  *
  * @xsl.usage internal
  */
-interface XSLOutputAttributes
-{
+interface XSLOutputAttributes {
     /**
      * Returns the previously set value of the value to be used as the public
      * identifier in the document type declaration (DTD).
      *
-     *@return the public identifier to be used in the DOCTYPE declaration in the
+     * @return the public identifier to be used in the DOCTYPE declaration in the
      * output document.
      */
     public String getDoctypePublic();
+
     /**
      * Returns the previously set value of the value to be used
      * as the system identifier in the document type declaration (DTD).
+     *
      * @return the system identifier to be used in the DOCTYPE declaration in
      * the output document.
-     *
      */
     public String getDoctypeSystem();
+
     /**
      * @return the character encoding to be used in the output document.
      */
     public String getEncoding();
+
     /**
-         * @return true if the output document should be indented to visually
-         * indicate its structure.
+     * @return true if the output document should be indented to visually
+     * indicate its structure.
      */
     public boolean getIndent();
 
@@ -85,98 +87,118 @@ interface XSLOutputAttributes
      * @return the number of spaces to indent for each indentation level.
      */
     public int getIndentAmount();
+
     /**
      * @return the mediatype the media-type or MIME type associated with the
      * output document.
      */
     public String getMediaType();
+
     /**
      * @return true if the XML declaration is to be omitted from the output
      * document.
      */
     public boolean getOmitXMLDeclaration();
+
     /**
-      * @return a value of "yes" if the <code>standalone</code> delaration is to
-      * be included in the output document.
-      */
+     * @return a value of "yes" if the <code>standalone</code> delaration is to
+     * be included in the output document.
+     */
     public String getStandalone();
+
     /**
      * @return the version of the output format.
      */
     public String getVersion();
 
 
-
-
-
-
     /**
      * Sets the value coming from the xsl:output cdata-section-elements
      * stylesheet property.
-     *
+     * <p>
      * This sets the elements whose text elements are to be output as CDATA
      * sections.
+     *
      * @param URI_and_localNames pairs of namespace URI and local names that
-     * identify elements whose text elements are to be output as CDATA sections.
-     * The namespace of the local element must be the given URI to match. The
-     * qName is not given because the prefix does not matter, only the namespace
-     * URI to which that prefix would map matters, so the prefix itself is not
-     * relevant in specifying which elements have their text to be output as
-     * CDATA sections.
+     *                           identify elements whose text elements are to be output as CDATA sections.
+     *                           The namespace of the local element must be the given URI to match. The
+     *                           qName is not given because the prefix does not matter, only the namespace
+     *                           URI to which that prefix would map matters, so the prefix itself is not
+     *                           relevant in specifying which elements have their text to be output as
+     *                           CDATA sections.
      */
     public void setCdataSectionElements(Vector URI_and_localNames);
 
-    /** Set the value coming from the xsl:output doctype-public and doctype-system stylesheet properties
+    /**
+     * Set the value coming from the xsl:output doctype-public and doctype-system stylesheet properties
+     *
      * @param system the system identifier to be used in the DOCTYPE declaration
-     * in the output document.
-     * @param pub the public identifier to be used in the DOCTYPE declaration in
-     * the output document.
+     *               in the output document.
+     * @param pub    the public identifier to be used in the DOCTYPE declaration in
+     *               the output document.
      */
     public void setDoctype(String system, String pub);
 
-    /** Set the value coming from the xsl:output doctype-public stylesheet attribute.
-      * @param doctype the public identifier to be used in the DOCTYPE
-      * declaration in the output document.
-      */
+    /**
+     * Set the value coming from the xsl:output doctype-public stylesheet attribute.
+     *
+     * @param doctype the public identifier to be used in the DOCTYPE
+     *                declaration in the output document.
+     */
     public void setDoctypePublic(String doctype);
-    /** Set the value coming from the xsl:output doctype-system stylesheet attribute.
-      * @param doctype the system identifier to be used in the DOCTYPE
-      * declaration in the output document.
-      */
+
+    /**
+     * Set the value coming from the xsl:output doctype-system stylesheet attribute.
+     *
+     * @param doctype the system identifier to be used in the DOCTYPE
+     *                declaration in the output document.
+     */
     public void setDoctypeSystem(String doctype);
+
     /**
      * Sets the character encoding coming from the xsl:output encoding stylesheet attribute.
+     *
      * @param encoding the character encoding
      */
     public void setEncoding(String encoding);
+
     /**
      * Sets the value coming from the xsl:output indent stylesheet
      * attribute.
+     *
      * @param indent true if the output document should be indented to visually
-     * indicate its structure.
+     *               indicate its structure.
      */
     public void setIndent(boolean indent);
+
     /**
      * Sets the value coming from the xsl:output media-type stylesheet attribute.
+     *
      * @param mediatype the media-type or MIME type associated with the output
-     * document.
+     *                  document.
      */
     public void setMediaType(String mediatype);
+
     /**
      * Sets the value coming from the xsl:output omit-xml-declaration stylesheet attribute
+     *
      * @param b true if the XML declaration is to be omitted from the output
-     * document.
+     *          document.
      */
     public void setOmitXMLDeclaration(boolean b);
+
     /**
      * Sets the value coming from the xsl:output standalone stylesheet attribute.
+     *
      * @param standalone a value of "yes" indicates that the
-     * <code>standalone</code> delaration is to be included in the output
-     * document.
+     *                   <code>standalone</code> delaration is to be included in the output
+     *                   document.
      */
     public void setStandalone(String standalone);
+
     /**
      * Sets the value coming from the xsl:output version attribute.
+     *
      * @param version the version of the output format.
      */
     public void setVersion(String version);

@@ -87,14 +87,13 @@ public class DOM2TO implements XMLReader, Locator2 {
 
         if (_dom != null) {
             boolean isIncomplete =
-                (_dom.getNodeType() != org.w3c.dom.Node.DOCUMENT_NODE);
+                    (_dom.getNodeType() != org.w3c.dom.Node.DOCUMENT_NODE);
 
             if (isIncomplete) {
                 _handler.startDocument();
                 parse(_dom);
                 _handler.endDocument();
-            }
-            else {
+            } else {
                 parse(_dom);
             }
         }
@@ -105,144 +104,143 @@ public class DOM2TO implements XMLReader, Locator2 {
      * we need to handle implicit namespace declarations too.
      */
     private void parse(Node node)
-        throws IOException, SAXException
-    {
+            throws IOException, SAXException {
         if (node == null) return;
 
         switch (node.getNodeType()) {
-        case Node.ATTRIBUTE_NODE:         // handled by ELEMENT_NODE
-        case Node.DOCUMENT_TYPE_NODE :
-        case Node.ENTITY_NODE :
-        case Node.ENTITY_REFERENCE_NODE:
-        case Node.NOTATION_NODE :
-            // These node types are ignored!!!
-            break;
-        case Node.CDATA_SECTION_NODE:
-            _handler.startCDATA();
-            _handler.characters(node.getNodeValue());
-            _handler.endCDATA();
-            break;
+            case Node.ATTRIBUTE_NODE:         // handled by ELEMENT_NODE
+            case Node.DOCUMENT_TYPE_NODE:
+            case Node.ENTITY_NODE:
+            case Node.ENTITY_REFERENCE_NODE:
+            case Node.NOTATION_NODE:
+                // These node types are ignored!!!
+                break;
+            case Node.CDATA_SECTION_NODE:
+                _handler.startCDATA();
+                _handler.characters(node.getNodeValue());
+                _handler.endCDATA();
+                break;
 
-        case Node.COMMENT_NODE:           // should be handled!!!
-            _handler.comment(node.getNodeValue());
-            break;
+            case Node.COMMENT_NODE:           // should be handled!!!
+                _handler.comment(node.getNodeValue());
+                break;
 
-        case Node.DOCUMENT_NODE:
-             setDocumentInfo((Document)node);
-             _handler.setDocumentLocator(this);
-             _handler.startDocument();
-            Node next = node.getFirstChild();
-            while (next != null) {
-                parse(next);
-                next = next.getNextSibling();
-            }
-            _handler.endDocument();
-            break;
-
-        case Node.DOCUMENT_FRAGMENT_NODE:
-            next = node.getFirstChild();
-            while (next != null) {
-                parse(next);
-                next = next.getNextSibling();
-            }
-            break;
-
-        case Node.ELEMENT_NODE:
-            // Generate SAX event to start element
-            final String qname = node.getNodeName();
-            _handler.startElement(null, null, qname);
-
-            int colon;
-            String prefix;
-            final NamedNodeMap map = node.getAttributes();
-            final int length = map.getLength();
-
-            // Process all namespace attributes first
-            for (int i = 0; i < length; i++) {
-                final Node attr = map.item(i);
-                final String qnameAttr = attr.getNodeName();
-
-                // Is this a namespace declaration?
-                if (qnameAttr.startsWith(XMLNS_PREFIX)) {
-                    final String uriAttr = attr.getNodeValue();
-                    colon = qnameAttr.lastIndexOf(':');
-                    prefix = (colon > 0) ? qnameAttr.substring(colon + 1)
-                                         : EMPTYSTRING;
-                    _handler.namespaceAfterStartElement(prefix, uriAttr);
+            case Node.DOCUMENT_NODE:
+                setDocumentInfo((Document) node);
+                _handler.setDocumentLocator(this);
+                _handler.startDocument();
+                Node next = node.getFirstChild();
+                while (next != null) {
+                    parse(next);
+                    next = next.getNextSibling();
                 }
-            }
+                _handler.endDocument();
+                break;
 
-            // Process all non-namespace attributes next
-            NamespaceMappings nm = new NamespaceMappings();
-            for (int i = 0; i < length; i++) {
-                final Node attr = map.item(i);
-                final String qnameAttr = attr.getNodeName();
+            case Node.DOCUMENT_FRAGMENT_NODE:
+                next = node.getFirstChild();
+                while (next != null) {
+                    parse(next);
+                    next = next.getNextSibling();
+                }
+                break;
 
-                // Is this a regular attribute?
-                if (!qnameAttr.startsWith(XMLNS_PREFIX)) {
-                    final String uriAttr = attr.getNamespaceURI();
-                    // Uri may be implicitly declared
-                    if (uriAttr != null && !uriAttr.equals(EMPTYSTRING) ) {
+            case Node.ELEMENT_NODE:
+                // Generate SAX event to start element
+                final String qname = node.getNodeName();
+                _handler.startElement(null, null, qname);
+
+                int colon;
+                String prefix;
+                final NamedNodeMap map = node.getAttributes();
+                final int length = map.getLength();
+
+                // Process all namespace attributes first
+                for (int i = 0; i < length; i++) {
+                    final Node attr = map.item(i);
+                    final String qnameAttr = attr.getNodeName();
+
+                    // Is this a namespace declaration?
+                    if (qnameAttr.startsWith(XMLNS_PREFIX)) {
+                        final String uriAttr = attr.getNodeValue();
                         colon = qnameAttr.lastIndexOf(':');
-
-                        // Fix for bug 26319
-                        // For attributes not given an prefix explictly
-                        // but having a namespace uri we need
-                        // to explicitly generate the prefix
-                        String newPrefix = nm.lookupPrefix(uriAttr);
-                        if (newPrefix == null)
-                            newPrefix = nm.generateNextPrefix();
-                        prefix = (colon > 0) ? qnameAttr.substring(0, colon)
-                            : newPrefix;
+                        prefix = (colon > 0) ? qnameAttr.substring(colon + 1)
+                                : EMPTYSTRING;
                         _handler.namespaceAfterStartElement(prefix, uriAttr);
-                        _handler.addAttribute((prefix + ":" + qnameAttr),
-                            attr.getNodeValue());
-                    } else {
-                         _handler.addAttribute(qnameAttr, attr.getNodeValue());
                     }
                 }
-            }
 
-            // Now element namespace and children
-            final String uri = node.getNamespaceURI();
-            final String localName = node.getLocalName();
+                // Process all non-namespace attributes next
+                NamespaceMappings nm = new NamespaceMappings();
+                for (int i = 0; i < length; i++) {
+                    final Node attr = map.item(i);
+                    final String qnameAttr = attr.getNodeName();
 
-            // Uri may be implicitly declared
-            if (uri != null) {
-                colon = qname.lastIndexOf(':');
-                prefix = (colon > 0) ? qname.substring(0, colon) : EMPTYSTRING;
-                _handler.namespaceAfterStartElement(prefix, uri);
-            }else {
-                  // Fix for bug 26319
-                  // If an element foo is created using
-                  // createElementNS(null,locName)
-                  // then the  element should be serialized
-                  // <foo xmlns=" "/>
-                  if (uri == null  && localName != null) {
-                     prefix = EMPTYSTRING;
-                     _handler.namespaceAfterStartElement(prefix, EMPTYSTRING);
-                 }
-            }
+                    // Is this a regular attribute?
+                    if (!qnameAttr.startsWith(XMLNS_PREFIX)) {
+                        final String uriAttr = attr.getNamespaceURI();
+                        // Uri may be implicitly declared
+                        if (uriAttr != null && !uriAttr.equals(EMPTYSTRING)) {
+                            colon = qnameAttr.lastIndexOf(':');
 
-            // Traverse all child nodes of the element (if any)
-            next = node.getFirstChild();
-            while (next != null) {
-                parse(next);
-                next = next.getNextSibling();
-            }
+                            // Fix for bug 26319
+                            // For attributes not given an prefix explictly
+                            // but having a namespace uri we need
+                            // to explicitly generate the prefix
+                            String newPrefix = nm.lookupPrefix(uriAttr);
+                            if (newPrefix == null)
+                                newPrefix = nm.generateNextPrefix();
+                            prefix = (colon > 0) ? qnameAttr.substring(0, colon)
+                                    : newPrefix;
+                            _handler.namespaceAfterStartElement(prefix, uriAttr);
+                            _handler.addAttribute((prefix + ":" + qnameAttr),
+                                    attr.getNodeValue());
+                        } else {
+                            _handler.addAttribute(qnameAttr, attr.getNodeValue());
+                        }
+                    }
+                }
 
-            // Generate SAX event to close element
-            _handler.endElement(qname);
-            break;
+                // Now element namespace and children
+                final String uri = node.getNamespaceURI();
+                final String localName = node.getLocalName();
 
-        case Node.PROCESSING_INSTRUCTION_NODE:
-            _handler.processingInstruction(node.getNodeName(),
-                                           node.getNodeValue());
-            break;
+                // Uri may be implicitly declared
+                if (uri != null) {
+                    colon = qname.lastIndexOf(':');
+                    prefix = (colon > 0) ? qname.substring(0, colon) : EMPTYSTRING;
+                    _handler.namespaceAfterStartElement(prefix, uri);
+                } else {
+                    // Fix for bug 26319
+                    // If an element foo is created using
+                    // createElementNS(null,locName)
+                    // then the  element should be serialized
+                    // <foo xmlns=" "/>
+                    if (uri == null && localName != null) {
+                        prefix = EMPTYSTRING;
+                        _handler.namespaceAfterStartElement(prefix, EMPTYSTRING);
+                    }
+                }
 
-        case Node.TEXT_NODE:
-            _handler.characters(node.getNodeValue());
-            break;
+                // Traverse all child nodes of the element (if any)
+                next = node.getFirstChild();
+                while (next != null) {
+                    parse(next);
+                    next = next.getNextSibling();
+                }
+
+                // Generate SAX event to close element
+                _handler.endElement(qname);
+                break;
+
+            case Node.PROCESSING_INSTRUCTION_NODE:
+                _handler.processingInstruction(node.getNodeName(),
+                        node.getNodeValue());
+                break;
+
+            case Node.TEXT_NODE:
+                _handler.characters(node.getNodeValue());
+                break;
         }
     }
 
@@ -267,8 +265,7 @@ public class DOM2TO implements XMLReader, Locator2 {
      * be called.
      */
     public boolean getFeature(String name) throws SAXNotRecognizedException,
-        SAXNotSupportedException
-    {
+            SAXNotSupportedException {
         return false;
     }
 
@@ -277,8 +274,7 @@ public class DOM2TO implements XMLReader, Locator2 {
      * be called.
      */
     public void setFeature(String name, boolean value) throws
-        SAXNotRecognizedException, SAXNotSupportedException
-    {
+            SAXNotRecognizedException, SAXNotSupportedException {
     }
 
     /**
@@ -301,8 +297,7 @@ public class DOM2TO implements XMLReader, Locator2 {
      * be called.
      */
     public void setEntityResolver(EntityResolver resolver) throws
-        NullPointerException
-    {
+            NullPointerException {
     }
 
     /**
@@ -318,8 +313,7 @@ public class DOM2TO implements XMLReader, Locator2 {
      * be called.
      */
     public void setErrorHandler(ErrorHandler handler) throws
-        NullPointerException
-    {
+            NullPointerException {
     }
 
     /**
@@ -327,7 +321,7 @@ public class DOM2TO implements XMLReader, Locator2 {
      * be called.
      */
     public void setProperty(String name, Object value) throws
-        SAXNotRecognizedException, SAXNotSupportedException {
+            SAXNotRecognizedException, SAXNotSupportedException {
     }
 
     /**
@@ -335,8 +329,7 @@ public class DOM2TO implements XMLReader, Locator2 {
      * be called.
      */
     public Object getProperty(String name) throws SAXNotRecognizedException,
-        SAXNotSupportedException
-    {
+            SAXNotSupportedException {
         return null;
     }
 
@@ -406,30 +399,42 @@ public class DOM2TO implements XMLReader, Locator2 {
     private String getNodeTypeFromCode(short code) {
         String retval = null;
         switch (code) {
-        case Node.ATTRIBUTE_NODE :
-            retval = "ATTRIBUTE_NODE"; break;
-        case Node.CDATA_SECTION_NODE :
-            retval = "CDATA_SECTION_NODE"; break;
-        case Node.COMMENT_NODE :
-            retval = "COMMENT_NODE"; break;
-        case Node.DOCUMENT_FRAGMENT_NODE :
-            retval = "DOCUMENT_FRAGMENT_NODE"; break;
-        case Node.DOCUMENT_NODE :
-            retval = "DOCUMENT_NODE"; break;
-        case Node.DOCUMENT_TYPE_NODE :
-            retval = "DOCUMENT_TYPE_NODE"; break;
-        case Node.ELEMENT_NODE :
-            retval = "ELEMENT_NODE"; break;
-        case Node.ENTITY_NODE :
-            retval = "ENTITY_NODE"; break;
-        case Node.ENTITY_REFERENCE_NODE :
-            retval = "ENTITY_REFERENCE_NODE"; break;
-        case Node.NOTATION_NODE :
-            retval = "NOTATION_NODE"; break;
-        case Node.PROCESSING_INSTRUCTION_NODE :
-            retval = "PROCESSING_INSTRUCTION_NODE"; break;
-        case Node.TEXT_NODE:
-            retval = "TEXT_NODE"; break;
+            case Node.ATTRIBUTE_NODE:
+                retval = "ATTRIBUTE_NODE";
+                break;
+            case Node.CDATA_SECTION_NODE:
+                retval = "CDATA_SECTION_NODE";
+                break;
+            case Node.COMMENT_NODE:
+                retval = "COMMENT_NODE";
+                break;
+            case Node.DOCUMENT_FRAGMENT_NODE:
+                retval = "DOCUMENT_FRAGMENT_NODE";
+                break;
+            case Node.DOCUMENT_NODE:
+                retval = "DOCUMENT_NODE";
+                break;
+            case Node.DOCUMENT_TYPE_NODE:
+                retval = "DOCUMENT_TYPE_NODE";
+                break;
+            case Node.ELEMENT_NODE:
+                retval = "ELEMENT_NODE";
+                break;
+            case Node.ENTITY_NODE:
+                retval = "ENTITY_NODE";
+                break;
+            case Node.ENTITY_REFERENCE_NODE:
+                retval = "ENTITY_REFERENCE_NODE";
+                break;
+            case Node.NOTATION_NODE:
+                retval = "NOTATION_NODE";
+                break;
+            case Node.PROCESSING_INSTRUCTION_NODE:
+                retval = "PROCESSING_INSTRUCTION_NODE";
+                break;
+            case Node.TEXT_NODE:
+                retval = "TEXT_NODE";
+                break;
         }
         return retval;
     }

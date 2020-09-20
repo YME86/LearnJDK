@@ -59,8 +59,7 @@ import java.io.UnsupportedEncodingException;
  *
  * @xsl.usage internal
  */
-public final class EncodingInfo extends Object
-{
+public final class EncodingInfo extends Object {
 
     /**
      * The ISO encoding name.
@@ -83,6 +82,7 @@ public final class EncodingInfo extends Object
     /**
      * This is not a public API. It returns true if the
      * char in question is in the encoding.
+     *
      * @param ch the char in question.
      * @xsl.usage internal
      */
@@ -101,8 +101,9 @@ public final class EncodingInfo extends Object
     /**
      * This is not a public API. It returns true if the
      * character formed by the high/low pair is in the encoding.
+     *
      * @param high a char that the a high char of a high/low surrogate pair.
-     * @param low a char that is the low char of a high/low surrogate pair.
+     * @param low  a char that is the low char of a high/low surrogate pair.
      * @xsl.usage internal
      */
     public boolean isInEncoding(char high, char low) {
@@ -123,16 +124,14 @@ public final class EncodingInfo extends Object
      * be in the encoding. This is useful for when the serializer is in
      * temporary output state, and has no assciated encoding.
      *
-     * @param name reference to the ISO name.
+     * @param name     reference to the ISO name.
      * @param javaName reference to the Java encoding name.
      */
-    public EncodingInfo(String name, String javaName)
-    {
+    public EncodingInfo(String name, String javaName) {
 
         this.name = name;
         this.javaName = javaName;
     }
-
 
 
     /**
@@ -142,6 +141,7 @@ public final class EncodingInfo extends Object
      * <p>
      * This interface is not a public API,
      * and should only be used internally within the serializer.
+     *
      * @xsl.usage internal
      */
     private interface InEncoding {
@@ -149,6 +149,7 @@ public final class EncodingInfo extends Object
          * Returns true if the char is in the encoding
          */
         public boolean isInEncoding(char ch);
+
         /**
          * Returns true if the high/low surrogate pair forms
          * a character that is in the encoding.
@@ -162,7 +163,6 @@ public final class EncodingInfo extends Object
     private class EncodingImpl implements InEncoding {
 
 
-
         public boolean isInEncoding(char ch1) {
             final boolean ret;
             int codePoint = Encodings.toCodePoint(ch1);
@@ -173,11 +173,11 @@ public final class EncodingInfo extends Object
                 // If we don't have an m_before object to delegate to, make one.
                 if (m_before == null)
                     m_before =
-                        new EncodingImpl(
-                            m_encoding,
-                            m_first,
-                            m_explFirst - 1,
-                            codePoint);
+                            new EncodingImpl(
+                                    m_encoding,
+                                    m_first,
+                                    m_explFirst - 1,
+                                    codePoint);
                 ret = m_before.isInEncoding(ch1);
             } else if (m_explLast < codePoint) {
                 // The unicode value is after the range
@@ -186,11 +186,11 @@ public final class EncodingInfo extends Object
                 // If we don't have an m_after object to delegate to, make one.
                 if (m_after == null)
                     m_after =
-                        new EncodingImpl(
-                            m_encoding,
-                            m_explLast + 1,
-                            m_last,
-                            codePoint);
+                            new EncodingImpl(
+                                    m_encoding,
+                                    m_explLast + 1,
+                                    m_last,
+                                    codePoint);
                 ret = m_after.isInEncoding(ch1);
             } else {
                 // The unicode value is in the range we explitly handle
@@ -212,7 +212,7 @@ public final class EncodingInfo extends Object
 
         public boolean isInEncoding(char high, char low) {
             final boolean ret;
-            int codePoint = Encodings.toCodePoint(high,low);
+            int codePoint = Encodings.toCodePoint(high, low);
             if (codePoint < m_explFirst) {
                 // The unicode value is before the range
                 // that we explictly manage, so we delegate the answer.
@@ -220,12 +220,12 @@ public final class EncodingInfo extends Object
                 // If we don't have an m_before object to delegate to, make one.
                 if (m_before == null)
                     m_before =
-                        new EncodingImpl(
-                            m_encoding,
-                            m_first,
-                            m_explFirst - 1,
-                            codePoint);
-                ret = m_before.isInEncoding(high,low);
+                            new EncodingImpl(
+                                    m_encoding,
+                                    m_first,
+                                    m_explFirst - 1,
+                                    codePoint);
+                ret = m_before.isInEncoding(high, low);
             } else if (m_explLast < codePoint) {
                 // The unicode value is after the range
                 // that we explictly manage, so we delegate the answer.
@@ -233,12 +233,12 @@ public final class EncodingInfo extends Object
                 // If we don't have an m_after object to delegate to, make one.
                 if (m_after == null)
                     m_after =
-                        new EncodingImpl(
-                            m_encoding,
-                            m_explLast + 1,
-                            m_last,
-                            codePoint);
-                ret = m_after.isInEncoding(high,low);
+                            new EncodingImpl(
+                                    m_encoding,
+                                    m_explLast + 1,
+                                    m_last,
+                                    codePoint);
+                ret = m_after.isInEncoding(high, low);
             } else {
                 // The unicode value is in the range we explitly handle
                 final int idx = codePoint - m_explFirst;
@@ -330,23 +330,22 @@ public final class EncodingInfo extends Object
             // to RANGE so multiple EncodingImpl objects dont manage the same
             // values.
             m_explFirst = codePoint / RANGE * RANGE;
-            m_explLast = m_explFirst + (RANGE-1);
+            m_explLast = m_explFirst + (RANGE - 1);
 
             m_encoding = encoding;
 
-            if (javaName != null)
-            {
+            if (javaName != null) {
                 // Some optimization.
                 if (0 <= m_explFirst && m_explFirst <= 127) {
                     // This particular EncodingImpl explicitly handles
                     // characters in the low range.
                     if ("UTF8".equals(javaName)
-                        || "UTF-16".equals(javaName)
-                        || "ASCII".equals(javaName)
-                        || "US-ASCII".equals(javaName)
-                        || "Unicode".equals(javaName)
-                        || "UNICODE".equals(javaName)
-                        || javaName.startsWith("ISO8859")) {
+                            || "UTF-16".equals(javaName)
+                            || "ASCII".equals(javaName)
+                            || "US-ASCII".equals(javaName)
+                            || "Unicode".equals(javaName)
+                            || "UNICODE".equals(javaName)
+                            || javaName.startsWith("ISO8859")) {
 
                         // Not only does this EncodingImpl object explicitly
                         // handle chracters in the low range, it is
@@ -396,12 +395,11 @@ public final class EncodingInfo extends Object
      * <p>
      * This method is not a public API,
      * and should only be used internally within the serializer.
-     * @param ch the char in question, that is not a high char of
-     * a high/low surrogate pair.
+     *
+     * @param ch       the char in question, that is not a high char of
+     *                 a high/low surrogate pair.
      * @param encoding the Java name of the enocding.
-     *
      * @xsl.usage internal
-     *
      */
     private static boolean inEncoding(char ch, String encoding) {
         boolean isInEncoding;
@@ -434,13 +432,12 @@ public final class EncodingInfo extends Object
      * <p>
      * This method is not a public API,
      * and should only be used internally within the serializer.
-     * @param high the high char of
-     * a high/low surrogate pair.
-     * @param low the low char of a high/low surrogate pair.
+     *
+     * @param high     the high char of
+     *                 a high/low surrogate pair.
+     * @param low      the low char of a high/low surrogate pair.
      * @param encoding the Java name of the encoding.
-     *
      * @xsl.usage internal
-     *
      */
     private static boolean inEncoding(char high, char low, String encoding) {
         boolean isInEncoding;
@@ -453,7 +450,7 @@ public final class EncodingInfo extends Object
             // Encode the String into a sequence of bytes
             // using the given, named charset.
             byte[] bArray = s.getBytes(encoding);
-            isInEncoding = inEncoding(high,bArray);
+            isInEncoding = inEncoding(high, bArray);
         } catch (Exception e) {
             isInEncoding = false;
         }
@@ -467,8 +464,9 @@ public final class EncodingInfo extends Object
      * s.getBytes(encoding) has specified behavior only if the
      * characters are in the specified encoding. However this
      * method tries it's best.
-     * @param ch the char that was converted using getBytes, or
-     * the first char of a high/low pair that was converted.
+     *
+     * @param ch   the char that was converted using getBytes, or
+     *             the first char of a high/low pair that was converted.
      * @param data the bytes written out by the call to s.getBytes(encoding);
      * @return true if the character is in the encoding.
      */
@@ -478,30 +476,29 @@ public final class EncodingInfo extends Object
         // the output is not specified according to the documentation
         // on the String.getBytes(encoding) method,
         // but we do our best here.
-        if (data==null || data.length == 0) {
+        if (data == null || data.length == 0) {
             isInEncoding = false;
-        }
-        else {
+        } else {
             if (data[0] == 0)
                 isInEncoding = false;
             else if (data[0] == '?' && ch != '?')
                 isInEncoding = false;
-            /*
-             * else if (isJapanese) {
-             *   // isJapanese is really
-             *   //   (    "EUC-JP".equals(javaName)
-             *   //    ||  "EUC_JP".equals(javaName)
-             *  //     ||  "SJIS".equals(javaName)   )
-             *
-             *   // Work around some bugs in JRE for Japanese
-             *   if(data[0] == 0x21)
-             *     isInEncoding = false;
-             *   else if (ch == 0xA5)
-             *     isInEncoding = false;
-             *   else
-             *     isInEncoding = true;
-             * }
-             */
+                /*
+                 * else if (isJapanese) {
+                 *   // isJapanese is really
+                 *   //   (    "EUC-JP".equals(javaName)
+                 *   //    ||  "EUC_JP".equals(javaName)
+                 *  //     ||  "SJIS".equals(javaName)   )
+                 *
+                 *   // Work around some bugs in JRE for Japanese
+                 *   if(data[0] == 0x21)
+                 *     isInEncoding = false;
+                 *   else if (ch == 0xA5)
+                 *     isInEncoding = false;
+                 *   else
+                 *     isInEncoding = true;
+                 * }
+                 */
 
             else {
                 // We don't know for sure, but it looks like it is in the encoding

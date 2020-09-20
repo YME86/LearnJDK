@@ -61,7 +61,7 @@ public class DescriptorCache {
 
     private final static DescriptorCache instance = new DescriptorCache();
     private final WeakHashMap<ImmutableDescriptor,
-                              WeakReference<ImmutableDescriptor>>
-        map = new WeakHashMap<ImmutableDescriptor,
-                              WeakReference<ImmutableDescriptor>>();
+            WeakReference<ImmutableDescriptor>>
+            map = new WeakHashMap<ImmutableDescriptor,
+            WeakReference<ImmutableDescriptor>>();
 }

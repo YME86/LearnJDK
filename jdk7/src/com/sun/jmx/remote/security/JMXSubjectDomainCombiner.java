@@ -75,20 +75,20 @@ public class JMXSubjectDomainCombiner extends SubjectDomainCombiner {
      * A null CodeSource.
      */
     private static final CodeSource nullCodeSource =
-        new CodeSource(null, (java.security.cert.Certificate[]) null);
+            new CodeSource(null, (java.security.cert.Certificate[]) null);
 
     /**
      * A ProtectionDomain with a null CodeSource and an empty permission set.
      */
     private static final ProtectionDomain pdNoPerms =
-        new ProtectionDomain(nullCodeSource, new Permissions());
+            new ProtectionDomain(nullCodeSource, new Permissions());
 
     /**
      * Get the current AccessControlContext combined with the supplied subject.
      */
     public static AccessControlContext getContext(Subject subject) {
         return new AccessControlContext(AccessController.getContext(),
-                                        new JMXSubjectDomainCombiner(subject));
+                new JMXSubjectDomainCombiner(subject));
     }
 
     /**
@@ -98,9 +98,9 @@ public class JMXSubjectDomainCombiner extends SubjectDomainCombiner {
      * context has been removed.
      */
     public static AccessControlContext
-        getDomainCombinerContext(Subject subject) {
+    getDomainCombinerContext(Subject subject) {
         return new AccessControlContext(
-            new AccessControlContext(new ProtectionDomain[0]),
-            new JMXSubjectDomainCombiner(subject));
+                new AccessControlContext(new ProtectionDomain[0]),
+                new JMXSubjectDomainCombiner(subject));
     }
 }

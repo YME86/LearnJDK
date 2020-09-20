@@ -26,10 +26,12 @@
 package com.sun.jmx.mbeanserver;
 
 // Java import
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
+
 import sun.reflect.misc.ReflectUtil;
 
 /**
@@ -44,9 +46,9 @@ class ObjectInputStreamWithLoader extends ObjectInputStream {
 
 
     /**
-     * @exception IOException Signals that an I/O exception of some
-     * sort has occurred.
-     * @exception StreamCorruptedException The object stream is corrupt.
+     * @throws IOException              Signals that an I/O exception of some
+     *                                  sort has occurred.
+     * @throws StreamCorruptedException The object stream is corrupt.
      */
     public ObjectInputStreamWithLoader(InputStream in, ClassLoader theLoader)
             throws IOException {

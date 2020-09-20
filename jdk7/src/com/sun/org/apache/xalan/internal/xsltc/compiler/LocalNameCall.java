@@ -62,13 +62,13 @@ final class LocalNameCall extends NameBase {
 
         // Returns the name of a node in the DOM
         final int getNodeName = cpg.addInterfaceMethodref(DOM_INTF,
-                                                          "getNodeName",
-                                                          "(I)"+STRING_SIG);
+                "getNodeName",
+                "(I)" + STRING_SIG);
 
         final int getLocalName = cpg.addMethodref(BASIS_LIBRARY_CLASS,
-                                                  "getLocalName",
-                                                  "(Ljava/lang/String;)"+
-                                                  "Ljava/lang/String;");
+                "getLocalName",
+                "(Ljava/lang/String;)" +
+                        "Ljava/lang/String;");
         super.translate(classGen, methodGen);
         il.append(new INVOKEINTERFACE(getNodeName, 2));
         il.append(new INVOKESTATIC(getLocalName));

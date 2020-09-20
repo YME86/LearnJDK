@@ -24,13 +24,13 @@ import static com.sun.jmx.defaults.JmxProperties.SNMP_ADAPTOR_LOGGER;
 
 final class SnmpSendServer extends Thread {
 
-        // VARIABLES
+    // VARIABLES
     //----------
 
-        private int intervalRange = 5 * 1000 ;
-        private Vector readyPool ;
+    private int intervalRange = 5 * 1000;
+    private Vector readyPool;
 
-    SnmpQManager snmpq = null ;
+    SnmpQManager snmpq = null;
 
     // This boolean is used to stop handling requests while the corresponding SnmpQManager
     // is being destroyed.
@@ -41,10 +41,10 @@ final class SnmpSendServer extends Thread {
     //-------------
 
     public SnmpSendServer(ThreadGroup grp, SnmpQManager q) {
-                super(grp, "SnmpSendServer") ;
-                snmpq = q ;
-                start() ;
-        }
+        super(grp, "SnmpSendServer");
+        snmpq = q;
+        start();
+    }
 
     public synchronized void stopSendServer() {
 
@@ -60,45 +60,45 @@ final class SnmpSendServer extends Thread {
         }
     }
 
-        public void run() {
-            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+    public void run() {
+        Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
 
-            if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
-                SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSendServer.class.getName(),
+        if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+            SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSendServer.class.getName(),
                     "run", "Thread Started");
-            }
-            while (true) {
-                try {
-                    prepareAndSendRequest() ;
-                    if (isBeingDestroyed == true)
-                        break;
-                } catch (Exception anye) {
-                    if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
-                        SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSendServer.class.getName(),
+        }
+        while (true) {
+            try {
+                prepareAndSendRequest();
+                if (isBeingDestroyed == true)
+                    break;
+            } catch (Exception anye) {
+                if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
+                    SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSendServer.class.getName(),
                             "run", "Exception in send server", anye);
-                    }
-                } catch (ThreadDeath td) {
-                    // This is not good but Netscape does kill all threads when
-                    // the pagecontext changes.
-                    if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
-                        SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSendServer.class.getName(),
-                            "run", "Exiting... Fatal error");
-                    }
-                    throw td ;
-                } catch (OutOfMemoryError ome) {
-                    if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
-                        SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSendServer.class.getName(),
-                            "run", "Out of memory");
-                    }
-                } catch (Error err) {
-                    if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
-                        SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSendServer.class.getName(),
-                            "run", "Got unexpected error", err);
-                    }
-                    throw err ;
                 }
+            } catch (ThreadDeath td) {
+                // This is not good but Netscape does kill all threads when
+                // the pagecontext changes.
+                if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
+                    SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSendServer.class.getName(),
+                            "run", "Exiting... Fatal error");
+                }
+                throw td;
+            } catch (OutOfMemoryError ome) {
+                if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
+                    SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSendServer.class.getName(),
+                            "run", "Out of memory");
+                }
+            } catch (Error err) {
+                if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
+                    SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSendServer.class.getName(),
+                            "run", "Got unexpected error", err);
+                }
+                throw err;
             }
         }
+    }
 
     private void prepareAndSendRequest() {
 
@@ -106,79 +106,79 @@ final class SnmpSendServer extends Thread {
             // wait to be signaled by the an active request.
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSendServer.class.getName(),
-                    "prepareAndSendRequest", "Blocking for inform requests");
+                        "prepareAndSendRequest", "Blocking for inform requests");
             }
-            readyPool = snmpq.getAllOutstandingRequest(intervalRange) ;
+            readyPool = snmpq.getAllOutstandingRequest(intervalRange);
             if (isBeingDestroyed == true)
                 return;
         } else {
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSendServer.class.getName(),
-                    "prepareAndSendRequest", "Inform requests from a previous block left unprocessed. Will try again");
+                        "prepareAndSendRequest", "Inform requests from a previous block left unprocessed. Will try again");
             }
         }
 
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSendServer.class.getName(),
-                "prepareAndSendRequest", "List of inform requests to send : " + reqListToString(readyPool));
+                    "prepareAndSendRequest", "List of inform requests to send : " + reqListToString(readyPool));
         }
 
-        synchronized(this) {
+        synchronized (this) {
             if (readyPool.size() < 2) {
                 // Fire all requests as independent requests.
-                fireRequestList(readyPool) ;
-                return ;
+                fireRequestList(readyPool);
+                return;
             }
 
             while (!readyPool.isEmpty()) {
-                SnmpInformRequest req = (SnmpInformRequest) readyPool.lastElement() ;
+                SnmpInformRequest req = (SnmpInformRequest) readyPool.lastElement();
                 if (req != null && req.inProgress()) {
-                    fireRequest(req) ;
+                    fireRequest(req);
                 }
-                readyPool.removeElementAt(readyPool.size() - 1) ;
+                readyPool.removeElementAt(readyPool.size() - 1);
             }
-            readyPool.removeAllElements() ;
+            readyPool.removeAllElements();
         }
     }
 
-        /**
-         * This will fire the specified request.
-         */
-        void fireRequest(SnmpInformRequest req) {
-                if (req != null && req.inProgress())  {
-                    if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
-                        SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSendServer.class.getName(),
-                            "fireRequest", "Firing inform request directly. -> " + req.getRequestId());
-                    }
-                    req.action() ;
-                }
+    /**
+     * This will fire the specified request.
+     */
+    void fireRequest(SnmpInformRequest req) {
+        if (req != null && req.inProgress()) {
+            if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
+                SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSendServer.class.getName(),
+                        "fireRequest", "Firing inform request directly. -> " + req.getRequestId());
+            }
+            req.action();
         }
+    }
 
     void fireRequestList(Vector reqList) {
         // Fire all requests as independent requests.
         while (!reqList.isEmpty()) {
-            SnmpInformRequest req = (SnmpInformRequest) reqList.lastElement() ;
+            SnmpInformRequest req = (SnmpInformRequest) reqList.lastElement();
             if (req != null && req.inProgress())
-                fireRequest(req) ;
-            reqList.removeElementAt(reqList.size() - 1) ;
+                fireRequest(req);
+            reqList.removeElementAt(reqList.size() - 1);
         }
     }
 
-        final String reqListToString(Vector vec) {
-                StringBuffer s = new StringBuffer(vec.size() * 100) ;
+    final String reqListToString(Vector vec) {
+        StringBuffer s = new StringBuffer(vec.size() * 100);
 
-                Enumeration dbge = vec.elements() ;
-                while (dbge.hasMoreElements()) {
-                        SnmpInformRequest reqc = (SnmpInformRequest) dbge.nextElement() ;
-            s.append("InformRequestId -> ") ;
-                        s.append(reqc.getRequestId()) ;
-            s.append(" / Destination -> ") ;
-                        s.append(reqc.getAddress()) ;
-            s.append(". ") ;
-                }
-                String str = s.toString() ;
-                s = null ;
-                return str ;
+        Enumeration dbge = vec.elements();
+        while (dbge.hasMoreElements()) {
+            SnmpInformRequest reqc = (SnmpInformRequest) dbge.nextElement();
+            s.append("InformRequestId -> ");
+            s.append(reqc.getRequestId());
+            s.append(" / Destination -> ");
+            s.append(reqc.getAddress());
+            s.append(". ");
         }
+        String str = s.toString();
+        s = null;
+        return str;
+    }
 
 }

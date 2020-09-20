@@ -64,12 +64,12 @@ final class AbsoluteLocationPath extends Expression {
     }
 
     public Expression getPath() {
-        return(_path);
+        return (_path);
     }
 
     public String toString() {
         return "AbsoluteLocationPath(" +
-            (_path != null ? _path.toString() : "null") + ')';
+                (_path != null ? _path.toString() : "null") + ')';
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
@@ -87,10 +87,10 @@ final class AbsoluteLocationPath extends Expression {
         final InstructionList il = methodGen.getInstructionList();
         if (_path != null) {
             final int initAI = cpg.addMethodref(ABSOLUTE_ITERATOR,
-                                                "<init>",
-                                                "("
-                                                + NODE_ITERATOR_SIG
-                                                + ")V");
+                    "<init>",
+                    "("
+                            + NODE_ITERATOR_SIG
+                            + ")V");
 
             // Compile relative path iterator(s)
             //
@@ -105,8 +105,8 @@ final class AbsoluteLocationPath extends Expression {
             _path.translate(classGen, methodGen);
             LocalVariableGen relPathIterator
                     = methodGen.addLocalVariable("abs_location_path_tmp",
-                                       Util.getJCRefType(NODE_ITERATOR_SIG),
-                                       null, null);
+                    Util.getJCRefType(NODE_ITERATOR_SIG),
+                    null, null);
             relPathIterator.setStart(
                     il.append(new ASTORE(relPathIterator.getIndex())));
 
@@ -118,11 +118,10 @@ final class AbsoluteLocationPath extends Expression {
 
             // Initialize AbsoluteIterator with iterator from the stack
             il.append(new INVOKESPECIAL(initAI));
-        }
-        else {
+        } else {
             final int gitr = cpg.addInterfaceMethodref(DOM_INTF,
-                                                       "getIterator",
-                                                       "()"+NODE_ITERATOR_SIG);
+                    "getIterator",
+                    "()" + NODE_ITERATOR_SIG);
             il.append(methodGen.loadDOM());
             il.append(new INVOKEINTERFACE(gitr, 1));
         }

@@ -41,8 +41,7 @@ public final class StringValueHandler extends EmptySerializer {
     private int _nestedLevel = 0;
 
     public void characters(char[] ch, int off, int len)
-        throws SAXException
-    {
+            throws SAXException {
         if (_nestedLevel > 0)
             return;
 
@@ -58,8 +57,7 @@ public final class StringValueHandler extends EmptySerializer {
             String result = _buffer.toString();
             _buffer.setLength(0);
             return result;
-        }
-        else {
+        } else {
             String result = _str;
             _str = null;
             return (result != null) ? result : EMPTY_STR;
@@ -72,8 +70,7 @@ public final class StringValueHandler extends EmptySerializer {
 
         if (_str == null && _buffer.length() == 0) {
             _str = characters;
-        }
-        else {
+        } else {
             if (_str != null) {
                 _buffer.append(_str);
                 _str = null;
@@ -111,12 +108,12 @@ public final class StringValueHandler extends EmptySerializer {
             final int n = value.length();
             final StringBuilder valueOfPI = new StringBuilder();
 
-            for (int i = 0; i < n;) {
+            for (int i = 0; i < n; ) {
                 final char ch = value.charAt(i++);
                 if (ch == '?' && value.charAt(i) == '>') {
-                    valueOfPI.append("? >"); i++;
-                }
-                else {
+                    valueOfPI.append("? >");
+                    i++;
+                } else {
                     valueOfPI.append(ch);
                 }
             }

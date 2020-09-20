@@ -44,39 +44,41 @@ package com.sun.jmx.snmp;
  */
 
 public class SnmpTooBigException extends Exception {
-  private static final long serialVersionUID = 4754796246674803969L;
+    private static final long serialVersionUID = 4754796246674803969L;
 
-  /**
-   * Builds an <CODE>SnmpTooBigException</CODE> with
-   * <CODE>varBindCount</CODE> set to 0.
-   */
-  public SnmpTooBigException() {
-    varBindCount = 0 ;
-  }
+    /**
+     * Builds an <CODE>SnmpTooBigException</CODE> with
+     * <CODE>varBindCount</CODE> set to 0.
+     */
+    public SnmpTooBigException() {
+        varBindCount = 0;
+    }
 
-  /**
-   * Builds an <CODE>SnmpTooBigException</CODE> with
-   * <CODE>varBindCount</CODE> set to the specified value.
-   * @param n The <CODE>varBindCount</CODE> value.
-   */
-  public SnmpTooBigException(int n) {
-    varBindCount = n ;
-  }
+    /**
+     * Builds an <CODE>SnmpTooBigException</CODE> with
+     * <CODE>varBindCount</CODE> set to the specified value.
+     *
+     * @param n The <CODE>varBindCount</CODE> value.
+     */
+    public SnmpTooBigException(int n) {
+        varBindCount = n;
+    }
 
 
-  /**
-   * Returns the number of <CODE>SnmpVarBind</CODE> successfully
-   * encoded before the exception was thrown.
-   *
-   * @return A positive integer (0 means the number is unknown).
-   */
-  public int getVarBindCount() {
-    return varBindCount ;
-  }
+    /**
+     * Returns the number of <CODE>SnmpVarBind</CODE> successfully
+     * encoded before the exception was thrown.
+     *
+     * @return A positive integer (0 means the number is unknown).
+     */
+    public int getVarBindCount() {
+        return varBindCount;
+    }
 
-  /**
-   * The <CODE>varBindCount</CODE>.
-   * @serial
-   */
-  private int varBindCount ;
+    /**
+     * The <CODE>varBindCount</CODE>.
+     *
+     * @serial
+     */
+    private int varBindCount;
 }

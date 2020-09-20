@@ -27,7 +27,9 @@ package com.sun.jmx.interceptor;
 
 
 // JMX RI
+
 import static com.sun.jmx.defaults.JmxProperties.MBEANSERVER_LOGGER;
+
 import com.sun.jmx.mbeanserver.DynamicMBean2;
 import com.sun.jmx.mbeanserver.Introspector;
 import com.sun.jmx.mbeanserver.MBeanInstantiator;
@@ -94,11 +96,11 @@ import javax.management.loading.ClassLoaderRepository;
  * contains the methods necessary for the creation, registration, and
  * deletion of MBeans as well as the access methods for registered MBeans.
  * This is the core component of the JMX infrastructure.
- * <P>
+ * <p>
  * Every MBean which is added to the MBean server becomes manageable: its attributes and operations
  * become remotely accessible through the connectors/adaptors connected to that MBean server.
  * A Java object cannot be registered in the MBean server unless it is a JMX compliant MBean.
- * <P>
+ * <p>
  * When an MBean is registered or unregistered in the MBean server an
  * {@link javax.management.MBeanServerNotification MBeanServerNotification}
  * Notification is emitted. To register an object as listener to MBeanServerNotifications
@@ -112,30 +114,42 @@ import javax.management.loading.ClassLoaderRepository;
  */
 public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
 
-    /** The MBeanInstantiator object used by the
-     *  DefaultMBeanServerInterceptor */
+    /**
+     * The MBeanInstantiator object used by the
+     * DefaultMBeanServerInterceptor
+     */
     private final transient MBeanInstantiator instantiator;
 
-    /** The MBean server object that is associated to the
-     *  DefaultMBeanServerInterceptor */
+    /**
+     * The MBean server object that is associated to the
+     * DefaultMBeanServerInterceptor
+     */
     private transient MBeanServer server = null;
 
-    /** The MBean server delegate object that is associated to the
-     *  DefaultMBeanServerInterceptor */
+    /**
+     * The MBean server delegate object that is associated to the
+     * DefaultMBeanServerInterceptor
+     */
     private final transient MBeanServerDelegate delegate;
 
-    /** The Repository object used by the DefaultMBeanServerInterceptor */
+    /**
+     * The Repository object used by the DefaultMBeanServerInterceptor
+     */
     private final transient Repository repository;
 
-    /** Wrappers for client listeners.  */
+    /**
+     * Wrappers for client listeners.
+     */
     /* See the comment before addNotificationListener below.  */
     private final transient
-        WeakHashMap<ListenerWrapper, WeakReference<ListenerWrapper>>
+    WeakHashMap<ListenerWrapper, WeakReference<ListenerWrapper>>
             listenerWrappers =
-                new WeakHashMap<ListenerWrapper,
-                                WeakReference<ListenerWrapper>>();
+            new WeakHashMap<ListenerWrapper,
+                    WeakReference<ListenerWrapper>>();
 
-    /** The default domain of the object names */
+    /**
+     * The default domain of the object names
+     */
     private final String domain;
 
     /** The sequence number identifying the notifications sent */
@@ -147,40 +161,41 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
      * repository instance.
      * <p>Do not forget to call <code>initialize(outer,delegate)</code>
      * before using this object.
-     * @param outer A pointer to the MBeanServer object that must be
-     *        passed to the MBeans when invoking their
-     *        {@link javax.management.MBeanRegistration} interface.
-     * @param delegate A pointer to the MBeanServerDelegate associated
-     *        with the new MBeanServer. The new MBeanServer must register
-     *        this MBean in its MBean repository.
+     *
+     * @param outer        A pointer to the MBeanServer object that must be
+     *                     passed to the MBeans when invoking their
+     *                     {@link javax.management.MBeanRegistration} interface.
+     * @param delegate     A pointer to the MBeanServerDelegate associated
+     *                     with the new MBeanServer. The new MBeanServer must register
+     *                     this MBean in its MBean repository.
      * @param instantiator The MBeanInstantiator that will be used to
-     *        instantiate MBeans and take care of class loading issues.
-     * @param repository The repository to use for this MBeanServer.
+     *                     instantiate MBeans and take care of class loading issues.
+     * @param repository   The repository to use for this MBeanServer.
      */
-    public DefaultMBeanServerInterceptor(MBeanServer         outer,
+    public DefaultMBeanServerInterceptor(MBeanServer outer,
                                          MBeanServerDelegate delegate,
-                                         MBeanInstantiator   instantiator,
-                                         Repository          repository) {
+                                         MBeanInstantiator instantiator,
+                                         Repository repository) {
         if (outer == null) throw new
-            IllegalArgumentException("outer MBeanServer cannot be null");
+                IllegalArgumentException("outer MBeanServer cannot be null");
         if (delegate == null) throw new
-            IllegalArgumentException("MBeanServerDelegate cannot be null");
+                IllegalArgumentException("MBeanServerDelegate cannot be null");
         if (instantiator == null) throw new
-            IllegalArgumentException("MBeanInstantiator cannot be null");
+                IllegalArgumentException("MBeanInstantiator cannot be null");
         if (repository == null) throw new
-            IllegalArgumentException("Repository cannot be null");
+                IllegalArgumentException("Repository cannot be null");
 
-        this.server   = outer;
+        this.server = outer;
         this.delegate = delegate;
         this.instantiator = instantiator;
-        this.repository   = repository;
-        this.domain       = repository.getDefaultDomain();
+        this.repository = repository;
+        this.domain = repository.getDefaultDomain();
     }
 
     public ObjectInstance createMBean(String className, ObjectName name)
-        throws ReflectionException, InstanceAlreadyExistsException,
-               MBeanRegistrationException, MBeanException,
-               NotCompliantMBeanException {
+            throws ReflectionException, InstanceAlreadyExistsException,
+            MBeanRegistrationException, MBeanException,
+            NotCompliantMBeanException {
 
         return createMBean(className, name, (Object[]) null, (String[]) null);
 
@@ -188,64 +203,64 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
 
     public ObjectInstance createMBean(String className, ObjectName name,
                                       ObjectName loaderName)
-        throws ReflectionException, InstanceAlreadyExistsException,
-               MBeanRegistrationException, MBeanException,
-               NotCompliantMBeanException, InstanceNotFoundException {
+            throws ReflectionException, InstanceAlreadyExistsException,
+            MBeanRegistrationException, MBeanException,
+            NotCompliantMBeanException, InstanceNotFoundException {
 
         return createMBean(className, name, loaderName, (Object[]) null,
-                           (String[]) null);
+                (String[]) null);
     }
 
     public ObjectInstance createMBean(String className, ObjectName name,
                                       Object[] params, String[] signature)
-        throws ReflectionException, InstanceAlreadyExistsException,
-               MBeanRegistrationException, MBeanException,
-               NotCompliantMBeanException  {
+            throws ReflectionException, InstanceAlreadyExistsException,
+            MBeanRegistrationException, MBeanException,
+            NotCompliantMBeanException {
 
         try {
             return createMBean(className, name, null, true,
-                               params, signature);
+                    params, signature);
         } catch (InstanceNotFoundException e) {
             /* Can only happen if loaderName doesn't exist, but we just
                passed null, so we shouldn't get this exception.  */
             throw EnvHelp.initCause(
-                new IllegalArgumentException("Unexpected exception: " + e), e);
+                    new IllegalArgumentException("Unexpected exception: " + e), e);
         }
     }
 
     public ObjectInstance createMBean(String className, ObjectName name,
                                       ObjectName loaderName,
                                       Object[] params, String[] signature)
-        throws ReflectionException, InstanceAlreadyExistsException,
-               MBeanRegistrationException, MBeanException,
-               NotCompliantMBeanException, InstanceNotFoundException  {
+            throws ReflectionException, InstanceAlreadyExistsException,
+            MBeanRegistrationException, MBeanException,
+            NotCompliantMBeanException, InstanceNotFoundException {
 
         return createMBean(className, name, loaderName, false,
-                           params, signature);
+                params, signature);
     }
 
     private ObjectInstance createMBean(String className, ObjectName name,
                                        ObjectName loaderName,
                                        boolean withDefaultLoaderRepository,
                                        Object[] params, String[] signature)
-        throws ReflectionException, InstanceAlreadyExistsException,
-               MBeanRegistrationException, MBeanException,
-               NotCompliantMBeanException, InstanceNotFoundException {
+            throws ReflectionException, InstanceAlreadyExistsException,
+            MBeanRegistrationException, MBeanException,
+            NotCompliantMBeanException, InstanceNotFoundException {
 
         Class<?> theClass;
 
         if (className == null) {
             final RuntimeException wrapped =
-                new IllegalArgumentException("The class name cannot be null");
+                    new IllegalArgumentException("The class name cannot be null");
             throw new RuntimeOperationsException(wrapped,
-                      "Exception occurred during MBean creation");
+                    "Exception occurred during MBean creation");
         }
 
         if (name != null) {
             if (name.isPattern()) {
                 final RuntimeException wrapped =
-                    new IllegalArgumentException("Invalid name->" +
-                                                 name.toString());
+                        new IllegalArgumentException("Invalid name->" +
+                                name.toString());
                 final String msg = "Exception occurred during MBean creation";
                 throw new RuntimeOperationsException(wrapped, msg);
             }
@@ -265,17 +280,17 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
                         "ClassName = " + className + ", ObjectName = " + name);
             }
             theClass =
-                instantiator.findClassWithDefaultLoaderRepository(className);
+                    instantiator.findClassWithDefaultLoaderRepository(className);
         } else if (loaderName == null) {
             if (MBEANSERVER_LOGGER.isLoggable(Level.FINER)) {
                 MBEANSERVER_LOGGER.logp(Level.FINER,
                         DefaultMBeanServerInterceptor.class.getName(),
                         "createMBean", "ClassName = " + className +
-                        ", ObjectName = " + name + ", Loader name = null");
+                                ", ObjectName = " + name + ", Loader name = null");
             }
 
             theClass = instantiator.findClass(className,
-                                  server.getClass().getClassLoader());
+                    server.getClass().getClassLoader());
         } else {
             loaderName = nonDefaultDomain(loaderName);
 
@@ -283,8 +298,8 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
                 MBEANSERVER_LOGGER.logp(Level.FINER,
                         DefaultMBeanServerInterceptor.class.getName(),
                         "createMBean", "ClassName = " + className +
-                        ", ObjectName = " + name +
-                        ", Loader name = " + loaderName);
+                                ", ObjectName = " + name +
+                                ", Loader name = " + loaderName);
             }
 
             theClass = instantiator.findClass(className, loaderName);
@@ -298,8 +313,8 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
         // Check the JMX MBean compliance of the class
         Introspector.checkCompliance(theClass);
 
-        Object moi= instantiator.instantiate(theClass, params,  signature,
-                                             server.getClass().getClassLoader());
+        Object moi = instantiator.instantiate(theClass, params, signature,
+                server.getClass().getClassLoader());
 
         final String infoClassName = getNewMBeanClassName(moi);
 
@@ -307,8 +322,8 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
     }
 
     public ObjectInstance registerMBean(Object object, ObjectName name)
-        throws InstanceAlreadyExistsException, MBeanRegistrationException,
-        NotCompliantMBeanException  {
+            throws InstanceAlreadyExistsException, MBeanRegistrationException,
+            NotCompliantMBeanException {
 
         // ------------------------------
         // ------------------------------
@@ -334,7 +349,7 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
             } catch (Exception e) {
                 // Includes case where getMBeanInfo() returns null
                 NotCompliantMBeanException ncmbe =
-                    new NotCompliantMBeanException("Bad getMBeanInfo()");
+                        new NotCompliantMBeanException("Bad getMBeanInfo()");
                 ncmbe.initCause(e);
                 throw ncmbe;
             }
@@ -348,16 +363,16 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
     }
 
     private final Set<ObjectName> beingUnregistered =
-        new HashSet<ObjectName>();
+            new HashSet<ObjectName>();
 
     public void unregisterMBean(ObjectName name)
-            throws InstanceNotFoundException, MBeanRegistrationException  {
+            throws InstanceNotFoundException, MBeanRegistrationException {
 
         if (name == null) {
             final RuntimeException wrapped =
-                new IllegalArgumentException("Object name cannot be null");
+                    new IllegalArgumentException("Object name cannot be null");
             throw new RuntimeOperationsException(wrapped,
-                      "Exception occurred trying to unregister the MBean");
+                    "Exception occurred trying to unregister the MBean");
         }
 
         name = nonDefaultDomain(name);
@@ -449,7 +464,7 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
 
         try {
             if (instance instanceof MBeanRegistration)
-                postDeregisterInvoke(name,(MBeanRegistration) instance);
+                postDeregisterInvoke(name, (MBeanRegistration) instance);
         } finally {
             context.done();
         }
@@ -483,11 +498,11 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
             // on each specific classname/objectname in the list.
             //
             Set<ObjectInstance> allowedList =
-                new HashSet<ObjectInstance>(list.size());
+                    new HashSet<ObjectInstance>(list.size());
             for (ObjectInstance oi : list) {
                 try {
                     checkMBeanPermission(oi.getClassName(), null,
-                                         oi.getObjectName(), "queryMBeans");
+                            oi.getObjectName(), "queryMBeans");
                     allowedList.add(oi);
                 } catch (SecurityException e) {
                     // OK: Do not add this ObjectInstance to the list
@@ -529,11 +544,11 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
             // on each specific classname/objectname in the list.
             //
             Set<ObjectInstance> allowedList =
-                new HashSet<ObjectInstance>(list.size());
+                    new HashSet<ObjectInstance>(list.size());
             for (ObjectInstance oi : list) {
                 try {
                     checkMBeanPermission(oi.getClassName(), null,
-                                         oi.getObjectName(), "queryNames");
+                            oi.getObjectName(), "queryNames");
                     allowedList.add(oi);
                 } catch (SecurityException e) {
                     // OK: Do not add this ObjectInstance to the list
@@ -543,7 +558,7 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
             // Apply query to allowed MBeans only.
             //
             Set<ObjectInstance> queryObjectInstanceList =
-                filterListOfObjectInstances(allowedList, query);
+                    filterListOfObjectInstances(allowedList, query);
             queryList = new HashSet<ObjectName>(queryObjectInstanceList.size());
             for (ObjectInstance oi : queryObjectInstanceList) {
                 queryList.add(oi.getObjectName());
@@ -567,8 +582,8 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
     public boolean isRegistered(ObjectName name) {
         if (name == null) {
             throw new RuntimeOperationsException(
-                     new IllegalArgumentException("Object name cannot be null"),
-                     "Object name cannot be null");
+                    new IllegalArgumentException("Object name cannot be null"),
+                    "Object name cannot be null");
         }
 
         name = nonDefaultDomain(name);
@@ -579,7 +594,7 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
         return (repository.contains(name));
     }
 
-    public String[] getDomains()  {
+    public String[] getDomains() {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             // Check if the caller has the right to invoke 'getDomains'
@@ -617,18 +632,18 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
     }
 
     public Object getAttribute(ObjectName name, String attribute)
-        throws MBeanException, AttributeNotFoundException,
-               InstanceNotFoundException, ReflectionException {
+            throws MBeanException, AttributeNotFoundException,
+            InstanceNotFoundException, ReflectionException {
 
         if (name == null) {
             throw new RuntimeOperationsException(new
-                IllegalArgumentException("Object name cannot be null"),
-                "Exception occurred trying to invoke the getter on the MBean");
+                    IllegalArgumentException("Object name cannot be null"),
+                    "Exception occurred trying to invoke the getter on the MBean");
         }
         if (attribute == null) {
             throw new RuntimeOperationsException(new
-                IllegalArgumentException("Attribute cannot be null"),
-                "Exception occurred trying to invoke the getter on the MBean");
+                    IllegalArgumentException("Attribute cannot be null"),
+                    "Exception occurred trying to invoke the getter on the MBean");
         }
 
         name = nonDefaultDomain(name);
@@ -654,18 +669,18 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
     }
 
     public AttributeList getAttributes(ObjectName name, String[] attributes)
-        throws InstanceNotFoundException, ReflectionException  {
+            throws InstanceNotFoundException, ReflectionException {
 
         if (name == null) {
             throw new RuntimeOperationsException(new
-                IllegalArgumentException("ObjectName name cannot be null"),
-                "Exception occurred trying to invoke the getter on the MBean");
+                    IllegalArgumentException("ObjectName name cannot be null"),
+                    "Exception occurred trying to invoke the getter on the MBean");
         }
 
         if (attributes == null) {
             throw new RuntimeOperationsException(new
-                IllegalArgumentException("Attributes cannot be null"),
-                "Exception occurred trying to invoke the getter on the MBean");
+                    IllegalArgumentException("Attributes cannot be null"),
+                    "Exception occurred trying to invoke the getter on the MBean");
         }
 
         name = nonDefaultDomain(name);
@@ -692,7 +707,7 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
             // on each specific attribute
             //
             List<String> allowedList =
-                new ArrayList<String>(attributes.length);
+                    new ArrayList<String>(attributes.length);
             for (String attr : attributes) {
                 try {
                     checkMBeanPermission(classname, attr, name, "getAttribute");
@@ -714,20 +729,20 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
     }
 
     public void setAttribute(ObjectName name, Attribute attribute)
-        throws InstanceNotFoundException, AttributeNotFoundException,
-               InvalidAttributeValueException, MBeanException,
-               ReflectionException  {
+            throws InstanceNotFoundException, AttributeNotFoundException,
+            InvalidAttributeValueException, MBeanException,
+            ReflectionException {
 
         if (name == null) {
             throw new RuntimeOperationsException(new
-                IllegalArgumentException("ObjectName name cannot be null"),
-                "Exception occurred trying to invoke the setter on the MBean");
+                    IllegalArgumentException("ObjectName name cannot be null"),
+                    "Exception occurred trying to invoke the setter on the MBean");
         }
 
         if (attribute == null) {
             throw new RuntimeOperationsException(new
-                IllegalArgumentException("Attribute cannot be null"),
-                "Exception occurred trying to invoke the setter on the MBean");
+                    IllegalArgumentException("Attribute cannot be null"),
+                    "Exception occurred trying to invoke the setter on the MBean");
         }
 
         name = nonDefaultDomain(name);
@@ -736,7 +751,7 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
             MBEANSERVER_LOGGER.logp(Level.FINER,
                     DefaultMBeanServerInterceptor.class.getName(),
                     "setAttribute", "ObjectName = " + name +
-                    ", Attribute = " + attribute.getName());
+                            ", Attribute = " + attribute.getName());
         }
 
         DynamicMBean instance = getMBean(name);
@@ -756,18 +771,18 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
 
     public AttributeList setAttributes(ObjectName name,
                                        AttributeList attributes)
-            throws InstanceNotFoundException, ReflectionException  {
+            throws InstanceNotFoundException, ReflectionException {
 
         if (name == null) {
             throw new RuntimeOperationsException(new
-                IllegalArgumentException("ObjectName name cannot be null"),
-                "Exception occurred trying to invoke the setter on the MBean");
+                    IllegalArgumentException("ObjectName name cannot be null"),
+                    "Exception occurred trying to invoke the setter on the MBean");
         }
 
         if (attributes == null) {
             throw new RuntimeOperationsException(new
-            IllegalArgumentException("AttributeList  cannot be null"),
-            "Exception occurred trying to invoke the setter on the MBean");
+                    IllegalArgumentException("AttributeList  cannot be null"),
+                    "Exception occurred trying to invoke the setter on the MBean");
         }
 
         name = nonDefaultDomain(name);
@@ -791,7 +806,7 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
             for (Attribute attribute : attributes.asList()) {
                 try {
                     checkMBeanPermission(classname, attribute.getName(),
-                                         name, "setAttribute");
+                            name, "setAttribute");
                     allowedAttributes.add(attribute);
                 } catch (SecurityException e) {
                     // OK: Do not add this attribute to the list
@@ -809,7 +824,7 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
     public Object invoke(ObjectName name, String operationName,
                          Object params[], String signature[])
             throws InstanceNotFoundException, MBeanException,
-                   ReflectionException {
+            ReflectionException {
 
         name = nonDefaultDomain(name);
 
@@ -874,25 +889,26 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
      *     MBeanRegistration interface, it invokes postRegister()
      *     on the object.</li>
      * </ul>
+     *
      * @param object A reference to a MBean compliant object.
      * @param name   The ObjectName of the <code>object</code> MBean.
      * @return the actual ObjectName with which the object was registered.
-     * @exception InstanceAlreadyExistsException if an object is already
-     *            registered with that name.
-     * @exception MBeanRegistrationException if an exception occurs during
-     *            registration.
+     * @throws InstanceAlreadyExistsException if an object is already
+     *                                        registered with that name.
+     * @throws MBeanRegistrationException     if an exception occurs during
+     *                                        registration.
      **/
     private ObjectInstance registerObject(String classname,
                                           Object object, ObjectName name)
-        throws InstanceAlreadyExistsException,
-               MBeanRegistrationException,
-               NotCompliantMBeanException {
+            throws InstanceAlreadyExistsException,
+            MBeanRegistrationException,
+            NotCompliantMBeanException {
 
         if (object == null) {
             final RuntimeException wrapped =
-                new IllegalArgumentException("Cannot add null object");
+                    new IllegalArgumentException("Cannot add null object");
             throw new RuntimeOperationsException(wrapped,
-                        "Exception occurred trying to register the MBean");
+                    "Exception occurred trying to register the MBean");
         }
 
         DynamicMBean mbean = Introspector.makeDynamicMBean(object);
@@ -903,9 +919,9 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
     private ObjectInstance registerDynamicMBean(String classname,
                                                 DynamicMBean mbean,
                                                 ObjectName name)
-        throws InstanceAlreadyExistsException,
-               MBeanRegistrationException,
-               NotCompliantMBeanException {
+            throws InstanceAlreadyExistsException,
+            MBeanRegistrationException,
+            NotCompliantMBeanException {
 
 
         name = nonDefaultDomain(name);
@@ -947,9 +963,9 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
 
             if (logicalName == null) {
                 final RuntimeException wrapped =
-                    new IllegalArgumentException("No object name specified");
+                        new IllegalArgumentException("No object name specified");
                 throw new RuntimeOperationsException(wrapped,
-                            "Exception occurred trying to register the MBean");
+                        "Exception occurred trying to register the MBean");
             }
 
             final Object resource = getResource(mbean);
@@ -973,24 +989,24 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
             try {
                 postRegister(logicalName, mbean, registered, registerFailed);
             } finally {
-                if (registered && context!=null) context.done();
+                if (registered && context != null) context.done();
             }
         }
         return new ObjectInstance(logicalName, classname);
     }
 
     private static void throwMBeanRegistrationException(Throwable t, String where)
-    throws MBeanRegistrationException {
+            throws MBeanRegistrationException {
         if (t instanceof RuntimeException) {
-            throw new RuntimeMBeanException((RuntimeException)t,
+            throw new RuntimeMBeanException((RuntimeException) t,
                     "RuntimeException thrown " + where);
         } else if (t instanceof Error) {
-            throw new RuntimeErrorException((Error)t,
+            throw new RuntimeErrorException((Error) t,
                     "Error thrown " + where);
         } else if (t instanceof MBeanRegistrationException) {
-            throw (MBeanRegistrationException)t;
+            throw (MBeanRegistrationException) t;
         } else if (t instanceof Exception) {
-            throw new MBeanRegistrationException((Exception)t,
+            throw new MBeanRegistrationException((Exception) t,
                     "Exception thrown " + where);
         } else // neither Error nor Exception??
             throw new RuntimeException(t);
@@ -1023,19 +1039,19 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
             if (mbean instanceof MBeanRegistration)
                 ((MBeanRegistration) mbean).postRegister(registrationDone);
         } catch (RuntimeException e) {
-            MBEANSERVER_LOGGER.fine("While registering MBean ["+logicalName+
+            MBEANSERVER_LOGGER.fine("While registering MBean [" + logicalName +
                     "]: " + "Exception thrown by postRegister: " +
-                    "rethrowing <"+e+">, but keeping the MBean registered");
+                    "rethrowing <" + e + ">, but keeping the MBean registered");
             throw new RuntimeMBeanException(e,
-                      "RuntimeException thrown in postRegister method: "+
-                      "rethrowing <"+e+">, but keeping the MBean registered");
+                    "RuntimeException thrown in postRegister method: " +
+                            "rethrowing <" + e + ">, but keeping the MBean registered");
         } catch (Error er) {
-            MBEANSERVER_LOGGER.fine("While registering MBean ["+logicalName+
+            MBEANSERVER_LOGGER.fine("While registering MBean [" + logicalName +
                     "]: " + "Error thrown by postRegister: " +
-                    "rethrowing <"+er+">, but keeping the MBean registered");
+                    "rethrowing <" + er + ">, but keeping the MBean registered");
             throw new RuntimeErrorException(er,
-                      "Error thrown in postRegister method: "+
-                      "rethrowing <"+er+">, but keeping the MBean registered");
+                    "Error thrown in postRegister method: " +
+                            "rethrowing <" + er + ">, but keeping the MBean registered");
         }
     }
 
@@ -1049,27 +1065,27 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
     }
 
     private static void postDeregisterInvoke(ObjectName mbean,
-            MBeanRegistration moi) {
+                                             MBeanRegistration moi) {
         try {
             moi.postDeregister();
         } catch (RuntimeException e) {
-            MBEANSERVER_LOGGER.fine("While unregistering MBean ["+mbean+
+            MBEANSERVER_LOGGER.fine("While unregistering MBean [" + mbean +
                     "]: " + "Exception thrown by postDeregister: " +
-                    "rethrowing <"+e+">, although the MBean is succesfully " +
+                    "rethrowing <" + e + ">, although the MBean is succesfully " +
                     "unregistered");
             throw new RuntimeMBeanException(e,
-                      "RuntimeException thrown in postDeregister method: "+
-                      "rethrowing <"+e+
-                      ">, although the MBean is sucessfully unregistered");
+                    "RuntimeException thrown in postDeregister method: " +
+                            "rethrowing <" + e +
+                            ">, although the MBean is sucessfully unregistered");
         } catch (Error er) {
-            MBEANSERVER_LOGGER.fine("While unregistering MBean ["+mbean+
+            MBEANSERVER_LOGGER.fine("While unregistering MBean [" + mbean +
                     "]: " + "Error thrown by postDeregister: " +
-                    "rethrowing <"+er+">, although the MBean is succesfully " +
+                    "rethrowing <" + er + ">, although the MBean is succesfully " +
                     "unregistered");
             throw new RuntimeErrorException(er,
-                      "Error thrown in postDeregister method: "+
-                      "rethrowing <"+er+
-                      ">, although the MBean is sucessfully unregistered");
+                    "Error thrown in postDeregister method: " +
+                            "rethrowing <" + er +
+                            ">, although the MBean is sucessfully unregistered");
         }
     }
 
@@ -1078,12 +1094,12 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
      * The name must have a non-default domain.
      */
     private DynamicMBean getMBean(ObjectName name)
-        throws InstanceNotFoundException {
+            throws InstanceNotFoundException {
 
         if (name == null) {
             throw new RuntimeOperationsException(new
-                IllegalArgumentException("Object name cannot be null"),
-                               "Exception occurred trying to get an MBean");
+                    IllegalArgumentException("Object name cannot be null"),
+                    "Exception occurred trying to get an MBean");
         }
         DynamicMBean obj = repository.retrieve(name);
         if (obj == null) {
@@ -1120,7 +1136,7 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
         return Util.newObjectName(completeName);
     }
 
-    public String getDefaultDomain()  {
+    public String getDefaultDomain() {
         return domain;
     }
 
@@ -1187,18 +1203,18 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
 
         NotificationBroadcaster broadcaster =
                 getNotificationBroadcaster(name, instance,
-                                           NotificationBroadcaster.class);
+                        NotificationBroadcaster.class);
 
         // ------------------
         // Check listener
         // ------------------
         if (listener == null) {
             throw new RuntimeOperationsException(new
-                IllegalArgumentException("Null listener"),"Null listener");
+                    IllegalArgumentException("Null listener"), "Null listener");
         }
 
         NotificationListener listenerWrapper =
-            getListenerWrapper(listener, name, instance, true);
+                getListenerWrapper(listener, name, instance, true);
         broadcaster.addNotificationListener(listenerWrapper, filter, handback);
     }
 
@@ -1218,9 +1234,9 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
         Object resource = getResource(instance);
         if (!(resource instanceof NotificationListener)) {
             throw new RuntimeOperationsException(new
-                IllegalArgumentException(listener.getCanonicalName()),
-                "The MBean " + listener.getCanonicalName() +
-                "does not implement the NotificationListener interface") ;
+                    IllegalArgumentException(listener.getCanonicalName()),
+                    "The MBean " + listener.getCanonicalName() +
+                            "does not implement the NotificationListener interface");
         }
 
         // ----------------
@@ -1232,8 +1248,8 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
                     "addNotificationListener",
                     "ObjectName = " + name + ", Listener = " + listener);
         }
-        server.addNotificationListener(name,(NotificationListener) resource,
-                                       filter, handback) ;
+        server.addNotificationListener(name, (NotificationListener) resource,
+                filter, handback);
     }
 
     public void removeNotificationListener(ObjectName name,
@@ -1282,7 +1298,7 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
     }
 
     private NotificationListener getListener(ObjectName listener)
-        throws ListenerNotFoundException {
+            throws ListenerNotFoundException {
         // ----------------
         // Get listener object
         // ----------------
@@ -1291,16 +1307,16 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
             instance = getMBean(listener);
         } catch (InstanceNotFoundException e) {
             throw EnvHelp.initCause(
-                          new ListenerNotFoundException(e.getMessage()), e);
+                    new ListenerNotFoundException(e.getMessage()), e);
         }
 
         Object resource = getResource(instance);
         if (!(resource instanceof NotificationListener)) {
             final RuntimeException exc =
-                new IllegalArgumentException(listener.getCanonicalName());
+                    new IllegalArgumentException(listener.getCanonicalName());
             final String msg =
-                "MBean " + listener.getCanonicalName() + " does not " +
-                "implement " + NotificationListener.class.getName();
+                    "MBean " + listener.getCanonicalName() + " does not " +
+                            "implement " + NotificationListener.class.getName();
             throw new RuntimeOperationsException(exc, msg);
         }
         return (NotificationListener) resource;
@@ -1328,12 +1344,12 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
            erroneous.  */
 
         Class<? extends NotificationBroadcaster> reqClass =
-            removeAll ? NotificationBroadcaster.class : NotificationEmitter.class;
+                removeAll ? NotificationBroadcaster.class : NotificationEmitter.class;
         NotificationBroadcaster broadcaster =
-            getNotificationBroadcaster(name, instance, reqClass);
+                getNotificationBroadcaster(name, instance, reqClass);
 
         NotificationListener listenerWrapper =
-            getListenerWrapper(listener, name, instance, false);
+                getListenerWrapper(listener, name, instance, false);
 
         if (listenerWrapper == null)
             throw new ListenerNotFoundException("Unknown listener");
@@ -1343,14 +1359,14 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
         else {
             NotificationEmitter emitter = (NotificationEmitter) broadcaster;
             emitter.removeNotificationListener(listenerWrapper,
-                                               filter,
-                                               handback);
+                    filter,
+                    handback);
         }
     }
 
     private static <T extends NotificationBroadcaster>
-            T getNotificationBroadcaster(ObjectName name, Object instance,
-                                         Class<T> reqClass) {
+    T getNotificationBroadcaster(ObjectName name, Object instance,
+                                 Class<T> reqClass) {
         if (reqClass.isInstance(instance))
             return reqClass.cast(instance);
         if (instance instanceof DynamicMBean2)
@@ -1358,16 +1374,16 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
         if (reqClass.isInstance(instance))
             return reqClass.cast(instance);
         final RuntimeException exc =
-            new IllegalArgumentException(name.getCanonicalName());
+                new IllegalArgumentException(name.getCanonicalName());
         final String msg =
-            "MBean " + name.getCanonicalName() + " does not " +
-            "implement " + reqClass.getName();
+                "MBean " + name.getCanonicalName() + " does not " +
+                        "implement " + reqClass.getName();
         throw new RuntimeOperationsException(exc, msg);
     }
 
     public MBeanInfo getMBeanInfo(ObjectName name)
-        throws InstanceNotFoundException, IntrospectionException,
-               ReflectionException {
+            throws InstanceNotFoundException, IntrospectionException,
+            ReflectionException {
 
         // ------------------------------
         // ------------------------------
@@ -1388,7 +1404,7 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
         }
         if (mbi == null)
             throw new JMRuntimeException("MBean " + name +
-                                         "has no MBeanInfo");
+                    "has no MBeanInfo");
 
         checkMBeanPermission(mbi.getClassName(), null, name, "getMBeanInfo");
 
@@ -1396,7 +1412,7 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
     }
 
     public boolean isInstanceOf(ObjectName name, String className)
-        throws InstanceNotFoundException {
+            throws InstanceNotFoundException {
 
         final DynamicMBean instance = getMBean(name);
         checkMBeanPermission(instance, null, name, "isInstanceOf");
@@ -1406,8 +1422,8 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
 
             final String resourceClassName =
                     (resource instanceof DynamicMBean) ?
-                        getClassName((DynamicMBean) resource) :
-                        resource.getClass().getName();
+                            getClassName((DynamicMBean) resource) :
+                            resource.getClass().getName();
 
             if (resourceClassName.equals(className))
                 return true;
@@ -1434,12 +1450,13 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
     /**
      * <p>Return the {@link java.lang.ClassLoader} that was used for
      * loading the class of the named MBean.
+     *
      * @param mbeanName The ObjectName of the MBean.
      * @return The ClassLoader used for that MBean.
-     * @exception InstanceNotFoundException if the named MBean is not found.
+     * @throws InstanceNotFoundException if the named MBean is not found.
      */
     public ClassLoader getClassLoaderFor(ObjectName mbeanName)
-        throws InstanceNotFoundException {
+            throws InstanceNotFoundException {
 
         DynamicMBean instance = getMBean(mbeanName);
         checkMBeanPermission(instance, null, mbeanName, "getClassLoaderFor");
@@ -1448,10 +1465,11 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
 
     /**
      * <p>Return the named {@link java.lang.ClassLoader}.
+     *
      * @param loaderName The ObjectName of the ClassLoader.
      * @return The named ClassLoader.
-     * @exception InstanceNotFoundException if the named ClassLoader
-     * is not found.
+     * @throws InstanceNotFoundException if the named ClassLoader
+     *                                   is not found.
      */
     public ClassLoader getClassLoader(ObjectName loaderName)
             throws InstanceNotFoundException {
@@ -1469,7 +1487,7 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
         /* Check if the given MBean is a ClassLoader */
         if (!(resource instanceof ClassLoader))
             throw new InstanceNotFoundException(loaderName.toString() +
-                                                " is not a classloader");
+                    " is not a classloader");
 
         return (ClassLoader) resource;
     }
@@ -1487,7 +1505,7 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
         // Create notification
         // ---------------------
         MBeanServerNotification notif = new MBeanServerNotification(
-            NotifType,MBeanServerDelegate.DELEGATE_NAME,0,name);
+                NotifType, MBeanServerDelegate.DELEGATE_NAME, 0, name);
 
         if (MBEANSERVER_LOGGER.isLoggable(Level.FINER)) {
             MBEANSERVER_LOGGER.logp(Level.FINER,
@@ -1502,8 +1520,8 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
      * Applies the specified queries to the set of NamedObjects.
      */
     private Set<ObjectName>
-        objectNamesFromFilteredNamedObjects(Set<NamedObject> list,
-                                            QueryExp query) {
+    objectNamesFromFilteredNamedObjects(Set<NamedObject> list,
+                                        QueryExp query) {
         Set<ObjectName> result = new HashSet<ObjectName>();
         // No query ...
         if (query == null) {
@@ -1546,8 +1564,8 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
      * Applies the specified queries to the set of NamedObjects.
      */
     private Set<ObjectInstance>
-        objectInstancesFromFilteredNamedObjects(Set<NamedObject> list,
-                                                QueryExp query) {
+    objectInstancesFromFilteredNamedObjects(Set<NamedObject> list,
+                                            QueryExp query) {
         Set<ObjectInstance> result = new HashSet<ObjectInstance>();
         // No query ...
         if (query == null) {
@@ -1608,8 +1626,8 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
      * Applies the specified queries to the set of ObjectInstances.
      */
     private Set<ObjectInstance>
-            filterListOfObjectInstances(Set<ObjectInstance> list,
-                                        QueryExp query) {
+    filterListOfObjectInstances(Set<ObjectInstance> list,
+                                QueryExp query) {
         // Null query.
         //
         if (query == null) {
@@ -1685,41 +1703,41 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
     }
 
     public Object instantiate(String className) throws ReflectionException,
-                                                       MBeanException {
+            MBeanException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public Object instantiate(String className, ObjectName loaderName) throws ReflectionException,
-                                                                              MBeanException,
-                                                                              InstanceNotFoundException {
+            MBeanException,
+            InstanceNotFoundException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public Object instantiate(String className, Object[] params,
-            String[] signature) throws ReflectionException, MBeanException {
+                              String[] signature) throws ReflectionException, MBeanException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public Object instantiate(String className, ObjectName loaderName,
-            Object[] params, String[] signature) throws ReflectionException,
-                                                        MBeanException,
-                                                        InstanceNotFoundException {
+                              Object[] params, String[] signature) throws ReflectionException,
+            MBeanException,
+            InstanceNotFoundException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public ObjectInputStream deserialize(ObjectName name, byte[] data) throws InstanceNotFoundException,
-                                                                              OperationsException {
+            OperationsException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public ObjectInputStream deserialize(String className, byte[] data) throws OperationsException,
-                                                                               ReflectionException {
+            ReflectionException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public ObjectInputStream deserialize(String className, ObjectName loaderName,
-            byte[] data) throws InstanceNotFoundException, OperationsException,
-                                ReflectionException {
+                                         byte[] data) throws InstanceNotFoundException, OperationsException,
+            ReflectionException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -1811,9 +1829,9 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             checkMBeanPermission(safeGetClassName(mbean),
-                                 member,
-                                 objectName,
-                                 actions);
+                    member,
+                    objectName,
+                    actions);
         }
     }
 
@@ -1824,27 +1842,27 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             Permission perm = new MBeanPermission(classname,
-                                                  member,
-                                                  objectName,
-                                                  actions);
+                    member,
+                    objectName,
+                    actions);
             sm.checkPermission(perm);
         }
     }
 
     private static void checkMBeanTrustPermission(final Class<?> theClass)
-        throws SecurityException {
+            throws SecurityException {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             Permission perm = new MBeanTrustPermission("register");
             PrivilegedAction<ProtectionDomain> act =
-                new PrivilegedAction<ProtectionDomain>() {
-                    public ProtectionDomain run() {
-                        return theClass.getProtectionDomain();
-                    }
-                };
+                    new PrivilegedAction<ProtectionDomain>() {
+                        public ProtectionDomain run() {
+                            return theClass.getProtectionDomain();
+                        }
+                    };
             ProtectionDomain pd = AccessController.doPrivileged(act);
             AccessControlContext acc =
-                new AccessControlContext(new ProtectionDomain[] { pd });
+                    new AccessControlContext(new ProtectionDomain[]{pd});
             sm.checkPermission(perm, acc);
         }
     }
@@ -1865,11 +1883,19 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
      */
     private static interface ResourceContext extends RegistrationContext {
         public void done();
-        /** An empty ResourceContext which does nothing **/
+
+        /**
+         * An empty ResourceContext which does nothing
+         **/
         public static final ResourceContext NONE = new ResourceContext() {
-            public void done() {}
-            public void registering() {}
-            public void unregistered() {}
+            public void done() {
+            }
+
+            public void registering() {
+            }
+
+            public void unregistered() {
+            }
         };
     }
 
@@ -1879,8 +1905,9 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
      * returns ResourceContext for special resources such as ClassLoaders
      * or JMXNamespaces. For regular MBean this method returns
      * ResourceContext.NONE.
+     *
      * @return a ResourceContext for special resources such as ClassLoaders
-     *         or JMXNamespaces.
+     * or JMXNamespaces.
      */
     private ResourceContext registerWithRepository(
             final Object resource,
@@ -1905,7 +1932,7 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
             MBEANSERVER_LOGGER.logp(Level.FINER,
                     DefaultMBeanServerInterceptor.class.getName(),
                     "addObject", "Send create notification of object " +
-                    logicalName.getCanonicalName());
+                            logicalName.getCanonicalName());
         }
 
         sendNotification(
@@ -1923,7 +1950,7 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
      * ResourceContext.NONE.
      *
      * @return a ResourceContext for special resources such as ClassLoaders
-     *         or JMXNamespaces.
+     * or JMXNamespaces.
      */
     private ResourceContext unregisterFromRepository(
             final Object resource,
@@ -1946,7 +1973,7 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
             MBEANSERVER_LOGGER.logp(Level.FINER,
                     DefaultMBeanServerInterceptor.class.getName(),
                     "unregisterMBean", "Send delete notification of object " +
-                    logicalName.getCanonicalName());
+                            logicalName.getCanonicalName());
         }
 
         sendNotification(MBeanServerNotification.UNREGISTRATION_NOTIFICATION,
@@ -1959,11 +1986,12 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
      * Registers a ClassLoader with the CLR.
      * This method is called by the ResourceContext from within the
      * repository lock.
-     * @param loader       The ClassLoader.
-     * @param logicalName  The ClassLoader MBean ObjectName.
+     *
+     * @param loader      The ClassLoader.
+     * @param logicalName The ClassLoader MBean ObjectName.
      */
     private void addClassLoader(ClassLoader loader,
-            final ObjectName logicalName) {
+                                final ObjectName logicalName) {
         /**
          * Called when the newly registered MBean is a ClassLoader
          * If so, tell the ClassLoaderRepository (CLR) about it.  We do
@@ -1977,11 +2005,11 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
         if (clr == null) {
             final RuntimeException wrapped =
                     new IllegalArgumentException(
-                    "Dynamic addition of class loaders" +
-                    " is not supported");
+                            "Dynamic addition of class loaders" +
+                                    " is not supported");
             throw new RuntimeOperationsException(wrapped,
                     "Exception occurred trying to register" +
-                    " the MBean as a class loader");
+                            " the MBean as a class loader");
         }
         clr.addClassLoader(logicalName, loader);
     }
@@ -1990,11 +2018,12 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
      * Unregisters a ClassLoader from the CLR.
      * This method is called by the ResourceContext from within the
      * repository lock.
-     * @param loader       The ClassLoader.
-     * @param logicalName  The ClassLoader MBean ObjectName.
+     *
+     * @param loader      The ClassLoader.
+     * @param logicalName The ClassLoader MBean ObjectName.
      */
     private void removeClassLoader(ClassLoader loader,
-            final ObjectName logicalName) {
+                                   final ObjectName logicalName) {
         /**
          * Removes the  MBean from the default loader repository.
          */
@@ -2015,11 +2044,11 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
      * when the associated MBean is added to or resp. removed from the
      * repository.
      *
-     * @param loader       The ClassLoader MBean being registered or
-     *                     unregistered.
-     * @param logicalName  The name of the ClassLoader MBean.
+     * @param loader      The ClassLoader MBean being registered or
+     *                    unregistered.
+     * @param logicalName The name of the ClassLoader MBean.
      * @return a ResourceContext that takes in charge the addition or removal
-     *         of the loader to or from the CLR.
+     * of the loader to or from the CLR.
      */
     private ResourceContext createClassLoaderContext(
             final ClassLoader loader,
@@ -2045,12 +2074,12 @@ public class DefaultMBeanServerInterceptor implements MBeanServerInterceptor {
      * ResourceContext.NONE.
      * At this time, only ClassLoaders need a ResourceContext.
      *
-     * @param resource     The resource being registered or unregistered.
-     * @param logicalName  The name of the associated MBean.
+     * @param resource    The resource being registered or unregistered.
+     * @param logicalName The name of the associated MBean.
      * @return
      */
     private ResourceContext makeResourceContextFor(Object resource,
-            ObjectName logicalName) {
+                                                   ObjectName logicalName) {
         if (resource instanceof ClassLoader) {
             return createClassLoaderContext((ClassLoader) resource,
                     logicalName);

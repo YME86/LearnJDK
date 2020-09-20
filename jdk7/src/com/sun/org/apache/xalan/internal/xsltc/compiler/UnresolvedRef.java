@@ -43,14 +43,14 @@ final class UnresolvedRef extends VariableRefBase {
     }
 
     public QName getName() {
-        return(_variableName);
+        return (_variableName);
     }
 
     private ErrorMsg reportError() {
         ErrorMsg err = new ErrorMsg(ErrorMsg.VARIABLE_UNDEF_ERR,
-                                    _variableName, this);
+                _variableName, this);
         getParser().reportError(Constants.ERROR, err);
-        return(err);
+        return (err);
     }
 
     private VariableRefBase resolve(Parser parser, SymbolTable stable) {
@@ -58,7 +58,7 @@ final class UnresolvedRef extends VariableRefBase {
         // find any declared global variable or parameter
         VariableBase ref = parser.lookupVariable(_variableName);
         if (ref == null) {
-            ref = (VariableBase)stable.lookupName(_variableName);
+            ref = (VariableBase) stable.lookupName(_variableName);
         }
         if (ref == null) {
             reportError();
@@ -71,9 +71,8 @@ final class UnresolvedRef extends VariableRefBase {
 
         if (ref instanceof Variable) {
             return new VariableRef((Variable) ref);
-        }
-        else if (ref instanceof Param) {
-            return new ParameterRef((Param)ref);
+        } else if (ref instanceof Param) {
+            return new ParameterRef((Param) ref);
         }
         return null;
     }
@@ -82,7 +81,7 @@ final class UnresolvedRef extends VariableRefBase {
         if (_ref != null) {
             final String name = _variableName.toString();
             ErrorMsg err = new ErrorMsg(ErrorMsg.CIRCULAR_VARIABLE_ERR,
-                                        name, this);
+                    name, this);
         }
         if ((_ref = resolve(getParser(), stable)) != null) {
             return (_type = _ref.typeCheck(stable));

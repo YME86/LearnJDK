@@ -74,41 +74,41 @@ final class KeyCall extends FunctionCall {
 
     /**
      * Get the parameters passed to function:
-     *   key(String name, String value)
-     *   key(String name, NodeSet value)
+     * key(String name, String value)
+     * key(String name, NodeSet value)
      * The 'arguments' vector should contain two parameters for key() calls,
      * one holding the key name and one holding the value(s) to look up. The
      * vector has only one parameter for id() calls (the key name is always
      * "##id" for id() calls).
      *
-     * @param fname The function name (should be 'key' or 'id')
+     * @param fname     The function name (should be 'key' or 'id')
      * @param arguments A vector containing the arguments the the function
      */
     public KeyCall(QName fname, Vector arguments) {
         super(fname, arguments);
-        switch(argumentCount()) {
-        case 1:
-            _name = null;
-            _value = argument(0);
-            break;
-        case 2:
-            _name = argument(0);
-            _value = argument(1);
-            break;
-        default:
-            _name = _value = null;
-            break;
+        switch (argumentCount()) {
+            case 1:
+                _name = null;
+                _value = argument(0);
+                break;
+            case 2:
+                _name = argument(0);
+                _value = argument(1);
+                break;
+            default:
+                _name = _value = null;
+                break;
         }
     }
 
-     /**
+    /**
      * If this call to key() is in a top-level element like  another variable
      * or param, add a dependency between that top-level element and the
      * referenced key. For example,
-     *
-     *   <xsl:key name="x" .../>
-     *   <xsl:variable name="y" select="key('x', 1)"/>
-     *
+     * <p>
+     * <xsl:key name="x" .../>
+     * <xsl:variable name="y" select="key('x', 1)"/>
+     * <p>
      * and assuming this class represents "key('x', 1)", add a reference
      * between variable y and key x. Note that if 'x' is unknown statically
      * in key('x', 1), there's nothing we can do at this point.
@@ -128,10 +128,11 @@ final class KeyCall extends FunctionCall {
         }
     }
 
-   /**
+    /**
      * Type check the parameters for the id() or key() function.
      * The index name (for key() call only) must be a string or convertable
      * to a string, and the lookup-value must be a string or a node-set.
+     *
      * @param stable The parser's symbol table
      * @throws TypeCheckError When the parameters have illegal type
      */
@@ -146,9 +147,8 @@ final class KeyCall extends FunctionCall {
             if (_name instanceof LiteralExpr) {
                 final LiteralExpr literal = (LiteralExpr) _name;
                 _resolvedQName =
-                    getParser().getQNameIgnoreDefaultNs(literal.getValue());
-            }
-            else if (nameType instanceof StringType == false) {
+                        getParser().getQNameIgnoreDefaultNs(literal.getValue());
+            } else if (nameType instanceof StringType == false) {
                 _name = new CastExpr(_name, Type.String);
             }
         }
@@ -182,7 +182,8 @@ final class KeyCall extends FunctionCall {
      * Stylesheet.compileConstructor() and not as the syntax tree is traversed.
      * <p>This method will generate byte code that produces an iterator
      * for the nodes in the node set for the key or id function call.
-     * @param classGen The Java class generator
+     *
+     * @param classGen  The Java class generator
      * @param methodGen The method generator
      */
     public void translate(ClassGenerator classGen,
@@ -192,26 +193,26 @@ final class KeyCall extends FunctionCall {
 
         // Returns the KeyIndex object of a given name
         final int getKeyIndex = cpg.addMethodref(TRANSLET_CLASS,
-                                                 "getKeyIndex",
-                                                 "(Ljava/lang/String;)"+
-                                                 KEY_INDEX_SIG);
+                "getKeyIndex",
+                "(Ljava/lang/String;)" +
+                        KEY_INDEX_SIG);
 
         // KeyIndex.setDom(Dom, node) => void
         final int keyDom = cpg.addMethodref(KEY_INDEX_CLASS,
-                                            "setDom",
-                                            "(" + DOM_INTF_SIG + "I)V");
+                "setDom",
+                "(" + DOM_INTF_SIG + "I)V");
 
         // Initialises a KeyIndex to return nodes with specific values
         final int getKeyIterator =
-                        cpg.addMethodref(KEY_INDEX_CLASS,
-                                         "getKeyIndexIterator",
-                                         "(" + _valueType.toSignature() + "Z)"
-                                             + KEY_INDEX_ITERATOR_SIG);
+                cpg.addMethodref(KEY_INDEX_CLASS,
+                        "getKeyIndexIterator",
+                        "(" + _valueType.toSignature() + "Z)"
+                                + KEY_INDEX_ITERATOR_SIG);
 
         // Initialise the index specified in the first parameter of key()
         il.append(classGen.loadTranslet());
         if (_name == null) {
-            il.append(new PUSH(cpg,"##id"));
+            il.append(new PUSH(cpg, "##id"));
         } else if (_resolvedQName != null) {
             il.append(new PUSH(cpg, _resolvedQName.toString()));
         } else {
@@ -232,7 +233,7 @@ final class KeyCall extends FunctionCall {
         il.append(new INVOKEVIRTUAL(keyDom));
 
         _value.translate(classGen, methodGen);
-        il.append((_name != null) ? ICONST_1: ICONST_0);
+        il.append((_name != null) ? ICONST_1 : ICONST_0);
         il.append(new INVOKEVIRTUAL(getKeyIterator));
     }
 }

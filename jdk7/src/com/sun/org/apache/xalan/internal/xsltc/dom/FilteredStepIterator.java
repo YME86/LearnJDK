@@ -28,6 +28,7 @@ import com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;
 /**
  * Extends a StepIterator by adding the ability to filter nodes. It
  * uses filters similar to those of a FilterIterator.
+ *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen

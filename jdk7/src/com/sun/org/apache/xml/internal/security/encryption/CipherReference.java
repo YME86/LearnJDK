@@ -49,10 +49,10 @@ import org.w3c.dom.Attr;
  * <xmp>
  * <element name='CipherReference' type='xenc:CipherReferenceType'/>
  * <complexType name='CipherReferenceType'>
- *     <sequence>
- *         <element name='Transforms' type='xenc:TransformsType' minOccurs='0'/>
- *     </sequence>
- *     <attribute name='URI' type='anyURI' use='required'/>
+ * <sequence>
+ * <element name='Transforms' type='xenc:TransformsType' minOccurs='0'/>
+ * </sequence>
+ * <attribute name='URI' type='anyURI' use='required'/>
  * </complexType>
  * </xmp>
  *
@@ -62,23 +62,25 @@ public interface CipherReference {
     /**
      * Returns an <code>URI</code> that contains an identifier that should be
      * dereferenced.
+     *
      * @return
      */
     String getURI();
 
-        /**
-         * Gets the URI as an Attribute node.  Used to meld the CipherREference
-         * with the XMLSignature ResourceResolvers
+    /**
+     * Gets the URI as an Attribute node.  Used to meld the CipherREference
+     * with the XMLSignature ResourceResolvers
+     *
      * @return
-         */
-        public Attr getURIAsAttr();
+     */
+    public Attr getURIAsAttr();
 
     /**
      * Returns the <code>Transforms</code> that specifies how to transform the
      * <code>URI</code> to yield the appropiate cipher value.
      *
      * @return the transform that specifies how to transform the reference to
-     *   yield the intended cipher value.
+     * yield the intended cipher value.
      */
     Transforms getTransforms();
 
@@ -87,7 +89,7 @@ public interface CipherReference {
      * <code>URI</code> to yield the appropiate cipher value.
      *
      * @param transforms the set of <code>Transforms</code> that specifies how
-     *   to transform the reference to yield the intended cipher value.
+     *                   to transform the reference to yield the intended cipher value.
      */
     void setTransforms(Transforms transforms);
 }

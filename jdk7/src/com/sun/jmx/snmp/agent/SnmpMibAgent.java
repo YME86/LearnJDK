@@ -27,9 +27,9 @@
 package com.sun.jmx.snmp.agent;
 
 
-
 // java imports
 //
+
 import java.io.Serializable;
 import java.util.Vector;
 import java.util.Enumeration;
@@ -45,6 +45,7 @@ import javax.management.InstanceNotFoundException;
 import javax.management.ServiceNotFoundException;
 import javax.management.ReflectionException;
 import javax.management.MBeanException;
+
 import com.sun.jmx.snmp.SnmpVarBind;
 import com.sun.jmx.snmp.SnmpDefinitions;
 import com.sun.jmx.snmp.SnmpStatusException;
@@ -54,7 +55,7 @@ import com.sun.jmx.snmp.SnmpEngine;
 
 /**
  * Abstract class for representing an SNMP agent.
- *
+ * <p>
  * The class is used by the SNMP protocol adaptor as the entry point in
  * the SNMP agent to query.
  *
@@ -63,7 +64,7 @@ import com.sun.jmx.snmp.SnmpEngine;
  */
 
 public abstract class SnmpMibAgent
-    implements SnmpMibAgentMBean, MBeanRegistration, Serializable {
+        implements SnmpMibAgentMBean, MBeanRegistration, Serializable {
 
     /**
      * Default constructor.
@@ -79,7 +80,7 @@ public abstract class SnmpMibAgent
      * Initializes the MIB (with no registration of the MBeans into the
      * MBean server).
      *
-     * @exception IllegalAccessException The MIB can not be initialized.
+     * @throws IllegalAccessException The MIB can not be initialized.
      */
     public abstract void init() throws IllegalAccessException;
 
@@ -88,20 +89,18 @@ public abstract class SnmpMibAgent
      * is inserted into the MBean server.
      *
      * @param server The MBean server to register the service with.
-     * @param name The object name.
-     *
+     * @param name   The object name.
      * @return The name of the SNMP MIB registered.
-     *
-     * @exception java.lang.Exception
+     * @throws java.lang.Exception
      */
     public abstract ObjectName preRegister(MBeanServer server,
                                            ObjectName name)
-        throws java.lang.Exception;
+            throws java.lang.Exception;
 
     /**
      * Not used in this context.
      */
-    public void postRegister (Boolean registrationDone) {
+    public void postRegister(Boolean registrationDone) {
     }
 
     /**
@@ -124,11 +123,10 @@ public abstract class SnmpMibAgent
      * @param req The SnmpMibRequest object holding the list of variable to
      *            be retrieved. This list is composed of
      *            <CODE>SnmpVarBind</CODE> objects.
-     *
-     * @exception SnmpStatusException An error occured during the operation.
+     * @throws SnmpStatusException An error occured during the operation.
      */
     public abstract void get(SnmpMibRequest req)
-        throws SnmpStatusException;
+            throws SnmpStatusException;
 
     /**
      * Processes a <CODE>getNext</CODE> operation.
@@ -138,35 +136,31 @@ public abstract class SnmpMibAgent
      * @param req The SnmpMibRequest object holding the list of
      *            OIDs from which the next variables should be retrieved.
      *            This list is composed of <CODE>SnmpVarBind</CODE> objects.
-     *
-     * @exception SnmpStatusException An error occured during the operation.
+     * @throws SnmpStatusException An error occured during the operation.
      */
     public abstract void getNext(SnmpMibRequest req)
-        throws SnmpStatusException;
+            throws SnmpStatusException;
 
     /**
      * Processes a <CODE>getBulk</CODE> operation.
      * This method must update the SnmpVarBinds contained in the
      * <var>{@link SnmpMibRequest} req</var> parameter.
      *
-     * @param req The SnmpMibRequest object holding the list of variable to
-     *            be retrieved. This list is composed of
-     *            <CODE>SnmpVarBind</CODE> objects.
-     *
+     * @param req       The SnmpMibRequest object holding the list of variable to
+     *                  be retrieved. This list is composed of
+     *                  <CODE>SnmpVarBind</CODE> objects.
      * @param nonRepeat The number of variables, starting with the first
-     *    variable in the variable-bindings, for which a single
-     *    lexicographic successor is requested.
-     *
+     *                  variable in the variable-bindings, for which a single
+     *                  lexicographic successor is requested.
      * @param maxRepeat The number of lexicographic successors requested
-     *    for each of the last R variables. R is the number of variables
-     *    following the first <CODE>nonRepeat</CODE> variables for which
-     *    multiple lexicographic successors are requested.
-     *
-     * @exception SnmpStatusException An error occured during the operation.
+     *                  for each of the last R variables. R is the number of variables
+     *                  following the first <CODE>nonRepeat</CODE> variables for which
+     *                  multiple lexicographic successors are requested.
+     * @throws SnmpStatusException An error occured during the operation.
      */
     public abstract void getBulk(SnmpMibRequest req, int nonRepeat,
                                  int maxRepeat)
-        throws SnmpStatusException;
+            throws SnmpStatusException;
 
     /**
      * Processes a <CODE>set</CODE> operation.
@@ -178,15 +172,14 @@ public abstract class SnmpMibAgent
      * @param req The SnmpMibRequest object holding the list of variable to
      *            be set. This list is composed of
      *            <CODE>SnmpVarBind</CODE> objects.
-     *
-     * @exception SnmpStatusException An error occured during the operation.
-     *            Throwing an exception in this method will break the
-     *            atomicity of the SET operation. Care must be taken so that
-     *            the exception is thrown in the {@link #check(SnmpMibRequest)}
-     *            method instead.
+     * @throws SnmpStatusException An error occured during the operation.
+     *                             Throwing an exception in this method will break the
+     *                             atomicity of the SET operation. Care must be taken so that
+     *                             the exception is thrown in the {@link #check(SnmpMibRequest)}
+     *                             method instead.
      */
     public abstract void set(SnmpMibRequest req)
-        throws SnmpStatusException;
+            throws SnmpStatusException;
 
 
     /**
@@ -199,12 +192,11 @@ public abstract class SnmpMibAgent
      * @param req The SnmpMibRequest object holding the list of variable to
      *            be set. This list is composed of
      *            <CODE>SnmpVarBind</CODE> objects.
-     *
-     * @exception SnmpStatusException The <CODE>set</CODE> operation
-     *    cannot be performed.
+     * @throws SnmpStatusException The <CODE>set</CODE> operation
+     *                             cannot be performed.
      */
     public abstract void check(SnmpMibRequest req)
-        throws SnmpStatusException;
+            throws SnmpStatusException;
 
     /**
      * Gets the root object identifier of the MIB.
@@ -224,7 +216,7 @@ public abstract class SnmpMibAgent
      * registered.
      *
      * @return The MBean server or null if the MIB is not registered in any
-     *     MBean server.
+     * MBean server.
      */
     public MBeanServer getMBeanServer() {
         return server;
@@ -256,14 +248,14 @@ public abstract class SnmpMibAgent
         }
     }
 
-     /**
+    /**
      * Sets the reference to the SNMP protocol adaptor through which the MIB
      * will be SNMP accessible and add this new MIB in the SNMP MIB handler.
      * This method is to be called to set a specific agent to a specific OID. This can be useful when dealing with MIB overlapping.
      * Some OID can be implemented in more than one MIB. In this case, the OID nearest the agent will be used on SNMP operations.
-     * @param stack The SNMP MIB handler.
-     * @param oids The set of OIDs this agent implements.
      *
+     * @param stack The SNMP MIB handler.
+     * @param oids  The set of OIDs this agent implements.
      * @since 1.5
      */
     public void setSnmpAdaptor(SnmpMibHandler stack, SnmpOid[] oids) {
@@ -281,11 +273,9 @@ public abstract class SnmpMibAgent
      * will be SNMP accessible and adds this new MIB in the SNMP MIB handler.
      * Adds a new contextualized MIB in the SNMP MIB handler.
      *
-     * @param stack The SNMP MIB handler.
+     * @param stack       The SNMP MIB handler.
      * @param contextName The MIB context name. If null is passed, will be registered in the default context.
-     *
-     * @exception IllegalArgumentException If the parameter is null.
-     *
+     * @throws IllegalArgumentException If the parameter is null.
      * @since 1.5
      */
     public void setSnmpAdaptor(SnmpMibHandler stack, String contextName) {
@@ -297,16 +287,16 @@ public abstract class SnmpMibAgent
             adaptor.addMib(this, contextName);
         }
     }
+
     /**
      * Sets the reference to the SNMP protocol adaptor through which the MIB
      * will be SNMP accessible and adds this new MIB in the SNMP MIB handler.
      * Adds a new contextualized MIB in the SNMP MIB handler.
      *
-     * @param stack The SNMP MIB handler.
+     * @param stack       The SNMP MIB handler.
      * @param contextName The MIB context name. If null is passed, will be registered in the default context.
-     * @param oids The set of OIDs this agent implements.
-     * @exception IllegalArgumentException If the parameter is null.
-     *
+     * @param oids        The set of OIDs this agent implements.
+     * @throws IllegalArgumentException If the parameter is null.
      * @since 1.5
      */
     public void setSnmpAdaptor(SnmpMibHandler stack,
@@ -337,15 +327,13 @@ public abstract class SnmpMibAgent
      * associated to the specified <CODE>name</CODE>.
      *
      * @param name The name of the SNMP protocol adaptor.
-     *
-     * @exception InstanceNotFoundException The SNMP protocol adaptor does
-     *     not exist in the MBean server.
-     *
-     * @exception ServiceNotFoundException This SNMP MIB is not registered
-     *     in the MBean server or the requested service is not supported.
+     * @throws InstanceNotFoundException The SNMP protocol adaptor does
+     *                                   not exist in the MBean server.
+     * @throws ServiceNotFoundException  This SNMP MIB is not registered
+     *                                   in the MBean server or the requested service is not supported.
      */
     public void setSnmpAdaptorName(ObjectName name)
-        throws InstanceNotFoundException, ServiceNotFoundException {
+            throws InstanceNotFoundException, ServiceNotFoundException {
 
         if (server == null) {
             throw new ServiceNotFoundException(mibName + " is not registered in the MBean server");
@@ -361,8 +349,8 @@ public abstract class SnmpMibAgent
         Object[] params = {this};
         String[] signature = {"com.sun.jmx.snmp.agent.SnmpMibAgent"};
         try {
-            adaptor = (SnmpMibHandler)(server.invoke(name, "addMib", params,
-                                                     signature));
+            adaptor = (SnmpMibHandler) (server.invoke(name, "addMib", params,
+                    signature));
         } catch (InstanceNotFoundException e) {
             throw new InstanceNotFoundException(name.toString());
         } catch (ReflectionException e) {
@@ -373,24 +361,24 @@ public abstract class SnmpMibAgent
 
         adaptorName = name;
     }
+
     /**
      * Sets the reference to the SNMP protocol adaptor through which the MIB
      * will be SNMP accessible and add this new MIB in the SNMP MIB handler
      * associated to the specified <CODE>name</CODE>.
      * This method is to be called to set a specific agent to a specific OID. This can be useful when dealing with MIB overlapping.
      * Some OID can be implemented in more than one MIB. In this case, the OID nearer agent will be used on SNMP operations.
+     *
      * @param name The name of the SNMP protocol adaptor.
      * @param oids The set of OIDs this agent implements.
-     * @exception InstanceNotFoundException The SNMP protocol adaptor does
-     *     not exist in the MBean server.
-     *
-     * @exception ServiceNotFoundException This SNMP MIB is not registered
-     *     in the MBean server or the requested service is not supported.
-     *
+     * @throws InstanceNotFoundException The SNMP protocol adaptor does
+     *                                   not exist in the MBean server.
+     * @throws ServiceNotFoundException  This SNMP MIB is not registered
+     *                                   in the MBean server or the requested service is not supported.
      * @since 1.5
      */
     public void setSnmpAdaptorName(ObjectName name, SnmpOid[] oids)
-        throws InstanceNotFoundException, ServiceNotFoundException {
+            throws InstanceNotFoundException, ServiceNotFoundException {
 
         if (server == null) {
             throw new ServiceNotFoundException(mibName + " is not registered in the MBean server");
@@ -405,10 +393,10 @@ public abstract class SnmpMibAgent
         //
         Object[] params = {this, oids};
         String[] signature = {"com.sun.jmx.snmp.agent.SnmpMibAgent",
-        oids.getClass().getName()};
+                oids.getClass().getName()};
         try {
-            adaptor = (SnmpMibHandler)(server.invoke(name, "addMib", params,
-                                                     signature));
+            adaptor = (SnmpMibHandler) (server.invoke(name, "addMib", params,
+                    signature));
         } catch (InstanceNotFoundException e) {
             throw new InstanceNotFoundException(name.toString());
         } catch (ReflectionException e) {
@@ -419,23 +407,22 @@ public abstract class SnmpMibAgent
 
         adaptorName = name;
     }
+
     /**
      * Sets the reference to the SNMP protocol adaptor through which the MIB
      * will be SNMP accessible and add this new MIB in the SNMP MIB handler
      * associated to the specified <CODE>name</CODE>.
      *
-     * @param name The name of the SNMP protocol adaptor.
+     * @param name        The name of the SNMP protocol adaptor.
      * @param contextName The MIB context name. If null is passed, will be registered in the default context.
-     * @exception InstanceNotFoundException The SNMP protocol adaptor does
-     *     not exist in the MBean server.
-     *
-     * @exception ServiceNotFoundException This SNMP MIB is not registered
-     *     in the MBean server or the requested service is not supported.
-     *
+     * @throws InstanceNotFoundException The SNMP protocol adaptor does
+     *                                   not exist in the MBean server.
+     * @throws ServiceNotFoundException  This SNMP MIB is not registered
+     *                                   in the MBean server or the requested service is not supported.
      * @since 1.5
      */
     public void setSnmpAdaptorName(ObjectName name, String contextName)
-        throws InstanceNotFoundException, ServiceNotFoundException {
+            throws InstanceNotFoundException, ServiceNotFoundException {
 
         if (server == null) {
             throw new ServiceNotFoundException(mibName + " is not registered in the MBean server");
@@ -452,8 +439,8 @@ public abstract class SnmpMibAgent
         Object[] params = {this, contextName};
         String[] signature = {"com.sun.jmx.snmp.agent.SnmpMibAgent", "java.lang.String"};
         try {
-            adaptor = (SnmpMibHandler)(server.invoke(name, "addMib", params,
-                                                     signature));
+            adaptor = (SnmpMibHandler) (server.invoke(name, "addMib", params,
+                    signature));
         } catch (InstanceNotFoundException e) {
             throw new InstanceNotFoundException(name.toString());
         } catch (ReflectionException e) {
@@ -470,20 +457,18 @@ public abstract class SnmpMibAgent
      * will be SNMP accessible and add this new MIB in the SNMP MIB handler
      * associated to the specified <CODE>name</CODE>.
      *
-     * @param name The name of the SNMP protocol adaptor.
+     * @param name        The name of the SNMP protocol adaptor.
      * @param contextName The MIB context name. If null is passed, will be registered in the default context.
-     * @param oids The set of OIDs this agent implements.
-     * @exception InstanceNotFoundException The SNMP protocol adaptor does
-     *     not exist in the MBean server.
-     *
-     * @exception ServiceNotFoundException This SNMP MIB is not registered
-     *     in the MBean server or the requested service is not supported.
-     *
+     * @param oids        The set of OIDs this agent implements.
+     * @throws InstanceNotFoundException The SNMP protocol adaptor does
+     *                                   not exist in the MBean server.
+     * @throws ServiceNotFoundException  This SNMP MIB is not registered
+     *                                   in the MBean server or the requested service is not supported.
      * @since 1.5
      */
     public void setSnmpAdaptorName(ObjectName name,
                                    String contextName, SnmpOid[] oids)
-        throws InstanceNotFoundException, ServiceNotFoundException {
+            throws InstanceNotFoundException, ServiceNotFoundException {
 
         if (server == null) {
             throw new ServiceNotFoundException(mibName + " is not registered in the MBean server");
@@ -500,8 +485,8 @@ public abstract class SnmpMibAgent
         Object[] params = {this, contextName, oids};
         String[] signature = {"com.sun.jmx.snmp.agent.SnmpMibAgent", "java.lang.String", oids.getClass().getName()};
         try {
-            adaptor = (SnmpMibHandler)(server.invoke(name, "addMib", params,
-                                                     signature));
+            adaptor = (SnmpMibHandler) (server.invoke(name, "addMib", params,
+                    signature));
         } catch (InstanceNotFoundException e) {
             throw new InstanceNotFoundException(name.toString());
         } catch (ReflectionException e) {
@@ -520,7 +505,7 @@ public abstract class SnmpMibAgent
      * adaptor.
      *
      * @return <CODE>true</CODE> if the MIB module is bound,
-     *         <CODE>false</CODE> otherwise.
+     * <CODE>false</CODE> otherwise.
      */
     public boolean getBindingState() {
         if (adaptor == null)
@@ -540,42 +525,40 @@ public abstract class SnmpMibAgent
 
     /**
      * This is a factory method for creating new SnmpMibRequest objects.
-     * @param reqPdu The received PDU.
+     *
+     * @param reqPdu   The received PDU.
      * @param vblist   The vector of SnmpVarBind objects in which the
-     *        MIB concerned by this request is involved.
+     *                 MIB concerned by this request is involved.
      * @param version  The protocol version of the SNMP request.
      * @param userData User allocated contextual data.
-     *
      * @return A new SnmpMibRequest object.
-     *
      * @since 1.5
      **/
     public static SnmpMibRequest newMibRequest(SnmpPdu reqPdu,
                                                Vector<SnmpVarBind> vblist,
                                                int version,
-                                               Object userData)
-    {
+                                               Object userData) {
         return new SnmpMibRequestImpl(null,
-                                      reqPdu,
-                                      vblist,
-                                      version,
-                                      userData,
-                                      null,
-                                      SnmpDefinitions.noAuthNoPriv,
-                                      getSecurityModel(version),
-                                      null,null);
+                reqPdu,
+                vblist,
+                version,
+                userData,
+                null,
+                SnmpDefinitions.noAuthNoPriv,
+                getSecurityModel(version),
+                null, null);
     }
+
     /**
      * This is a factory method for creating new SnmpMibRequest objects.
-     * @param engine The local engine.
-     * @param reqPdu The received pdu.
-     * @param vblist The vector of SnmpVarBind objects in which the
-     *        MIB concerned by this request is involved.
-     * @param version The protocol version of the SNMP request.
+     *
+     * @param engine   The local engine.
+     * @param reqPdu   The received pdu.
+     * @param vblist   The vector of SnmpVarBind objects in which the
+     *                 MIB concerned by this request is involved.
+     * @param version  The protocol version of the SNMP request.
      * @param userData User allocated contextual data.
-     *
      * @return A new SnmpMibRequest object.
-     *
      * @since 1.5
      **/
     public static SnmpMibRequest newMibRequest(SnmpEngine engine,
@@ -589,15 +572,15 @@ public abstract class SnmpMibAgent
                                                byte[] contextName,
                                                byte[] accessContextName) {
         return new SnmpMibRequestImpl(engine,
-                                      reqPdu,
-                                      vblist,
-                                      version,
-                                      userData,
-                                      principal,
-                                      securityLevel,
-                                      securityModel,
-                                      contextName,
-                                      accessContextName);
+                reqPdu,
+                vblist,
+                version,
+                userData,
+                principal,
+                securityLevel,
+                securityModel,
+                contextName,
+                accessContextName);
     }
     // ---------------------------------------------------------------------
     // PACKAGE METHODS
@@ -609,31 +592,27 @@ public abstract class SnmpMibAgent
      * The method implements the <CODE>getBulk</CODE> operation by calling
      * appropriately the <CODE>getNext</CODE> method.
      *
-     * @param req The SnmpMibRequest containing the variable list to be
-     *        retrieved.
-     *
+     * @param req       The SnmpMibRequest containing the variable list to be
+     *                  retrieved.
      * @param nonRepeat The number of variables, starting with the first
-     *    variable in the variable-bindings, for which a single lexicographic
-     *    successor is requested.
-     *
+     *                  variable in the variable-bindings, for which a single lexicographic
+     *                  successor is requested.
      * @param maxRepeat The number of lexicographic successors
-     *    requested for each of the last R variables. R is the number of
-     *    variables following the first nonRepeat variables for which
-     *    multiple lexicographic successors are requested.
-     *
+     *                  requested for each of the last R variables. R is the number of
+     *                  variables following the first nonRepeat variables for which
+     *                  multiple lexicographic successors are requested.
      * @return The variable list containing returned values.
-     *
-     * @exception SnmpStatusException An error occured during the operation.
+     * @throws SnmpStatusException An error occured during the operation.
      */
     void getBulkWithGetNext(SnmpMibRequest req, int nonRepeat, int maxRepeat)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
         final Vector<SnmpVarBind> list = req.getSubList();
 
         // RFC 1905, Section 4.2.3, p14
-        final int L = list.size() ;
-        final int N = Math.max(Math.min(nonRepeat, L), 0) ;
-        final int M = Math.max(maxRepeat, 0) ;
-        final int R = L - N ;
+        final int L = list.size();
+        final int N = Math.max(Math.min(nonRepeat, L), 0);
+        final int M = Math.max(maxRepeat, 0);
+        final int R = L - N;
 
         // Let's build the varBindList for the response pdu
         //
@@ -647,19 +626,19 @@ public abstract class SnmpMibAgent
 
             // Now the remaining repeaters
             //
-            Vector<SnmpVarBind> repeaters= splitFrom(list, N);
+            Vector<SnmpVarBind> repeaters = splitFrom(list, N);
             SnmpMibRequestImpl repeatedReq =
-                new SnmpMibRequestImpl(req.getEngine(),
-                                       req.getPdu(),
-                                       repeaters,
-                                       SnmpDefinitions.snmpVersionTwo,
-                                       req.getUserData(),
-                                       req.getPrincipal(),
-                                       req.getSecurityLevel(),
-                                       req.getSecurityModel(),
-                                       req.getContextName(),
-                                       req.getAccessContextName());
-            for (int i = 2 ; i <= M ; i++) {
+                    new SnmpMibRequestImpl(req.getEngine(),
+                            req.getPdu(),
+                            repeaters,
+                            SnmpDefinitions.snmpVersionTwo,
+                            req.getUserData(),
+                            req.getPrincipal(),
+                            req.getSecurityLevel(),
+                            req.getSecurityModel(),
+                            req.getContextName(),
+                            req.getAccessContextName());
+            for (int i = 2; i <= M; i++) {
                 getNext(repeatedReq);
                 concatVector(req, repeaters);
             }
@@ -676,21 +655,21 @@ public abstract class SnmpMibAgent
      * element up to the specified limit.
      *
      * @param original The original vector.
-     * @param limit The limit.
+     * @param limit    The limit.
      */
     private Vector<SnmpVarBind> splitFrom(Vector<SnmpVarBind> original, int limit) {
 
-        int max= original.size();
-        Vector<SnmpVarBind> result= new Vector<SnmpVarBind>(max - limit);
-        int i= limit;
+        int max = original.size();
+        Vector<SnmpVarBind> result = new Vector<SnmpVarBind>(max - limit);
+        int i = limit;
 
         // Ok the loop looks a bit strange. But in order to improve the
         // perf, we try to avoid reference to the limit variable from
         // within the loop ...
         //
-        for(Enumeration<SnmpVarBind> e= original.elements(); e.hasMoreElements(); --i) {
-            SnmpVarBind var= e.nextElement();
-            if (i >0)
+        for (Enumeration<SnmpVarBind> e = original.elements(); e.hasMoreElements(); --i) {
+            SnmpVarBind var = e.nextElement();
+            if (i > 0)
                 continue;
             result.addElement(new SnmpVarBind(var.oid, var.value));
         }
@@ -698,8 +677,8 @@ public abstract class SnmpMibAgent
     }
 
     private void concatVector(SnmpMibRequest req, Vector source) {
-        for(Enumeration e= source.elements(); e.hasMoreElements(); ) {
-            SnmpVarBind var= (SnmpVarBind) e.nextElement();
+        for (Enumeration e = source.elements(); e.hasMoreElements(); ) {
+            SnmpVarBind var = (SnmpVarBind) e.nextElement();
             // We need to duplicate the SnmpVarBind otherwise it is going
             // to be overloaded by the next get Next ...
             req.addVarBind(new SnmpVarBind(var.oid, var.value));
@@ -707,8 +686,8 @@ public abstract class SnmpMibAgent
     }
 
     private void concatVector(Vector<SnmpVarBind> target, Vector<SnmpVarBind> source) {
-        for(Enumeration<SnmpVarBind> e= source.elements(); e.hasMoreElements(); ) {
-            SnmpVarBind var= e.nextElement();
+        for (Enumeration<SnmpVarBind> e = source.elements(); e.hasMoreElements(); ) {
+            SnmpVarBind var = e.nextElement();
             // We need to duplicate the SnmpVarBind otherwise it is going
             // to be overloaded by the next get Next ...
             target.addElement(new SnmpVarBind(var.oid, var.value));
@@ -716,11 +695,11 @@ public abstract class SnmpMibAgent
     }
 
     private static int getSecurityModel(int version) {
-        switch(version) {
-        case SnmpDefinitions.snmpVersionOne:
-            return SnmpDefinitions.snmpV1SecurityModel;
-        default:
-            return SnmpDefinitions.snmpV2SecurityModel;
+        switch (version) {
+            case SnmpDefinitions.snmpVersionOne:
+                return SnmpDefinitions.snmpV1SecurityModel;
+            default:
+                return SnmpDefinitions.snmpV2SecurityModel;
         }
     }
 
@@ -730,12 +709,14 @@ public abstract class SnmpMibAgent
 
     /**
      * The object name of the MIB.
+     *
      * @serial
      */
     protected String mibName;
 
     /**
      * The reference to the MBean server.
+     *
      * @serial
      */
     protected MBeanServer server;
@@ -746,6 +727,7 @@ public abstract class SnmpMibAgent
 
     /**
      * The object name of the SNMP protocol adaptor.
+     *
      * @serial
      */
     private ObjectName adaptorName;

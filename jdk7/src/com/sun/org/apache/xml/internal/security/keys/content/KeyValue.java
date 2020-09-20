@@ -121,7 +121,7 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
      * @throws XMLSecurityException
      */
     public KeyValue(Element element, String BaseURI)
-           throws XMLSecurityException {
+            throws XMLSecurityException {
         super(element, BaseURI);
     }
 
@@ -134,8 +134,8 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
     public PublicKey getPublicKey() throws XMLSecurityException {
 
         Element rsa = XMLUtils.selectDsNode
-            (this._constructionElement.getFirstChild(),
-             Constants._TAG_RSAKEYVALUE,0);
+                (this._constructionElement.getFirstChild(),
+                        Constants._TAG_RSAKEYVALUE, 0);
 
         if (rsa != null) {
             RSAKeyValue kv = new RSAKeyValue(rsa, this._baseURI);
@@ -143,8 +143,8 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
         }
 
         Element dsa = XMLUtils.selectDsNode
-            (this._constructionElement.getFirstChild(),
-             Constants._TAG_DSAKEYVALUE,0);
+                (this._constructionElement.getFirstChild(),
+                        Constants._TAG_DSAKEYVALUE, 0);
 
         if (dsa != null) {
             DSAKeyValue kv = new DSAKeyValue(dsa, this._baseURI);
@@ -154,7 +154,9 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
         return null;
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     */
     public String getBaseLocalName() {
         return Constants._TAG_KEYVALUE;
     }

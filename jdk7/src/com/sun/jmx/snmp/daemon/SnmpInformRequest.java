@@ -9,6 +9,7 @@ package com.sun.jmx.snmp.daemon;
 
 // JAVA imports
 //
+
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.Vector;
@@ -18,6 +19,7 @@ import java.util.logging.Level;
 // JMX imports
 //
 import static com.sun.jmx.defaults.JmxProperties.SNMP_ADAPTOR_LOGGER;
+
 import com.sun.jmx.snmp.SnmpMessage;
 import com.sun.jmx.snmp.SnmpVarBind;
 import com.sun.jmx.snmp.SnmpPduFactory;
@@ -133,52 +135,52 @@ public class SnmpInformRequest implements SnmpDefinitions {
     /**
      * Base status of an inform request.
      */
-    final static private int stBase             = 1;
+    final static private int stBase = 1;
 
     /**
      * Status of an inform request: in progress.
      */
-    final static public int stInProgress                = stBase;
+    final static public int stInProgress = stBase;
 
     /**
      * Status of an inform request: waiting to be sent.
      */
-    final static public int stWaitingToSend     = (stBase << 1) | stInProgress;
+    final static public int stWaitingToSend = (stBase << 1) | stInProgress;
 
     /**
      * Status of an inform request: waiting for reply.
      */
-    final static public int stWaitingForReply   = (stBase << 2) | stInProgress;
+    final static public int stWaitingForReply = (stBase << 2) | stInProgress;
 
     /**
      * Status of an inform request: reply received.
      */
-    final static public int stReceivedReply     = (stBase << 3) | stInProgress;
+    final static public int stReceivedReply = (stBase << 3) | stInProgress;
 
     /**
      * Status of an inform request: request aborted.
      */
-    final static public int stAborted                   = (stBase << 4);
+    final static public int stAborted = (stBase << 4);
 
     /**
      * Status of an inform request: timeout.
      */
-    final static public int stTimeout                   = (stBase << 5);
+    final static public int stTimeout = (stBase << 5);
 
     /**
      * Status of an inform request: internal error occured.
      */
-    final static public int stInternalError     = (stBase << 6);
+    final static public int stInternalError = (stBase << 6);
 
     /**
      * Status of an inform request: result available for the request.
      */
-    final static public int stResultsAvailable  = (stBase << 7);
+    final static public int stResultsAvailable = (stBase << 7);
 
     /**
      * Status of an inform request: request never used.
      */
-    final static public int stNeverUsed                 = (stBase << 8);
+    final static public int stNeverUsed = (stBase << 8);
 
     /**
      * Number of tries performed for the current polling operation.
@@ -192,13 +194,14 @@ public class SnmpInformRequest implements SnmpDefinitions {
     private int timeout = 3 * 1000; // 3 seconds.
 
     /**
+     *
      */
     private int reqState = stNeverUsed;
 
     // Polling control parameters.
-    private long  prevPollTime = 0;     // value of 0 means poll never happened.
-    private long  nextPollTime = 0;
-    private long  waitTimeForResponse;
+    private long prevPollTime = 0;     // value of 0 means poll never happened.
+    private long nextPollTime = 0;
+    private long waitTimeForResponse;
     private Date debugDate = new Date();
 
     /**
@@ -217,12 +220,13 @@ public class SnmpInformRequest implements SnmpDefinitions {
     /**
      * For SNMP Runtime internal use only.
      * Constructor for creating new inform request. This object can be created only by an SNMP adaptor object.
-     * @param session <CODE>SnmpSession</CODE> object for this inform request.
-     * @param adp <CODE>SnmpAdaptorServer</CODE> object for this inform request.
-     * @param addr The <CODE>InetAddress</CODE> destination for this inform request.
-     * @param cs The community string to be used for the inform request.
+     *
+     * @param session   <CODE>SnmpSession</CODE> object for this inform request.
+     * @param adp       <CODE>SnmpAdaptorServer</CODE> object for this inform request.
+     * @param addr      The <CODE>InetAddress</CODE> destination for this inform request.
+     * @param cs        The community string to be used for the inform request.
      * @param requestCB Callback interface for the inform request.
-     * @exception SnmpStatusException SNMP adaptor is not ONLINE or session is dead.
+     * @throws SnmpStatusException SNMP adaptor is not ONLINE or session is dead.
      */
     SnmpInformRequest(SnmpSession session,
                       SnmpAdaptorServer adp,
@@ -230,7 +234,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
                       String cs,
                       int p,
                       SnmpInformHandler requestCB)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
 
         informSession = session;
         adaptor = adp;
@@ -239,7 +243,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
         port = p;
         callback = requestCB;
         informSession.addInformRequest(this);  // add to adaptor queue.
-        setTimeout(adaptor.getTimeout()) ;
+        setTimeout(adaptor.getTimeout());
     }
 
     // PUBLIC METHODS
@@ -247,14 +251,16 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
     /**
      * Gets the request id (invoke identifier) of the current inform request.
+     *
      * @return The request id.
      */
-    final public synchronized int getRequestId () {
+    final public synchronized int getRequestId() {
         return requestId;
     }
 
     /**
      * Gets the destination address of the current inform request.
+     *
      * @return The destination address.
      */
     synchronized InetAddress getAddress() {
@@ -263,14 +269,16 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
     /**
      * Gets the current status of the inform request.
+     *
      * @return The current status of the inform request.
      */
     final public synchronized int getRequestStatus() {
-        return reqState ;
+        return reqState;
     }
 
     /**
      * Indicates whether or not the inform request was aborted.
+     *
      * @return <CODE>true</CODE> if the inform request was aborted, <CODE>false</CODE> otherwise.
      */
     final public synchronized boolean isAborted() {
@@ -279,6 +287,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
     /**
      * Indicates whether or not the inform request is in progress.
+     *
      * @return <CODE>true</CODE> if the inform request is in progress, <CODE>false</CODE> otherwise.
      */
     final public synchronized boolean inProgress() {
@@ -287,6 +296,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
     /**
      * Indicates whether or not the inform request result is available.
+     *
      * @return <CODE>true</CODE> if the inform request result is available, <CODE>false</CODE> otherwise.
      */
     final public synchronized boolean isResultAvailable() {
@@ -295,6 +305,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
     /**
      * Gets the status associated with the <CODE>SnmpVarBindList</CODE>.
+     *
      * @return The error status.
      */
     final public synchronized int getErrorStatus() {
@@ -304,6 +315,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
     /**
      * Gets the index.
      * <P>NOTE: this value is equal to the <CODE>errorIndex</CODE> field minus 1.
+     *
      * @return The error index.
      */
     final public synchronized int getErrorIndex() {
@@ -312,6 +324,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
     /**
      * Gets the maximum number of tries before declaring that the manager is not responding.
+     *
      * @return The maximum number of times an inform request should be tried.
      */
     final public int getMaxTries() {
@@ -320,38 +333,41 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
     /**
      * Gets the number of tries performed for the current inform request.
+     *
      * @return The number of tries performed.
      */
     final public synchronized int getNumTries() {
-        return numTries ;
+        return numTries;
     }
 
     /**
      * For SNMP Runtime internal use only.
      */
     final synchronized void setTimeout(int value) {
-        timeout = value ;
+        timeout = value;
     }
 
     /**
      * Gets absolute time in milliseconds (based on epoch time) when the next
      * polling activity will begin.
+     *
      * @return The absolute time when polling will begin.
      */
-    final public synchronized long getAbsNextPollTime () {
-        return nextPollTime ;
+    final public synchronized long getAbsNextPollTime() {
+        return nextPollTime;
     }
 
     /**
      * Gets absolute time in milliseconds (based on epoch time) before which an inform
      * response is expected from a manager.
+     *
      * @return The absolute time within which an inform response is expected.
      */
     final public synchronized long getAbsMaxTimeToWait() {
         if (prevPollTime == 0) {
-            return System.currentTimeMillis() ;  // should never happen.
+            return System.currentTimeMillis();  // should never happen.
         } else {
-            return waitTimeForResponse ;
+            return waitTimeForResponse;
         }
     }
 
@@ -361,6 +377,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
      * This ensures accidental manipulation does not occur when a request is in progress.
      * In case of an error, <CODE>SnmpVarBindList</CODE> is the copy
      * of the original <CODE>SnmpVarBindList</CODE> at the time of making the inform request.
+     *
      * @return The list of <CODE>SnmpVarBind</CODE> objects returned by the manager or the null value if the request
      * is in progress.
      */
@@ -384,7 +401,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
      */
     final public boolean waitForCompletion(long time) {
 
-        if (! inProgress())     // check if request is in progress.
+        if (!inProgress())     // check if request is in progress.
             return true;
 
         if (informSession.thisSessionContext()) {
@@ -398,17 +415,17 @@ public class SnmpInformRequest implements SnmpDefinitions {
             // This is being done from a different thread. So notifyClient will do the notification.
             //
             synchronized (this) {
-                SnmpInformHandler savedCallback = callback ;
+                SnmpInformHandler savedCallback = callback;
                 try {
-                    callback = null ;
-                    this.wait(time) ;
+                    callback = null;
+                    this.wait(time);
                 } catch (InterruptedException e) {
                 }
-                callback = savedCallback ;
+                callback = savedCallback;
             }
         }
 
-        return (! inProgress()); // true if request completed.
+        return (!inProgress()); // true if request completed.
     }
 
     /**
@@ -446,87 +463,88 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
     /**
      * Returns the <CODE>String</CODE> representation of an error code.
+     *
      * @param errcode The error code as an integer.
      * @return The error code as a <CODE>String</CODE>.
      */
     public static String snmpErrorToString(int errcode) {
         switch (errcode) {
-        case snmpRspNoError :
-            return "noError" ;
-        case snmpRspTooBig :
-            return "tooBig" ;
-        case snmpRspNoSuchName :
-            return "noSuchName" ;
-        case snmpRspBadValue :
-            return "badValue" ;
-        case snmpRspReadOnly :
-            return "readOnly" ;
-        case snmpRspGenErr :
-            return "genErr" ;
-        case snmpRspNoAccess :
-            return "noAccess" ;
-        case snmpRspWrongType :
-            return "wrongType" ;
-        case snmpRspWrongLength :
-            return "wrongLength" ;
-        case snmpRspWrongEncoding :
-            return "wrongEncoding" ;
-        case snmpRspWrongValue :
-            return "wrongValue" ;
-        case snmpRspNoCreation :
-            return "noCreation" ;
-        case snmpRspInconsistentValue :
-            return "inconsistentValue" ;
-        case snmpRspResourceUnavailable :
-            return "resourceUnavailable" ;
-        case snmpRspCommitFailed :
-            return "commitFailed" ;
-        case snmpRspUndoFailed :
-            return "undoFailed" ;
-        case snmpRspAuthorizationError :
-            return "authorizationError" ;
-        case snmpRspNotWritable :
-            return "notWritable" ;
-        case snmpRspInconsistentName :
-            return "inconsistentName" ;
-        case snmpReqTimeout :
-            return "reqTimeout" ;
-        case snmpReqAborted :
-            return "reqAborted" ;
-        case snmpRspDecodingError :
-            return "rspDecodingError" ;
-        case snmpReqEncodingError :
-            return "reqEncodingError" ;
-        case snmpReqPacketOverflow :
-            return "reqPacketOverflow" ;
-        case snmpRspEndOfTable :
-            return "rspEndOfTable" ;
-        case snmpReqRefireAfterVbFix :
-            return "reqRefireAfterVbFix" ;
-        case snmpReqHandleTooBig :
-            return "reqHandleTooBig" ;
-        case snmpReqTooBigImpossible :
-            return "reqTooBigImpossible" ;
-        case snmpReqInternalError :
-            return "reqInternalError" ;
-        case snmpReqSocketIOError :
-            return "reqSocketIOError" ;
-        case snmpReqUnknownError :
-            return "reqUnknownError" ;
-        case snmpWrongSnmpVersion :
-            return "wrongSnmpVersion" ;
-        case snmpUnknownPrincipal:
-            return "snmpUnknownPrincipal";
-        case snmpAuthNotSupported:
-            return "snmpAuthNotSupported";
-        case snmpPrivNotSupported:
-            return "snmpPrivNotSupported";
-        case snmpBadSecurityLevel:
-            return "snmpBadSecurityLevel";
-        case snmpUsmBadEngineId:
-            return "snmpUsmBadEngineId";
-        case snmpUsmInvalidTimeliness:
-            return "snmpUsmInvalidTimeliness";
+            case snmpRspNoError:
+                return "noError";
+            case snmpRspTooBig:
+                return "tooBig";
+            case snmpRspNoSuchName:
+                return "noSuchName";
+            case snmpRspBadValue:
+                return "badValue";
+            case snmpRspReadOnly:
+                return "readOnly";
+            case snmpRspGenErr:
+                return "genErr";
+            case snmpRspNoAccess:
+                return "noAccess";
+            case snmpRspWrongType:
+                return "wrongType";
+            case snmpRspWrongLength:
+                return "wrongLength";
+            case snmpRspWrongEncoding:
+                return "wrongEncoding";
+            case snmpRspWrongValue:
+                return "wrongValue";
+            case snmpRspNoCreation:
+                return "noCreation";
+            case snmpRspInconsistentValue:
+                return "inconsistentValue";
+            case snmpRspResourceUnavailable:
+                return "resourceUnavailable";
+            case snmpRspCommitFailed:
+                return "commitFailed";
+            case snmpRspUndoFailed:
+                return "undoFailed";
+            case snmpRspAuthorizationError:
+                return "authorizationError";
+            case snmpRspNotWritable:
+                return "notWritable";
+            case snmpRspInconsistentName:
+                return "inconsistentName";
+            case snmpReqTimeout:
+                return "reqTimeout";
+            case snmpReqAborted:
+                return "reqAborted";
+            case snmpRspDecodingError:
+                return "rspDecodingError";
+            case snmpReqEncodingError:
+                return "reqEncodingError";
+            case snmpReqPacketOverflow:
+                return "reqPacketOverflow";
+            case snmpRspEndOfTable:
+                return "rspEndOfTable";
+            case snmpReqRefireAfterVbFix:
+                return "reqRefireAfterVbFix";
+            case snmpReqHandleTooBig:
+                return "reqHandleTooBig";
+            case snmpReqTooBigImpossible:
+                return "reqTooBigImpossible";
+            case snmpReqInternalError:
+                return "reqInternalError";
+            case snmpReqSocketIOError:
+                return "reqSocketIOError";
+            case snmpReqUnknownError:
+                return "reqUnknownError";
+            case snmpWrongSnmpVersion:
+                return "wrongSnmpVersion";
+            case snmpUnknownPrincipal:
+                return "snmpUnknownPrincipal";
+            case snmpAuthNotSupported:
+                return "snmpAuthNotSupported";
+            case snmpPrivNotSupported:
+                return "snmpPrivNotSupported";
+            case snmpBadSecurityLevel:
+                return "snmpBadSecurityLevel";
+            case snmpUsmBadEngineId:
+                return "snmpUsmBadEngineId";
+            case snmpUsmInvalidTimeliness:
+                return "snmpUsmInvalidTimeliness";
         }
         return "Unknown Error = " + errcode;
     }
@@ -538,12 +556,13 @@ public class SnmpInformRequest implements SnmpDefinitions {
      * For SNMP Runtime internal use only.
      * Starts an inform request in asynchronous mode. The callback interface
      * is used to notify the user upon request completion.
+     *
      * @param vblst The list of <CODE>SnmpVarBind</CODE> to be used.
-     * @exception SnmpStatusException This inform request is already in progress.
+     * @throws SnmpStatusException This inform request is already in progress.
      */
     synchronized void start(SnmpVarBindList vblst) throws SnmpStatusException {
         if (inProgress())
-            throw  new SnmpStatusException("Inform request already in progress.");
+            throw new SnmpStatusException("Inform request already in progress.");
         setVarBindList(vblst);
         initializeAndFire();
     }
@@ -560,6 +579,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
      * This method submits the inform request for polling and marks the request
      * active. It does nothing if the request is already active.
      * The poll will be scheduled to happen immediately.
+     *
      * @param starttime The start time for polling.
      */
     private synchronized void startRequest(long starttime) {
@@ -595,14 +615,14 @@ public class SnmpInformRequest implements SnmpDefinitions {
                 } else {
                     invokeOnTimeout();
                 }
-                return ;
+                return;
             } catch (OutOfMemoryError omerr) {
                 // Consider it as a try !
                 //
                 numTries++;
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                        "action", "Inform request hit out of memory situation...");
+                            "action", "Inform request hit out of memory situation...");
                 }
                 Thread.currentThread().yield();
             }
@@ -649,7 +669,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpInformRequest.class.getName(),
-                    "constructPduPacket", "Packet built");
+                        "constructPduPacket", "Packet built");
             }
 
         } catch (Exception e) {
@@ -660,7 +680,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
         if (excep != null) {
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                    "constructPduPacket", "Got unexpected exception", excep);
+                        "constructPduPacket", "Got unexpected exception", excep);
             }
             reqpdu = null;
             queueResponse();
@@ -673,12 +693,12 @@ public class SnmpInformRequest implements SnmpDefinitions {
             responsePdu = null;
 
             SnmpPduFactory pduFactory = adaptor.getPduFactory();
-            SnmpMessage msg = (SnmpMessage)pduFactory.encodeSnmpPdu((SnmpPduPacket)requestPdu, adaptor.getBufferSize().intValue());
+            SnmpMessage msg = (SnmpMessage) pduFactory.encodeSnmpPdu((SnmpPduPacket) requestPdu, adaptor.getBufferSize().intValue());
 
             if (msg == null) {
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                        "sendPdu", "pdu factory returned a null value");
+                            "sendPdu", "pdu factory returned a null value");
                 }
                 throw new SnmpStatusException(snmpReqUnknownError);
                 // This exception will caught hereafter and reported as an snmpReqUnknownError
@@ -691,7 +711,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpInformRequest.class.getName(),
-                    "sendPdu", "Dump : \n" + msg.printMessage());
+                        "sendPdu", "Dump : \n" + msg.printMessage());
             }
 
             sendPduPacket(encoding, encodingLength);
@@ -700,7 +720,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                    "sendPdu", "Got unexpected exception", ar);
+                        "sendPdu", "Got unexpected exception", ar);
             }
 
             setErrorStatusAndIndex(snmpReqPacketOverflow, ar.getVarBindCount());
@@ -708,7 +728,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
             reason = ar.getMessage();
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                    "sendPdu", "Packet Overflow while building inform request");
+                        "sendPdu", "Packet Overflow while building inform request");
             }
         } catch (java.io.IOException ioe) {
             setErrorStatusAndIndex(snmpReqSocketIOError, 0);
@@ -716,7 +736,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
         } catch (Exception e) {
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                    "sendPdu", "Got unexpected exception", e);
+                        "sendPdu", "Got unexpected exception", e);
             }
             setErrorStatusAndIndex(snmpReqUnknownError, 0);
             reason = e.getMessage();
@@ -729,15 +749,16 @@ public class SnmpInformRequest implements SnmpDefinitions {
      * to expect a response. It acquires a lock on the socket to prevent a case
      * where a response arrives before this thread could insert the
      * request into the wait queue.
-     * @exception IOException Signals that an I/O exception of some sort has occurred.
+     *
+     * @throws IOException Signals that an I/O exception of some sort has occurred.
      */
     final void sendPduPacket(byte[] buffer, int length) throws java.io.IOException {
 
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpInformRequest.class.getName(),
-                "sendPduPacket", "Send to peer. Peer/Port : " + address.getHostName() +
-                 "/" + port + ". Length = " +  length + "\nDump : \n" +
-                 SnmpMessage.dumpHexBuffer(buffer,0, length));
+                    "sendPduPacket", "Send to peer. Peer/Port : " + address.getHostName() +
+                            "/" + port + ". Length = " + length + "\nDump : \n" +
+                            SnmpMessage.dumpHexBuffer(buffer, 0, length));
         }
         SnmpSocket theSocket = informSession.getSocket();
         synchronized (theSocket) {
@@ -753,7 +774,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpInformRequest.class.getName(),
-                "processResponse", "errstatus = " + errorStatus);
+                    "processResponse", "errstatus = " + errorStatus);
         }
 
         if (inProgress() == false) {  // check if this request is still alive.
@@ -772,31 +793,31 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
             // At this point the errorIndex is rationalized to start with 0.
             switch (errorStatus) {
-            case snmpRspNoError :
-                handleSuccess();
-                return;
-            case snmpReqTimeout :
-                handleTimeout();
-                return;
-            case snmpReqInternalError :
-                handleInternalError("Unknown internal error.  deal with it later!");
-                return;
-            case snmpReqHandleTooBig :
-                setErrorStatusAndIndex(snmpRspTooBig, 0);
-                handleError("Cannot handle too-big situation...");
-                return;
-            case snmpReqRefireAfterVbFix :
-                // Refire request after fixing varbindlist.
-                initializeAndFire();
-                return;
-            default :
-                handleError("Error status set in packet...!!");
-                return;
+                case snmpRspNoError:
+                    handleSuccess();
+                    return;
+                case snmpReqTimeout:
+                    handleTimeout();
+                    return;
+                case snmpReqInternalError:
+                    handleInternalError("Unknown internal error.  deal with it later!");
+                    return;
+                case snmpReqHandleTooBig:
+                    setErrorStatusAndIndex(snmpRspTooBig, 0);
+                    handleError("Cannot handle too-big situation...");
+                    return;
+                case snmpReqRefireAfterVbFix:
+                    // Refire request after fixing varbindlist.
+                    initializeAndFire();
+                    return;
+                default:
+                    handleError("Error status set in packet...!!");
+                    return;
             }
         } catch (Exception e) {
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                    "processResponse", "Got unexpected exception", e);
+                        "processResponse", "Got unexpected exception", e);
             }
             reason = e.getMessage();
         }
@@ -816,7 +837,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
         errorIndex = rpdu.getErrorIndex();
 
         if (errorStatus == snmpRspNoError) {
-            updateInternalVarBindWithResult(((SnmpPdu)rpdu).varBindList);
+            updateInternalVarBindWithResult(((SnmpPdu) rpdu).varBindList);
             return;
         }
 
@@ -825,8 +846,8 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpInformRequest.class.getName(),
-                "parsePduPacket", "received inform response. ErrorStatus/ErrorIndex = "
-                + errorStatus + "/" + errorIndex);
+                    "parsePduPacket", "received inform response. ErrorStatus/ErrorIndex = "
+                            + errorStatus + "/" + errorIndex);
         }
     }
 
@@ -839,7 +860,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpInformRequest.class.getName(),
-                "handleSuccess", "Invoking user defined callback...");
+                    "handleSuccess", "Invoking user defined callback...");
         }
 
         deleteRequest();  // delete only non-poll request.
@@ -855,12 +876,12 @@ public class SnmpInformRequest implements SnmpDefinitions {
         } catch (Exception e) {
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                    "handleSuccess", "Exception generated by user callback", e);
+                        "handleSuccess", "Exception generated by user callback", e);
             }
         } catch (OutOfMemoryError ome) {
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                    "handleSuccess", "OutOfMemory Error generated by user callback", ome);
+                        "handleSuccess", "OutOfMemory Error generated by user callback", ome);
             }
             Thread.currentThread().yield();
         }
@@ -876,8 +897,8 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                "handleTimeout", "Snmp error/index = " + snmpErrorToString(errorStatus)
-                 + "/" + errorIndex + ". Invoking timeout user defined callback...");
+                    "handleTimeout", "Snmp error/index = " + snmpErrorToString(errorStatus)
+                            + "/" + errorIndex + ". Invoking timeout user defined callback...");
         }
         deleteRequest();
         notifyClient();
@@ -892,12 +913,12 @@ public class SnmpInformRequest implements SnmpDefinitions {
         } catch (Exception e) {  // catch any exception a user might not handle.
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                    "handleTimeout", "Exception generated by user callback", e);
+                        "handleTimeout", "Exception generated by user callback", e);
             }
         } catch (OutOfMemoryError ome) {
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                    "handleTimeout", "OutOfMemory Error generated by user callback", ome);
+                        "handleTimeout", "OutOfMemory Error generated by user callback", ome);
             }
             Thread.currentThread().yield();
         }
@@ -913,8 +934,8 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                "handleError", "Snmp error/index = " + snmpErrorToString(errorStatus) + "/" +
-                  errorIndex + ". Invoking error user defined callback...\n" + getVarBindList());
+                    "handleError", "Snmp error/index = " + snmpErrorToString(errorStatus) + "/" +
+                            errorIndex + ". Invoking error user defined callback...\n" + getVarBindList());
         }
         deleteRequest();
         notifyClient();
@@ -929,12 +950,12 @@ public class SnmpInformRequest implements SnmpDefinitions {
         } catch (Exception e) {  // catch any exception a user might not handle.
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                    "handleError", "Exception generated by user callback", e);
+                        "handleError", "Exception generated by user callback", e);
             }
         } catch (OutOfMemoryError ome) {
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                    "handleError", "OutOfMemory Error generated by user callback", ome);
+                        "handleError", "OutOfMemory Error generated by user callback", ome);
             }
             Thread.currentThread().yield();
         }
@@ -951,9 +972,9 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                "handleInternalError", "Snmp error/index = " + snmpErrorToString(errorStatus) +
-                 "/" + errorIndex + ". Invoking internal error user defined callback...\n" +
-                 getVarBindList());
+                    "handleInternalError", "Snmp error/index = " + snmpErrorToString(errorStatus) +
+                            "/" + errorIndex + ". Invoking internal error user defined callback...\n" +
+                            getVarBindList());
         }
 
         deleteRequest();
@@ -969,12 +990,12 @@ public class SnmpInformRequest implements SnmpDefinitions {
         } catch (Exception e) {  // catch any exception a user might not handle.
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                    "handleInternalError", "Exception generated by user callback", e);
+                        "handleInternalError", "Exception generated by user callback", e);
             }
         } catch (OutOfMemoryError ome) {
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpInformRequest.class.getName(),
-                    "handleInternalError", "OutOfMemory Error generated by user callback", ome);
+                        "handleInternalError", "OutOfMemory Error generated by user callback", ome);
             }
             Thread.currentThread().yield();
         }
@@ -987,7 +1008,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
         int idx = 0;
 
-        for(int i = 0; i < internalVarBind.length && idx < list.length; i++) {
+        for (int i = 0; i < internalVarBind.length && idx < list.length; i++) {
             SnmpVarBind avar = internalVarBind[i];
             if (avar == null)
                 continue;
@@ -1022,11 +1043,11 @@ public class SnmpInformRequest implements SnmpDefinitions {
         // Note: the method removeRequest from SendQ is synchronized.
         // fix bug jaw.00392.B
         //
-        synchronized(this) {
+        synchronized (this) {
             setRequestStatus(stAborted);
         }
         informSession.getSnmpQManager().removeRequest(this);
-        synchronized(this) {
+        synchronized (this) {
             requestId = 0;
         }
     }
@@ -1039,6 +1060,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
      * For SNMP Runtime internal use only.
      * Gets the active <CODE>SnmpVarBindList</CODE>. The contents of it
      * are not guaranteed to be consistent when the inform request is active.
+     *
      * @return The list of <CODE>SnmpVarBind</CODE> objects.
      */
     final synchronized SnmpVarBindList getVarBindList() {
@@ -1076,15 +1098,15 @@ public class SnmpInformRequest implements SnmpDefinitions {
     /**
      * For SNMP Runtime internal use only.
      */
-    final  void setRequestSentTime(long sendtime) {
+    final void setRequestSentTime(long sendtime) {
         numTries++;
         setPrevPollTime(sendtime);
-        waitTimeForResponse = prevPollTime + timeout*numTries;
+        waitTimeForResponse = prevPollTime + timeout * numTries;
         setRequestStatus(stWaitingForReply);
 
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpInformRequest.class.getName(),
-                "setRequestSentTime", "Inform request Successfully sent");
+                    "setRequestSentTime", "Inform request Successfully sent");
         }
 
         informSession.getSnmpQManager().addWaiting(this);
@@ -1102,44 +1124,46 @@ public class SnmpInformRequest implements SnmpDefinitions {
      */
     long timeRemainingForAction(long currtime) {
         switch (reqState) {
-        case stWaitingToSend :
-            return nextPollTime - currtime;
-        case stWaitingForReply :
-            return waitTimeForResponse - currtime;
-        default :
-            return -1;
+            case stWaitingToSend:
+                return nextPollTime - currtime;
+            case stWaitingForReply:
+                return waitTimeForResponse - currtime;
+            default:
+                return -1;
         }
     }
 
     /**
      * Returns the string state corresponding to the specified integer state.
+     *
      * @param state The integer state.
      * @return The string state.
      */
     final static String statusDescription(int state) {
         switch (state) {
-        case stWaitingToSend :
-            return "Waiting to send.";
-        case stWaitingForReply :
-            return "Waiting for reply.";
-        case stReceivedReply :
-            return "Response arrived.";
-        case stAborted  :
-            return "Aborted by user.";
-        case stTimeout :
-            return "Timeout Occured.";
-        case stInternalError :
-            return "Internal error.";
-        case stResultsAvailable :
-            return "Results available";
-        case stNeverUsed :
-            return "Inform request in createAndWait state";
+            case stWaitingToSend:
+                return "Waiting to send.";
+            case stWaitingForReply:
+                return "Waiting for reply.";
+            case stReceivedReply:
+                return "Response arrived.";
+            case stAborted:
+                return "Aborted by user.";
+            case stTimeout:
+                return "Timeout Occured.";
+            case stInternalError:
+                return "Internal error.";
+            case stResultsAvailable:
+                return "Results available";
+            case stNeverUsed:
+                return "Inform request in createAndWait state";
         }
         return "Unknown inform request state.";
     }
 
     /**
      * Sets the request status to the specified value.
+     *
      * @param reqst The new status request.
      */
     final synchronized void setRequestStatus(int reqst) {
@@ -1148,21 +1172,22 @@ public class SnmpInformRequest implements SnmpDefinitions {
 
     /**
      * Gives a status report of the request.
+     *
      * @return The status report of the request.
      */
     public synchronized String toString() {
-        StringBuffer s = new StringBuffer(300) ;
-        s.append(tostring()) ;
-        s.append("\nPeer/Port : " + address.getHostName() + "/" + port) ;
+        StringBuffer s = new StringBuffer(300);
+        s.append(tostring());
+        s.append("\nPeer/Port : " + address.getHostName() + "/" + port);
 
-        return s.toString() ;
+        return s.toString();
     }
 
     private synchronized String tostring() {
         StringBuffer s = new StringBuffer("InformRequestId = " + requestId);
         s.append("   " + "Status = " + statusDescription(reqState));
-        s.append("  Timeout/MaxTries/NumTries = " + timeout*numTries + "/" +
-                 + getMaxTries() + "/" + numTries);
+        s.append("  Timeout/MaxTries/NumTries = " + timeout * numTries + "/" +
+                +getMaxTries() + "/" + numTries);
 
         if (prevPollTime > 0) {
             debugDate.setTime(prevPollTime);
@@ -1170,7 +1195,7 @@ public class SnmpInformRequest implements SnmpDefinitions {
         } else
             s.append("\nNeverPolled");
         s.append(" / RemainingTime(millis) = " +
-                 timeRemainingForAction(System.currentTimeMillis()));
+                timeRemainingForAction(System.currentTimeMillis()));
 
         return s.toString();
     }

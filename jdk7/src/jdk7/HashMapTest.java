@@ -2,6 +2,7 @@ package jdk7;
 
 import org.junit.Test;
 
+import java.io.Externalizable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +16,7 @@ public class HashMapTest {
     @Test
     public void hashMapTestOne(){
         Map<Person,String> map = new HashMap<Person, String>();
-        Person person = new Person(1,"person",0);
+        Person person = new Person(1, "person", 0);
         Person theOtherPerson = new Person(1,"theOtherPerson",1);
 //        System.out.println(person==theOtherPerson);
         map.put(person,"123");
@@ -30,13 +31,11 @@ public class HashMapTest {
     }
 
     @Test
-    public  void hashMapTestTwo(){
-
-        Map<TheOtherPerson,String> map = new HashMap<>();
+    public void hashMapTestTwo(){
+        Map<TheOtherPerson,String> map = new HashMap<TheOtherPerson,String>(1);
         TheOtherPerson person = new TheOtherPerson(1,"person",0);
         TheOtherPerson theOtherPerson = new TheOtherPerson(1,"theOtherPerson",1);
         map.put(person,"123");
-
         // 重写 equals 方法仅仅判断 对象的 id 是否相等,如果 id 相等,则对象相等
         if(person.equals(theOtherPerson)){
             System.out.println(map.get(theOtherPerson));

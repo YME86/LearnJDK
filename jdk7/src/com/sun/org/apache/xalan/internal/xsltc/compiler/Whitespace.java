@@ -48,19 +48,19 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
  */
 final class Whitespace extends TopLevelElement {
     // Three possible actions for the translet:
-    public static final int USE_PREDICATE  = 0;
-    public static final int STRIP_SPACE    = 1;
+    public static final int USE_PREDICATE = 0;
+    public static final int STRIP_SPACE = 1;
     public static final int PRESERVE_SPACE = 2;
 
     // The 3 different categories of strip/preserve rules (order important)
-    public static final int RULE_NONE      = 0;
-    public static final int RULE_ELEMENT   = 1; // priority 0
+    public static final int RULE_NONE = 0;
+    public static final int RULE_ELEMENT = 1; // priority 0
     public static final int RULE_NAMESPACE = 2; // priority -1/4
-    public static final int RULE_ALL       = 3; // priority -1/2
+    public static final int RULE_ALL = 3; // priority -1/2
 
     private String _elementList;
-    private int    _action;
-    private int    _importPrecedence;
+    private int _action;
+    private int _importPrecedence;
 
     /**
      * Auxillary class for encapsulating a single strip/preserve rule
@@ -69,8 +69,8 @@ final class Whitespace extends TopLevelElement {
         private final int _action;
         private String _namespace; // Should be replaced by NS type (int)
         private String _element;   // Should be replaced by node type (int)
-        private int    _type;
-        private int    _priority;
+        private int _type;
+        private int _priority;
 
         /**
          * Strip/preserve rule constructor
@@ -82,10 +82,9 @@ final class Whitespace extends TopLevelElement {
             // Get the namespace and element name for this rule
             final int colon = element.lastIndexOf(':');
             if (colon >= 0) {
-                _namespace = element.substring(0,colon);
-                _element = element.substring(colon+1,element.length());
-            }
-            else {
+                _namespace = element.substring(0, colon);
+                _element = element.substring(colon + 1, element.length());
+            } else {
                 _namespace = Constants.EMPTYSTRING;
                 _element = element;
             }
@@ -98,13 +97,11 @@ final class Whitespace extends TopLevelElement {
                 if (_namespace == Constants.EMPTYSTRING) {
                     _type = RULE_ALL;       // Strip/preserve _all_ elements
                     _priority += 2;         // Lowest priority
-                }
-                else {
+                } else {
                     _type = RULE_NAMESPACE; // Strip/reserve elements within NS
                     _priority += 1;         // Medium priority
                 }
-            }
-            else {
+            } else {
                 _type = RULE_ELEMENT;       // Strip/preserve single element
             }
         }
@@ -114,15 +111,29 @@ final class Whitespace extends TopLevelElement {
          */
         public int compareTo(WhitespaceRule other) {
             return _priority < other._priority
-                ? -1
-                : _priority > other._priority ? 1 : 0;
+                    ? -1
+                    : _priority > other._priority ? 1 : 0;
         }
 
-        public int getAction() { return _action; }
-        public int getStrength() { return _type; }
-        public int getPriority() { return _priority; }
-        public String getElement() { return _element; }
-        public String getNamespace() { return _namespace; }
+        public int getAction() {
+            return _action;
+        }
+
+        public int getStrength() {
+            return _type;
+        }
+
+        public int getPriority() {
+            return _priority;
+        }
+
+        public String getElement() {
+            return _element;
+        }
+
+        public String getNamespace() {
+            return _namespace;
+        }
     }
 
     /**
@@ -132,7 +143,7 @@ final class Whitespace extends TopLevelElement {
     public void parseContents(Parser parser) {
         // Determine if this is an xsl:strip- or preserve-space element
         _action = _qname.getLocalPart().endsWith("strip-space")
-            ? STRIP_SPACE : PRESERVE_SPACE;
+                ? STRIP_SPACE : PRESERVE_SPACE;
 
         // Determine the import precedence
         _importPrecedence = parser.getCurrentImportPrecedence();
@@ -155,7 +166,7 @@ final class Whitespace extends TopLevelElement {
             int col = token.indexOf(':');
 
             if (col != -1) {
-                namespace = lookupNamespace(token.substring(0,col));
+                namespace = lookupNamespace(token.substring(0, col));
                 if (namespace != null) {
                     elements.append(namespace).append(':').append(token.substring(col + 1));
                 } else {
@@ -182,8 +193,8 @@ final class Whitespace extends TopLevelElement {
         final StringTokenizer list = new StringTokenizer(_elementList);
         while (list.hasMoreElements()) {
             rules.add(new WhitespaceRule(_action,
-                                         list.nextToken(),
-                                         _importPrecedence));
+                    list.nextToken(),
+                    _importPrecedence));
         }
         return rules;
     }
@@ -197,7 +208,7 @@ final class Whitespace extends TopLevelElement {
                                                         WhitespaceRule rule) {
         for (int i = 0; i < rules.size(); i++) {
             // Get the next rule in the prioritized list
-            WhitespaceRule currentRule = (WhitespaceRule)rules.elementAt(i);
+            WhitespaceRule currentRule = (WhitespaceRule) rules.elementAt(i);
             // We only consider rules with higher priority
             if (currentRule == rule) {
                 return null;
@@ -209,19 +220,19 @@ final class Whitespace extends TopLevelElement {
              * if they have different action then this rule will never win.
              */
             switch (currentRule.getStrength()) {
-            case RULE_ALL:
-                return currentRule;
-
-            case RULE_ELEMENT:
-                if (!rule.getElement().equals(currentRule.getElement())) {
-                    break;
-                }
-                // intentional fall-through
-            case RULE_NAMESPACE:
-                if (rule.getNamespace().equals(currentRule.getNamespace())) {
+                case RULE_ALL:
                     return currentRule;
-                }
-                break;
+
+                case RULE_ELEMENT:
+                    if (!rule.getElement().equals(currentRule.getElement())) {
+                        break;
+                    }
+                    // intentional fall-through
+                case RULE_NAMESPACE:
+                    if (rule.getNamespace().equals(currentRule.getNamespace())) {
+                        return currentRule;
+                    }
+                    break;
             }
         }
         return null;
@@ -237,14 +248,14 @@ final class Whitespace extends TopLevelElement {
         int defaultAction = PRESERVE_SPACE;
 
         // Sort all rules with regard to priority
-        quicksort(rules, 0, rules.size()-1);
+        quicksort(rules, 0, rules.size() - 1);
 
         // Check if there are any "xsl:strip-space" elements at all.
         // If there are no xsl:strip elements we can ignore all xsl:preserve
         // elements and signal that all whitespaces should be preserved
         boolean strip = false;
         for (int i = 0; i < rules.size(); i++) {
-            currentRule = (WhitespaceRule)rules.elementAt(i);
+            currentRule = (WhitespaceRule) rules.elementAt(i);
             if (currentRule.getAction() == STRIP_SPACE) {
                 strip = true;
             }
@@ -257,13 +268,12 @@ final class Whitespace extends TopLevelElement {
 
         // Remove all rules that are contradicted by rules with higher priority
         for (int idx = 0; idx < rules.size(); ) {
-            currentRule = (WhitespaceRule)rules.elementAt(idx);
+            currentRule = (WhitespaceRule) rules.elementAt(idx);
 
             // Remove this single rule if it has no purpose
-            if (findContradictingRule(rules,currentRule) != null) {
+            if (findContradictingRule(rules, currentRule) != null) {
                 rules.remove(idx);
-            }
-            else {
+            } else {
                 // Remove all following rules if this one overrides all
                 if (currentRule.getStrength() == RULE_ALL) {
                     defaultAction = currentRule.getAction();
@@ -284,11 +294,10 @@ final class Whitespace extends TopLevelElement {
         // Now work backwards and strip away all rules that have the same
         // action as the default rule (no reason the check them at the end).
         do {
-            currentRule = (WhitespaceRule)rules.lastElement();
+            currentRule = (WhitespaceRule) rules.lastElement();
             if (currentRule.getAction() == defaultAction) {
                 rules.removeElementAt(rules.size() - 1);
-            }
-            else {
+            } else {
                 break;
             }
         } while (rules.size() > 0);
@@ -341,15 +350,15 @@ final class Whitespace extends TopLevelElement {
 
         // private boolean Translet.stripSpace(int type) - cannot be static
         final MethodGenerator stripSpace =
-            new MethodGenerator(ACC_PUBLIC | ACC_FINAL ,
+                new MethodGenerator(ACC_PUBLIC | ACC_FINAL,
                         com.sun.org.apache.bcel.internal.generic.Type.BOOLEAN,
-                        new com.sun.org.apache.bcel.internal.generic.Type[] {
-                            Util.getJCRefType(DOM_INTF_SIG),
-                            com.sun.org.apache.bcel.internal.generic.Type.INT,
-                            com.sun.org.apache.bcel.internal.generic.Type.INT
+                        new com.sun.org.apache.bcel.internal.generic.Type[]{
+                                Util.getJCRefType(DOM_INTF_SIG),
+                                com.sun.org.apache.bcel.internal.generic.Type.INT,
+                                com.sun.org.apache.bcel.internal.generic.Type.INT
                         },
-                        new String[] { "dom","node","type" },
-                        "stripSpace",classGen.getClassName(),il,cpg);
+                        new String[]{"dom", "node", "type"},
+                        "stripSpace", classGen.getClassName(), il, cpg);
 
         classGen.addInterface("com/sun/org/apache/xalan/internal/xsltc/StripFilter");
 
@@ -363,32 +372,31 @@ final class Whitespace extends TopLevelElement {
         int pCount = 0;
 
         // Traverse all strip/preserve rules
-        for (int i = 0; i<rules.size(); i++) {
+        for (int i = 0; i < rules.size(); i++) {
             // Get the next rule in the prioritised list
-            WhitespaceRule rule = (WhitespaceRule)rules.elementAt(i);
+            WhitespaceRule rule = (WhitespaceRule) rules.elementAt(i);
 
             // Returns the namespace for a node in the DOM
             final int gns = cpg.addInterfaceMethodref(DOM_INTF,
-                                                      "getNamespaceName",
-                                                      "(I)Ljava/lang/String;");
+                    "getNamespaceName",
+                    "(I)Ljava/lang/String;");
 
             final int strcmp = cpg.addMethodref("java/lang/String",
-                                                "compareTo",
-                                                "(Ljava/lang/String;)I");
+                    "compareTo",
+                    "(Ljava/lang/String;)I");
 
             // Handle elements="ns:*" type rule
             if (rule.getStrength() == RULE_NAMESPACE) {
                 il.append(new ALOAD(paramDom));
                 il.append(new ILOAD(paramCurrent));
-                il.append(new INVOKEINTERFACE(gns,2));
+                il.append(new INVOKEINTERFACE(gns, 2));
                 il.append(new PUSH(cpg, rule.getNamespace()));
                 il.append(new INVOKEVIRTUAL(strcmp));
                 il.append(ICONST_0);
 
                 if (rule.getAction() == STRIP_SPACE) {
                     strip[sCount++] = il.append(new IF_ICMPEQ(null));
-                }
-                else {
+                } else {
                     preserve[pCount++] = il.append(new IF_ICMPEQ(null));
                 }
             }
@@ -397,9 +405,9 @@ final class Whitespace extends TopLevelElement {
                 // Create the QName for the element
                 final Parser parser = classGen.getParser();
                 QName qname;
-                if (rule.getNamespace() != Constants.EMPTYSTRING )
+                if (rule.getNamespace() != Constants.EMPTYSTRING)
                     qname = parser.getQName(rule.getNamespace(), null,
-                                            rule.getElement());
+                            rule.getElement());
                 else
                     qname = parser.getQName(rule.getElement());
 
@@ -419,8 +427,7 @@ final class Whitespace extends TopLevelElement {
         if (defaultAction == STRIP_SPACE) {
             compileStripSpace(strip, sCount, il);
             compilePreserveSpace(preserve, pCount, il);
-        }
-        else {
+        } else {
             compilePreserveSpace(preserve, pCount, il);
             compileStripSpace(strip, sCount, il);
         }
@@ -439,15 +446,15 @@ final class Whitespace extends TopLevelElement {
 
         // private boolean Translet.stripSpace(int type) - cannot be static
         final MethodGenerator stripSpace =
-            new MethodGenerator(ACC_PUBLIC | ACC_FINAL ,
+                new MethodGenerator(ACC_PUBLIC | ACC_FINAL,
                         com.sun.org.apache.bcel.internal.generic.Type.BOOLEAN,
-                        new com.sun.org.apache.bcel.internal.generic.Type[] {
-                            Util.getJCRefType(DOM_INTF_SIG),
-                            com.sun.org.apache.bcel.internal.generic.Type.INT,
-                            com.sun.org.apache.bcel.internal.generic.Type.INT
+                        new com.sun.org.apache.bcel.internal.generic.Type[]{
+                                Util.getJCRefType(DOM_INTF_SIG),
+                                com.sun.org.apache.bcel.internal.generic.Type.INT,
+                                com.sun.org.apache.bcel.internal.generic.Type.INT
                         },
-                        new String[] { "dom","node","type" },
-                        "stripSpace",classGen.getClassName(),il,cpg);
+                        new String[]{"dom", "node", "type"},
+                        "stripSpace", classGen.getClassName(), il, cpg);
 
         classGen.addInterface("com/sun/org/apache/xalan/internal/xsltc/StripFilter");
 
@@ -465,9 +472,9 @@ final class Whitespace extends TopLevelElement {
      * Takes a vector of WhitespaceRule objects and generates a predicate
      * method. This method returns the translets default action for handling
      * whitespace text-nodes:
-     *    - USE_PREDICATE  (run the method generated by this method)
-     *    - STRIP_SPACE    (always strip whitespace text-nodes)
-     *    - PRESERVE_SPACE (always preserve whitespace text-nodes)
+     * - USE_PREDICATE  (run the method generated by this method)
+     * - STRIP_SPACE    (always strip whitespace text-nodes)
+     * - PRESERVE_SPACE (always preserve whitespace text-nodes)
      */
     public static int translateRules(Vector rules,
                                      ClassGenerator classGen) {
@@ -475,7 +482,7 @@ final class Whitespace extends TopLevelElement {
         final int defaultAction = prioritizeRules(rules);
         // The rules vector may be empty after prioritising
         if (rules.size() == 0) {
-            compileDefault(defaultAction,classGen);
+            compileDefault(defaultAction, classGen);
             return defaultAction;
         }
         // Now - create a predicate method and sequence through rules...
@@ -499,19 +506,18 @@ final class Whitespace extends TopLevelElement {
      * Used with quicksort method above
      */
     private static int partition(Vector rules, int p, int r) {
-        final WhitespaceRule x = (WhitespaceRule)rules.elementAt((p+r) >>> 1);
+        final WhitespaceRule x = (WhitespaceRule) rules.elementAt((p + r) >>> 1);
         int i = p - 1, j = r + 1;
         while (true) {
-            while (x.compareTo((WhitespaceRule)rules.elementAt(--j)) < 0) {
+            while (x.compareTo((WhitespaceRule) rules.elementAt(--j)) < 0) {
             }
-            while (x.compareTo((WhitespaceRule)rules.elementAt(++i)) > 0) {
+            while (x.compareTo((WhitespaceRule) rules.elementAt(++i)) > 0) {
             }
             if (i < j) {
-                final WhitespaceRule tmp = (WhitespaceRule)rules.elementAt(i);
+                final WhitespaceRule tmp = (WhitespaceRule) rules.elementAt(i);
                 rules.setElementAt(rules.elementAt(j), i);
                 rules.setElementAt(tmp, j);
-            }
-            else {
+            } else {
                 return j;
             }
         }

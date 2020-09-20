@@ -61,8 +61,7 @@ final class StringCall extends FunctionCall {
         if (argumentCount() == 0) {
             il.append(methodGen.loadContextNode());
             targ = Type.Node;
-        }
-        else {
+        } else {
             final Expression arg = argument();
             arg.translate(classGen, methodGen);
             arg.startIterator(classGen, methodGen);

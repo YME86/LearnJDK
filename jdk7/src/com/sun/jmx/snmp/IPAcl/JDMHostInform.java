@@ -28,7 +28,7 @@
 package com.sun.jmx.snmp.IPAcl;
 
 class JDMHostInform extends SimpleNode {
-    protected String name= "";
+    protected String name = "";
 
     JDMHostInform(int id) {
         super(id);

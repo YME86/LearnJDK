@@ -52,7 +52,8 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.Constants;
  * @author Santiago Pericas-Geertsen
  */
 public final class BooleanType extends Type {
-    protected BooleanType() {}
+    protected BooleanType() {
+    }
 
     public String toString() {
         return "boolean";
@@ -79,22 +80,19 @@ public final class BooleanType extends Type {
      * translation to int is undefined since booleans are always converted to
      * reals in arithmetic expressions.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             Type type) {
         if (type == Type.String) {
             translateTo(classGen, methodGen, (StringType) type);
-        }
-        else if (type == Type.Real) {
+        } else if (type == Type.Real) {
             translateTo(classGen, methodGen, (RealType) type);
-        }
-        else if (type == Type.Reference) {
+        } else if (type == Type.Reference) {
             translateTo(classGen, methodGen, (ReferenceType) type);
-        }
-        else {
+        } else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                        toString(), type.toString());
+                    toString(), type.toString());
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }
@@ -104,7 +102,7 @@ public final class BooleanType extends Type {
      * stack is zero, then the string 'false' is pushed. Otherwise, the string
      * 'true' is pushed.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             StringType type) {
@@ -121,7 +119,7 @@ public final class BooleanType extends Type {
      * Expects a boolean on the stack and pushes a real. The value "true" is
      * converted to 1.0 and the value "false" to 0.0.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             RealType type) {
@@ -133,7 +131,7 @@ public final class BooleanType extends Type {
      * Boxed booleans are represented by an instance of
      * <code>java.lang.Boolean</code>.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             ReferenceType type) {
@@ -143,8 +141,8 @@ public final class BooleanType extends Type {
         il.append(DUP_X1);
         il.append(SWAP);
         il.append(new INVOKESPECIAL(cpg.addMethodref(BOOLEAN_CLASS,
-                                                     "<init>",
-                                                     "(Z)V")));
+                "<init>",
+                "(Z)V")));
     }
 
     /**
@@ -158,10 +156,9 @@ public final class BooleanType extends Type {
         // Is Boolean <: clazz? I.e. clazz in { Boolean, Object }
         else if (clazz.isAssignableFrom(java.lang.Boolean.class)) {
             translateTo(classGen, methodGen, Type.Reference);
-        }
-        else {
+        } else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                        toString(), clazz.getName());
+                    toString(), clazz.getName());
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }
@@ -191,8 +188,8 @@ public final class BooleanType extends Type {
         final InstructionList il = methodGen.getInstructionList();
         il.append(new CHECKCAST(cpg.addClass(BOOLEAN_CLASS)));
         il.append(new INVOKEVIRTUAL(cpg.addMethodref(BOOLEAN_CLASS,
-                                                     BOOLEAN_VALUE,
-                                                     BOOLEAN_VALUE_SIG)));
+                BOOLEAN_VALUE,
+                BOOLEAN_VALUE_SIG)));
     }
 
     public Instruction LOAD(int slot) {
@@ -205,21 +202,21 @@ public final class BooleanType extends Type {
 
     public BranchInstruction GT(boolean tozero) {
         return tozero ? (BranchInstruction) new IFGT(null) :
-            (BranchInstruction) new IF_ICMPGT(null);
+                (BranchInstruction) new IF_ICMPGT(null);
     }
 
     public BranchInstruction GE(boolean tozero) {
         return tozero ? (BranchInstruction) new IFGE(null) :
-            (BranchInstruction) new IF_ICMPGE(null);
+                (BranchInstruction) new IF_ICMPGE(null);
     }
 
     public BranchInstruction LT(boolean tozero) {
         return tozero ? (BranchInstruction) new IFLT(null) :
-            (BranchInstruction) new IF_ICMPLT(null);
+                (BranchInstruction) new IF_ICMPLT(null);
     }
 
     public BranchInstruction LE(boolean tozero) {
         return tozero ? (BranchInstruction) new IFLE(null) :
-            (BranchInstruction) new IF_ICMPLE(null);
+                (BranchInstruction) new IF_ICMPLE(null);
     }
 }

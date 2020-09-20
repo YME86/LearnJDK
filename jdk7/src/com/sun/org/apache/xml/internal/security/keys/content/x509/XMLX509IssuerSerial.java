@@ -32,15 +32,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- *
  * @author $Author: mullan $
  */
 public class XMLX509IssuerSerial extends SignatureElementProxy
         implements XMLX509DataContent {
 
-    /** {@link java.util.logging} logging facility */
+    /**
+     * {@link java.util.logging} logging facility
+     */
     static java.util.logging.Logger log =
-        java.util.logging.Logger.getLogger(
+            java.util.logging.Logger.getLogger(
                     XMLX509IssuerSerial.class.getName());
 
     /**
@@ -51,7 +52,7 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
      * @throws XMLSecurityException
      */
     public XMLX509IssuerSerial(Element element, String baseURI)
-           throws XMLSecurityException {
+            throws XMLSecurityException {
         super(element, baseURI);
     }
 
@@ -93,7 +94,7 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
     public XMLX509IssuerSerial(Document doc, String x509IssuerName,
                                int x509SerialNumber) {
         this(doc, x509IssuerName,
-             new BigInteger(Integer.toString(x509SerialNumber)));
+                new BigInteger(Integer.toString(x509SerialNumber)));
     }
 
     /**
@@ -105,8 +106,8 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
     public XMLX509IssuerSerial(Document doc, X509Certificate x509certificate) {
 
         this(doc,
-             RFC2253Parser.normalize(x509certificate.getIssuerDN().getName()),
-             x509certificate.getSerialNumber());
+                RFC2253Parser.normalize(x509certificate.getIssuerDN().getName()),
+                x509certificate.getSerialNumber());
     }
 
     /**
@@ -117,7 +118,7 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
     public BigInteger getSerialNumber() {
 
         String text = this.getTextFromChildElement
-            (Constants._TAG_X509SERIALNUMBER, Constants.SignatureSpecNS);
+                (Constants._TAG_X509SERIALNUMBER, Constants.SignatureSpecNS);
         if (log.isLoggable(java.util.logging.Level.FINE))
             log.log(java.util.logging.Level.FINE, "X509SerialNumber text: " + text);
 
@@ -138,15 +139,17 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
      *
      * @return the issuer name
      */
-    public String getIssuerName()  {
+    public String getIssuerName() {
 
         return RFC2253Parser
-           .normalize(this
-              .getTextFromChildElement(Constants._TAG_X509ISSUERNAME,
-                                       Constants.SignatureSpecNS));
+                .normalize(this
+                        .getTextFromChildElement(Constants._TAG_X509ISSUERNAME,
+                                Constants.SignatureSpecNS));
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     */
     public boolean equals(Object obj) {
 
         if (obj == null) {
@@ -159,10 +162,12 @@ public class XMLX509IssuerSerial extends SignatureElementProxy
         XMLX509IssuerSerial other = (XMLX509IssuerSerial) obj;
 
         return this.getSerialNumber().equals(other.getSerialNumber())
-               && this.getIssuerName().equals(other.getIssuerName());
+                && this.getIssuerName().equals(other.getIssuerName());
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     */
     public String getBaseLocalName() {
         return Constants._TAG_X509ISSUERSERIAL;
     }

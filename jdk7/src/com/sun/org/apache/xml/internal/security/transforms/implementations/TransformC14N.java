@@ -37,39 +37,41 @@ import com.sun.org.apache.xml.internal.security.transforms.Transforms;
  */
 public class TransformC14N extends TransformSpi {
 
-   /** Field implementedTransformURI */
-   public static final String implementedTransformURI =
-      Transforms.TRANSFORM_C14N_OMIT_COMMENTS;
+    /**
+     * Field implementedTransformURI
+     */
+    public static final String implementedTransformURI =
+            Transforms.TRANSFORM_C14N_OMIT_COMMENTS;
 
 
-   /**
-    * @inheritDoc
-    */
-   protected String engineGetURI() {
-      return TransformC14N.implementedTransformURI;
-   }
+    /**
+     * @inheritDoc
+     */
+    protected String engineGetURI() {
+        return TransformC14N.implementedTransformURI;
+    }
 
-   /**
-    *  @inheritDoc
-    */
-   protected XMLSignatureInput enginePerformTransform
-        (XMLSignatureInput input, Transform _transformObject)
-           throws CanonicalizationException {
-            return enginePerformTransform(input, null, _transformObject);
-   }
+    /**
+     * @inheritDoc
+     */
+    protected XMLSignatureInput enginePerformTransform
+    (XMLSignatureInput input, Transform _transformObject)
+            throws CanonicalizationException {
+        return enginePerformTransform(input, null, _transformObject);
+    }
 
-    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input,OutputStream os, Transform _transformObject)
-    throws CanonicalizationException {
-         Canonicalizer20010315OmitComments c14n = new Canonicalizer20010315OmitComments();
-         if (os!=null) {
-                c14n.setWriter(os);
-         }
-         byte[] result = null;
-         result=c14n.engineCanonicalize(input);
-         XMLSignatureInput output=new XMLSignatureInput(result);
-         if (os!=null) {
+    protected XMLSignatureInput enginePerformTransform(XMLSignatureInput input, OutputStream os, Transform _transformObject)
+            throws CanonicalizationException {
+        Canonicalizer20010315OmitComments c14n = new Canonicalizer20010315OmitComments();
+        if (os != null) {
+            c14n.setWriter(os);
+        }
+        byte[] result = null;
+        result = c14n.engineCanonicalize(input);
+        XMLSignatureInput output = new XMLSignatureInput(result);
+        if (os != null) {
             output.setOutputStream(os);
-         }
-         return output;
-   }
+        }
+        return output;
+    }
 }

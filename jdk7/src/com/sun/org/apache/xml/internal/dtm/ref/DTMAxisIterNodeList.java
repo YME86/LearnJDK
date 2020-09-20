@@ -36,7 +36,7 @@ import org.w3c.dom.Node;
  * generally considered by the DOM WG to have be a mistake... but I'm
  * told that some of the XPath/XSLT folks say they must have this
  * solution.
- *
+ * <p>
  * Please note that this is not necessarily equivlaent to a DOM
  * NodeList operating over the same document. In particular:
  * <ul>
@@ -56,12 +56,13 @@ import org.w3c.dom.Node;
  * </ul>
  *
  * <p>State: In progress!!</p>
- * */
+ */
 public class DTMAxisIterNodeList extends DTMNodeListBase {
     private DTM m_dtm;
     private DTMAxisIterator m_iter;
     private IntVector m_cachedNodes;
     private int m_last = -1;
+
     //================================================================
     // Methods unique to this class
     private DTMAxisIterNodeList() {
@@ -84,7 +85,6 @@ public class DTMAxisIterNodeList extends DTMNodeListBase {
     /**
      * Access the wrapped DTMIterator. I'm not sure whether anyone will
      * need this or not, but let's write it and think about it.
-     *
      */
     public DTMAxisIterator getDTMAxisIterator() {
         return m_iter;
@@ -98,10 +98,11 @@ public class DTMAxisIterNodeList extends DTMNodeListBase {
      * Returns the <code>index</code>th item in the collection. If
      * <code>index</code> is greater than or equal to the number of nodes in
      * the list, this returns <code>null</code>.
+     *
      * @param index Index into the collection.
      * @return The node at the <code>index</code>th position in the
-     *   <code>NodeList</code>, or <code>null</code> if that is not a valid
-     *   index.
+     * <code>NodeList</code>, or <code>null</code> if that is not a valid
+     * index.
      */
     public Node item(int index) {
         if (m_iter != null) {

@@ -34,7 +34,7 @@ import org.w3c.dom.Node;
  * generally considered by the DOM WG to have be a mistake... but I'm
  * told that some of the XPath/XSLT folks say they must have this
  * solution.
- *
+ * <p>
  * Please note that this is not necessarily equivlaent to a DOM
  * NodeList operating over the same document. In particular:
  * <ul>
@@ -54,7 +54,7 @@ import org.w3c.dom.Node;
  * </ul>
  *
  * <p>State: In progress!!</p>
- * */
+ */
 public class DTMNodeList extends DTMNodeListBase {
     private DTMIterator m_iter;
 
@@ -66,17 +66,16 @@ public class DTMNodeList extends DTMNodeListBase {
     /**
      * Public constructor: Wrap a DTMNodeList around an existing
      * and preconfigured DTMIterator
-     *
+     * <p>
      * WARNING: THIS HAS THE SIDE EFFECT OF ISSUING setShouldCacheNodes(true)
      * AGAINST THE DTMIterator.
-     *
      */
     public DTMNodeList(DTMIterator dtmIterator) {
         if (dtmIterator != null) {
             int pos = dtmIterator.getCurrentPos();
             try {
-                m_iter=(DTMIterator)dtmIterator.cloneWithReset();
-            } catch(CloneNotSupportedException cnse) {
+                m_iter = (DTMIterator) dtmIterator.cloneWithReset();
+            } catch (CloneNotSupportedException cnse) {
                 m_iter = dtmIterator;
             }
             m_iter.setShouldCacheNodes(true);
@@ -88,7 +87,6 @@ public class DTMNodeList extends DTMNodeListBase {
     /**
      * Access the wrapped DTMIterator. I'm not sure whether anyone will
      * need this or not, but let's write it and think about it.
-     *
      */
     public DTMIterator getDTMIterator() {
         return m_iter;
@@ -101,15 +99,15 @@ public class DTMNodeList extends DTMNodeListBase {
      * Returns the <code>index</code>th item in the collection. If
      * <code>index</code> is greater than or equal to the number of nodes in
      * the list, this returns <code>null</code>.
+     *
      * @param index Index into the collection.
      * @return The node at the <code>index</code>th position in the
-     *   <code>NodeList</code>, or <code>null</code> if that is not a valid
-     *   index.
+     * <code>NodeList</code>, or <code>null</code> if that is not a valid
+     * index.
      */
-    public Node item(int index)
-    {
+    public Node item(int index) {
         if (m_iter != null) {
-            int handle=m_iter.item(index);
+            int handle = m_iter.item(index);
             if (handle == DTM.NULL) {
                 return null;
             }

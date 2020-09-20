@@ -25,9 +25,11 @@ package com.sun.org.apache.xml.internal.resolver.readers;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+
 import com.sun.org.apache.xml.internal.resolver.CatalogException;
 
 import java.io.InputStream;
+
 import com.sun.org.apache.xml.internal.resolver.Catalog;
 
 /**
@@ -38,11 +40,9 @@ import com.sun.org.apache.xml.internal.resolver.Catalog;
  * include the TextCatalogReader, the SAXCatalogReader, and the
  * DOMCatalogReader.</p>
  *
- * @see Catalog
- *
  * @author Norman Walsh
  * <a href="mailto:Norman.Walsh@Sun.COM">Norman.Walsh@Sun.COM</a>
- *
+ * @see Catalog
  */
 public interface CatalogReader {
     /**
@@ -52,16 +52,16 @@ public interface CatalogReader {
      *
      * @param catalog The catalog for which this reader is called.
      * @param fileUrl The URL of a document to be read.
-     * @throws MalformedURLException if the specified URL cannot be
-     * turned into a URL object.
-     * @throws IOException if the URL cannot be read.
+     * @throws MalformedURLException         if the specified URL cannot be
+     *                                       turned into a URL object.
+     * @throws IOException                   if the URL cannot be read.
      * @throws UnknownCatalogFormatException if the catalog format is
-     * not recognized.
-     * @throws UnparseableCatalogException if the catalog cannot be parsed.
-     * (For example, if it is supposed to be XML and isn't well-formed.)
+     *                                       not recognized.
+     * @throws UnparseableCatalogException   if the catalog cannot be parsed.
+     *                                       (For example, if it is supposed to be XML and isn't well-formed.)
      */
     public void readCatalog(Catalog catalog, String fileUrl)
-      throws MalformedURLException, IOException, CatalogException;
+            throws MalformedURLException, IOException, CatalogException;
 
     /**
      * Read a catalog from an input stream.
@@ -69,13 +69,13 @@ public interface CatalogReader {
      * <p>This class reads a catalog from an input stream.</p>
      *
      * @param catalog The catalog for which this reader is called.
-     * @param is The input stream that is to be read.
-     * @throws IOException if the URL cannot be read.
+     * @param is      The input stream that is to be read.
+     * @throws IOException                   if the URL cannot be read.
      * @throws UnknownCatalogFormatException if the catalog format is
-     * not recognized.
-     * @throws UnparseableCatalogException if the catalog cannot be parsed.
-     * (For example, if it is supposed to be XML and isn't well-formed.)
+     *                                       not recognized.
+     * @throws UnparseableCatalogException   if the catalog cannot be parsed.
+     *                                       (For example, if it is supposed to be XML and isn't well-formed.)
      */
     public void readCatalog(Catalog catalog, InputStream is)
-        throws IOException, CatalogException;
+            throws IOException, CatalogException;
 }

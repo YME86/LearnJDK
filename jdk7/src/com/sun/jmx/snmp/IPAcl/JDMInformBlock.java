@@ -50,11 +50,13 @@ class JDMInformBlock extends SimpleNode {
      * Do no need to go through this part of the tree for
      * building AclEntry.
      */
-    public void buildAclEntries(PrincipalImpl owner, AclImpl acl) {}
+    public void buildAclEntries(PrincipalImpl owner, AclImpl acl) {
+    }
 
     /**
      * Do no need to go through this part of the tree for
      * building TrapEntry.
      */
-    public void buildTrapEntries(Hashtable dest) {}
+    public void buildTrapEntries(Hashtable dest) {
+    }
 }

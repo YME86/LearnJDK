@@ -48,17 +48,14 @@ import org.w3c.dom.Node;
  * dser.serialize(doc);
  * </pre>
  *
- * @see Serializer
- *
  * @xsl.usage general
- *
+ * @see Serializer
  */
-public interface DOMSerializer
-{
+public interface DOMSerializer {
     /**
      * Serializes the DOM node. Throws an exception only if an I/O
      * exception occured while serializing.
-     *
+     * <p>
      * This interface is a public API.
      *
      * @param node the DOM node to serialize

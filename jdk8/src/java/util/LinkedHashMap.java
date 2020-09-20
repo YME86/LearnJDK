@@ -162,8 +162,7 @@ import java.io.IOException;
  */
 public class LinkedHashMap<K,V>
     extends HashMap<K,V>
-    implements Map<K,V>
-{
+    implements Map<K,V> {
 
     /*
      * Implementation note.  A previous version of this class was

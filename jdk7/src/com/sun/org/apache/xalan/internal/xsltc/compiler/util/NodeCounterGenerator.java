@@ -32,6 +32,7 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.Stylesheet;
  * patterns in <tt>xsl:number</tt>. These classes inherit from
  * {Any,Single,Multiple}NodeCounter and override the
  * <tt>matchFrom</tt> and <tt>matchCount</tt> methods.
+ *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  */
@@ -45,7 +46,7 @@ public final class NodeCounterGenerator extends ClassGenerator {
                                 String[] interfaces,
                                 Stylesheet stylesheet) {
         super(className, superClassName, fileName,
-              accessFlags, interfaces, stylesheet);
+                accessFlags, interfaces, stylesheet);
     }
 
     /**

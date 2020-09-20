@@ -55,7 +55,7 @@ final class When extends Instruction {
     }
 
     public boolean ignore() {
-        return(_ignore);
+        return (_ignore);
     }
 
     public void parseContents(Parser parser) {

@@ -21,7 +21,6 @@
 package com.sun.org.apache.xml.internal.security.encryption;
 
 
-
 /**
  * The <code>EncryptedKey</code> element is used to transport encryption keys
  * from the originator to a known recipient(s). It may be used as a stand-alone
@@ -36,15 +35,15 @@ package com.sun.org.apache.xml.internal.security.encryption;
  * <xmp>
  * <element name='EncryptedKey' type='xenc:EncryptedKeyType'/>
  * <complexType name='EncryptedKeyType'>
- *     <complexContent>
- *         <extension base='xenc:EncryptedType'>
- *             <sequence>
- *                 <element ref='xenc:ReferenceList' minOccurs='0'/>
- *                 <element name='CarriedKeyName' type='string' minOccurs='0'/>
- *             </sequence>
- *             <attribute name='Recipient' type='string' use='optional'/>
- *         </extension>
- *     </complexContent>
+ * <complexContent>
+ * <extension base='xenc:EncryptedType'>
+ * <sequence>
+ * <element ref='xenc:ReferenceList' minOccurs='0'/>
+ * <element name='CarriedKeyName' type='string' minOccurs='0'/>
+ * </sequence>
+ * <attribute name='Recipient' type='string' use='optional'/>
+ * </extension>
+ * </complexContent>
  * </complexType>
  * </xmp>
  *
@@ -74,7 +73,7 @@ public interface EncryptedKey extends EncryptedType {
      * respectively.
      *
      * @return an <code>Iterator</code> over all the <code>ReferenceList</code>s
-     *   contained in this <code>EncryptedKey</code>.
+     * contained in this <code>EncryptedKey</code>.
      */
     ReferenceList getReferenceList();
 
@@ -99,7 +98,7 @@ public interface EncryptedKey extends EncryptedType {
      * the value of the <code>CarriedKeyName</code> element.
      *
      * @return over all the carried names contained in
-     *   this <code>EncryptedKey</code>.
+     * this <code>EncryptedKey</code>.
      */
     String getCarriedName();
 

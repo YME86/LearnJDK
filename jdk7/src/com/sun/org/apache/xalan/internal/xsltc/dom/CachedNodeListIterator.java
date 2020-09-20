@@ -79,19 +79,16 @@ public final class CachedNodeListIterator extends DTMAxisIteratorBase {
     public int getNode(int index) {
         if (index < _numCachedNodes) {
             return _nodes.at(index);
-        }
-        else if (!_isEnded){
+        } else if (!_isEnded) {
             int node = _source.next();
             if (node != END) {
                 _nodes.add(node);
                 _numCachedNodes++;
-            }
-            else {
+            } else {
                 _isEnded = true;
             }
             return node;
-        }
-        else
+        } else
             return END;
     }
 

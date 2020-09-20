@@ -53,7 +53,7 @@ final class UnionPathExpr extends Expression {
 
     public UnionPathExpr(Expression pathExpr, Expression rest) {
         _pathExpr = pathExpr;
-        _rest     = rest;
+        _rest = rest;
     }
 
     public void setParser(Parser parser) {
@@ -62,12 +62,12 @@ final class UnionPathExpr extends Expression {
         final Vector components = new Vector();
         flatten(components);
         final int size = components.size();
-        _components = (Expression[])components.toArray(new Expression[size]);
+        _components = (Expression[]) components.toArray(new Expression[size]);
         for (int i = 0; i < size; i++) {
             _components[i].setParser(parser);
             _components[i].setParent(this);
             if (_components[i] instanceof Step) {
-                final Step step = (Step)_components[i];
+                final Step step = (Step) _components[i];
                 final int axis = step.getAxis();
                 final int type = step.getNodeType();
                 // Put attribute iterators first
@@ -76,7 +76,7 @@ final class UnionPathExpr extends Expression {
                     _components[0] = step;
                 }
                 // Check if the union contains a reverse iterator
-        if (Axis.isReverse(axis)) _reverse = true;
+                if (Axis.isReverse(axis)) _reverse = true;
             }
         }
         // No need to reverse anything if another expression lies on top of this
@@ -101,9 +101,8 @@ final class UnionPathExpr extends Expression {
         components.addElement(_pathExpr);
         if (_rest != null) {
             if (_rest instanceof UnionPathExpr) {
-                ((UnionPathExpr)_rest).flatten(components);
-            }
-            else {
+                ((UnionPathExpr) _rest).flatten(components);
+            } else {
                 components.addElement(_rest);
             }
         }
@@ -114,11 +113,11 @@ final class UnionPathExpr extends Expression {
         final InstructionList il = methodGen.getInstructionList();
 
         final int init = cpg.addMethodref(UNION_ITERATOR_CLASS,
-                                          "<init>",
-                                          "("+DOM_INTF_SIG+")V");
+                "<init>",
+                "(" + DOM_INTF_SIG + ")V");
         final int iter = cpg.addMethodref(UNION_ITERATOR_CLASS,
-                                          ADD_ITERATOR,
-                                          ADD_ITERATOR_SIG);
+                ADD_ITERATOR,
+                ADD_ITERATOR_SIG);
 
         // Create the UnionIterator and leave it on the stack
         il.append(new NEW(cpg.addClass(UNION_ITERATOR_CLASS)));
@@ -136,8 +135,8 @@ final class UnionPathExpr extends Expression {
         // Order the iterator only if strictly needed
         if (_reverse) {
             final int order = cpg.addInterfaceMethodref(DOM_INTF,
-                                                        ORDER_ITERATOR,
-                                                        ORDER_ITERATOR_SIG);
+                    ORDER_ITERATOR,
+                    ORDER_ITERATOR_SIG);
             il.append(methodGen.loadDOM());
             il.append(SWAP);
             il.append(methodGen.loadContextNode());

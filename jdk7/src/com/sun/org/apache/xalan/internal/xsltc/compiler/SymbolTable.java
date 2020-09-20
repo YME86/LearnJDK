@@ -39,7 +39,7 @@ final class SymbolTable {
 
     // These hashtables are used for all stylesheets
     private final Hashtable _stylesheets = new Hashtable();
-    private final Hashtable _primops     = new Hashtable();
+    private final Hashtable _primops = new Hashtable();
 
     // These hashtables are used for some stylesheets
     private Hashtable _variables = null;
@@ -47,13 +47,13 @@ final class SymbolTable {
     private Hashtable _attributeSets = null;
     private Hashtable _aliases = null;
     private Hashtable _excludedURI = null;
-    private Stack     _excludedURIStack = null;
+    private Stack _excludedURIStack = null;
     private Hashtable _decimalFormats = null;
     private Hashtable _keys = null;
 
     public DecimalFormatting getDecimalFormatting(QName name) {
         if (_decimalFormats == null) return null;
-        return((DecimalFormatting)_decimalFormats.get(name));
+        return ((DecimalFormatting) _decimalFormats.get(name));
     }
 
     public void addDecimalFormatting(QName name, DecimalFormatting symbols) {
@@ -72,64 +72,64 @@ final class SymbolTable {
     }
 
     public Stylesheet addStylesheet(QName name, Stylesheet node) {
-        return (Stylesheet)_stylesheets.put(name, node);
+        return (Stylesheet) _stylesheets.put(name, node);
     }
 
     public Stylesheet lookupStylesheet(QName name) {
-        return (Stylesheet)_stylesheets.get(name);
+        return (Stylesheet) _stylesheets.get(name);
     }
 
     public Template addTemplate(Template template) {
         final QName name = template.getName();
         if (_templates == null) _templates = new Hashtable();
-        return (Template)_templates.put(name, template);
+        return (Template) _templates.put(name, template);
     }
 
     public Template lookupTemplate(QName name) {
         if (_templates == null) return null;
-        return (Template)_templates.get(name);
+        return (Template) _templates.get(name);
     }
 
     public Variable addVariable(Variable variable) {
         if (_variables == null) _variables = new Hashtable();
         final String name = variable.getName().getStringRep();
-        return (Variable)_variables.put(name, variable);
+        return (Variable) _variables.put(name, variable);
     }
 
     public Param addParam(Param parameter) {
         if (_variables == null) _variables = new Hashtable();
         final String name = parameter.getName().getStringRep();
-        return (Param)_variables.put(name, parameter);
+        return (Param) _variables.put(name, parameter);
     }
 
     public Variable lookupVariable(QName qname) {
         if (_variables == null) return null;
         final String name = qname.getStringRep();
         final Object obj = _variables.get(name);
-        return obj instanceof Variable ? (Variable)obj : null;
+        return obj instanceof Variable ? (Variable) obj : null;
     }
 
     public Param lookupParam(QName qname) {
         if (_variables == null) return null;
         final String name = qname.getStringRep();
         final Object obj = _variables.get(name);
-        return obj instanceof Param ? (Param)obj : null;
+        return obj instanceof Param ? (Param) obj : null;
     }
 
     public SyntaxTreeNode lookupName(QName qname) {
         if (_variables == null) return null;
         final String name = qname.getStringRep();
-        return (SyntaxTreeNode)_variables.get(name);
+        return (SyntaxTreeNode) _variables.get(name);
     }
 
     public AttributeSet addAttributeSet(AttributeSet atts) {
         if (_attributeSets == null) _attributeSets = new Hashtable();
-        return (AttributeSet)_attributeSets.put(atts.getName(), atts);
+        return (AttributeSet) _attributeSets.put(atts.getName(), atts);
     }
 
     public AttributeSet lookupAttributeSet(QName name) {
         if (_attributeSets == null) return null;
-        return (AttributeSet)_attributeSets.get(name);
+        return (AttributeSet) _attributeSets.get(name);
     }
 
     /**
@@ -138,7 +138,7 @@ final class SymbolTable {
      * is prepended.
      */
     public void addPrimop(String name, MethodType mtype) {
-        Vector methods = (Vector)_primops.get(name);
+        Vector methods = (Vector) _primops.get(name);
         if (methods == null) {
             _primops.put(name, methods = new Vector());
         }
@@ -150,7 +150,7 @@ final class SymbolTable {
      * prepending the prefix <tt>PrimopPrefix</tt>.
      */
     public Vector lookupPrimop(String name) {
-        return (Vector)_primops.get(name);
+        return (Vector) _primops.get(name);
     }
 
     /**
@@ -160,7 +160,7 @@ final class SymbolTable {
     private int _nsCounter = 0;
 
     public String generateNamespacePrefix() {
-        return("ns"+(_nsCounter++));
+        return ("ns" + (_nsCounter++));
     }
 
     /**
@@ -173,8 +173,8 @@ final class SymbolTable {
     }
 
     public String lookupNamespace(String prefix) {
-        if (_current == null) return(Constants.EMPTYSTRING);
-        return(_current.lookupNamespace(prefix));
+        if (_current == null) return (Constants.EMPTYSTRING);
+        return (_current.lookupNamespace(prefix));
     }
 
     /**
@@ -182,7 +182,7 @@ final class SymbolTable {
      */
     public void addPrefixAlias(String prefix, String alias) {
         if (_aliases == null) _aliases = new Hashtable();
-        _aliases.put(prefix,alias);
+        _aliases.put(prefix, alias);
     }
 
     /**
@@ -190,7 +190,7 @@ final class SymbolTable {
      */
     public String lookupPrefixAlias(String prefix) {
         if (_aliases == null) return null;
-        return (String)_aliases.get(prefix);
+        return (String) _aliases.get(prefix);
     }
 
     /**
@@ -205,12 +205,12 @@ final class SymbolTable {
         if (_excludedURI == null) _excludedURI = new Hashtable();
 
         // Register the namespace URI
-        Integer refcnt = (Integer)_excludedURI.get(uri);
+        Integer refcnt = (Integer) _excludedURI.get(uri);
         if (refcnt == null)
             refcnt = new Integer(1);
         else
             refcnt = new Integer(refcnt.intValue() + 1);
-        _excludedURI.put(uri,refcnt);
+        _excludedURI.put(uri, refcnt);
     }
 
     /**
@@ -237,7 +237,7 @@ final class SymbolTable {
      */
     public boolean isExcludedNamespace(String uri) {
         if (uri != null && _excludedURI != null) {
-            final Integer refcnt = (Integer)_excludedURI.get(uri);
+            final Integer refcnt = (Integer) _excludedURI.get(uri);
             return (refcnt != null && refcnt.intValue() > 0);
         }
         return false;
@@ -257,12 +257,13 @@ final class SymbolTable {
                     uri = lookupNamespace(Constants.EMPTYSTRING);
                 else
                     uri = lookupNamespace(prefix);
-                Integer refcnt = (Integer)_excludedURI.get(uri);
+                Integer refcnt = (Integer) _excludedURI.get(uri);
                 if (refcnt != null)
                     _excludedURI.put(uri, new Integer(refcnt.intValue() - 1));
             }
         }
     }
+
     /**
      * Exclusion of namespaces by a stylesheet does not extend to any stylesheet
      * imported or included by the stylesheet.  Upon entering the context of a

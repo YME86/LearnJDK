@@ -27,9 +27,9 @@
 package com.sun.jmx.snmp.IPAcl;
 
 
-
 // java import
 //
+
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -42,7 +42,6 @@ import static com.sun.jmx.defaults.JmxProperties.SNMP_LOGGER;
 
 /**
  * The class defines an abstract representation of a host.
- *
  */
 abstract class Host extends SimpleNode implements Serializable {
 
@@ -55,17 +54,17 @@ abstract class Host extends SimpleNode implements Serializable {
     }
 
     protected abstract PrincipalImpl createAssociatedPrincipal()
-        throws UnknownHostException;
+            throws UnknownHostException;
 
     protected abstract String getHname();
 
     public void buildAclEntries(PrincipalImpl owner, AclImpl acl) {
         // Create a principal
         //
-        PrincipalImpl p=null;
+        PrincipalImpl p = null;
         try {
             p = createAssociatedPrincipal();
-        } catch(UnknownHostException e) {
+        } catch (UnknownHostException e) {
             if (SNMP_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_LOGGER.logp(Level.FINEST, Host.class.getName(),
                         "buildAclEntries",
@@ -76,21 +75,21 @@ abstract class Host extends SimpleNode implements Serializable {
 
         // Create an AclEntry
         //
-        AclEntryImpl entry= null;
+        AclEntryImpl entry = null;
         try {
             entry = new AclEntryImpl(p);
             // Add permission
             //
             registerPermission(entry);
             acl.addEntry(owner, entry);
-        } catch(UnknownHostException e) {
+        } catch (UnknownHostException e) {
             if (SNMP_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_LOGGER.logp(Level.FINEST, Host.class.getName(),
                         "buildAclEntries",
                         "Cannot create ACL entry; got exception", e);
             }
             return;
-        } catch(NotOwnerException a) {
+        } catch (NotOwnerException a) {
             if (SNMP_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_LOGGER.logp(Level.FINEST, Host.class.getName(),
                         "buildAclEntries",
@@ -101,19 +100,19 @@ abstract class Host extends SimpleNode implements Serializable {
     }
 
     private void registerPermission(AclEntryImpl entry) {
-        JDMHost host= (JDMHost) jjtGetParent();
-        JDMManagers manager= (JDMManagers) host.jjtGetParent();
-        JDMAclItem acl= (JDMAclItem) manager.jjtGetParent();
-        JDMAccess access= acl.getAccess();
+        JDMHost host = (JDMHost) jjtGetParent();
+        JDMManagers manager = (JDMManagers) host.jjtGetParent();
+        JDMAclItem acl = (JDMAclItem) manager.jjtGetParent();
+        JDMAccess access = acl.getAccess();
         access.putPermission(entry);
-        JDMCommunities comm= acl.getCommunities();
+        JDMCommunities comm = acl.getCommunities();
         comm.buildCommunities(entry);
     }
 
     public void buildTrapEntries(Hashtable<InetAddress, Vector<String>> dest) {
 
-        JDMHostTrap host= (JDMHostTrap) jjtGetParent();
-        JDMTrapInterestedHost hosts= (JDMTrapInterestedHost) host.jjtGetParent();
+        JDMHostTrap host = (JDMHostTrap) jjtGetParent();
+        JDMTrapInterestedHost hosts = (JDMTrapInterestedHost) host.jjtGetParent();
         JDMTrapItem trap = (JDMTrapItem) hosts.jjtGetParent();
         JDMTrapCommunity community = trap.getCommunity();
         String comm = community.getCommunity();
@@ -121,7 +120,7 @@ abstract class Host extends SimpleNode implements Serializable {
         InetAddress add = null;
         try {
             add = java.net.InetAddress.getByName(getHname());
-        } catch(UnknownHostException e) {
+        } catch (UnknownHostException e) {
             if (SNMP_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_LOGGER.logp(Level.FINEST, Host.class.getName(),
                         "buildTrapEntries",
@@ -131,22 +130,22 @@ abstract class Host extends SimpleNode implements Serializable {
         }
 
         Vector<String> list = null;
-        if (dest.containsKey(add)){
+        if (dest.containsKey(add)) {
             list = dest.get(add);
-            if (!list.contains(comm)){
+            if (!list.contains(comm)) {
                 list.addElement(comm);
             }
         } else {
             list = new Vector<String>();
             list.addElement(comm);
-            dest.put(add,list);
+            dest.put(add, list);
         }
     }
 
     public void buildInformEntries(Hashtable<InetAddress, Vector<String>> dest) {
 
-        JDMHostInform host= (JDMHostInform) jjtGetParent();
-        JDMInformInterestedHost hosts= (JDMInformInterestedHost) host.jjtGetParent();
+        JDMHostInform host = (JDMHostInform) jjtGetParent();
+        JDMInformInterestedHost hosts = (JDMInformInterestedHost) host.jjtGetParent();
         JDMInformItem inform = (JDMInformItem) hosts.jjtGetParent();
         JDMInformCommunity community = inform.getCommunity();
         String comm = community.getCommunity();
@@ -154,7 +153,7 @@ abstract class Host extends SimpleNode implements Serializable {
         InetAddress add = null;
         try {
             add = java.net.InetAddress.getByName(getHname());
-        } catch(UnknownHostException e) {
+        } catch (UnknownHostException e) {
             if (SNMP_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_LOGGER.logp(Level.FINEST, Host.class.getName(),
                         "buildTrapEntries",
@@ -164,18 +163,17 @@ abstract class Host extends SimpleNode implements Serializable {
         }
 
         Vector<String> list = null;
-        if (dest.containsKey(add)){
+        if (dest.containsKey(add)) {
             list = dest.get(add);
-            if (!list.contains(comm)){
+            if (!list.contains(comm)) {
                 list.addElement(comm);
             }
         } else {
             list = new Vector<String>();
             list.addElement(comm);
-            dest.put(add,list);
+            dest.put(add, list);
         }
     }
-
 
 
 }

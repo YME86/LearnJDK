@@ -43,9 +43,11 @@ import org.w3c.dom.Element;
 public class XMLX509SKI extends SignatureElementProxy
         implements XMLX509DataContent {
 
-    /** {@link java.util.logging} logging facility */
+    /**
+     * {@link java.util.logging} logging facility
+     */
     static java.util.logging.Logger log =
-        java.util.logging.Logger.getLogger(XMLX509SKI.class.getName());
+            java.util.logging.Logger.getLogger(XMLX509SKI.class.getName());
 
     /**
      * <CODE>SubjectKeyIdentifier (id-ce-subjectKeyIdentifier) (2.5.29.14)</CODE>:
@@ -77,7 +79,7 @@ public class XMLX509SKI extends SignatureElementProxy
      * @throws XMLSecurityException
      */
     public XMLX509SKI(Document doc, X509Certificate x509certificate)
-           throws XMLSecurityException {
+            throws XMLSecurityException {
         super(doc);
         this.addBase64Text(XMLX509SKI.getSKIBytesFromCert(x509certificate));
     }
@@ -90,7 +92,7 @@ public class XMLX509SKI extends SignatureElementProxy
      * @throws XMLSecurityException
      */
     public XMLX509SKI(Element element, String BaseURI)
-           throws XMLSecurityException {
+            throws XMLSecurityException {
         super(element, BaseURI);
     }
 
@@ -109,17 +111,16 @@ public class XMLX509SKI extends SignatureElementProxy
      *
      * @param cert
      * @return ski bytes from the given certificate
-     *
      * @throws XMLSecurityException
      * @see java.security.cert.X509Extension#getExtensionValue(java.lang.String)
      */
     public static byte[] getSKIBytesFromCert(X509Certificate cert)
-        throws XMLSecurityException {
+            throws XMLSecurityException {
 
         if (cert.getVersion() < 3) {
-            Object exArgs[] = { new Integer(cert.getVersion()) };
+            Object exArgs[] = {new Integer(cert.getVersion())};
             throw new XMLSecurityException("certificate.noSki.lowVersion",
-                                           exArgs);
+                    exArgs);
         }
 
         /*
@@ -150,7 +151,9 @@ public class XMLX509SKI extends SignatureElementProxy
         return skidValue;
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     */
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -163,13 +166,15 @@ public class XMLX509SKI extends SignatureElementProxy
 
         try {
             return java.security.MessageDigest.isEqual(other.getSKIBytes(),
-                                        this.getSKIBytes());
+                    this.getSKIBytes());
         } catch (XMLSecurityException ex) {
             return false;
         }
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     */
     public String getBaseLocalName() {
         return Constants._TAG_X509SKI;
     }

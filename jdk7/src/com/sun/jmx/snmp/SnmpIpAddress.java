@@ -27,8 +27,6 @@
 package com.sun.jmx.snmp;
 
 
-
-
 /**
  * Represents an SNMP IpAddress.
  *
@@ -41,10 +39,12 @@ public class SnmpIpAddress extends SnmpOid {
 
     // CONSTRUCTORS
     //-------------
+
     /**
      * Constructs a new <CODE>SnmpIpAddress</CODE> from the specified bytes array.
+     *
      * @param bytes The four bytes composing the address.
-     * @exception IllegalArgumentException The length of the array is not equal to four.
+     * @throws IllegalArgumentException The length of the array is not equal to four.
      */
     public SnmpIpAddress(byte[] bytes) throws IllegalArgumentException {
         buildFromByteArray(bytes);
@@ -52,10 +52,11 @@ public class SnmpIpAddress extends SnmpOid {
 
     /**
      * Constructs a new <CODE>SnmpIpAddress</CODE> from the specified long value.
+     *
      * @param addr The initialization value.
      */
     public SnmpIpAddress(long addr) {
-        int address = (int)addr ;
+        int address = (int) addr;
         byte[] ipaddr = new byte[4];
 
         ipaddr[0] = (byte) ((address >>> 24) & 0xFF);
@@ -69,143 +70,150 @@ public class SnmpIpAddress extends SnmpOid {
     /**
      * Constructs a new <CODE>SnmpIpAddress</CODE> from a dot-formatted <CODE>String</CODE>.
      * The dot-formatted <CODE>String</CODE> is formulated x.x.x.x .
+     *
      * @param dotAddress The initialization value.
-     * @exception IllegalArgumentException The string does not correspond to an ip address.
+     * @throws IllegalArgumentException The string does not correspond to an ip address.
      */
     public SnmpIpAddress(String dotAddress) throws IllegalArgumentException {
-        super(dotAddress) ;
+        super(dotAddress);
         if ((componentCount > 4) ||
-            (components[0] > 255) ||
-            (components[1] > 255) ||
-            (components[2] > 255) ||
-            (components[3] > 255)) {
-            throw new IllegalArgumentException(dotAddress) ;
+                (components[0] > 255) ||
+                (components[1] > 255) ||
+                (components[2] > 255) ||
+                (components[3] > 255)) {
+            throw new IllegalArgumentException(dotAddress);
         }
     }
 
     /**
      * Constructs a new <CODE>SnmpIpAddress</CODE> from four long values.
+     *
      * @param b1 Byte 1.
      * @param b2 Byte 2.
      * @param b3 Byte 3.
      * @param b4 Byte 4.
-     * @exception IllegalArgumentException A value is outside of [0-255].
+     * @throws IllegalArgumentException A value is outside of [0-255].
      */
     public SnmpIpAddress(long b1, long b2, long b3, long b4) {
-        super(b1, b2, b3, b4) ;
+        super(b1, b2, b3, b4);
         if ((components[0] > 255) ||
-            (components[1] > 255) ||
-            (components[2] > 255) ||
-            (components[3] > 255)) {
-            throw new IllegalArgumentException() ;
+                (components[1] > 255) ||
+                (components[2] > 255) ||
+                (components[3] > 255)) {
+            throw new IllegalArgumentException();
         }
     }
 
     // PUBLIC METHODS
     //---------------
+
     /**
      * Converts the address value to its byte array form.
+     *
      * @return The byte array representation of the value.
      */
     public byte[] byteValue() {
-        byte[] result = new byte[4] ;
-        result[0] = (byte)components[0] ;
-        result[1] = (byte)components[1] ;
-        result[2] = (byte)components[2] ;
-        result[3] = (byte)components[3] ;
+        byte[] result = new byte[4];
+        result[0] = (byte) components[0];
+        result[1] = (byte) components[1];
+        result[2] = (byte) components[2];
+        result[3] = (byte) components[3];
 
-        return result ;
+        return result;
     }
 
     /**
      * Converts the address to its <CODE>String</CODE> form.
      * Same as <CODE>toString()</CODE>. Exists only to follow a naming scheme.
+     *
      * @return The <CODE>String</CODE> representation of the value.
      */
     public String stringValue() {
-        return toString() ;
+        return toString();
     }
 
     /**
      * Extracts the ip address from an index OID and returns its
      * value converted as an <CODE>SnmpOid</CODE>.
+     *
      * @param index The index array.
      * @param start The position in the index array.
      * @return The OID representing the ip address value.
-     * @exception SnmpStatusException There is no ip address value
-     * available at the start position.
+     * @throws SnmpStatusException There is no ip address value
+     *                             available at the start position.
      */
     public static SnmpOid toOid(long[] index, int start) throws SnmpStatusException {
         if (start + 4 <= index.length) {
             try {
                 return new SnmpOid(
-                                   index[start],
-                                   index[start+1],
-                                   index[start+2],
-                                   index[start+3]) ;
+                        index[start],
+                        index[start + 1],
+                        index[start + 2],
+                        index[start + 3]);
+            } catch (IllegalArgumentException e) {
+                throw new SnmpStatusException(SnmpStatusException.noSuchName);
             }
-            catch(IllegalArgumentException e) {
-                throw new SnmpStatusException(SnmpStatusException.noSuchName) ;
-            }
-        }
-        else {
-            throw new SnmpStatusException(SnmpStatusException.noSuchName) ;
+        } else {
+            throw new SnmpStatusException(SnmpStatusException.noSuchName);
         }
     }
 
     /**
      * Scans an index OID, skips the address value and returns the position
      * of the next value.
+     *
      * @param index The index array.
      * @param start The position in the index array.
      * @return The position of the next value.
-     * @exception SnmpStatusException There is no address value
-     * available at the start position.
+     * @throws SnmpStatusException There is no address value
+     *                             available at the start position.
      */
     public static int nextOid(long[] index, int start) throws SnmpStatusException {
         if (start + 4 <= index.length) {
-            return start + 4 ;
-        }
-        else {
-            throw new SnmpStatusException(SnmpStatusException.noSuchName) ;
+            return start + 4;
+        } else {
+            throw new SnmpStatusException(SnmpStatusException.noSuchName);
         }
     }
 
     /**
      * Appends an <CODE>SnmpOid</CODE> representing an <CODE>SnmpIpAddress</CODE> to another OID.
+     *
      * @param source An OID representing an <CODE>SnmpIpAddress</CODE> value.
-     * @param dest Where source should be appended.
+     * @param dest   Where source should be appended.
      */
     public static void appendToOid(SnmpOid source, SnmpOid dest) {
         if (source.getLength() != 4) {
-            throw new IllegalArgumentException() ;
+            throw new IllegalArgumentException();
         }
-        dest.append(source) ;
+        dest.append(source);
     }
 
     /**
      * Returns a textual description of the type object.
+     *
      * @return ASN.1 textual description.
      */
     final public String getTypeName() {
-        return name ;
+        return name;
     }
 
     // PRIVATE METHODS
     //----------------
+
     /**
      * Build Ip address from byte array.
      */
     private void buildFromByteArray(byte[] bytes) {
         if (bytes.length != 4) {
-            throw new IllegalArgumentException() ;
+            throw new IllegalArgumentException();
         }
-        components = new long[4] ;
-        componentCount= 4;
-        components[0] = (bytes[0] >= 0) ? bytes[0] : bytes[0] + 256 ;
-        components[1] = (bytes[1] >= 0) ? bytes[1] : bytes[1] + 256 ;
-        components[2] = (bytes[2] >= 0) ? bytes[2] : bytes[2] + 256 ;
-        components[3] = (bytes[3] >= 0) ? bytes[3] : bytes[3] + 256 ;
+        components = new long[4];
+        componentCount = 4;
+        components[0] = (bytes[0] >= 0) ? bytes[0] : bytes[0] + 256;
+        components[1] = (bytes[1] >= 0) ? bytes[1] : bytes[1] + 256;
+        components[2] = (bytes[2] >= 0) ? bytes[2] : bytes[2] + 256;
+        components[3] = (bytes[3] >= 0) ? bytes[3] : bytes[3] + 256;
     }
 
     // VARIABLES
@@ -213,5 +221,5 @@ public class SnmpIpAddress extends SnmpOid {
     /**
      * Name of the type.
      */
-    final static String name = "IpAddress" ;
+    final static String name = "IpAddress";
 }

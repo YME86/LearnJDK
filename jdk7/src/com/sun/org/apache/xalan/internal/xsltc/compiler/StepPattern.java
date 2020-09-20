@@ -72,11 +72,11 @@ class StepPattern extends RelativePathPattern {
     protected final int _nodeType;
     protected Vector _predicates;
 
-    private Step    _step = null;
+    private Step _step = null;
     private boolean _isEpsilon = false;
-    private int     _contextCase;
+    private int _contextCase;
 
-    private double  _priority = Double.MAX_VALUE;
+    private double _priority = Double.MAX_VALUE;
 
     public StepPattern(int axis, int nodeType, Vector predicates) {
         _axis = axis;
@@ -89,7 +89,7 @@ class StepPattern extends RelativePathPattern {
         if (_predicates != null) {
             final int n = _predicates.size();
             for (int i = 0; i < n; i++) {
-                final Predicate exp = (Predicate)_predicates.elementAt(i);
+                final Predicate exp = (Predicate) _predicates.elementAt(i);
                 exp.setParser(parser);
                 exp.setParent(this);
             }
@@ -114,7 +114,7 @@ class StepPattern extends RelativePathPattern {
 
     public StepPattern setPredicates(Vector predicates) {
         _predicates = predicates;
-        return(this);
+        return (this);
     }
 
     protected boolean hasPredicates() {
@@ -128,15 +128,14 @@ class StepPattern extends RelativePathPattern {
 
         if (hasPredicates()) {
             return 0.5;
-        }
-        else {
-            switch(_nodeType) {
-            case -1:
-                return -0.5;    // node()
-            case 0:
-                return 0.0;
-            default:
-                return (_nodeType >= NodeTest.GTYPE) ? 0.0 : -0.5;
+        } else {
+            switch (_nodeType) {
+                case -1:
+                    return -0.5;    // node()
+                case 0:
+                    return 0.0;
+                default:
+                    return (_nodeType >= NodeTest.GTYPE) ? 0.0 : -0.5;
             }
         }
     }
@@ -151,11 +150,11 @@ class StepPattern extends RelativePathPattern {
 
     public String toString() {
         final StringBuffer buffer = new StringBuffer("stepPattern(\"");
-    buffer.append(Axis.getNames(_axis))
-            .append("\", ")
-            .append(_isEpsilon ?
+        buffer.append(Axis.getNames(_axis))
+                .append("\", ")
+                .append(_isEpsilon ?
                         ("epsilon{" + Integer.toString(_nodeType) + "}") :
-                         Integer.toString(_nodeType));
+                        Integer.toString(_nodeType));
         if (_predicates != null)
             buffer.append(", ").append(_predicates.toString());
         return buffer.append(')').toString();
@@ -168,24 +167,22 @@ class StepPattern extends RelativePathPattern {
         for (int i = 0; i < n && noContext; i++) {
             Predicate pred = (Predicate) _predicates.elementAt(i);
             if (pred.isNthPositionFilter() ||
-                pred.hasPositionCall() ||
-                pred.hasLastCall())
-            {
+                    pred.hasPositionCall() ||
+                    pred.hasLastCall()) {
                 noContext = false;
             }
         }
 
         if (noContext) {
             return NO_CONTEXT;
-        }
-        else if (n == 1) {
+        } else if (n == 1) {
             return SIMPLE_CONTEXT;
         }
         return GENERAL_CONTEXT;
     }
 
     private String getNextFieldName() {
-        return  "__step_pattern_iter_" + getXSLTC().nextStepPatternSerial();
+        return "__step_pattern_iter_" + getXSLTC().nextStepPatternSerial();
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
@@ -193,7 +190,7 @@ class StepPattern extends RelativePathPattern {
             // Type check all the predicates (e -> position() = e)
             final int n = _predicates.size();
             for (int i = 0; i < n; i++) {
-                final Predicate pred = (Predicate)_predicates.elementAt(i);
+                final Predicate pred = (Predicate) _predicates.elementAt(i);
                 pred.typeCheck(stable);
             }
 
@@ -204,7 +201,7 @@ class StepPattern extends RelativePathPattern {
 
             // Create an instance of Step to do the translation
             if (_contextCase == SIMPLE_CONTEXT) {
-                Predicate pred = (Predicate)_predicates.elementAt(0);
+                Predicate pred = (Predicate) _predicates.elementAt(0);
                 if (pred.isNthPositionFilter()) {
                     _contextCase = GENERAL_CONTEXT;
                     step = new Step(_axis, _nodeType, _predicates);
@@ -214,7 +211,7 @@ class StepPattern extends RelativePathPattern {
             } else if (_contextCase == GENERAL_CONTEXT) {
                 final int len = _predicates.size();
                 for (int i = 0; i < len; i++) {
-                    ((Predicate)_predicates.elementAt(i)).dontOptimize();
+                    ((Predicate) _predicates.elementAt(i)).dontOptimize();
                 }
 
                 step = new Step(_axis, _nodeType, _predicates);
@@ -236,7 +233,7 @@ class StepPattern extends RelativePathPattern {
 
         if (_nodeType == DTM.ELEMENT_NODE) {
             final int check = cpg.addInterfaceMethodref(DOM_INTF,
-                                                        "isElement", "(I)Z");
+                    "isElement", "(I)Z");
             il.append(methodGen.loadDOM());
             il.append(SWAP);
             il.append(new INVOKEINTERFACE(check, 2));
@@ -245,10 +242,9 @@ class StepPattern extends RelativePathPattern {
             final BranchHandle icmp = il.append(new IFNE(null));
             _falseList.add(il.append(new GOTO_W(null)));
             icmp.setTarget(il.append(NOP));
-        }
-        else if (_nodeType == DTM.ATTRIBUTE_NODE) {
+        } else if (_nodeType == DTM.ATTRIBUTE_NODE) {
             final int check = cpg.addInterfaceMethodref(DOM_INTF,
-                                                        "isAttribute", "(I)Z");
+                    "isAttribute", "(I)Z");
             il.append(methodGen.loadDOM());
             il.append(SWAP);
             il.append(new INVOKEINTERFACE(check, 2));
@@ -257,12 +253,11 @@ class StepPattern extends RelativePathPattern {
             final BranchHandle icmp = il.append(new IFNE(null));
             _falseList.add(il.append(new GOTO_W(null)));
             icmp.setTarget(il.append(NOP));
-        }
-        else {
+        } else {
             // context node is on the stack
             final int getEType = cpg.addInterfaceMethodref(DOM_INTF,
-                                                          "getExpandedTypeID",
-                                                          "(I)I");
+                    "getExpandedTypeID",
+                    "(I)I");
             il.append(methodGen.loadDOM());
             il.append(SWAP);
             il.append(new INVOKEINTERFACE(getEType, 2));
@@ -296,7 +291,7 @@ class StepPattern extends RelativePathPattern {
         // Compile the expressions within the predicates
         final int n = _predicates.size();
         for (int i = 0; i < n; i++) {
-            Predicate pred = (Predicate)_predicates.elementAt(i);
+            Predicate pred = (Predicate) _predicates.elementAt(i);
             Expression exp = pred.getExpr();
             exp.translateDesynthesized(classGen, methodGen);
             _trueList.append(exp._trueList);
@@ -327,8 +322,8 @@ class StepPattern extends RelativePathPattern {
         // Store matching node into a local variable
         LocalVariableGen match;
         match = methodGen.addLocalVariable("step_pattern_tmp1",
-                                           Util.getJCRefType(NODE_SIG),
-                                           null, null);
+                Util.getJCRefType(NODE_SIG),
+                null, null);
         match.setStart(il.append(new ISTORE(match.getIndex())));
 
         // If pattern not reduced then check kernel
@@ -343,7 +338,7 @@ class StepPattern extends RelativePathPattern {
 
         // Create a new matching iterator using the matching node
         index = cpg.addMethodref(MATCHING_ITERATOR, "<init>",
-                                 "(I" + NODE_ITERATOR_SIG + ")V");
+                "(I" + NODE_ITERATOR_SIG + ")V");
 
         // Backwards branches are prohibited if an uninitialized object is
         // on the stack by section 4.9.4 of the JVM Specification, 2nd Ed.
@@ -357,8 +352,8 @@ class StepPattern extends RelativePathPattern {
         _step.translate(classGen, methodGen);
         LocalVariableGen stepIteratorTemp =
                 methodGen.addLocalVariable("step_pattern_tmp2",
-                                           Util.getJCRefType(NODE_ITERATOR_SIG),
-                                           null, null);
+                        Util.getJCRefType(NODE_ITERATOR_SIG),
+                        null, null);
         stepIteratorTemp.setStart(
                 il.append(new ASTORE(stepIteratorTemp.getIndex())));
 
@@ -416,26 +411,26 @@ class StepPattern extends RelativePathPattern {
 
         // Store node on the stack into a local variable
         node = methodGen.addLocalVariable("step_pattern_tmp1",
-                                          Util.getJCRefType(NODE_SIG),
-                                          null, null);
+                Util.getJCRefType(NODE_SIG),
+                null, null);
         node.setStart(il.append(new ISTORE(node.getIndex())));
 
         // Create a new local to store the iterator
         iter = methodGen.addLocalVariable("step_pattern_tmp2",
-                                          Util.getJCRefType(NODE_ITERATOR_SIG),
-                                          null, null);
+                Util.getJCRefType(NODE_ITERATOR_SIG),
+                null, null);
 
         // Add a new private field if this is the main class
         if (!classGen.isExternal()) {
             final Field iterator =
-                new Field(ACC_PRIVATE,
-                          cpg.addUtf8(iteratorName),
-                          cpg.addUtf8(NODE_ITERATOR_SIG),
-                          null, cpg.getConstantPool());
+                    new Field(ACC_PRIVATE,
+                            cpg.addUtf8(iteratorName),
+                            cpg.addUtf8(NODE_ITERATOR_SIG),
+                            null, cpg.getConstantPool());
             classGen.addField(iterator);
             iteratorIndex = cpg.addFieldref(classGen.getClassName(),
-                                            iteratorName,
-                                            NODE_ITERATOR_SIG);
+                    iteratorName,
+                    NODE_ITERATOR_SIG);
 
             il.append(classGen.loadTranslet());
             il.append(new GETFIELD(iteratorIndex));
@@ -464,7 +459,7 @@ class StepPattern extends RelativePathPattern {
         il.append(methodGen.loadDOM());
         il.append(new ILOAD(node.getIndex()));
         int index = cpg.addInterfaceMethodref(DOM_INTF,
-                                              GET_PARENT, GET_PARENT_SIG);
+                GET_PARENT, GET_PARENT_SIG);
         il.append(new INVOKEINTERFACE(index, 2));
 
         // Initialize the iterator with the parent
@@ -483,8 +478,8 @@ class StepPattern extends RelativePathPattern {
         BranchHandle skipNext;
         InstructionHandle begin, next;
         node2 = methodGen.addLocalVariable("step_pattern_tmp3",
-                                           Util.getJCRefType(NODE_SIG),
-                                           null, null);
+                Util.getJCRefType(NODE_SIG),
+                null, null);
 
         skipNext = il.append(new GOTO(null));
         next = il.append(new ALOAD(iter.getIndex()));
@@ -511,23 +506,21 @@ class StepPattern extends RelativePathPattern {
 
         if (hasPredicates()) {
             switch (_contextCase) {
-            case NO_CONTEXT:
-                translateNoContext(classGen, methodGen);
-                break;
+                case NO_CONTEXT:
+                    translateNoContext(classGen, methodGen);
+                    break;
 
-            case SIMPLE_CONTEXT:
-                translateSimpleContext(classGen, methodGen);
-                break;
+                case SIMPLE_CONTEXT:
+                    translateSimpleContext(classGen, methodGen);
+                    break;
 
-            default:
-                translateGeneralContext(classGen, methodGen);
-                break;
+                default:
+                    translateGeneralContext(classGen, methodGen);
+                    break;
             }
-        }
-        else if (isWildcard()) {
+        } else if (isWildcard()) {
             il.append(POP);     // true list falls through
-        }
-        else {
+        } else {
             translateKernel(classGen, methodGen);
         }
     }

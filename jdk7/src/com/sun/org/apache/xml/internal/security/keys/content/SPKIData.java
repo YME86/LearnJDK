@@ -26,26 +26,27 @@ import com.sun.org.apache.xml.internal.security.utils.SignatureElementProxy;
 import org.w3c.dom.Element;
 
 /**
- *
  * @author $Author: mullan $
  * $todo$ implement
  */
 public class SPKIData extends SignatureElementProxy implements KeyInfoContent {
 
-   /**
-    * Constructor SPKIData
-    *
-    * @param element
-    * @param BaseURI
-    * @throws XMLSecurityException
-    */
-   public SPKIData(Element element, String BaseURI)
-           throws XMLSecurityException {
-      super(element, BaseURI);
-   }
+    /**
+     * Constructor SPKIData
+     *
+     * @param element
+     * @param BaseURI
+     * @throws XMLSecurityException
+     */
+    public SPKIData(Element element, String BaseURI)
+            throws XMLSecurityException {
+        super(element, BaseURI);
+    }
 
-   /** @inheritDoc */
-   public String getBaseLocalName() {
-      return Constants._TAG_SPKIDATA;
-   }
+    /**
+     * @inheritDoc
+     */
+    public String getBaseLocalName() {
+        return Constants._TAG_SPKIDATA;
+    }
 }

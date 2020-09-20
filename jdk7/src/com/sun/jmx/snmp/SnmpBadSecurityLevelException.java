@@ -23,10 +23,12 @@
  *
  */
 package com.sun.jmx.snmp;
+
 /**
  * This exception is thrown when an incorrect security level is handled.
  * <p><b>This API is a Sun Microsystems internal API  and is subject
  * to change without notice.</b></p>
+ *
  * @since 1.5
  */
 public class SnmpBadSecurityLevelException extends Exception {

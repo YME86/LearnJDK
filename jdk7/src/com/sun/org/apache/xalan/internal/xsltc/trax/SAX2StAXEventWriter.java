@@ -75,7 +75,7 @@ public class SAX2StAXEventWriter extends SAX2StAXBaseWriter {
     }
 
     public SAX2StAXEventWriter(XMLEventWriter writer,
-            XMLEventFactory factory) {
+                               XMLEventFactory factory) {
 
         this.writer = writer;
         if (factory != null) {
@@ -136,9 +136,9 @@ public class SAX2StAXEventWriter extends SAX2StAXBaseWriter {
             if (docLocator == null)
                 writer.add(eventFactory.createStartDocument());
             else {
-                try{
-                    writer.add(eventFactory.createStartDocument(((Locator2)docLocator).getEncoding(),((Locator2)docLocator).getXMLVersion()));
-                } catch(ClassCastException e){
+                try {
+                    writer.add(eventFactory.createStartDocument(((Locator2) docLocator).getEncoding(), ((Locator2) docLocator).getXMLVersion()));
+                } catch (ClassCastException e) {
                     writer.add(eventFactory.createStartDocument());
                 }
             }

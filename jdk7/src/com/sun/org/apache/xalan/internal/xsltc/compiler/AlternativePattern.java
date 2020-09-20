@@ -76,9 +76,9 @@ final class AlternativePattern extends Pattern {
         double right = _right.getPriority();
 
         if (left < right)
-            return(left);
+            return (left);
         else
-            return(right);
+            return (right);
     }
 
     public String toString() {

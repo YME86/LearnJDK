@@ -121,24 +121,22 @@ final class Param extends VariableBase {
                 // It is an error if the two have the same import precedence
                 if (us == them) {
                     final String name = _name.toString();
-                    reportError(this, parser, ErrorMsg.VARIABLE_REDEF_ERR,name);
+                    reportError(this, parser, ErrorMsg.VARIABLE_REDEF_ERR, name);
                 }
                 // Ignore this if previous definition has higher precedence
                 else if (them > us) {
                     _ignore = true;
                     copyReferences(param);
                     return;
-                }
-                else {
+                } else {
                     param.copyReferences(this);
                     param.disable();
                 }
             }
             // Add this variable if we have higher precedence
-            ((Stylesheet)parent).addParam(this);
+            ((Stylesheet) parent).addParam(this);
             parser.getSymbolTable().addParam(this);
-        }
-        else if (parent instanceof Template) {
+        } else if (parent instanceof Template) {
             Template template = (Template) parent;
             _isLocal = true;
             template.addParameter(this);
@@ -159,8 +157,7 @@ final class Param extends VariableBase {
             if (_type instanceof ReferenceType == false && !(_type instanceof ObjectType)) {
                 _select = new CastExpr(_select, Type.Reference);
             }
-        }
-        else if (hasContents()) {
+        } else if (hasContents()) {
             typeCheckContents(stable);
         }
         _type = Type.Reference;
@@ -188,10 +185,10 @@ final class Param extends VariableBase {
 
         if (isLocal()) {
             /*
-              * If simple named template then generate a conditional init of the
-              * param using its default value:
-              *       if (param == null) param = <default-value>
-              */
+             * If simple named template then generate a conditional init of the
+             * param using its default value:
+             *       if (param == null) param = <default-value>
+             */
             if (_isInSimpleNamedTemplate) {
                 il.append(loadInstruction());
                 BranchHandle ifBlock = il.append(new IFNONNULL(null));
@@ -208,8 +205,8 @@ final class Param extends VariableBase {
 
             // Call addParameter() from this class
             il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
-                                                         ADD_PARAMETER,
-                                                         ADD_PARAMETER_SIG)));
+                    ADD_PARAMETER,
+                    ADD_PARAMETER_SIG)));
             if (className != EMPTYSTRING) {
                 il.append(new CHECKCAST(cpg.addClass(className)));
             }
@@ -219,20 +216,18 @@ final class Param extends VariableBase {
             if (_refs.isEmpty()) { // nobody uses the value
                 il.append(_type.POP());
                 _local = null;
-            }
-            else {              // normal case
+            } else {              // normal case
                 _local = methodGen.addLocalVariable2(name,
-                                                     _type.toJCType(),
-                                                     il.getEnd());
+                        _type.toJCType(),
+                        il.getEnd());
                 // Cache the result of addParameter() in a local variable
                 il.append(_type.STORE(_local.getIndex()));
             }
-        }
-        else {
+        } else {
             if (classGen.containsField(name) == null) {
                 classGen.addField(new Field(ACC_PUBLIC, cpg.addUtf8(name),
-                                            cpg.addUtf8(signature),
-                                            null, cpg.getConstantPool()));
+                        cpg.addUtf8(signature),
+                        null, cpg.getConstantPool()));
                 il.append(classGen.loadTranslet());
                 il.append(DUP);
                 il.append(new PUSH(cpg, name));
@@ -241,8 +236,8 @@ final class Param extends VariableBase {
 
                 // Call addParameter() from this class
                 il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
-                                                     ADD_PARAMETER,
-                                                     ADD_PARAMETER_SIG)));
+                        ADD_PARAMETER,
+                        ADD_PARAMETER_SIG)));
 
                 _type.translateUnBox(classGen, methodGen);
 
@@ -251,7 +246,7 @@ final class Param extends VariableBase {
                     il.append(new CHECKCAST(cpg.addClass(className)));
                 }
                 il.append(new PUTFIELD(cpg.addFieldref(classGen.getClassName(),
-                                                       name, signature)));
+                        name, signature)));
             }
         }
     }

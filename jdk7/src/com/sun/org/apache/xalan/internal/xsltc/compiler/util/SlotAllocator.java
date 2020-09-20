@@ -31,9 +31,9 @@ import com.sun.org.apache.bcel.internal.generic.Type;
  */
 final class SlotAllocator {
 
-    private int   _firstAvailableSlot;
-    private int   _size = 8;
-    private int   _free = 0;
+    private int _firstAvailableSlot;
+    private int _size = 8;
+    private int _free = 0;
     private int[] _slotsTaken = new int[_size];
 
     public void initialize(LocalVariableGen[] vars) {
@@ -41,9 +41,9 @@ final class SlotAllocator {
         int slot = 0, size, index;
 
         for (int i = 0; i < length; i++) {
-            size  = vars[i].getType().getSize();
+            size = vars[i].getType().getSize();
             index = vars[i].getIndex();
-            slot  = Math.max(slot, index + size);
+            slot = Math.max(slot, index + size);
         }
         _firstAvailableSlot = slot;
     }
@@ -66,8 +66,7 @@ final class SlotAllocator {
                 for (int j = limit - 1; j >= where; j--)
                     _slotsTaken[j + size] = _slotsTaken[j];
                 break;
-            }
-            else {
+            } else {
                 slot = _slotsTaken[where++] + 1;
             }
         }
@@ -94,8 +93,8 @@ final class SlotAllocator {
                 return;
             }
         }
-        String state = "Variable slot allocation error"+
-                       "(size="+size+", slot="+slot+", limit="+limit+")";
+        String state = "Variable slot allocation error" +
+                "(size=" + size + ", slot=" + slot + ", limit=" + limit + ")";
         ErrorMsg err = new ErrorMsg(ErrorMsg.INTERNAL_ERR, state);
         throw new Error(err.toString());
     }

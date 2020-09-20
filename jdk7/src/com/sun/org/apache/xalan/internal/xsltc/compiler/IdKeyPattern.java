@@ -41,9 +41,11 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.util.TypeCheckError;
  */
 abstract class IdKeyPattern extends LocationPathPattern {
 
-    protected RelativePathPattern _left = null;;
+    protected RelativePathPattern _left = null;
+    ;
     private String _index = null;
-    private String _value = null;;
+    private String _value = null;
+    ;
 
     public IdKeyPattern(String index, String value) {
         _index = index;
@@ -51,7 +53,7 @@ abstract class IdKeyPattern extends LocationPathPattern {
     }
 
     public String getIndexName() {
-        return(_index);
+        return (_index);
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
@@ -67,10 +69,11 @@ abstract class IdKeyPattern extends LocationPathPattern {
     }
 
     public StepPattern getKernelPattern() {
-        return(null);
+        return (null);
     }
 
-    public void reduceKernelPattern() { }
+    public void reduceKernelPattern() {
+    }
 
     public String toString() {
         return "id/keyPattern(" + _index + ", " + _value + ')';
@@ -88,37 +91,34 @@ abstract class IdKeyPattern extends LocationPathPattern {
 
         // Returns the KeyIndex object of a given name
         final int getKeyIndex = cpg.addMethodref(TRANSLET_CLASS,
-                                                 "getKeyIndex",
-                                                 "(Ljava/lang/String;)"+
-                                                 KEY_INDEX_SIG);
+                "getKeyIndex",
+                "(Ljava/lang/String;)" +
+                        KEY_INDEX_SIG);
 
         // Initialises a KeyIndex to return nodes with specific values
         final int lookupId = cpg.addMethodref(KEY_INDEX_CLASS,
-                                              "containsID",
-                                              "(ILjava/lang/Object;)I");
+                "containsID",
+                "(ILjava/lang/Object;)I");
         final int lookupKey = cpg.addMethodref(KEY_INDEX_CLASS,
-                                               "containsKey",
-                                               "(ILjava/lang/Object;)I");
+                "containsKey",
+                "(ILjava/lang/Object;)I");
         final int getNodeIdent = cpg.addInterfaceMethodref(DOM_INTF,
-                                                           "getNodeIdent",
-                                                           "(I)"+NODE_SIG);
+                "getNodeIdent",
+                "(I)" + NODE_SIG);
 
         // Call getKeyIndex in AbstractTranslet with the name of the key
         // to get the index for this key (which is also a node iterator).
         il.append(classGen.loadTranslet());
-        il.append(new PUSH(cpg,_index));
+        il.append(new PUSH(cpg, _index));
         il.append(new INVOKEVIRTUAL(getKeyIndex));
 
         // Now use the value in the second argument to determine what nodes
         // the iterator should return.
         il.append(SWAP);
-        il.append(new PUSH(cpg,_value));
-        if (this instanceof IdPattern)
-        {
+        il.append(new PUSH(cpg, _value));
+        if (this instanceof IdPattern) {
             il.append(new INVOKEVIRTUAL(lookupId));
-        }
-        else
-        {
+        } else {
             il.append(new INVOKEVIRTUAL(lookupKey));
         }
 

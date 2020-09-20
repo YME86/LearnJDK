@@ -38,6 +38,7 @@ import javax.management.MBeanRegistrationException;
 import javax.management.NotCompliantMBeanException;
 
 import static com.sun.jmx.defaults.JmxProperties.SNMP_ADAPTOR_LOGGER;
+
 import com.sun.jmx.snmp.SnmpOid;
 import com.sun.jmx.snmp.SnmpVarBind;
 import com.sun.jmx.snmp.SnmpDefinitions;
@@ -66,14 +67,14 @@ final class LongList {
      * by a synchronized block on the LongList object.
      * Only read-only action should be performed on this object.
      **/
-    public  long[] list;
+    public long[] list;
 
     LongList() {
-        this(DEFAULT_CAPACITY,DEFAULT_INCREMENT);
+        this(DEFAULT_CAPACITY, DEFAULT_INCREMENT);
     }
 
     LongList(int initialCapacity) {
-        this(initialCapacity,DEFAULT_INCREMENT);
+        this(initialCapacity, DEFAULT_INCREMENT);
     }
 
     LongList(int initialCapacity, int delta) {
@@ -85,7 +86,9 @@ final class LongList {
     /**
      * Same behaviour than size() in {@link java.util.List}.
      **/
-    public final int size() { return size;}
+    public final int size() {
+        return size;
+    }
 
     /**
      * Same behaviour than add(long o) in {@link java.util.List}.
@@ -95,7 +98,7 @@ final class LongList {
     public final boolean add(final long o) {
         if (size >= list.length)
             resize();
-        list[size++]=o;
+        list[size++] = o;
         return true;
     }
 
@@ -106,39 +109,40 @@ final class LongList {
      * block on the LongList object.
      **/
     public final void add(final int index, final long o) {
-        if (index >  size) throw new IndexOutOfBoundsException();
+        if (index > size) throw new IndexOutOfBoundsException();
         if (index >= list.length) resize();
         if (index == size) {
-            list[size++]=o;
+            list[size++] = o;
             return;
         }
 
-        java.lang.System.arraycopy(list,index,list,index+1,size-index);
-        list[index]=o;
+        java.lang.System.arraycopy(list, index, list, index + 1, size - index);
+        list[index] = o;
         size++;
     }
 
     /**
      * Adds <var>count</var> elements to the list.
-     * @param at index at which the elements must be inserted. The
-     *        first element will be inserted at this index.
-     * @param src  An array containing the elements we want to insert.
-     * @param from Index of the first element from <var>src</var> that
-     *        must be inserted.
+     *
+     * @param at    index at which the elements must be inserted. The
+     *              first element will be inserted at this index.
+     * @param src   An array containing the elements we want to insert.
+     * @param from  Index of the first element from <var>src</var> that
+     *              must be inserted.
      * @param count number of elements to insert.
-     * Any access to this method should be protected in a synchronized
-     * block on the LongList object.
+     *              Any access to this method should be protected in a synchronized
+     *              block on the LongList object.
      **/
-    public final void add(final int at,final long[] src, final int from,
+    public final void add(final int at, final long[] src, final int from,
                           final int count) {
         if (count <= 0) return;
         if (at > size) throw new IndexOutOfBoundsException();
-        ensure(size+count);
+        ensure(size + count);
         if (at < size) {
-            java.lang.System.arraycopy(list,at,list,at+count,size-at);
+            java.lang.System.arraycopy(list, at, list, at + count, size - at);
         }
-        java.lang.System.arraycopy(src,from,list,at,count);
-        size+=count;
+        java.lang.System.arraycopy(src, from, list, at, count);
+        size += count;
     }
 
     /**
@@ -147,7 +151,7 @@ final class LongList {
      **/
     public final long remove(final int from, final int count) {
         if (count < 1 || from < 0) return -1;
-        if (from+count > size) return -1;
+        if (from + count > size) return -1;
 
         final long o = list[from];
         final int oldsize = size;
@@ -155,8 +159,8 @@ final class LongList {
 
         if (from == size) return o;
 
-        java.lang.System.arraycopy(list,from+count,list,from,
-                                   size-from);
+        java.lang.System.arraycopy(list, from + count, list, from,
+                size - from);
         return o;
     }
 
@@ -168,11 +172,11 @@ final class LongList {
     public final long remove(final int index) {
         if (index >= size) return -1;
         final long o = list[index];
-        list[index]=0;
+        list[index] = 0;
         if (index == --size) return o;
 
-        java.lang.System.arraycopy(list,index+1,list,index,
-                                   size-index);
+        java.lang.System.arraycopy(list, index + 1, list, index,
+                size - index);
         return o;
     }
 
@@ -183,7 +187,7 @@ final class LongList {
      * block on the LongList object.
      **/
     public final long[] toArray(long[] a) {
-        java.lang.System.arraycopy(list,0,a,0,size);
+        java.lang.System.arraycopy(list, 0, a, 0, size);
         return a;
     }
 
@@ -204,23 +208,24 @@ final class LongList {
      **/
     private final void resize() {
         final long[] newlist = allocate(list.length + DELTA);
-        java.lang.System.arraycopy(list,0,newlist,0,size);
+        java.lang.System.arraycopy(list, 0, newlist, 0, size);
         list = newlist;
     }
 
     /**
      * Resize the list. Insure that the new length will be at
      * least equal to <var>length</var>.
+     *
      * @param length new minimal length requested.
-     * Any call to this method must be protected by a synchronized
-     * block on this LongList.
+     *               Any call to this method must be protected by a synchronized
+     *               block on this LongList.
      **/
     private final void ensure(int length) {
         if (list.length < length) {
-            final int min = list.length+DELTA;
-            length=(length<min)?min:length;
+            final int min = list.length + DELTA;
+            length = (length < min) ? min : length;
             final long[] newlist = allocate(length);
-            java.lang.System.arraycopy(list,0,newlist,0,size);
+            java.lang.System.arraycopy(list, 0, newlist, 0, size);
             list = newlist;
         }
     }
@@ -249,11 +254,12 @@ class AcmChecker {
     byte[] contextName = null;
     SnmpEngineImpl engine = null;
     LongList l = null;
+
     AcmChecker(SnmpMibRequest req) {
         engine = (SnmpEngineImpl) req.getEngine();
         //We are in V3 architecture, ACM is in the picture.
-        if(engine != null) {
-            if(engine.isCheckOidActivated()) {
+        if (engine != null) {
+            if (engine.isCheckOidActivated()) {
                 try {
                     if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                         SNMP_ADAPTOR_LOGGER.logp(Level.FINEST,
@@ -262,8 +268,8 @@ class AcmChecker {
                                 "SNMP V3 Access Control to be done");
                     }
                     model = (SnmpAccessControlModel)
-                        engine.getAccessControlSubSystem().
-                        getModel(SnmpDefinitions.snmpVersionThree);
+                            engine.getAccessControlSubSystem().
+                                    getModel(SnmpDefinitions.snmpVersionThree);
                     principal = req.getPrincipal();
                     securityLevel = req.getSecurityLevel();
                     pduType = req.getPdu().type;
@@ -273,19 +279,19 @@ class AcmChecker {
                     l = new LongList();
                     if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                         final StringBuilder strb = new StringBuilder()
-                        .append("Will check oid for : principal : ")
-                        .append(principal)
-                        .append("; securityLevel : ").append(securityLevel)
-                        .append("; pduType : ").append(pduType)
-                        .append("; version : ").append(version)
-                        .append("; securityModel : ").append(securityModel)
-                        .append("; contextName : ").append(contextName);
+                                .append("Will check oid for : principal : ")
+                                .append(principal)
+                                .append("; securityLevel : ").append(securityLevel)
+                                .append("; pduType : ").append(pduType)
+                                .append("; version : ").append(version)
+                                .append("; securityModel : ").append(securityModel)
+                                .append("; contextName : ").append(contextName);
                         SNMP_ADAPTOR_LOGGER.logp(Level.FINEST,
                                 SnmpMib.class.getName(),
                                 "AcmChecker(SnmpMibRequest)", strb.toString());
                     }
 
-                }catch(SnmpUnknownModelException e) {
+                } catch (SnmpUnknownModelException e) {
                     if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                         SNMP_ADAPTOR_LOGGER.logp(Level.FINEST,
                                 SnmpMib.class.getName(),
@@ -298,40 +304,40 @@ class AcmChecker {
     }
 
     void add(int index, long arc) {
-        if(model != null)
+        if (model != null)
             l.add(index, arc);
     }
 
     void remove(int index) {
-        if(model != null)
+        if (model != null)
             l.remove(index);
     }
 
-    void add(final int at,final long[] src, final int from,
+    void add(final int at, final long[] src, final int from,
              final int count) {
-        if(model != null)
-            l.add(at,src,from,count);
+        if (model != null)
+            l.add(at, src, from, count);
     }
 
     void remove(final int from, final int count) {
-        if(model != null)
-            l.remove(from,count);
+        if (model != null)
+            l.remove(from, count);
     }
 
     void checkCurrentOid() throws SnmpStatusException {
-        if(model != null) {
+        if (model != null) {
             SnmpOid oid = new SnmpOid(l.toArray());
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpMib.class.getName(),
                         "checkCurrentOid", "Checking access for : " + oid);
             }
             model.checkAccess(version,
-                              principal,
-                              securityLevel,
-                              pduType,
-                              securityModel,
-                              contextName,
-                              oid);
+                    principal,
+                    securityLevel,
+                    pduType,
+                    securityModel,
+                    contextName,
+                    oid);
         }
     }
 
@@ -360,7 +366,7 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
      * Initializes the OID tree.
      */
     public SnmpMib() {
-        root= new SnmpMibOid();
+        root = new SnmpMibOid();
     }
 
 
@@ -388,12 +394,11 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
      * <code>defaultOid</code>
      * </p>
      *
-     * @param groupName   The java-ized name of the SNMP group.
-     * @param defaultOid  The OID defined in the MIB for that group
-     *                    (in dot notation).
-     *
+     * @param groupName  The java-ized name of the SNMP group.
+     * @param defaultOid The OID defined in the MIB for that group
+     *                   (in dot notation).
      * @return The OID of the group identified by <code>groupName</code>,
-     *         in dot-notation.
+     * in dot-notation.
      */
     protected String getGroupOid(String groupName, String defaultOid) {
         return defaultOid;
@@ -422,16 +427,15 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
      * built from the given <code>defaultName</code>.
      * </p>
      *
-     * @param name  The java-ized name of the SNMP group.
-     * @param oid   The OID returned by getGroupOid() - in dot notation.
+     * @param name        The java-ized name of the SNMP group.
+     * @param oid         The OID returned by getGroupOid() - in dot notation.
      * @param defaultName The name by default generated by <code>
      *                    mibgen</code>
-     *
      * @return The ObjectName of the group identified by <code>name</code>
      */
     protected ObjectName getGroupObjectName(String name, String oid,
                                             String defaultName)
-        throws MalformedObjectNameException {
+            throws MalformedObjectNameException {
         return new ObjectName(defaultName);
     }
 
@@ -457,31 +461,30 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
      * group MBean with the given MBeanServer <code>server</code>.
      * </p>
      *
-     * @param groupName  The java-ized name of the SNMP group.
-     * @param groupOid   The OID as returned by getGroupOid() - in dot
-     *                   notation.
+     * @param groupName    The java-ized name of the SNMP group.
+     * @param groupOid     The OID as returned by getGroupOid() - in dot
+     *                     notation.
      * @param groupObjName The ObjectName as returned by getGroupObjectName().
-     *                   This parameter may be <code>null</code> if the
-     *                   MIB is not registered in the MBeanServer.
-     * @param node       The metadata node, as returned by the metadata
-     *                   factory method for this group.
-     * @param group      The MBean for this group, as returned by the
-     *                   MBean factory method for this group.
-     * @param server     The MBeanServer in which the groups are to be
-     *                   registered. This parameter will be <code>null</code>
-     *                   if the MIB is not registered, otherwise it is a
-     *                   reference to the MBeanServer in which the MIB is
-     *                   registered.
-     *
+     *                     This parameter may be <code>null</code> if the
+     *                     MIB is not registered in the MBeanServer.
+     * @param node         The metadata node, as returned by the metadata
+     *                     factory method for this group.
+     * @param group        The MBean for this group, as returned by the
+     *                     MBean factory method for this group.
+     * @param server       The MBeanServer in which the groups are to be
+     *                     registered. This parameter will be <code>null</code>
+     *                     if the MIB is not registered, otherwise it is a
+     *                     reference to the MBeanServer in which the MIB is
+     *                     registered.
      */
-    protected void registerGroupNode(String groupName,   String groupOid,
+    protected void registerGroupNode(String groupName, String groupOid,
                                      ObjectName groupObjName, SnmpMibNode node,
                                      Object group, MBeanServer server)
-        throws NotCompliantMBeanException, MBeanRegistrationException,
-        InstanceAlreadyExistsException, IllegalAccessException {
-        root.registerNode(groupOid,node);
+            throws NotCompliantMBeanException, MBeanRegistrationException,
+            InstanceAlreadyExistsException, IllegalAccessException {
+        root.registerNode(groupOid, node);
         if (server != null && groupObjName != null && group != null)
-            server.registerMBean(group,groupObjName);
+            server.registerMBean(group, groupObjName);
     }
 
     /**
@@ -502,10 +505,10 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
      * bean-like table objects using the getRegisterTableMeta() method.
      * </p>
      *
-     * @param name      The java-ized name of the SNMP table.
-     * @param table     The SNMP table metadata node - usually this
-     *                  corresponds to a <code>mibgen</code> generated
-     *                  object.
+     * @param name  The java-ized name of the SNMP table.
+     * @param table The SNMP table metadata node - usually this
+     *              corresponds to a <code>mibgen</code> generated
+     *              object.
      */
     public abstract void registerTableMeta(String name, SnmpMibTable table);
 
@@ -516,7 +519,6 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
      * This method is used internally and you should never need to
      * call it directly.
      * </i></b></p>
-     *
      */
     public abstract SnmpMibTable getRegisteredTableMeta(String name);
 
@@ -526,7 +528,6 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
 
     /**
      * Processes a <CODE>get</CODE> operation.
-     *
      **/
     // Implements the method defined in SnmpMibAgent. See SnmpMibAgent
     // for java-doc
@@ -537,7 +538,7 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
         // is not atomic.
 
         final int reqType = SnmpDefinitions.pduGetRequestPdu;
-        SnmpRequestTree handlers = getHandlers(req,false,false,reqType);
+        SnmpRequestTree handlers = getHandlers(req, false, false, reqType);
 
         SnmpRequestTree.Handler h = null;
         SnmpMibNode meta = null;
@@ -549,7 +550,7 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
 
         // For each sub-request stored in the request-tree, invoke the
         // get() method.
-        for (Enumeration eh=handlers.getHandlers();eh.hasMoreElements();) {
+        for (Enumeration eh = handlers.getHandlers(); eh.hasMoreElements(); ) {
             h = (SnmpRequestTree.Handler) eh.nextElement();
 
             // Gets the Meta node. It can be either a Group Meta or a
@@ -560,18 +561,17 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
             // Gets the depth of the Meta node in the OID tree
             final int depth = handlers.getOidDepth(h);
 
-            for (Enumeration rqs=handlers.getSubRequests(h);
-                 rqs.hasMoreElements();) {
+            for (Enumeration rqs = handlers.getSubRequests(h);
+                 rqs.hasMoreElements(); ) {
 
                 // Invoke the get() operation.
-                meta.get((SnmpMibSubRequest)rqs.nextElement(),depth);
+                meta.get((SnmpMibSubRequest) rqs.nextElement(), depth);
             }
         }
     }
 
     /**
      * Processes a <CODE>set</CODE> operation.
-     *
      */
     // Implements the method defined in SnmpMibAgent. See SnmpMibAgent
     // for java-doc
@@ -585,7 +585,7 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
         // it here.
         //
         if (req instanceof SnmpMibRequestImpl)
-            handlers = ((SnmpMibRequestImpl)req).getRequestTree();
+            handlers = ((SnmpMibRequestImpl) req).getRequestTree();
 
         // Optimization didn't work: we have to rebuild the tree.
         //
@@ -593,7 +593,7 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
         // is atomic.
         //
         final int reqType = SnmpDefinitions.pduSetRequestPdu;
-        if (handlers == null) handlers = getHandlers(req,false,true,reqType);
+        if (handlers == null) handlers = getHandlers(req, false, true, reqType);
         handlers.switchCreationFlag(false);
         handlers.setPduType(reqType);
 
@@ -607,7 +607,7 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
 
         // For each sub-request stored in the request-tree, invoke the
         // get() method.
-        for (Enumeration eh=handlers.getHandlers();eh.hasMoreElements();) {
+        for (Enumeration eh = handlers.getHandlers(); eh.hasMoreElements(); ) {
             h = (SnmpRequestTree.Handler) eh.nextElement();
 
             // Gets the Meta node. It can be either a Group Meta or a
@@ -618,11 +618,11 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
             // Gets the depth of the Meta node in the OID tree
             final int depth = handlers.getOidDepth(h);
 
-            for (Enumeration rqs=handlers.getSubRequests(h);
-                 rqs.hasMoreElements();) {
+            for (Enumeration rqs = handlers.getSubRequests(h);
+                 rqs.hasMoreElements(); ) {
 
                 // Invoke the set() operation
-                meta.set((SnmpMibSubRequest)rqs.nextElement(),depth);
+                meta.set((SnmpMibSubRequest) rqs.nextElement(), depth);
             }
         }
     }
@@ -631,7 +631,6 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
      * Checks if a <CODE>set</CODE> operation can be performed.
      * If the operation cannot be performed, the method will raise a
      * <CODE>SnmpStatusException</CODE>.
-     *
      */
     // Implements the method defined in SnmpMibAgent. See SnmpMibAgent
     // for java-doc
@@ -641,7 +640,7 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
         final int reqType = SnmpDefinitions.pduWalkRequest;
         // Builds the request tree: creation is allowed, operation
         // is atomic.
-        SnmpRequestTree handlers = getHandlers(req,true,true,reqType);
+        SnmpRequestTree handlers = getHandlers(req, true, true, reqType);
 
         SnmpRequestTree.Handler h = null;
         SnmpMibNode meta = null;
@@ -653,7 +652,7 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
 
         // For each sub-request stored in the request-tree, invoke the
         // check() method.
-        for (Enumeration eh=handlers.getHandlers();eh.hasMoreElements();) {
+        for (Enumeration eh = handlers.getHandlers(); eh.hasMoreElements(); ) {
             h = (SnmpRequestTree.Handler) eh.nextElement();
 
             // Gets the Meta node. It can be either a Group Meta or a
@@ -664,11 +663,11 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
             // Gets the depth of the Meta node in the OID tree
             final int depth = handlers.getOidDepth(h);
 
-            for (Enumeration rqs=handlers.getSubRequests(h);
-                 rqs.hasMoreElements();) {
+            for (Enumeration rqs = handlers.getSubRequests(h);
+                 rqs.hasMoreElements(); ) {
 
                 // Invoke the check() operation
-                meta.check((SnmpMibSubRequest)rqs.nextElement(),depth);
+                meta.check((SnmpMibSubRequest) rqs.nextElement(), depth);
             }
         }
 
@@ -676,14 +675,13 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
         // to the "set" method, so that we don't have to rebuild it there.
         //
         if (req instanceof SnmpMibRequestImpl) {
-            ((SnmpMibRequestImpl)req).setRequestTree(handlers);
+            ((SnmpMibRequestImpl) req).setRequestTree(handlers);
         }
 
     }
 
     /**
      * Processes a <CODE>getNext</CODE> operation.
-     *
      */
     // Implements the method defined in SnmpMibAgent. See SnmpMibAgent
     // for java-doc
@@ -702,7 +700,7 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
         }
 
         // Now invoke get() for each subrequest of the request tree.
-        for (Enumeration eh=handlers.getHandlers();eh.hasMoreElements();) {
+        for (Enumeration eh = handlers.getHandlers(); eh.hasMoreElements(); ) {
             h = (SnmpRequestTree.Handler) eh.nextElement();
 
             // Gets the Meta node. It can be either a Group Meta or a
@@ -713,11 +711,11 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
             // Gets the depth of the Meta node in the OID tree
             int depth = handlers.getOidDepth(h);
 
-            for (Enumeration rqs=handlers.getSubRequests(h);
-                 rqs.hasMoreElements();) {
+            for (Enumeration rqs = handlers.getSubRequests(h);
+                 rqs.hasMoreElements(); ) {
 
                 // Invoke the get() operation
-                meta.get((SnmpMibSubRequest)rqs.nextElement(),depth);
+                meta.get((SnmpMibSubRequest) rqs.nextElement(), depth);
             }
         }
     }
@@ -727,13 +725,12 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
      * Processes a <CODE>getBulk</CODE> operation.
      * The method implements the <CODE>getBulk</CODE> operation by calling
      * appropriately the <CODE>getNext</CODE> method.
-     *
      */
     // Implements the method defined in SnmpMibAgent. See SnmpMibAgent
     // for java-doc
     //
     public void getBulk(SnmpMibRequest req, int nonRepeat, int maxRepeat)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
 
         getBulkWithGetNext(req, nonRepeat, maxRepeat);
     }
@@ -748,8 +745,8 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
      */
     public long[] getRootOid() {
 
-        if( rootOid == null) {
-            Vector<Integer> list= new Vector<Integer>(10);
+        if (rootOid == null) {
+            Vector<Integer> list = new Vector<Integer>(10);
 
             // Ask the tree to do the job !
             //
@@ -757,11 +754,11 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
 
             // Now format the result
             //
-            rootOid= new long[list.size()];
-            int i=0;
-            for(Enumeration<Integer> e= list.elements(); e.hasMoreElements(); ) {
-                Integer val= e.nextElement();
-                rootOid[i++]= val.longValue();
+            rootOid = new long[list.size()];
+            int i = 0;
+            for (Enumeration<Integer> e = list.elements(); e.hasMoreElements(); ) {
+                Integer val = e.nextElement();
+                rootOid[i++] = val.longValue();
             }
         }
         return rootOid;
@@ -777,46 +774,45 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
      * perform the SNMP request associated with the given vector of varbinds
      * `list'.
      *
-     * @param req The SnmpMibRequest object holding the varbind list
-     *             concerning this MIB.
+     * @param req        The SnmpMibRequest object holding the varbind list
+     *                   concerning this MIB.
      * @param createflag Indicates whether the operation allow for creation
-     *        of new instances (ie: it is a SET).
-     * @param atomic Indicates whether the operation is atomic or not.
-     * @param type Request type (from SnmpDefinitions).
-     *
+     *                   of new instances (ie: it is a SET).
+     * @param atomic     Indicates whether the operation is atomic or not.
+     * @param type       Request type (from SnmpDefinitions).
      * @return The request-tree where the original varbind list has been
-     *         dispatched to the appropriate nodes.
+     * dispatched to the appropriate nodes.
      */
     private SnmpRequestTree getHandlers(SnmpMibRequest req,
                                         boolean createflag, boolean atomic,
                                         int type)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
 
         // Build an empty request tree
         SnmpRequestTree handlers =
-            new SnmpRequestTree(req,createflag,type);
+                new SnmpRequestTree(req, createflag, type);
 
-        int index=0;
+        int index = 0;
         SnmpVarBind var = null;
-        final int ver= req.getVersion();
+        final int ver = req.getVersion();
 
         // For each varbind in the list finds its handling node.
-        for (Enumeration e= req.getElements(); e.hasMoreElements(); index++) {
+        for (Enumeration e = req.getElements(); e.hasMoreElements(); index++) {
 
-            var= (SnmpVarBind) e.nextElement();
+            var = (SnmpVarBind) e.nextElement();
 
             try {
                 // Find the handling node for this varbind.
-                root.findHandlingNode(var,var.oid.longValue(false),
-                                      0,handlers);
-            } catch(SnmpStatusException x) {
+                root.findHandlingNode(var, var.oid.longValue(false),
+                        0, handlers);
+            } catch (SnmpStatusException x) {
 
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINEST,
                             SnmpMib.class.getName(),
                             "getHandlers",
                             "Couldn't find a handling node for " +
-                            var.oid.toString());
+                                    var.oid.toString());
                 }
 
                 // If the operation is atomic (Check/Set) or the version
@@ -834,13 +830,13 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
                     // SNMP index ...
                     //
                     final SnmpStatusException sse =
-                        new SnmpStatusException(x, index + 1);
+                            new SnmpStatusException(x, index + 1);
                     sse.initCause(x);
                     throw sse;
-                } else if ((type == SnmpDefinitions.pduWalkRequest)   ||
-                           (type == SnmpDefinitions.pduSetRequestPdu)) {
+                } else if ((type == SnmpDefinitions.pduWalkRequest) ||
+                        (type == SnmpDefinitions.pduSetRequestPdu)) {
                     final int status =
-                        SnmpRequestTree.mapSetException(x.getStatus(),ver);
+                            SnmpRequestTree.mapSetException(x.getStatus(), ver);
 
                     if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                         SNMP_ADAPTOR_LOGGER.logp(Level.FINEST,
@@ -849,7 +845,7 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
                     }
 
                     final SnmpStatusException sse =
-                        new SnmpStatusException(status, index + 1);
+                            new SnmpStatusException(status, index + 1);
                     sse.initCause(x);
                     throw sse;
                 } else if (atomic) {
@@ -862,13 +858,13 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
                     }
 
                     final SnmpStatusException sse =
-                        new SnmpStatusException(x, index + 1);
+                            new SnmpStatusException(x, index + 1);
                     sse.initCause(x);
                     throw sse;
                 }
 
                 final int status =
-                    SnmpRequestTree.mapGetException(x.getStatus(),ver);
+                        SnmpRequestTree.mapGetException(x.getStatus(), ver);
 
                 if (status == SnmpStatusException.noSuchInstance) {
 
@@ -879,7 +875,7 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
                                 "\tGET: Registering noSuchInstance");
                     }
 
-                    var.value= SnmpVarBind.noSuchInstance;
+                    var.value = SnmpVarBind.noSuchInstance;
 
                 } else if (status == SnmpStatusException.noSuchObject) {
                     if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
@@ -889,7 +885,7 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
                                 "\tGET: Registering noSuchObject");
                     }
 
-                        var.value= SnmpVarBind.noSuchObject;
+                    var.value = SnmpVarBind.noSuchObject;
 
                 } else {
 
@@ -901,7 +897,7 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
                     }
 
                     final SnmpStatusException sse =
-                        new SnmpStatusException(status, index + 1);
+                            new SnmpStatusException(status, index + 1);
                     sse.initCause(x);
                     throw sse;
                 }
@@ -916,18 +912,17 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
      * of varbinds `list'.
      *
      * @param req The SnmpMibRequest object holding the varbind list
-     *             concerning this MIB.
-     *
+     *            concerning this MIB.
      * @return The request-tree where the original varbind list has been
-     *         dispatched to the appropriate nodes, and where the original
-     *         OIDs have been replaced with the correct "next" OID.
+     * dispatched to the appropriate nodes, and where the original
+     * OIDs have been replaced with the correct "next" OID.
      */
     private SnmpRequestTree getGetNextHandlers(SnmpMibRequest req)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
 
         // Creates an empty request tree, no entry creation is allowed (false)
         SnmpRequestTree handlers = new
-            SnmpRequestTree(req,false,SnmpDefinitions.pduGetNextRequestPdu);
+                SnmpRequestTree(req, false, SnmpDefinitions.pduGetNextRequestPdu);
 
         // Sets the getNext flag: if version=V2, status exception are
         // transformed in  endOfMibView
@@ -938,16 +933,16 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
                     "getGetNextHandlers", "Received MIB request : " + req);
         }
         AcmChecker checker = new AcmChecker(req);
-        int index=0;
+        int index = 0;
         SnmpVarBind var = null;
-        final int ver= req.getVersion();
+        final int ver = req.getVersion();
         SnmpOid original = null;
         // For each varbind, finds the handling node.
         // This function has the side effect of transforming a GET-NEXT
         // request into a valid GET request, replacing the OIDs in the
         // original GET-NEXT request with the OID of the first leaf that
         // follows.
-        for (Enumeration e= req.getElements(); e.hasMoreElements(); index++) {
+        for (Enumeration e = req.getElements(); e.hasMoreElements(); index++) {
 
             var = (SnmpVarBind) e.nextElement();
             SnmpOid result = null;
@@ -961,8 +956,8 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
                             "getGetNextHandlers", " Next OID of : " + var.oid);
                 }
                 result = new SnmpOid(root.findNextHandlingNode
-                                     (var,var.oid.longValue(false),0,
-                                      0,handlers, checker));
+                        (var, var.oid.longValue(false), 0,
+                                0, handlers, checker));
 
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINEST,
@@ -972,7 +967,7 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
                 // We replace the varbind original OID with the OID of the
                 // leaf object we have to return.
                 var.oid = result;
-            } catch(SnmpStatusException x) {
+            } catch (SnmpStatusException x) {
 
                 // if (isDebugOn())
                 //    debug("getGetNextHandlers",
@@ -1010,6 +1005,7 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
 
     /**
      * The top element in the Mib tree.
+     *
      * @serial
      */
     protected SnmpMibOid root;
@@ -1022,5 +1018,5 @@ public abstract class SnmpMib extends SnmpMibAgent implements Serializable {
     /**
      * The root object identifier of the MIB.
      */
-    private transient long[] rootOid= null;
+    private transient long[] rootOid = null;
 }

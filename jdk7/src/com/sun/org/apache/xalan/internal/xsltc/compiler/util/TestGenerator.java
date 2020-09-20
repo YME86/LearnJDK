@@ -55,14 +55,14 @@ public final class TestGenerator extends MethodGenerator {
                          String method_name, String class_name,
                          InstructionList il, ConstantPoolGen cp) {
         super(access_flags, return_type, arg_types, arg_names, method_name,
-              class_name, il, cp);
+                class_name, il, cp);
 
-        _iloadCurrent  = new ILOAD(CURRENT_NODE_INDEX);
+        _iloadCurrent = new ILOAD(CURRENT_NODE_INDEX);
         _istoreCurrent = new ISTORE(CURRENT_NODE_INDEX);
-        _iloadContext  = new ILOAD(CONTEXT_NODE_INDEX);
-        _istoreContext  = new ILOAD(CONTEXT_NODE_INDEX);
+        _iloadContext = new ILOAD(CONTEXT_NODE_INDEX);
+        _istoreContext = new ILOAD(CONTEXT_NODE_INDEX);
         _astoreIterator = new ASTORE(ITERATOR_INDEX);
-        _aloadIterator  = new ALOAD(ITERATOR_INDEX);
+        _aloadIterator = new ALOAD(ITERATOR_INDEX);
     }
 
     public int getHandlerIndex() {
@@ -85,7 +85,9 @@ public final class TestGenerator extends MethodGenerator {
         return _iloadCurrent;
     }
 
-    /** by default context node is the same as current node. MK437 */
+    /**
+     * by default context node is the same as current node. MK437
+     */
     public Instruction loadContextNode() {
         return _iloadContext;
     }
@@ -109,8 +111,7 @@ public final class TestGenerator extends MethodGenerator {
     public int getLocalIndex(String name) {
         if (name.equals("current")) {
             return CURRENT_NODE_INDEX;
-        }
-        else {
+        } else {
             return super.getLocalIndex(name);
         }
     }

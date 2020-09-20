@@ -36,6 +36,7 @@ import com.sun.org.apache.xml.internal.dtm.ref.DTMAxisIteratorBase;
  * for BOOK in our example) is used to initialize the inner iterator.
  * After this initialization, every node from the inner iterator is
  * returned (in essence, implementing a "nested loop").
+ *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Erwin Bolwidt <ejb@klomp.org>
@@ -81,10 +82,9 @@ public class StepIterator extends DTMAxisIteratorBase {
             clone._iterator.setRestartable(true);       // must be restartable
             clone._isRestartable = false;
             return clone.reset();
-        }
-        catch (CloneNotSupportedException e) {
+        } catch (CloneNotSupportedException e) {
             BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
-                                      e.toString());
+                    e.toString());
             return null;
         }
     }
@@ -110,7 +110,7 @@ public class StepIterator extends DTMAxisIteratorBase {
     }
 
     public int next() {
-        for (int node;;) {
+        for (int node; ; ) {
             // Try to get another node from the right-hand iterator
             if ((node = _iterator.next()) != END) {
                 return returnNode(node);

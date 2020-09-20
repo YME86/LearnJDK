@@ -70,8 +70,7 @@ package com.sun.org.apache.xml.internal.res;
  * and MAX_WARNING for warnings ( Needed for only information
  * purpose )
  */
-public class XMLErrorResources_zh_HK extends XMLErrorResources_zh_TW
-{
+public class XMLErrorResources_zh_HK extends XMLErrorResources_zh_TW {
 
 
 }

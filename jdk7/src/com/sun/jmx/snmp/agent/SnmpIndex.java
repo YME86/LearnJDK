@@ -27,9 +27,9 @@
 package com.sun.jmx.snmp.agent;
 
 
-
 // java imports
 //
+
 import java.io.Serializable;
 import java.util.Vector;
 import java.util.Enumeration;
@@ -63,8 +63,8 @@ public class SnmpIndex implements Serializable {
      * @param oidList The list of Object Identifiers.
      */
     public SnmpIndex(SnmpOid[] oidList) {
-        size= oidList.length;
-        for(int i= 0; i <size; i++) {
+        size = oidList.length;
+        for (int i = 0; i < size; i++) {
             // The order is important ...
             //
             oids.addElement(oidList[i]);
@@ -78,7 +78,7 @@ public class SnmpIndex implements Serializable {
      */
     public SnmpIndex(SnmpOid oid) {
         oids.addElement(oid);
-        size= 1;
+        size = 1;
     }
 
     /**
@@ -103,7 +103,6 @@ public class SnmpIndex implements Serializable {
      * Compares two indexes for equality.
      *
      * @param index The index to compare <CODE>this</CODE> with.
-     *
      * @return <CODE>true</CODE> if the two indexes are equal, <CODE>false</CODE> otherwise.
      */
     public boolean equals(SnmpIndex index) {
@@ -116,10 +115,10 @@ public class SnmpIndex implements Serializable {
         //
         SnmpOid oid1;
         SnmpOid oid2;
-        Vector<SnmpOid> components= index.getComponents();
-        for(int i=0; i <size; i++) {
-            oid1= oids.elementAt(i);
-            oid2= components.elementAt(i);
+        Vector<SnmpOid> components = index.getComponents();
+        for (int i = 0; i < size; i++) {
+            oid1 = oids.elementAt(i);
+            oid2 = components.elementAt(i);
             if (oid1.equals(oid2) == false)
                 return false;
         }
@@ -130,27 +129,26 @@ public class SnmpIndex implements Serializable {
      * Compares two indexes.
      *
      * @param index The index to compare <CODE>this</CODE> with.
-     *
      * @return The value 0 if the two OID vectors have the same elements, another value otherwise.
      */
     public int compareTo(SnmpIndex index) {
 
-        int length= index.getNbComponents();
-        Vector<SnmpOid> components= index.getComponents();
+        int length = index.getNbComponents();
+        Vector<SnmpOid> components = index.getComponents();
         SnmpOid oid1;
         SnmpOid oid2;
         int comp;
-        for(int i=0; i < size; i++) {
-            if ( i > length) {
+        for (int i = 0; i < size; i++) {
+            if (i > length) {
                 // There is no more element in the index
                 //
                 return 1;
             }
             // Access the element ...
             //
-            oid1= oids.elementAt(i);
-            oid2= components.elementAt(i);
-            comp= oid1.compareTo(oid2);
+            oid1 = oids.elementAt(i);
+            oid2 = components.elementAt(i);
+            comp = oid1.compareTo(oid2);
             if (comp == 0)
                 continue;
             return comp;
@@ -165,10 +163,10 @@ public class SnmpIndex implements Serializable {
      * @return A string representation of the index.
      */
     public String toString() {
-        StringBuffer msg= new StringBuffer();
-        for(Enumeration e= oids.elements(); e.hasMoreElements(); ) {
-            SnmpOid val= (SnmpOid) e.nextElement();
-            msg.append( "//" + val.toString());
+        StringBuffer msg = new StringBuffer();
+        for (Enumeration e = oids.elements(); e.hasMoreElements(); ) {
+            SnmpOid val = (SnmpOid) e.nextElement();
+            msg.append("//" + val.toString());
         }
         return msg.toString();
     }
@@ -178,12 +176,14 @@ public class SnmpIndex implements Serializable {
 
     /**
      * The list of OIDs.
+     *
      * @serial
      */
     private Vector<SnmpOid> oids = new Vector<SnmpOid>();
 
     /**
      * The number of elements in the index.
+     *
      * @serial
      */
     private int size = 0;

@@ -27,11 +27,11 @@ package com.sun.org.apache.xalan.internal.utils;
 
 
 import com.sun.org.apache.xalan.internal.XalanConstants;
+
 import javax.xml.XMLConstants;
 
 /**
  * This class manages security related properties
- *
  */
 public final class XMLSecurityPropertyManager extends FeaturePropertyBase {
 
@@ -76,10 +76,11 @@ public final class XMLSecurityPropertyManager extends FeaturePropertyBase {
 
     /**
      * Get the index by property name
+     *
      * @param propertyName property name
      * @return the index of the property if found; return -1 if not
      */
-    public int getIndex(String propertyName){
+    public int getIndex(String propertyName) {
         for (Property property : Property.values()) {
             if (property.equalsName(propertyName)) {
                 //internally, ordinal is used as index

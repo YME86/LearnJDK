@@ -34,15 +34,16 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.util.MethodGenerator;
 
 /**
  * A test sequence is a sequence of patterns that
- *
- *  (1) occured in templates in the same mode
- *  (2) share the same kernel node type (e.g. A/B and C/C/B)
- *  (3) may also contain patterns matching "*" and "node()"
- *      (element sequence only) or matching "@*" (attribute
- *      sequence only).
- *
+ * <p>
+ * (1) occured in templates in the same mode
+ * (2) share the same kernel node type (e.g. A/B and C/C/B)
+ * (3) may also contain patterns matching "*" and "node()"
+ * (element sequence only) or matching "@*" (attribute
+ * sequence only).
+ * <p>
  * A test sequence may have a default template, which will be
  * instantiated if none of the other patterns match.
+ *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Erwin Bolwidt <ejb@klomp.org>
@@ -105,15 +106,15 @@ final class TestSeq {
 
         for (int i = 0; i < count; i++) {
             final LocationPathPattern pattern =
-                (LocationPathPattern) _patterns.elementAt(i);
+                    (LocationPathPattern) _patterns.elementAt(i);
 
             if (i == 0) {
                 result.append("Testseq for kernel ").append(_kernelType)
-                      .append('\n');
+                        .append('\n');
             }
             result.append("   pattern ").append(i).append(": ")
-                  .append(pattern.toString())
-                  .append('\n');
+                    .append(pattern.toString())
+                    .append('\n');
         }
         return result.toString();
     }
@@ -132,7 +133,7 @@ final class TestSeq {
      */
     public double getPriority() {
         final Template template = (_patterns.size() == 0) ? _default
-            : ((Pattern) _patterns.elementAt(0)).getTemplate();
+                : ((Pattern) _patterns.elementAt(0)).getTemplate();
         return template.getPriority();
     }
 
@@ -142,7 +143,7 @@ final class TestSeq {
      */
     public int getPosition() {
         final Template template = (_patterns.size() == 0) ? _default
-            : ((Pattern) _patterns.elementAt(0)).getTemplate();
+                : ((Pattern) _patterns.elementAt(0)).getTemplate();
         return template.getPosition();
     }
 
@@ -157,7 +158,7 @@ final class TestSeq {
         final int count = _patterns.size();
         for (int i = 0; i < count; i++) {
             final LocationPathPattern pattern =
-                (LocationPathPattern)_patterns.elementAt(i);
+                    (LocationPathPattern) _patterns.elementAt(i);
 
             // Reduce this pattern
             pattern.reduceKernelPattern();
@@ -166,8 +167,7 @@ final class TestSeq {
             if (pattern.isWildcard()) {
                 _default = pattern.getTemplate();
                 break;          // Ignore following patterns
-            }
-            else {
+            } else {
                 newPatterns.addElement(pattern);
             }
         }
@@ -185,7 +185,7 @@ final class TestSeq {
         }
         for (int i = 0; i < _patterns.size(); i++) {
             final LocationPathPattern pattern =
-                (LocationPathPattern)_patterns.elementAt(i);
+                    (LocationPathPattern) _patterns.elementAt(i);
             templates.put(pattern.getTemplate(), this);
         }
     }
@@ -197,14 +197,14 @@ final class TestSeq {
      * (e.g. match="A/B | A/C").
      */
     private InstructionHandle getTemplateHandle(Template template) {
-        return (InstructionHandle)_mode.getTemplateInstructionHandle(template);
+        return (InstructionHandle) _mode.getTemplateInstructionHandle(template);
     }
 
     /**
      * Returns pattern n in this test sequence
      */
     private LocationPathPattern getPattern(int n) {
-        return (LocationPathPattern)_patterns.elementAt(n);
+        return (LocationPathPattern) _patterns.elementAt(n);
     }
 
     /**
@@ -215,8 +215,7 @@ final class TestSeq {
      */
     public InstructionHandle compile(ClassGenerator classGen,
                                      MethodGenerator methodGen,
-                                     InstructionHandle continuation)
-    {
+                                     InstructionHandle continuation) {
         // Returned cached value if already compiled
         if (_start != null) {
             return _start;
@@ -230,7 +229,7 @@ final class TestSeq {
 
         // Init handle to jump when all patterns failed
         InstructionHandle fail = (_default == null) ? continuation
-            : getTemplateHandle(_default);
+                : getTemplateHandle(_default);
 
         // Compile all patterns in reverse order
         for (int n = count - 1; n >= 0; n--) {

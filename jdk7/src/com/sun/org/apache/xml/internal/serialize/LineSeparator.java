@@ -26,8 +26,7 @@ package com.sun.org.apache.xml.internal.serialize;
  * @author <a href="mailto:arkin@intalio..com">Assaf Arkin</a>
  * @see OutputFormat
  */
-public final class LineSeparator
-{
+public final class LineSeparator {
 
 
     /**

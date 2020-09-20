@@ -36,14 +36,14 @@ import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
 /**
-   <p>Helper class for an {@link InvocationHandler} that forwards methods from an
-   MXBean interface to a named
-   MXBean in an MBean Server and handles translation between the
-   arbitrary Java types in the interface and the Open Types used
-   by the MXBean.</p>
-
-   @since 1.6
-*/
+ * <p>Helper class for an {@link InvocationHandler} that forwards methods from an
+ * MXBean interface to a named
+ * MXBean in an MBean Server and handles translation between the
+ * arbitrary Java types in the interface and the Open Types used
+ * by the MXBean.</p>
+ *
+ * @since 1.6
+ */
 public class MXBeanProxy {
     public MXBeanProxy(Class<?> mxbeanInterface) {
 
@@ -53,7 +53,7 @@ public class MXBeanProxy {
         final MBeanAnalyzer<ConvertingMethod> analyzer;
         try {
             analyzer =
-                MXBeanIntrospector.getInstance().getAnalyzer(mxbeanInterface);
+                    MXBeanIntrospector.getInstance().getAnalyzer(mxbeanInterface);
         } catch (NotCompliantMBeanException e) {
             throw new IllegalArgumentException(e);
         }
@@ -69,13 +69,13 @@ public class MXBeanProxy {
                 getter.checkCallToOpen();
                 Method getterMethod = getter.getMethod();
                 handlerMap.put(getterMethod,
-                               new GetHandler(attributeName, getter));
+                        new GetHandler(attributeName, getter));
             }
             if (setter != null) {
                 // return type is void, no need for checkCallToOpen
                 Method setterMethod = setter.getMethod();
                 handlerMap.put(setterMethod,
-                               new SetHandler(attributeName, setter));
+                        new SetHandler(attributeName, setter));
             }
         }
 
@@ -85,7 +85,7 @@ public class MXBeanProxy {
             Method operationMethod = operation.getMethod();
             String[] sig = operation.getOpenSignature();
             handlerMap.put(operationMethod,
-                           new InvokeHandler(operationName, sig, operation));
+                    new InvokeHandler(operationName, sig, operation));
         }
     }
 
@@ -118,7 +118,7 @@ public class MXBeanProxy {
         @Override
         Object invoke(MBeanServerConnection mbsc, ObjectName name, Object[] args)
                 throws Exception {
-            assert(args == null || args.length == 0);
+            assert (args == null || args.length == 0);
             return mbsc.getAttribute(name, getName());
         }
     }
@@ -131,7 +131,7 @@ public class MXBeanProxy {
         @Override
         Object invoke(MBeanServerConnection mbsc, ObjectName name, Object[] args)
                 throws Exception {
-            assert(args.length == 1);
+            assert (args.length == 1);
             Attribute attr = new Attribute(getName(), args[0]);
             mbsc.setAttribute(name, attr);
             return null;

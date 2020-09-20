@@ -41,199 +41,179 @@ import com.sun.org.apache.xpath.internal.res.XPATHErrorResources;
 /**
  * The variable reference expression executer.
  */
-public class Variable extends Expression implements PathComponent
-{
+public class Variable extends Expression implements PathComponent {
     static final long serialVersionUID = -4334975375609297049L;
-  /** Tell if fixupVariables was called.
-   *  @serial   */
-  private boolean m_fixUpWasCalled = false;
+    /**
+     * Tell if fixupVariables was called.
+     *
+     * @serial
+     */
+    private boolean m_fixUpWasCalled = false;
 
-  /** The qualified name of the variable.
-   *  @serial   */
-  protected QName m_qname;
+    /**
+     * The qualified name of the variable.
+     *
+     * @serial
+     */
+    protected QName m_qname;
 
-  /**
-   * The index of the variable, which is either an absolute index to a
-   * global, or, if higher than the globals area, must be adjusted by adding
-   * the offset to the current stack frame.
-   */
-  protected int m_index;
+    /**
+     * The index of the variable, which is either an absolute index to a
+     * global, or, if higher than the globals area, must be adjusted by adding
+     * the offset to the current stack frame.
+     */
+    protected int m_index;
 
-  /**
-   * Set the index for the variable into the stack.  For advanced use only. You
-   * must know what you are doing to use this.
-   *
-   * @param index a global or local index.
-   */
-  public void setIndex(int index)
-  {
+    /**
+     * Set the index for the variable into the stack.  For advanced use only. You
+     * must know what you are doing to use this.
+     *
+     * @param index a global or local index.
+     */
+    public void setIndex(int index) {
         m_index = index;
-  }
+    }
 
-  /**
-   * Set the index for the variable into the stack.  For advanced use only.
-   *
-   * @return index a global or local index.
-   */
-  public int getIndex()
-  {
+    /**
+     * Set the index for the variable into the stack.  For advanced use only.
+     *
+     * @return index a global or local index.
+     */
+    public int getIndex() {
         return m_index;
-  }
+    }
 
-  /**
-   * Set whether or not this is a global reference.  For advanced use only.
-   *
-   * @param isGlobal true if this should be a global variable reference.
-   */
-  public void setIsGlobal(boolean isGlobal)
-  {
+    /**
+     * Set whether or not this is a global reference.  For advanced use only.
+     *
+     * @param isGlobal true if this should be a global variable reference.
+     */
+    public void setIsGlobal(boolean isGlobal) {
         m_isGlobal = isGlobal;
-  }
+    }
 
-  /**
-   * Set the index for the variable into the stack.  For advanced use only.
-   *
-   * @return true if this should be a global variable reference.
-   */
-  public boolean getGlobal()
-  {
+    /**
+     * Set the index for the variable into the stack.  For advanced use only.
+     *
+     * @return true if this should be a global variable reference.
+     */
+    public boolean getGlobal() {
         return m_isGlobal;
-  }
-
-
-
-
-
-  protected boolean m_isGlobal = false;
-
-  /**
-   * This function is used to fixup variables from QNames to stack frame
-   * indexes at stylesheet build time.
-   * @param vars List of QNames that correspond to variables.  This list
-   * should be searched backwards for the first qualified name that
-   * corresponds to the variable reference qname.  The position of the
-   * QName in the vector from the start of the vector will be its position
-   * in the stack frame (but variables above the globalsTop value will need
-   * to be offset to the current stack frame).
-   */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
-  {
-    m_fixUpWasCalled = true;
-    int sz = vars.size();
-
-    for (int i = vars.size()-1; i >= 0; i--)
-    {
-      QName qn = (QName)vars.elementAt(i);
-      // System.out.println("qn: "+qn);
-      if(qn.equals(m_qname))
-      {
-
-        if(i < globalsSize)
-        {
-          m_isGlobal = true;
-          m_index = i;
-        }
-        else
-        {
-          m_index = i-globalsSize;
-        }
-
-        return;
-      }
     }
 
-    java.lang.String msg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_COULD_NOT_FIND_VAR,
-                                             new Object[]{m_qname.toString()});
 
-    TransformerException te = new TransformerException(msg, this);
+    protected boolean m_isGlobal = false;
 
-    throw new com.sun.org.apache.xml.internal.utils.WrappedRuntimeException(te);
+    /**
+     * This function is used to fixup variables from QNames to stack frame
+     * indexes at stylesheet build time.
+     *
+     * @param vars List of QNames that correspond to variables.  This list
+     *             should be searched backwards for the first qualified name that
+     *             corresponds to the variable reference qname.  The position of the
+     *             QName in the vector from the start of the vector will be its position
+     *             in the stack frame (but variables above the globalsTop value will need
+     *             to be offset to the current stack frame).
+     */
+    public void fixupVariables(java.util.Vector vars, int globalsSize) {
+        m_fixUpWasCalled = true;
+        int sz = vars.size();
 
-  }
+        for (int i = vars.size() - 1; i >= 0; i--) {
+            QName qn = (QName) vars.elementAt(i);
+            // System.out.println("qn: "+qn);
+            if (qn.equals(m_qname)) {
+
+                if (i < globalsSize) {
+                    m_isGlobal = true;
+                    m_index = i;
+                } else {
+                    m_index = i - globalsSize;
+                }
+
+                return;
+            }
+        }
+
+        java.lang.String msg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_COULD_NOT_FIND_VAR,
+                new Object[]{m_qname.toString()});
+
+        TransformerException te = new TransformerException(msg, this);
+
+        throw new com.sun.org.apache.xml.internal.utils.WrappedRuntimeException(te);
+
+    }
 
 
-  /**
-   * Set the qualified name of the variable.
-   *
-   * @param qname Must be a non-null reference to a qualified name.
-   */
-  public void setQName(QName qname)
-  {
-    m_qname = qname;
-  }
+    /**
+     * Set the qualified name of the variable.
+     *
+     * @param qname Must be a non-null reference to a qualified name.
+     */
+    public void setQName(QName qname) {
+        m_qname = qname;
+    }
 
-  /**
-   * Get the qualified name of the variable.
-   *
-   * @return A non-null reference to a qualified name.
-   */
-  public QName getQName()
-  {
-    return m_qname;
-  }
+    /**
+     * Get the qualified name of the variable.
+     *
+     * @return A non-null reference to a qualified name.
+     */
+    public QName getQName() {
+        return m_qname;
+    }
 
-  /**
-   * Execute an expression in the XPath runtime context, and return the
-   * result of the expression.
-   *
-   *
-   * @param xctxt The XPath runtime context.
-   *
-   * @return The result of the expression in the form of a <code>XObject</code>.
-   *
-   * @throws javax.xml.transform.TransformerException if a runtime exception
-   *         occurs.
-   */
-  public XObject execute(XPathContext xctxt)
-    throws javax.xml.transform.TransformerException
-  {
+    /**
+     * Execute an expression in the XPath runtime context, and return the
+     * result of the expression.
+     *
+     * @param xctxt The XPath runtime context.
+     * @return The result of the expression in the form of a <code>XObject</code>.
+     * @throws javax.xml.transform.TransformerException if a runtime exception
+     *                                                  occurs.
+     */
+    public XObject execute(XPathContext xctxt)
+            throws javax.xml.transform.TransformerException {
         return execute(xctxt, false);
-  }
-
-
-  /**
-   * Dereference the variable, and return the reference value.  Note that lazy
-   * evaluation will occur.  If a variable within scope is not found, a warning
-   * will be sent to the error listener, and an empty nodeset will be returned.
-   *
-   *
-   * @param xctxt The runtime execution context.
-   *
-   * @return The evaluated variable, or an empty nodeset if not found.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt, boolean destructiveOK) throws javax.xml.transform.TransformerException
-  {
-    com.sun.org.apache.xml.internal.utils.PrefixResolver xprefixResolver = xctxt.getNamespaceContext();
-
-    XObject result;
-    // Is the variable fetched always the same?
-    // XObject result = xctxt.getVariable(m_qname);
-    if(m_fixUpWasCalled)
-    {
-      if(m_isGlobal)
-        result = xctxt.getVarStack().getGlobalVariable(xctxt, m_index, destructiveOK);
-      else
-        result = xctxt.getVarStack().getLocalVariable(xctxt, m_index, destructiveOK);
-    }
-    else {
-        result = xctxt.getVarStack().getVariableOrParam(xctxt,m_qname);
     }
 
-      if (null == result)
-      {
-        // This should now never happen...
-        warn(xctxt, XPATHErrorResources.WG_ILLEGAL_VARIABLE_REFERENCE,
-             new Object[]{ m_qname.getLocalPart() });  //"VariableReference given for variable out "+
-  //      (new RuntimeException()).printStackTrace();
-  //      error(xctxt, XPATHErrorResources.ER_COULDNOT_GET_VAR_NAMED,
-  //            new Object[]{ m_qname.getLocalPart() });  //"Could not get variable named "+varName);
 
-        result = new XNodeSet(xctxt.getDTMManager());
-      }
+    /**
+     * Dereference the variable, and return the reference value.  Note that lazy
+     * evaluation will occur.  If a variable within scope is not found, a warning
+     * will be sent to the error listener, and an empty nodeset will be returned.
+     *
+     * @param xctxt The runtime execution context.
+     * @return The evaluated variable, or an empty nodeset if not found.
+     * @throws javax.xml.transform.TransformerException
+     */
+    public XObject execute(XPathContext xctxt, boolean destructiveOK) throws javax.xml.transform.TransformerException {
+        com.sun.org.apache.xml.internal.utils.PrefixResolver xprefixResolver = xctxt.getNamespaceContext();
 
-      return result;
+        XObject result;
+        // Is the variable fetched always the same?
+        // XObject result = xctxt.getVariable(m_qname);
+        if (m_fixUpWasCalled) {
+            if (m_isGlobal)
+                result = xctxt.getVarStack().getGlobalVariable(xctxt, m_index, destructiveOK);
+            else
+                result = xctxt.getVarStack().getLocalVariable(xctxt, m_index, destructiveOK);
+        } else {
+            result = xctxt.getVarStack().getVariableOrParam(xctxt, m_qname);
+        }
+
+        if (null == result) {
+            // This should now never happen...
+            warn(xctxt, XPATHErrorResources.WG_ILLEGAL_VARIABLE_REFERENCE,
+                    new Object[]{m_qname.getLocalPart()});  //"VariableReference given for variable out "+
+            //      (new RuntimeException()).printStackTrace();
+            //      error(xctxt, XPATHErrorResources.ER_COULDNOT_GET_VAR_NAMED,
+            //            new Object[]{ m_qname.getLocalPart() });  //"Could not get variable named "+varName);
+
+            result = new XNodeSet(xctxt.getDTMManager());
+        }
+
+        return result;
 //    }
 //    else
 //    {
@@ -252,14 +232,14 @@ public class Variable extends Expression implements PathComponent
 //      }
 //      throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_VAR_NOT_RESOLVABLE, new Object[]{m_qname.toString()})); //"Variable not resolvable: "+m_qname);
 //    }
-  }
+    }
 
-  /**
-   * Get the XSLT ElemVariable that this sub-expression references.  In order for
-   * this to work, the SourceLocator must be the owning ElemTemplateElement.
-   * @return The dereference to the ElemVariable, or null if not found.
-   */
-  // J2SE does not support Xalan interpretive
+    /**
+     * Get the XSLT ElemVariable that this sub-expression references.  In order for
+     * this to work, the SourceLocator must be the owning ElemTemplateElement.
+     * @return The dereference to the ElemVariable, or null if not found.
+     */
+    // J2SE does not support Xalan interpretive
   /*
   public com.sun.org.apache.xalan.internal.templates.ElemVariable getElemVariable()
   {
@@ -308,27 +288,26 @@ public class Variable extends Expression implements PathComponent
 
   }
   */
-  /**
-   * Tell if this expression returns a stable number that will not change during
-   * iterations within the expression.  This is used to determine if a proximity
-   * position predicate can indicate that no more searching has to occur.
-   *
-   *
-   * @return true if the expression represents a stable number.
-   */
-  public boolean isStableNumber()
-  {
-    return true;
-  }
 
-  /**
-   * Get the analysis bits for this walker, as defined in the WalkerFactory.
-   * @return One of WalkerFactory#BIT_DESCENDANT, etc.
-   */
-  public int getAnalysisBits()
-  {
+    /**
+     * Tell if this expression returns a stable number that will not change during
+     * iterations within the expression.  This is used to determine if a proximity
+     * position predicate can indicate that no more searching has to occur.
+     *
+     * @return true if the expression represents a stable number.
+     */
+    public boolean isStableNumber() {
+        return true;
+    }
 
-    // J2SE does not support Xalan interpretive
+    /**
+     * Get the analysis bits for this walker, as defined in the WalkerFactory.
+     *
+     * @return One of WalkerFactory#BIT_DESCENDANT, etc.
+     */
+    public int getAnalysisBits() {
+
+        // J2SE does not support Xalan interpretive
     /*
         com.sun.org.apache.xalan.internal.templates.ElemVariable vvar = getElemVariable();
         if(null != vvar)
@@ -345,29 +324,28 @@ public class Variable extends Expression implements PathComponent
         }
     */
 
-    return WalkerFactory.BIT_FILTER;
-  }
+        return WalkerFactory.BIT_FILTER;
+    }
 
 
-  /**
-   * @see com.sun.org.apache.xpath.internal.XPathVisitable#callVisitors(ExpressionOwner, XPathVisitor)
-   */
-  public void callVisitors(ExpressionOwner owner, XPathVisitor visitor)
-  {
+    /**
+     * @see com.sun.org.apache.xpath.internal.XPathVisitable#callVisitors(ExpressionOwner, XPathVisitor)
+     */
+    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
         visitor.visitVariableRef(owner, this);
-  }
-  /**
-   * @see Expression#deepEquals(Expression)
-   */
-  public boolean deepEquals(Expression expr)
-  {
-        if(!isSameClass(expr))
-                return false;
+    }
 
-        if(!m_qname.equals(((Variable)expr).m_qname))
-                return false;
+    /**
+     * @see Expression#deepEquals(Expression)
+     */
+    public boolean deepEquals(Expression expr) {
+        if (!isSameClass(expr))
+            return false;
 
-    // J2SE does not support Xalan interpretive
+        if (!m_qname.equals(((Variable) expr).m_qname))
+            return false;
+
+        // J2SE does not support Xalan interpretive
     /*
         // We have to make sure that the qname really references
         // the same variable element.
@@ -376,24 +354,22 @@ public class Variable extends Expression implements PathComponent
         */
 
         return true;
-  }
+    }
 
-  static final java.lang.String PSUEDOVARNAMESPACE = "http://xml.apache.org/xalan/psuedovar";
+    static final java.lang.String PSUEDOVARNAMESPACE = "http://xml.apache.org/xalan/psuedovar";
 
-  /**
-   * Tell if this is a psuedo variable reference, declared by Xalan instead
-   * of by the user.
-   */
-  public boolean isPsuedoVarRef()
-  {
+    /**
+     * Tell if this is a psuedo variable reference, declared by Xalan instead
+     * of by the user.
+     */
+    public boolean isPsuedoVarRef() {
         java.lang.String ns = m_qname.getNamespaceURI();
-        if((null != ns) && ns.equals(PSUEDOVARNAMESPACE))
-        {
-                if(m_qname.getLocalName().startsWith("#"))
-                        return true;
+        if ((null != ns) && ns.equals(PSUEDOVARNAMESPACE)) {
+            if (m_qname.getLocalName().startsWith("#"))
+                return true;
         }
         return false;
-  }
+    }
 
 
 }

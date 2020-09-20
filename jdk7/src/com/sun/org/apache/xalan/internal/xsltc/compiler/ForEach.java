@@ -51,7 +51,7 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
 final class ForEach extends Instruction {
 
     private Expression _select;
-    private Type       _type;
+    private Type _type;
 
     public void display(int indent) {
         indent(indent);
@@ -80,7 +80,7 @@ final class ForEach extends Instruction {
             typeCheckContents(stable);
             return Type.Void;
         }
-        if (_type instanceof NodeSetType||_type instanceof ResultTreeType) {
+        if (_type instanceof NodeSetType || _type instanceof ResultTreeType) {
             typeCheckContents(stable);
             return Type.Void;
         }
@@ -111,7 +111,7 @@ final class ForEach extends Instruction {
 
             // <xsl:sort> cannot be applied to a result tree - issue warning
             if (sortObjects.size() > 0) {
-                ErrorMsg msg = new ErrorMsg(ErrorMsg.RESULT_TREE_SORT_ERR,this);
+                ErrorMsg msg = new ErrorMsg(ErrorMsg.RESULT_TREE_SORT_ERR, this);
                 getParser().reportError(WARNING, msg);
             }
 
@@ -122,14 +122,12 @@ final class ForEach extends Instruction {
             // Store the result tree as the default DOM
             il.append(SWAP);
             il.append(methodGen.storeDOM());
-        }
-        else {
+        } else {
             // Compile node iterator
             if (sortObjects.size() > 0) {
                 Sort.translateSortIterator(classGen, methodGen,
-                                           _select, sortObjects);
-            }
-            else {
+                        _select, sortObjects);
+            } else {
                 _select.translate(classGen, methodGen);
             }
 
@@ -173,23 +171,23 @@ final class ForEach extends Instruction {
      * code that pushes the default variable value on the stack and pops it
      * into the variable slot. This is done by the Variable.initialize()
      * method. The code that we compile for this loop looks like this:
-     *
-     *           initialize iterator
-     *           initialize variables <-- HERE!!!
-     *           goto   Iterate
-     *  Loop:    :
-     *           : (code for <xsl:for-each> contents)
-     *           :
-     *  Iterate: node = iterator.next();
-     *           if (node != END) goto Loop
+     * <p>
+     * initialize iterator
+     * initialize variables <-- HERE!!!
+     * goto   Iterate
+     * Loop:    :
+     * : (code for <xsl:for-each> contents)
+     * :
+     * Iterate: node = iterator.next();
+     * if (node != END) goto Loop
      */
     public void initializeVariables(ClassGenerator classGen,
-                                   MethodGenerator methodGen) {
+                                    MethodGenerator methodGen) {
         final int n = elementCount();
         for (int i = 0; i < n; i++) {
             final Object child = getContents().elementAt(i);
             if (child instanceof Variable) {
-                Variable var = (Variable)child;
+                Variable var = (Variable) child;
                 var.initialize(classGen, methodGen);
             }
         }

@@ -33,7 +33,8 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.Constants;
  * @author Santiago Pericas-Geertsen
  */
 public final class VoidType extends Type {
-    protected VoidType() {}
+    protected VoidType() {
+    }
 
     public String toString() {
         return "void";
@@ -60,16 +61,15 @@ public final class VoidType extends Type {
      * This translation is needed when calling external functions
      * that return void.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             Type type) {
         if (type == Type.String) {
             translateTo(classGen, methodGen, (StringType) type);
-        }
-        else {
+        } else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                        toString(), type.toString());
+                    toString(), type.toString());
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }
@@ -77,7 +77,7 @@ public final class VoidType extends Type {
     /**
      * Translates a void into a string by pushing the empty string ''.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             StringType type) {
@@ -93,7 +93,7 @@ public final class VoidType extends Type {
                               Class clazz) {
         if (!clazz.getName().equals("void")) {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                        toString(), clazz.getName());
+                    toString(), clazz.getName());
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }

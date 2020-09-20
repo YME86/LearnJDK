@@ -42,9 +42,9 @@ public class SubjectDelegator {
        authenticatedAccessControlContext does not have permission to
        delegate to that subject, throw SecurityException.  */
     public AccessControlContext
-        delegatedContext(AccessControlContext authenticatedACC,
-                         Subject delegatedSubject,
-                         boolean removeCallerContext)
+    delegatedContext(AccessControlContext authenticatedACC,
+                     Subject delegatedSubject,
+                     boolean removeCallerContext)
             throws SecurityException {
 
         if (System.getSecurityManager() != null && authenticatedACC == null) {
@@ -57,19 +57,19 @@ public class SubjectDelegator {
         //
         Collection<Principal> ps = getSubjectPrincipals(delegatedSubject);
         final Collection<Permission> permissions = new ArrayList<>(ps.size());
-        for(Principal p : ps) {
+        for (Principal p : ps) {
             final String pname = p.getClass().getName() + "." + p.getName();
             permissions.add(new SubjectDelegationPermission(pname));
         }
         PrivilegedAction<Void> action =
-            new PrivilegedAction<Void>() {
-                public Void run() {
-                    for (Permission sdp : permissions) {
-                        AccessController.checkPermission(sdp);
+                new PrivilegedAction<Void>() {
+                    public Void run() {
+                        for (Permission sdp : permissions) {
+                            AccessController.checkPermission(sdp);
+                        }
+                        return null;
                     }
-                    return null;
-                }
-            };
+                };
         AccessController.doPrivileged(action, authenticatedACC);
 
         return getDelegatedAcc(delegatedSubject, removeCallerContext);
@@ -93,13 +93,13 @@ public class SubjectDelegator {
      * the authenticated principals in the subject. Otherwise, {@code false}.
      */
     public static synchronized boolean
-        checkRemoveCallerContext(Subject subject) {
+    checkRemoveCallerContext(Subject subject) {
         try {
             for (Principal p : getSubjectPrincipals(subject)) {
                 final String pname =
-                    p.getClass().getName() + "." + p.getName();
+                        p.getClass().getName() + "." + p.getName();
                 final Permission sdp =
-                    new SubjectDelegationPermission(pname);
+                        new SubjectDelegationPermission(pname);
                 AccessController.checkPermission(sdp);
             }
         } catch (SecurityException e) {
@@ -110,9 +110,10 @@ public class SubjectDelegator {
 
     /**
      * Retrieves the {@linkplain Subject} principals
+     *
      * @param subject The subject
      * @return If the {@code Subject} is immutable it will return the principals directly.
-     *         If the {@code Subject} is mutable it will create an unmodifiable copy.
+     * If the {@code Subject} is mutable it will create an unmodifiable copy.
      */
     private static Collection<Principal> getSubjectPrincipals(Subject subject) {
         if (subject.isReadOnly()) {

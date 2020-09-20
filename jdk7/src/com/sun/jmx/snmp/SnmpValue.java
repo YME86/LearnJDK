@@ -27,7 +27,6 @@
 package com.sun.jmx.snmp;
 
 
-
 import java.io.Serializable;
 
 /**
@@ -43,6 +42,7 @@ public abstract class SnmpValue implements Cloneable, Serializable, SnmpDataType
 
     /**
      * Returns a <CODE>String</CODE> form containing ASN.1 tagging information.
+     *
      * @return The <CODE>String</CODE> form.
      */
     public String toAsn1String() {
@@ -53,22 +53,25 @@ public abstract class SnmpValue implements Cloneable, Serializable, SnmpDataType
      * Returns the value encoded as an OID.
      * The method is particularly useful when dealing with indexed table made of
      * several SNMP variables.
+     *
      * @return The value encoded as an OID.
      */
-    public abstract SnmpOid toOid() ;
+    public abstract SnmpOid toOid();
 
     /**
      * Returns a textual description of the object.
+     *
      * @return ASN.1 textual description.
      */
-    public abstract String getTypeName() ;
+    public abstract String getTypeName();
 
     /**
      * Same as clone, but you cannot perform cloning using this object because
      * clone is protected. This method should call <CODE>clone()</CODE>.
+     *
      * @return The <CODE>SnmpValue</CODE> clone.
      */
-    public abstract SnmpValue duplicate() ;
+    public abstract SnmpValue duplicate();
 
     /**
      * This method returns <CODE>false</CODE> by default and is redefined

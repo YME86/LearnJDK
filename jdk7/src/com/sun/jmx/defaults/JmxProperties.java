@@ -31,7 +31,6 @@ import java.util.logging.Logger;
  * This contains the property list defined for this
  * JMX implementation.
  *
- *
  * @since 1.5
  */
 public class JmxProperties {

@@ -32,12 +32,10 @@ import org.w3c.dom.Node;
  * <p>This interface must be implemented in order for a class to
  * participate as a parser for the DOMCatalogReader.
  *
- * @see Catalog
- * @see DOMCatalogReader
- *
  * @author Norman Walsh
  * <a href="mailto:Norman.Walsh@Sun.COM">Norman.Walsh@Sun.COM</a>
- *
+ * @see Catalog
+ * @see DOMCatalogReader
  */
 public interface DOMCatalogParser {
     /**
@@ -47,7 +45,7 @@ public interface DOMCatalogParser {
      * construct appropriate catalog entry(ies) from it.</p>
      *
      * @param catalog The catalog for which this node is being considered.
-     * @param node The DOM Node from the catalog.
+     * @param node    The DOM Node from the catalog.
      */
     public void parseCatalogEntry(Catalog catalog, Node node);
 }

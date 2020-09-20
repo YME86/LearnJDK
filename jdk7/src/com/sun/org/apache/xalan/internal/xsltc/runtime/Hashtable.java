@@ -34,6 +34,7 @@ import java.util.Enumeration;
 
 /**
  * Object that wraps entries in the hash-table
+ *
  * @author Morten Jorgensen
  */
 class HashtableEntry {
@@ -47,7 +48,7 @@ class HashtableEntry {
         entry.hash = hash;
         entry.key = key;
         entry.value = value;
-        entry.next = (next != null) ? (HashtableEntry)next.clone() : null;
+        entry.next = (next != null) ? (HashtableEntry) next.clone() : null;
         return entry;
     }
 }
@@ -71,7 +72,7 @@ public class Hashtable {
         if (loadFactor <= 0.0) loadFactor = 0.75f;
         this.loadFactor = loadFactor;
         table = new HashtableEntry[initialCapacity];
-        threshold = (int)(initialCapacity * loadFactor);
+        threshold = (int) (initialCapacity * loadFactor);
     }
 
     /**
@@ -133,8 +134,8 @@ public class Hashtable {
         HashtableEntry e;
         HashtableEntry tab[] = table;
 
-        for (i = tab.length ; i-- > 0 ;) {
-            for (e = tab[i] ; e != null ; e = e.next) {
+        for (i = tab.length; i-- > 0; ) {
+            for (e = tab[i]; e != null; e = e.next) {
                 if (e.value.equals(value)) {
                     return true;
                 }
@@ -152,7 +153,7 @@ public class Hashtable {
         int hash = key.hashCode();
         int index = (hash & 0x7FFFFFFF) % tab.length;
 
-        for (e = tab[index] ; e != null ; e = e.next)
+        for (e = tab[index]; e != null; e = e.next)
             if ((e.hash == hash) && e.key.equals(key))
                 return true;
 
@@ -168,7 +169,7 @@ public class Hashtable {
         int hash = key.hashCode();
         int index = (hash & 0x7FFFFFFF) % tab.length;
 
-        for (e = tab[index] ; e != null ; e = e.next)
+        for (e = tab[index]; e != null; e = e.next)
             if ((e.hash == hash) && e.key.equals(key))
                 return e.value;
 
@@ -190,11 +191,11 @@ public class Hashtable {
         int newCapacity = oldCapacity * 2 + 1;
         HashtableEntry newTable[] = new HashtableEntry[newCapacity];
 
-        threshold = (int)(newCapacity * loadFactor);
+        threshold = (int) (newCapacity * loadFactor);
         table = newTable;
 
-        for (i = oldCapacity ; i-- > 0 ;) {
-            for (old = oldTable[i] ; old != null ; ) {
+        for (i = oldCapacity; i-- > 0; ) {
+            for (old = oldTable[i]; old != null; ) {
                 e = old;
                 old = old.next;
                 index = (e.hash & 0x7FFFFFFF) % newCapacity;
@@ -222,7 +223,7 @@ public class Hashtable {
         int hash = key.hashCode();
         int index = (hash & 0x7FFFFFFF) % tab.length;
 
-        for (e = tab[index] ; e != null ; e = e.next) {
+        for (e = tab[index]; e != null; e = e.next) {
             if ((e.hash == hash) && e.key.equals(key)) {
                 Object old = e.value;
                 e.value = value;
@@ -256,7 +257,7 @@ public class Hashtable {
         HashtableEntry tab[] = table;
         int hash = key.hashCode();
         int index = (hash & 0x7FFFFFFF) % tab.length;
-        for (e = tab[index], prev = null ; e != null ; prev = e, e = e.next) {
+        for (e = tab[index], prev = null; e != null; prev = e, e = e.next) {
             if ((e.hash == hash) && e.key.equals(key)) {
                 if (prev != null)
                     prev.next = e.next;
@@ -331,7 +332,7 @@ public class Hashtable {
 
         public Object nextElement() {
             if (entry == null) {
-                while ((index-- > 0) && ((entry = table[index]) == null));
+                while ((index-- > 0) && ((entry = table[index]) == null)) ;
             }
             if (entry != null) {
                 HashtableEntry e = entry;

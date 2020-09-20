@@ -27,7 +27,6 @@
 package com.sun.jmx.snmp;
 
 
-
 /**
  * Represents an SNMP null value.
  * <p><b>This API is a Sun Microsystems internal API  and is subject
@@ -39,11 +38,12 @@ public class SnmpNull extends SnmpValue {
 
     // CONSTRUCTORS
     //-------------
+
     /**
      * Constructs a new <CODE>SnmpNull</CODE>.
      */
     public SnmpNull() {
-        tag = NullTag ;
+        tag = NullTag;
     }
 
     /**
@@ -56,94 +56,103 @@ public class SnmpNull extends SnmpValue {
 
     /**
      * Constructs a new <CODE>SnmpNull</CODE> from the specified tag value.
+     *
      * @param t The initialization value.
      */
     public SnmpNull(int t) {
-        tag = t ;
+        tag = t;
     }
 
     // PUBLIC METHODS
     //---------------
+
     /**
      * Returns the tag value of this <CODE>SnmpNull</CODE>.
+     *
      * @return The value.
      */
     public int getTag() {
-        return tag ;
+        return tag;
     }
 
     /**
      * Converts the <CODE>NULL</CODE> value to its ASN.1 <CODE>String</CODE> form.
      * When the tag is not the universal one, it is preprended
      * to the <CODE>String</CODE> form.
+     *
      * @return The <CODE>String</CODE> representation of the value.
      */
     public String toString() {
-        String result = "" ;
+        String result = "";
         if (tag != 5) {
-            result += "[" + tag + "] " ;
+            result += "[" + tag + "] ";
         }
-        result += "NULL" ;
-        switch(tag) {
-        case errNoSuchObjectTag :
-            result += " (noSuchObject)" ;
-            break ;
+        result += "NULL";
+        switch (tag) {
+            case errNoSuchObjectTag:
+                result += " (noSuchObject)";
+                break;
 
-        case errNoSuchInstanceTag :
-            result += " (noSuchInstance)" ;
-            break ;
+            case errNoSuchInstanceTag:
+                result += " (noSuchInstance)";
+                break;
 
-        case errEndOfMibViewTag :
-            result += " (endOfMibView)" ;
-            break ;
+            case errEndOfMibViewTag:
+                result += " (endOfMibView)";
+                break;
         }
-        return result ;
+        return result;
     }
 
     /**
      * Converts the <CODE>NULL</CODE> value to its <CODE>SnmpOid</CODE> form.
      * Normally, a <CODE>NULL</CODE> value cannot be used as an index value,
      * this method triggers an exception.
+     *
      * @return The OID representation of the value.
      */
     public SnmpOid toOid() {
-        throw new IllegalArgumentException() ;
+        throw new IllegalArgumentException();
     }
 
     /**
      * Performs a clone action. This provides a workaround for the
      * <CODE>SnmpValue</CODE> interface.
+     *
      * @return The SnmpValue clone.
      */
     final synchronized public SnmpValue duplicate() {
-        return (SnmpValue) clone() ;
+        return (SnmpValue) clone();
     }
 
     /**
      * Clones the <CODE>SnmpNull</CODE> object, making a copy of its data.
+     *
      * @return The object clone.
      */
     final synchronized public Object clone() {
-        SnmpNull  newclone = null ;
+        SnmpNull newclone = null;
         try {
-            newclone = (SnmpNull) super.clone() ;
-            newclone.tag = tag ;
+            newclone = (SnmpNull) super.clone();
+            newclone.tag = tag;
         } catch (CloneNotSupportedException e) {
-            throw new InternalError() ; // vm bug.
+            throw new InternalError(); // vm bug.
         }
-        return newclone ;
+        return newclone;
     }
 
     /**
      * Returns a textual description of the type object.
+     *
      * @return ASN.1 textual description.
      */
     final public String getTypeName() {
-        return name ;
+        return name;
     }
 
     /**
      * Checks if this <CODE>SnmpNull</CODE> object corresponds to a <CODE>noSuchObject</CODE> value.
+     *
      * @return <CODE>true</CODE> if the tag equals {@link com.sun.jmx.snmp.SnmpDataTypeEnums#errNoSuchObjectTag},
      * <CODE>false</CODE> otherwise.
      */
@@ -153,6 +162,7 @@ public class SnmpNull extends SnmpValue {
 
     /**
      * Checks if this <CODE>SnmpNull</CODE> object corresponds to a <CODE>noSuchInstance</CODE> value.
+     *
      * @return <CODE>true</CODE> if the tag equals {@link com.sun.jmx.snmp.SnmpDataTypeEnums#errNoSuchInstanceTag},
      * <CODE>false</CODE> otherwise.
      */
@@ -162,6 +172,7 @@ public class SnmpNull extends SnmpValue {
 
     /**
      * Checks if this <CODE>SnmpNull</CODE> object corresponds to an <CODE>endOfMibView</CODE> value.
+     *
      * @return <CODE>true</CODE> if the tag equals {@link com.sun.jmx.snmp.SnmpDataTypeEnums#errEndOfMibViewTag},
      * <CODE>false</CODE> otherwise.
      */
@@ -174,10 +185,10 @@ public class SnmpNull extends SnmpValue {
     /**
      * Name of the type.
      */
-    final static String name = "Null" ;
+    final static String name = "Null";
 
     /**
      * This is the tag of the NULL value. By default, it is the universal tag value.
      */
-    private int tag = 5 ;
+    private int tag = 5;
 }

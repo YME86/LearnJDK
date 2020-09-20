@@ -37,13 +37,14 @@ import javax.management.MBeanServerDelegate;
  * @since 1.5
  */
 public interface SunJmxMBeanServer
-    extends MBeanServer {
+        extends MBeanServer {
 
     /**
      * Return the MBeanInstantiator associated to this MBeanServer.
-     * @exception UnsupportedOperationException if
-     *            {@link MBeanServerInterceptor}s
-     *            are not enabled on this object.
+     *
+     * @throws UnsupportedOperationException if
+     *                                       {@link MBeanServerInterceptor}s
+     *                                       are not enabled on this object.
      * @see #interceptorsEnabled
      */
     public MBeanInstantiator getMBeanInstantiator();
@@ -51,8 +52,9 @@ public interface SunJmxMBeanServer
     /**
      * Tell whether {@link MBeanServerInterceptor}s are enabled on this
      * object.
+     *
      * @return <code>true</code> if {@link MBeanServerInterceptor}s are
-     *         enabled.
+     * enabled.
      * @see #getMBeanServerInterceptor
      * @see #setMBeanServerInterceptor
      * @see #getMBeanInstantiator
@@ -62,18 +64,20 @@ public interface SunJmxMBeanServer
 
     /**
      * Return the MBeanServerInterceptor.
-     * @exception UnsupportedOperationException if
-     *            {@link MBeanServerInterceptor}s
-     *            are not enabled on this object.
+     *
+     * @throws UnsupportedOperationException if
+     *                                       {@link MBeanServerInterceptor}s
+     *                                       are not enabled on this object.
      * @see #interceptorsEnabled
      **/
     public MBeanServer getMBeanServerInterceptor();
 
     /**
      * Set the MBeanServerInterceptor.
-     * @exception UnsupportedOperationException if
-     *            {@link MBeanServerInterceptor}s
-     *            are not enabled on this object.
+     *
+     * @throws UnsupportedOperationException if
+     *                                       {@link MBeanServerInterceptor}s
+     *                                       are not enabled on this object.
      * @see #interceptorsEnabled
      **/
     public void setMBeanServerInterceptor(MBeanServer interceptor);
@@ -83,7 +87,6 @@ public interface SunJmxMBeanServer
      * Notifications can be sent from the MBean server delegate using
      * the method {@link MBeanServerDelegate#sendNotification}
      * in the returned object.</p>
-     *
      */
     public MBeanServerDelegate getMBeanServerDelegate();
 

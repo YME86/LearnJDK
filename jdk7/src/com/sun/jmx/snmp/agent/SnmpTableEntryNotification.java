@@ -27,9 +27,9 @@
 package com.sun.jmx.snmp.agent;
 
 
-
 // jmx imports
 //
+
 import javax.management.Notification;
 import javax.management.ObjectName;
 
@@ -45,7 +45,7 @@ import javax.management.ObjectName;
  * <UL>
  * <LI>A new entry has been added to the SNMP table.
  * <LI>An existing entry has been removed from the SNMP table.
-  </UL>
+ * </UL>
  *
  * <p><b>This API is a Sun Microsystems internal API  and is subject
  * to change without notice.</b></p>
@@ -56,15 +56,15 @@ public class SnmpTableEntryNotification extends Notification {
     /**
      * Creates and initializes a table entry notification object.
      *
-     * @param type The notification type.
-     * @param source The notification producer.
+     * @param type           The notification type.
+     * @param source         The notification producer.
      * @param sequenceNumber The notification sequence number within the
-     *                  source object.
-     * @param timeStamp The notification emission date.
-     * @param entry     The entry object (may be null if the entry is
-     *                  registered in the MBeanServer).
-     * @param entryName The ObjectName entry object (may be null if the
-     *                  entry is not registered in the MBeanServer).
+     *                       source object.
+     * @param timeStamp      The notification emission date.
+     * @param entry          The entry object (may be null if the entry is
+     *                       registered in the MBeanServer).
+     * @param entryName      The ObjectName entry object (may be null if the
+     *                       entry is not registered in the MBeanServer).
      * @since 1.5
      */
     SnmpTableEntryNotification(String type, Object source,
@@ -73,7 +73,7 @@ public class SnmpTableEntryNotification extends Notification {
 
         super(type, source, sequenceNumber, timeStamp);
         this.entry = entry;
-        this.name  = entryName;
+        this.name = entryName;
     }
 
     /**
@@ -108,7 +108,7 @@ public class SnmpTableEntryNotification extends Notification {
      * <CODE>jmx.snmp.table.entry.added</CODE>.
      */
     public static final String SNMP_ENTRY_ADDED =
-        "jmx.snmp.table.entry.added";
+            "jmx.snmp.table.entry.added";
 
     /**
      * Notification type denoting that an entry has been removed from the
@@ -117,19 +117,21 @@ public class SnmpTableEntryNotification extends Notification {
      * <CODE>jmx.snmp.table.entry.removed</CODE>.
      */
     public static final String SNMP_ENTRY_REMOVED =
-        "jmx.snmp.table.entry.removed";
+            "jmx.snmp.table.entry.removed";
 
     // PRIVATE VARIABLES
     //------------------
 
     /**
      * The entry object.
+     *
      * @serial
      */
     private final Object entry;
 
     /**
      * The entry name.
+     *
      * @serial
      * @since 1.5
      */

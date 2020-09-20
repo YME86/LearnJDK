@@ -57,8 +57,10 @@ package com.sun.org.apache.bcel.internal.util;
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
+
 import java.util.HashMap;
 import java.util.Collection;
+
 import com.sun.org.apache.bcel.internal.classfile.JavaClass;
 
 /**
@@ -68,32 +70,37 @@ import com.sun.org.apache.bcel.internal.classfile.JavaClass;
  *
  * @author <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
  * @see ClassStack
-*/
+ */
 public class ClassSet implements java.io.Serializable {
-  private HashMap _map = new HashMap();
+    private HashMap _map = new HashMap();
 
-  public boolean add(JavaClass clazz) {
-    boolean result = false;
+    public boolean add(JavaClass clazz) {
+        boolean result = false;
 
-    if(!_map.containsKey(clazz.getClassName())) {
-      result = true;
-      _map.put(clazz.getClassName(), clazz);
+        if (!_map.containsKey(clazz.getClassName())) {
+            result = true;
+            _map.put(clazz.getClassName(), clazz);
+        }
+
+        return result;
     }
 
-    return result;
-  }
+    public void remove(JavaClass clazz) {
+        _map.remove(clazz.getClassName());
+    }
 
-  public void      remove(JavaClass clazz) { _map.remove(clazz.getClassName()); }
-  public boolean   empty()                 { return _map.isEmpty(); }
+    public boolean empty() {
+        return _map.isEmpty();
+    }
 
-  public JavaClass[] toArray() {
-    Collection values = _map.values();
-    JavaClass[] classes = new JavaClass[values.size()];
-    values.toArray(classes);
-    return classes;
-  }
+    public JavaClass[] toArray() {
+        Collection values = _map.values();
+        JavaClass[] classes = new JavaClass[values.size()];
+        values.toArray(classes);
+        return classes;
+    }
 
-  public String[] getClassNames() {
-    return (String[])_map.keySet().toArray(new String[_map.keySet().size()]);
-  }
+    public String[] getClassNames() {
+        return (String[]) _map.keySet().toArray(new String[_map.keySet().size()]);
+    }
 }

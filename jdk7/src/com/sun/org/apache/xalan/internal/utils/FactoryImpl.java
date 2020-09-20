@@ -29,7 +29,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.SAXParserFactory;
 
 /**
- *
  * @author huizhe wang
  */
 public class FactoryImpl {
@@ -39,19 +38,20 @@ public class FactoryImpl {
 
     static public DocumentBuilderFactory getDOMFactory(boolean useServicesMechanism) {
         DocumentBuilderFactory dbf =
-            useServicesMechanism ?
-            DocumentBuilderFactory.newInstance() :
-            DocumentBuilderFactory.newInstance( DBF,
-                FactoryImpl.class.getClassLoader());
+                useServicesMechanism ?
+                        DocumentBuilderFactory.newInstance() :
+                        DocumentBuilderFactory.newInstance(DBF,
+                                FactoryImpl.class.getClassLoader());
 
         return dbf;
     }
+
     static public SAXParserFactory getSAXFactory(boolean useServicesMechanism) {
-                SAXParserFactory factory =
-                    useServicesMechanism ?
-                    SAXParserFactory.newInstance() :
-                    SAXParserFactory.newInstance(SF,
-                        FactoryImpl.class.getClassLoader());
-                return factory;
+        SAXParserFactory factory =
+                useServicesMechanism ?
+                        SAXParserFactory.newInstance() :
+                        SAXParserFactory.newInstance(SF,
+                                FactoryImpl.class.getClassLoader());
+        return factory;
     }
 }

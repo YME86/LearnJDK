@@ -128,7 +128,7 @@ public final class SecuritySupport {
     }
 
     public static InputStream getResourceAsStream(final ClassLoader cl,
-            final String name) {
+                                                  final String name) {
         return (InputStream) AccessController.doPrivileged(new PrivilegedAction() {
             public Object run() {
                 InputStream ris;
@@ -147,7 +147,7 @@ public final class SecuritySupport {
      * and the caller's class loader.
      *
      * @param bundle the base name of the resource bundle, a fully qualified
-     * class name
+     *               class name
      * @return a resource bundle for the given base name and the default locale
      */
     public static ListResourceBundle getResourceBundle(String bundle) {
@@ -159,7 +159,7 @@ public final class SecuritySupport {
      * caller's class loader.
      *
      * @param bundle the base name of the resource bundle, a fully qualified
-     * class name
+     *               class name
      * @param locale the locale for which a resource bundle is desired
      * @return a resource bundle for the given base name and locale
      */
@@ -208,9 +208,8 @@ public final class SecuritySupport {
     /**
      * Figure out which ClassLoader to use.
      */
-    public static ClassLoader findClassLoader()
-    {
-        if (System.getSecurityManager()!=null) {
+    public static ClassLoader findClassLoader() {
+        if (System.getSecurityManager() != null) {
             //this will ensure bootclassloader is used
             return null;
         } else {

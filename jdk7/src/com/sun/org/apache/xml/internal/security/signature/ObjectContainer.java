@@ -38,111 +38,113 @@ import org.w3c.dom.Node;
  */
 public class ObjectContainer extends SignatureElementProxy {
 
-   /**
-    * Constructs {@link ObjectContainer}
-    *
-    * @param doc the {@link Document} in which <code>Object</code> element is placed
-    */
-   public ObjectContainer(Document doc) {
+    /**
+     * Constructs {@link ObjectContainer}
+     *
+     * @param doc the {@link Document} in which <code>Object</code> element is placed
+     */
+    public ObjectContainer(Document doc) {
 
-      super(doc);
-   }
+        super(doc);
+    }
 
-   /**
-    * Constructs {@link ObjectContainer} from {@link Element}
-    *
-    * @param element is <code>Object</code> element
-    * @param BaseURI the URI of the resource where the XML instance was stored
-    * @throws XMLSecurityException
-    */
-   public ObjectContainer(Element element, String BaseURI)
-           throws XMLSecurityException {
+    /**
+     * Constructs {@link ObjectContainer} from {@link Element}
+     *
+     * @param element is <code>Object</code> element
+     * @param BaseURI the URI of the resource where the XML instance was stored
+     * @throws XMLSecurityException
+     */
+    public ObjectContainer(Element element, String BaseURI)
+            throws XMLSecurityException {
 
-      super(element, BaseURI);
-   }
+        super(element, BaseURI);
+    }
 
-   /**
-    * Sets the <code>Id</code> attribute
-    *
-    * @param Id <code>Id</code> attribute
-    */
-   public void setId(String Id) {
+    /**
+     * Sets the <code>Id</code> attribute
+     *
+     * @param Id <code>Id</code> attribute
+     */
+    public void setId(String Id) {
 
-      if (Id != null) {
-          setLocalIdAttribute(Constants._ATT_ID, Id);
-      }
-   }
+        if (Id != null) {
+            setLocalIdAttribute(Constants._ATT_ID, Id);
+        }
+    }
 
-   /**
-    * Returns the <code>Id</code> attribute
-    *
-    * @return the <code>Id</code> attribute
-    */
-   public String getId() {
-      return this._constructionElement.getAttributeNS(null, Constants._ATT_ID);
-   }
+    /**
+     * Returns the <code>Id</code> attribute
+     *
+     * @return the <code>Id</code> attribute
+     */
+    public String getId() {
+        return this._constructionElement.getAttributeNS(null, Constants._ATT_ID);
+    }
 
-   /**
-    * Sets the <code>MimeType</code> attribute
-    *
-    * @param MimeType the <code>MimeType</code> attribute
-    */
-   public void setMimeType(String MimeType) {
+    /**
+     * Sets the <code>MimeType</code> attribute
+     *
+     * @param MimeType the <code>MimeType</code> attribute
+     */
+    public void setMimeType(String MimeType) {
 
-      if ( (MimeType != null)) {
-         this._constructionElement.setAttributeNS(null, Constants._ATT_MIMETYPE,
-                                                MimeType);
-      }
-   }
+        if ((MimeType != null)) {
+            this._constructionElement.setAttributeNS(null, Constants._ATT_MIMETYPE,
+                    MimeType);
+        }
+    }
 
-   /**
-    * Returns the <code>MimeType</code> attribute
-    *
-    * @return the <code>MimeType</code> attribute
-    */
-   public String getMimeType() {
-      return this._constructionElement.getAttributeNS(null, Constants._ATT_MIMETYPE);
-   }
+    /**
+     * Returns the <code>MimeType</code> attribute
+     *
+     * @return the <code>MimeType</code> attribute
+     */
+    public String getMimeType() {
+        return this._constructionElement.getAttributeNS(null, Constants._ATT_MIMETYPE);
+    }
 
-   /**
-    * Sets the <code>Encoding</code> attribute
-    *
-    * @param Encoding the <code>Encoding</code> attribute
-    */
-   public void setEncoding(String Encoding) {
+    /**
+     * Sets the <code>Encoding</code> attribute
+     *
+     * @param Encoding the <code>Encoding</code> attribute
+     */
+    public void setEncoding(String Encoding) {
 
-      if ((Encoding != null)) {
-         this._constructionElement.setAttributeNS(null, Constants._ATT_ENCODING,
-                                                Encoding);
-      }
-   }
+        if ((Encoding != null)) {
+            this._constructionElement.setAttributeNS(null, Constants._ATT_ENCODING,
+                    Encoding);
+        }
+    }
 
-   /**
-    * Returns the <code>Encoding</code> attribute
-    *
-    * @return the <code>Encoding</code> attribute
-    */
-   public String getEncoding() {
-      return this._constructionElement.getAttributeNS(null, Constants._ATT_ENCODING);
-   }
+    /**
+     * Returns the <code>Encoding</code> attribute
+     *
+     * @return the <code>Encoding</code> attribute
+     */
+    public String getEncoding() {
+        return this._constructionElement.getAttributeNS(null, Constants._ATT_ENCODING);
+    }
 
-   /**
-    * Adds child Node
-    *
-    * @param node child Node
-    * @return the new node in the tree.
-    */
-   public Node appendChild(Node node) {
+    /**
+     * Adds child Node
+     *
+     * @param node child Node
+     * @return the new node in the tree.
+     */
+    public Node appendChild(Node node) {
 
-      Node result = null;
+        Node result = null;
 
-      result = this._constructionElement.appendChild(node);
+        result = this._constructionElement.appendChild(node);
 
-      return result;
-   }
+        return result;
+    }
 
-   /** @inheritDoc */
-   public String getBaseLocalName() {
-      return Constants._TAG_OBJECT;
-   }
+    /**
+     * @inheritDoc
+     */
+    public String getBaseLocalName() {
+        return Constants._TAG_OBJECT;
+    }
 }

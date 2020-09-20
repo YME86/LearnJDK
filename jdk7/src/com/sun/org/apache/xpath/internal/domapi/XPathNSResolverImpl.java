@@ -28,7 +28,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.xpath.XPathNSResolver;
 
 /**
- *
  * The class provides an implementation XPathNSResolver according
  * to the DOM L3 XPath Specification, Working Group Note 26 February 2004.
  *
@@ -40,24 +39,25 @@ import org.w3c.dom.xpath.XPathNSResolver;
  * construct an implementation of <code>XPathNSResolver</code> from a node,
  * or the interface may be implemented by any application.</p>
  *
- * @see org.w3c.dom.xpath.XPathNSResolver
  * @xsl.usage internal
+ * @see org.w3c.dom.xpath.XPathNSResolver
  */
 class XPathNSResolverImpl extends PrefixResolverDefault implements XPathNSResolver {
 
-        /**
-         * Constructor for XPathNSResolverImpl.
-         * @param xpathExpressionContext
-         */
-        public XPathNSResolverImpl(Node xpathExpressionContext) {
-                super(xpathExpressionContext);
-        }
+    /**
+     * Constructor for XPathNSResolverImpl.
+     *
+     * @param xpathExpressionContext
+     */
+    public XPathNSResolverImpl(Node xpathExpressionContext) {
+        super(xpathExpressionContext);
+    }
 
-        /**
-         * @see org.w3c.dom.xpath.XPathNSResolver#lookupNamespaceURI(String)
-         */
-        public String lookupNamespaceURI(String prefix) {
-                return super.getNamespaceForPrefix(prefix);
-        }
+    /**
+     * @see org.w3c.dom.xpath.XPathNSResolver#lookupNamespaceURI(String)
+     */
+    public String lookupNamespaceURI(String prefix) {
+        return super.getNamespaceForPrefix(prefix);
+    }
 
 }

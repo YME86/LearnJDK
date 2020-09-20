@@ -42,18 +42,18 @@ import com.sun.org.apache.xml.internal.serializer.SerializationHandler;
  */
 final class LiteralAttribute extends Instruction {
 
-    private final String  _name;         // Attribute name (incl. prefix)
+    private final String _name;         // Attribute name (incl. prefix)
     private final AttributeValue _value; // Attribute value
 
     /**
      * Creates a new literal attribute (but does not insert it into the AST).
-     * @param name the attribute name (incl. prefix) as a String.
-     * @param value the attribute value.
+     *
+     * @param name   the attribute name (incl. prefix) as a String.
+     * @param value  the attribute value.
      * @param parser the XSLT parser (wraps XPath parser).
      */
     public LiteralAttribute(String name, String value, Parser parser,
-        SyntaxTreeNode parent)
-    {
+                            SyntaxTreeNode parent) {
         _name = name;
         setParent(parent);
         _value = AttributeValue.create(this, value, parser);
@@ -89,25 +89,24 @@ final class LiteralAttribute extends Instruction {
         // if all attributes are unique.
         SyntaxTreeNode parent = getParent();
         if (parent instanceof LiteralElement
-            && ((LiteralElement)parent).allAttributesUnique()) {
+                && ((LiteralElement) parent).allAttributesUnique()) {
 
             int flags = 0;
             boolean isHTMLAttrEmpty = false;
-            ElemDesc elemDesc = ((LiteralElement)parent).getElemDesc();
+            ElemDesc elemDesc = ((LiteralElement) parent).getElemDesc();
 
             // Set the HTML flags
             if (elemDesc != null) {
                 if (elemDesc.isAttrFlagSet(_name, ElemDesc.ATTREMPTY)) {
                     flags = flags | SerializationHandler.HTML_ATTREMPTY;
                     isHTMLAttrEmpty = true;
-                }
-                else if (elemDesc.isAttrFlagSet(_name, ElemDesc.ATTRURL)) {
+                } else if (elemDesc.isAttrFlagSet(_name, ElemDesc.ATTRURL)) {
                     flags = flags | SerializationHandler.HTML_ATTRURL;
                 }
             }
 
             if (_value instanceof SimpleAttributeValue) {
-                String attrValue = ((SimpleAttributeValue)_value).toString();
+                String attrValue = ((SimpleAttributeValue) _value).toString();
 
                 if (!hasBadChars(attrValue) && !isHTMLAttrEmpty) {
                     flags = flags | SerializationHandler.NO_BAD_CHARS;
@@ -116,8 +115,7 @@ final class LiteralAttribute extends Instruction {
 
             il.append(new PUSH(cpg, flags));
             il.append(methodGen.uniqueAttribute());
-        }
-        else {
+        } else {
             // call attribute
             il.append(methodGen.attribute());
         }

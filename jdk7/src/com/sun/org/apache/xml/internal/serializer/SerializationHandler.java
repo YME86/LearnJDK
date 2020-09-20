@@ -36,14 +36,14 @@ import org.xml.sax.ext.DeclHandler;
  * This interface is the one that a serializer implements. It is a group of
  * other interfaces, such as ExtendedContentHandler, ExtendedLexicalHandler etc.
  * In addition there are other methods, such as reset().
- *
+ * <p>
  * This class is public only because it is used in another package,
  * it is not a public API.
  *
  * @xsl.usage internal
  */
 public interface SerializationHandler
-    extends
+        extends
         ExtendedContentHandler,
         ExtendedLexicalHandler,
         XSLOutputAttributes,
@@ -51,8 +51,7 @@ public interface SerializationHandler
         org.xml.sax.DTDHandler,
         ErrorHandler,
         DOMSerializer,
-        Serializer
-{
+        Serializer {
     /**
      * Set the SAX Content handler that the serializer sends its output to. This
      * method only applies to a ToSAXHandler, not to a ToStream serializer.
@@ -72,9 +71,10 @@ public interface SerializationHandler
      * @throws IOException
      */
     public void serialize(Node node) throws IOException;
+
     /**
      * Turns special character escaping on/off.
-     *
+     * <p>
      * Note that characters will
      * never, even if this option is set to 'true', be escaped within
      * CDATA sections in output XML documents.
@@ -85,18 +85,21 @@ public interface SerializationHandler
 
     /**
      * Set the number of spaces to indent for each indentation level.
+     *
      * @param spaces the number of spaces to indent for each indentation level.
      */
     public void setIndentAmount(int spaces);
 
     /**
      * Set the transformer associated with the serializer.
+     *
      * @param transformer the transformer associated with the serializer.
      */
     public void setTransformer(Transformer transformer);
 
     /**
      * Get the transformer associated with the serializer.
+     *
      * @return Transformer the transformer associated with the serializer.
      */
     public Transformer getTransformer();
@@ -119,13 +122,15 @@ public interface SerializationHandler
     /**
      * Default behavior is to expand DTD entities,
      * that is the initall default value is true.
+     *
      * @param expand true if DTD entities are to be expanded,
-     * false if they are to be left as DTD entity references.
+     *               false if they are to be left as DTD entity references.
      */
     public void setDTDEntityExpansion(boolean expand);
 
     /**
      * Specify if the output will be treated as a standalone  property
+     *
      * @param isStandalone true if the http://www.oracle.com/xml/is-standalone is set to yes
      * @see OutputPropertiesFactory ORACLE_IS_STANDALONE
      */

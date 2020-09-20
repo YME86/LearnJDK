@@ -10,9 +10,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -38,10 +38,10 @@ public class JCEMapper {
 
     /** {@link org.apache.commons.logging} logging facility */
     private static java.util.logging.Logger log =
-        java.util.logging.Logger.getLogger(JCEMapper.class.getName());
+            java.util.logging.Logger.getLogger(JCEMapper.class.getName());
 
     private static Map<String, Algorithm> algorithmsMap =
-        new ConcurrentHashMap<String, Algorithm>();
+            new ConcurrentHashMap<String, Algorithm>();
 
     private static String providerName = null;
 
@@ -63,128 +63,128 @@ public class JCEMapper {
      */
     public static void registerDefaultAlgorithms() {
         algorithmsMap.put(
-            MessageDigestAlgorithm.ALGO_ID_DIGEST_NOT_RECOMMENDED_MD5,
-            new Algorithm("", "MD5", "MessageDigest")
+                MessageDigestAlgorithm.ALGO_ID_DIGEST_NOT_RECOMMENDED_MD5,
+                new Algorithm("", "MD5", "MessageDigest")
         );
         algorithmsMap.put(
-            MessageDigestAlgorithm.ALGO_ID_DIGEST_RIPEMD160,
-            new Algorithm("", "RIPEMD160", "MessageDigest")
+                MessageDigestAlgorithm.ALGO_ID_DIGEST_RIPEMD160,
+                new Algorithm("", "RIPEMD160", "MessageDigest")
         );
         algorithmsMap.put(
-            MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA1,
-            new Algorithm("", "SHA-1", "MessageDigest")
+                MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA1,
+                new Algorithm("", "SHA-1", "MessageDigest")
         );
         algorithmsMap.put(
-            MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA256,
-            new Algorithm("", "SHA-256", "MessageDigest")
+                MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA256,
+                new Algorithm("", "SHA-256", "MessageDigest")
         );
         algorithmsMap.put(
-            MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA384,
-            new Algorithm("", "SHA-384", "MessageDigest")
+                MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA384,
+                new Algorithm("", "SHA-384", "MessageDigest")
         );
         algorithmsMap.put(
-            MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA512,
-            new Algorithm("", "SHA-512", "MessageDigest")
+                MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA512,
+                new Algorithm("", "SHA-512", "MessageDigest")
         );
         algorithmsMap.put(
-            XMLSignature.ALGO_ID_SIGNATURE_DSA,
-            new Algorithm("", "SHA1withDSA", "Signature")
+                XMLSignature.ALGO_ID_SIGNATURE_DSA,
+                new Algorithm("", "SHA1withDSA", "Signature")
         );
         algorithmsMap.put(
-            XMLSignature.ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5,
-            new Algorithm("", "MD5withRSA", "Signature")
+                XMLSignature.ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5,
+                new Algorithm("", "MD5withRSA", "Signature")
         );
         algorithmsMap.put(
-            XMLSignature.ALGO_ID_SIGNATURE_RSA_RIPEMD160,
-            new Algorithm("", "RIPEMD160withRSA", "Signature")
+                XMLSignature.ALGO_ID_SIGNATURE_RSA_RIPEMD160,
+                new Algorithm("", "RIPEMD160withRSA", "Signature")
         );
         algorithmsMap.put(
-            XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1,
-            new Algorithm("", "SHA1withRSA", "Signature")
+                XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1,
+                new Algorithm("", "SHA1withRSA", "Signature")
         );
         algorithmsMap.put(
-            XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA256,
-            new Algorithm("", "SHA256withRSA", "Signature")
+                XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA256,
+                new Algorithm("", "SHA256withRSA", "Signature")
         );
         algorithmsMap.put(
-            XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA384,
-            new Algorithm("", "SHA384withRSA", "Signature")
+                XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA384,
+                new Algorithm("", "SHA384withRSA", "Signature")
         );
         algorithmsMap.put(
-            XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA512,
-            new Algorithm("", "SHA512withRSA", "Signature")
+                XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA512,
+                new Algorithm("", "SHA512withRSA", "Signature")
         );
         algorithmsMap.put(
-            XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA1,
-            new Algorithm("", "SHA1withECDSA", "Signature")
+                XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA1,
+                new Algorithm("", "SHA1withECDSA", "Signature")
         );
         algorithmsMap.put(
-            XMLSignature.ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5,
-            new Algorithm("", "HmacMD5", "Mac")
+                XMLSignature.ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5,
+                new Algorithm("", "HmacMD5", "Mac")
         );
         algorithmsMap.put(
-            XMLSignature.ALGO_ID_MAC_HMAC_RIPEMD160,
-            new Algorithm("", "HMACRIPEMD160", "Mac")
+                XMLSignature.ALGO_ID_MAC_HMAC_RIPEMD160,
+                new Algorithm("", "HMACRIPEMD160", "Mac")
         );
         algorithmsMap.put(
-            XMLSignature.ALGO_ID_MAC_HMAC_SHA1,
-            new Algorithm("", "HmacSHA1", "Mac")
+                XMLSignature.ALGO_ID_MAC_HMAC_SHA1,
+                new Algorithm("", "HmacSHA1", "Mac")
         );
         algorithmsMap.put(
-            XMLSignature.ALGO_ID_MAC_HMAC_SHA256,
-            new Algorithm("", "HmacSHA256", "Mac")
+                XMLSignature.ALGO_ID_MAC_HMAC_SHA256,
+                new Algorithm("", "HmacSHA256", "Mac")
         );
         algorithmsMap.put(
-            XMLSignature.ALGO_ID_MAC_HMAC_SHA384,
-            new Algorithm("", "HmacSHA384", "Mac")
+                XMLSignature.ALGO_ID_MAC_HMAC_SHA384,
+                new Algorithm("", "HmacSHA384", "Mac")
         );
         algorithmsMap.put(
-            XMLSignature.ALGO_ID_MAC_HMAC_SHA512,
-            new Algorithm("", "HmacSHA512", "Mac")
+                XMLSignature.ALGO_ID_MAC_HMAC_SHA512,
+                new Algorithm("", "HmacSHA512", "Mac")
         );
         algorithmsMap.put(
-            XMLCipher.TRIPLEDES,
-            new Algorithm("DESede", "DESede/CBC/ISO10126Padding", "BlockEncryption", 192)
+                XMLCipher.TRIPLEDES,
+                new Algorithm("DESede", "DESede/CBC/ISO10126Padding", "BlockEncryption", 192)
         );
         algorithmsMap.put(
-            XMLCipher.AES_128,
-            new Algorithm("AES", "AES/CBC/ISO10126Padding", "BlockEncryption", 128)
+                XMLCipher.AES_128,
+                new Algorithm("AES", "AES/CBC/ISO10126Padding", "BlockEncryption", 128)
         );
         algorithmsMap.put(
-            XMLCipher.AES_192,
-            new Algorithm("AES", "AES/CBC/ISO10126Padding", "BlockEncryption", 192)
+                XMLCipher.AES_192,
+                new Algorithm("AES", "AES/CBC/ISO10126Padding", "BlockEncryption", 192)
         );
         algorithmsMap.put(
-            XMLCipher.AES_256,
-            new Algorithm("AES", "AES/CBC/ISO10126Padding", "BlockEncryption", 256)
+                XMLCipher.AES_256,
+                new Algorithm("AES", "AES/CBC/ISO10126Padding", "BlockEncryption", 256)
         );
         algorithmsMap.put(
-            XMLCipher.RSA_v1dot5,
-            new Algorithm("RSA", "RSA/ECB/PKCS1Padding", "KeyTransport")
+                XMLCipher.RSA_v1dot5,
+                new Algorithm("RSA", "RSA/ECB/PKCS1Padding", "KeyTransport")
         );
         algorithmsMap.put(
-            XMLCipher.RSA_OAEP,
-            new Algorithm("RSA", "RSA/ECB/OAEPWithSHA1AndMGF1Padding", "KeyTransport")
+                XMLCipher.RSA_OAEP,
+                new Algorithm("RSA", "RSA/ECB/OAEPWithSHA1AndMGF1Padding", "KeyTransport")
         );
         algorithmsMap.put(
-            XMLCipher.DIFFIE_HELLMAN,
-            new Algorithm("", "", "KeyAgreement")
+                XMLCipher.DIFFIE_HELLMAN,
+                new Algorithm("", "", "KeyAgreement")
         );
         algorithmsMap.put(
-            XMLCipher.TRIPLEDES_KeyWrap,
-            new Algorithm("DESede", "DESedeWrap", "SymmetricKeyWrap", 192)
+                XMLCipher.TRIPLEDES_KeyWrap,
+                new Algorithm("DESede", "DESedeWrap", "SymmetricKeyWrap", 192)
         );
         algorithmsMap.put(
-            XMLCipher.AES_128_KeyWrap,
-            new Algorithm("AES", "AESWrap", "SymmetricKeyWrap", 128)
+                XMLCipher.AES_128_KeyWrap,
+                new Algorithm("AES", "AESWrap", "SymmetricKeyWrap", 128)
         );
         algorithmsMap.put(
-            XMLCipher.AES_192_KeyWrap,
-            new Algorithm("AES", "AESWrap", "SymmetricKeyWrap", 192)
+                XMLCipher.AES_192_KeyWrap,
+                new Algorithm("AES", "AESWrap", "SymmetricKeyWrap", 192)
         );
         algorithmsMap.put(
-            XMLCipher.AES_256_KeyWrap,
-            new Algorithm("AES", "AESWrap", "SymmetricKeyWrap", 256)
+                XMLCipher.AES_256_KeyWrap,
+                new Algorithm("AES", "AESWrap", "SymmetricKeyWrap", 256)
         );
     }
 

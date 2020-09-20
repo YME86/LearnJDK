@@ -90,7 +90,7 @@ final class Step extends RelativeLocationPath {
         if (_predicates != null) {
             final int n = _predicates.size();
             for (int i = 0; i < n; i++) {
-                final Predicate exp = (Predicate)_predicates.elementAt(i);
+                final Predicate exp = (Predicate) _predicates.elementAt(i);
                 exp.setParser(parser);
                 exp.setParent(this);
             }
@@ -131,8 +131,7 @@ final class Step extends RelativeLocationPath {
     public void addPredicates(Vector predicates) {
         if (_predicates == null) {
             _predicates = predicates;
-        }
-        else {
+        } else {
             _predicates.addAll(predicates);
         }
     }
@@ -207,9 +206,8 @@ final class Step extends RelativeLocationPath {
         //   or .[false()] we can not optimize the nodeset to a single node.
         if (isAbbreviatedDot()) {
             _type = (hasParentPattern() || hasPredicates() || hasParentLocationPath()) ?
-                Type.NodeSet : Type.Node;
-        }
-        else {
+                    Type.NodeSet : Type.Node;
+        } else {
             _type = Type.NodeSet;
         }
 
@@ -217,7 +215,7 @@ final class Step extends RelativeLocationPath {
         if (_predicates != null) {
             final int n = _predicates.size();
             for (int i = 0; i < n; i++) {
-                final Expression pred = (Expression)_predicates.elementAt(i);
+                final Expression pred = (Expression) _predicates.elementAt(i);
                 pred.typeCheck(stable);
             }
         }
@@ -253,19 +251,18 @@ final class Step extends RelativeLocationPath {
             if (_nodeType >= DTM.NTYPES) {
                 final Vector ni = xsltc.getNamesIndex();
 
-                name = (String)ni.elementAt(_nodeType-DTM.NTYPES);
+                name = (String) ni.elementAt(_nodeType - DTM.NTYPES);
                 star = name.lastIndexOf('*');
             }
 
             // If it is an attribute, but not '@*', '@pre:*' or '@node()',
             // and has no parent
             if (_axis == Axis.ATTRIBUTE && _nodeType != NodeTest.ATTRIBUTE
-                && _nodeType != NodeTest.ANODE && !hasParentPattern()
-                && star == 0)
-            {
+                    && _nodeType != NodeTest.ANODE && !hasParentPattern()
+                    && star == 0) {
                 int iter = cpg.addInterfaceMethodref(DOM_INTF,
-                                                     "getTypedAxisIterator",
-                                                     "(II)"+NODE_ITERATOR_SIG);
+                        "getTypedAxisIterator",
+                        "(II)" + NODE_ITERATOR_SIG);
                 il.append(methodGen.loadDOM());
                 il.append(new PUSH(cpg, Axis.ATTRIBUTE));
                 il.append(new PUSH(cpg, _nodeType));
@@ -279,13 +276,12 @@ final class Step extends RelativeLocationPath {
                 if (_type == Type.Node) {
                     // Put context node on stack if using Type.Node
                     il.append(methodGen.loadContextNode());
-                }
-                else {
-                    if (parent instanceof ParentLocationPath){
+                } else {
+                    if (parent instanceof ParentLocationPath) {
                         // Wrap the context node in a singleton iterator if not.
                         int init = cpg.addMethodref(SINGLETON_ITERATOR,
-                                                    "<init>",
-                                                    "("+NODE_SIG+")V");
+                                "<init>",
+                                "(" + NODE_SIG + ")V");
                         il.append(new NEW(cpg.addClass(SINGLETON_ITERATOR)));
                         il.append(DUP);
                         il.append(methodGen.loadContextNode());
@@ -293,8 +289,8 @@ final class Step extends RelativeLocationPath {
                     } else {
                         // DOM.getAxisIterator(int axis);
                         int git = cpg.addInterfaceMethodref(DOM_INTF,
-                                                "getAxisIterator",
-                                                "(I)"+NODE_ITERATOR_SIG);
+                                "getAxisIterator",
+                                "(I)" + NODE_ITERATOR_SIG);
                         il.append(methodGen.loadDOM());
                         il.append(new PUSH(cpg, _axis));
                         il.append(new INVOKEINTERFACE(git, 2));
@@ -305,7 +301,7 @@ final class Step extends RelativeLocationPath {
 
             // Special case for /foo/*/bar
             if ((parent instanceof ParentLocationPath) &&
-                (parent.getParent() instanceof ParentLocationPath)) {
+                    (parent.getParent() instanceof ParentLocationPath)) {
                 if ((_nodeType == NodeTest.ELEMENT) && (!_hadPredicates)) {
                     _nodeType = NodeTest.ANODE;
                 }
@@ -313,47 +309,47 @@ final class Step extends RelativeLocationPath {
 
             // "ELEMENT" or "*" or "@*" or ".." or "@attr" with a parent.
             switch (_nodeType) {
-            case NodeTest.ATTRIBUTE:
-                _axis = Axis.ATTRIBUTE;
-            case NodeTest.ANODE:
-                // DOM.getAxisIterator(int axis);
-                int git = cpg.addInterfaceMethodref(DOM_INTF,
-                                                    "getAxisIterator",
-                                                    "(I)"+NODE_ITERATOR_SIG);
-                il.append(methodGen.loadDOM());
-                il.append(new PUSH(cpg, _axis));
-                il.append(new INVOKEINTERFACE(git, 2));
-                break;
-            default:
-                if (star > 1) {
-                    final String namespace;
-                    if (_axis == Axis.ATTRIBUTE)
-                        namespace = name.substring(0,star-2);
-                    else
-                        namespace = name.substring(0,star-1);
-
-                    final int nsType = xsltc.registerNamespace(namespace);
-                    final int ns = cpg.addInterfaceMethodref(DOM_INTF,
-                                                    "getNamespaceAxisIterator",
-                                                    "(II)"+NODE_ITERATOR_SIG);
+                case NodeTest.ATTRIBUTE:
+                    _axis = Axis.ATTRIBUTE;
+                case NodeTest.ANODE:
+                    // DOM.getAxisIterator(int axis);
+                    int git = cpg.addInterfaceMethodref(DOM_INTF,
+                            "getAxisIterator",
+                            "(I)" + NODE_ITERATOR_SIG);
                     il.append(methodGen.loadDOM());
                     il.append(new PUSH(cpg, _axis));
-                    il.append(new PUSH(cpg, nsType));
-                    il.append(new INVOKEINTERFACE(ns, 3));
+                    il.append(new INVOKEINTERFACE(git, 2));
                     break;
-                }
-            case NodeTest.ELEMENT:
-                // DOM.getTypedAxisIterator(int axis, int type);
-                final int ty = cpg.addInterfaceMethodref(DOM_INTF,
-                                                "getTypedAxisIterator",
-                                                "(II)"+NODE_ITERATOR_SIG);
-                // Get the typed iterator we're after
-                il.append(methodGen.loadDOM());
-                il.append(new PUSH(cpg, _axis));
-                il.append(new PUSH(cpg, _nodeType));
-                il.append(new INVOKEINTERFACE(ty, 3));
+                default:
+                    if (star > 1) {
+                        final String namespace;
+                        if (_axis == Axis.ATTRIBUTE)
+                            namespace = name.substring(0, star - 2);
+                        else
+                            namespace = name.substring(0, star - 1);
 
-                break;
+                        final int nsType = xsltc.registerNamespace(namespace);
+                        final int ns = cpg.addInterfaceMethodref(DOM_INTF,
+                                "getNamespaceAxisIterator",
+                                "(II)" + NODE_ITERATOR_SIG);
+                        il.append(methodGen.loadDOM());
+                        il.append(new PUSH(cpg, _axis));
+                        il.append(new PUSH(cpg, nsType));
+                        il.append(new INVOKEINTERFACE(ns, 3));
+                        break;
+                    }
+                case NodeTest.ELEMENT:
+                    // DOM.getTypedAxisIterator(int axis, int type);
+                    final int ty = cpg.addInterfaceMethodref(DOM_INTF,
+                            "getTypedAxisIterator",
+                            "(II)" + NODE_ITERATOR_SIG);
+                    // Get the typed iterator we're after
+                    il.append(methodGen.loadDOM());
+                    il.append(new PUSH(cpg, _axis));
+                    il.append(new PUSH(cpg, _nodeType));
+                    il.append(new INVOKEINTERFACE(ty, 3));
+
+                    break;
             }
         }
     }
@@ -375,8 +371,7 @@ final class Step extends RelativeLocationPath {
 
         if (predicateIndex < 0) {
             translateStep(classGen, methodGen, predicateIndex);
-        }
-        else {
+        } else {
             final Predicate predicate = (Predicate) _predicates.get(predicateIndex--);
 
             // Special case for predicates that can use the NodeValueIterator
@@ -404,16 +399,16 @@ final class Step extends RelativeLocationPath {
 
                     try {
                         path.typeCheck(getParser().getSymbolTable());
+                    } catch (TypeCheckError e) {
                     }
-                    catch (TypeCheckError e) { }
                     translateStep(classGen, methodGen, predicateIndex);
                     path.translateStep(classGen, methodGen);
                     il.append(new ICONST(DOM.RETURN_PARENT));
                 }
                 predicate.translate(classGen, methodGen);
                 idx = cpg.addInterfaceMethodref(DOM_INTF,
-                                                GET_NODE_VALUE_ITERATOR,
-                                                GET_NODE_VALUE_ITERATOR_SIG);
+                        GET_NODE_VALUE_ITERATOR,
+                        GET_NODE_VALUE_ITERATOR_SIG);
                 il.append(new INVOKEINTERFACE(idx, 5));
             }
             // Handle '//*[n]' expression
@@ -424,15 +419,15 @@ final class Step extends RelativeLocationPath {
                 predicate.translate(classGen, methodGen);
                 il.append(new ICONST(0));
                 idx = cpg.addInterfaceMethodref(DOM_INTF,
-                                                "getNthDescendant",
-                                                "(IIZ)"+NODE_ITERATOR_SIG);
+                        "getNthDescendant",
+                        "(IIZ)" + NODE_ITERATOR_SIG);
                 il.append(new INVOKEINTERFACE(idx, 4));
             }
             // Handle 'elem[n]' expression
             else if (predicate.isNthPositionFilter()) {
                 idx = cpg.addMethodref(NTH_ITERATOR_CLASS,
-                                       "<init>",
-                                       "("+NODE_ITERATOR_SIG+"I)V");
+                        "<init>",
+                        "(" + NODE_ITERATOR_SIG + "I)V");
 
                 // Backwards branches are prohibited if an uninitialized object
                 // is on the stack by section 4.9.4 of the JVM Specification,
@@ -446,16 +441,16 @@ final class Step extends RelativeLocationPath {
                 translatePredicates(classGen, methodGen, predicateIndex); // recursive call
                 LocalVariableGen iteratorTemp
                         = methodGen.addLocalVariable("step_tmp1",
-                                         Util.getJCRefType(NODE_ITERATOR_SIG),
-                                         null, null);
+                        Util.getJCRefType(NODE_ITERATOR_SIG),
+                        null, null);
                 iteratorTemp.setStart(
                         il.append(new ASTORE(iteratorTemp.getIndex())));
 
                 predicate.translate(classGen, methodGen);
                 LocalVariableGen predicateValueTemp
                         = methodGen.addLocalVariable("step_tmp2",
-                                         Util.getJCRefType("I"),
-                                         null, null);
+                        Util.getJCRefType("I"),
+                        null, null);
                 predicateValueTemp.setStart(
                         il.append(new ISTORE(predicateValueTemp.getIndex())));
 
@@ -466,16 +461,15 @@ final class Step extends RelativeLocationPath {
                 predicateValueTemp.setEnd(
                         il.append(new ILOAD(predicateValueTemp.getIndex())));
                 il.append(new INVOKESPECIAL(idx));
-            }
-            else {
+            } else {
                 idx = cpg.addMethodref(CURRENT_NODE_LIST_ITERATOR,
-                                       "<init>",
-                                       "("
-                                       + NODE_ITERATOR_SIG
-                                       + CURRENT_NODE_LIST_FILTER_SIG
-                                       + NODE_SIG
-                                       + TRANSLET_SIG
-                                       + ")V");
+                        "<init>",
+                        "("
+                                + NODE_ITERATOR_SIG
+                                + CURRENT_NODE_LIST_FILTER_SIG
+                                + NODE_SIG
+                                + TRANSLET_SIG
+                                + ")V");
 
                 // Backwards branches are prohibited if an uninitialized object
                 // is on the stack by section 4.9.4 of the JVM Specification,
@@ -489,16 +483,16 @@ final class Step extends RelativeLocationPath {
                 translatePredicates(classGen, methodGen, predicateIndex); // recursive call
                 LocalVariableGen iteratorTemp
                         = methodGen.addLocalVariable("step_tmp1",
-                                         Util.getJCRefType(NODE_ITERATOR_SIG),
-                                         null, null);
+                        Util.getJCRefType(NODE_ITERATOR_SIG),
+                        null, null);
                 iteratorTemp.setStart(
                         il.append(new ASTORE(iteratorTemp.getIndex())));
 
                 predicate.translateFilter(classGen, methodGen);
                 LocalVariableGen filterTemp
                         = methodGen.addLocalVariable("step_tmp2",
-                              Util.getJCRefType(CURRENT_NODE_LIST_FILTER_SIG),
-                              null, null);
+                        Util.getJCRefType(CURRENT_NODE_LIST_FILTER_SIG),
+                        null, null);
                 filterTemp.setStart(
                         il.append(new ASTORE(filterTemp.getIndex())));
                 // create new CurrentNodeListIterator
@@ -529,7 +523,7 @@ final class Step extends RelativeLocationPath {
         if (_predicates != null) {
             final int n = _predicates.size();
             for (int i = 0; i < n; i++) {
-                final Predicate pred = (Predicate)_predicates.elementAt(i);
+                final Predicate pred = (Predicate) _predicates.elementAt(i);
                 buffer.append(", ").append(pred.toString());
             }
         }

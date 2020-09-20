@@ -44,23 +44,20 @@ import javax.management.ObjectName;
 public class MXBeanSupport extends MBeanSupport<ConvertingMethod> {
 
     /**
-       <p>Construct an MXBean that wraps the given resource using the
-       given MXBean interface.</p>
-
-       @param resource the underlying resource for the new MXBean.
-
-       @param mxbeanInterface the interface to be used to determine
-       the MXBean's management interface.
-
-       @param <T> a type parameter that allows the compiler to check
-       that {@code resource} implements {@code mxbeanInterface},
-       provided that {@code mxbeanInterface} is a class constant like
-       {@code SomeMXBean.class}.
-
-       @throws IllegalArgumentException if {@code resource} is null or
-       if it does not implement the class {@code mxbeanInterface} or if
-       that class is not a valid MXBean interface.
-    */
+     * <p>Construct an MXBean that wraps the given resource using the
+     * given MXBean interface.</p>
+     *
+     * @param resource        the underlying resource for the new MXBean.
+     * @param mxbeanInterface the interface to be used to determine
+     *                        the MXBean's management interface.
+     * @param <T>             a type parameter that allows the compiler to check
+     *                        that {@code resource} implements {@code mxbeanInterface},
+     *                        provided that {@code mxbeanInterface} is a class constant like
+     *                        {@code SomeMXBean.class}.
+     * @throws IllegalArgumentException if {@code resource} is null or
+     *                                  if it does not implement the class {@code mxbeanInterface} or if
+     *                                  that class is not a valid MXBean interface.
+     */
     public <T> MXBeanSupport(T resource, Class<T> mxbeanInterface)
             throws NotCompliantMBeanException {
         super(resource, mxbeanInterface);
@@ -85,11 +82,11 @@ public class MXBeanSupport extends MBeanSupport<ConvertingMethod> {
             if (JMX.isMXBeanInterface(intf))
                 candidates.add(intf);
         }
-    reduce:
+        reduce:
         while (candidates.size() > 1) {
             for (Class<?> intf : candidates) {
                 for (Iterator<Class<?>> it = candidates.iterator(); it.hasNext();
-                    ) {
+                ) {
                     final Class<?> intf2 = it.next();
                     if (intf != intf2 && intf2.isAssignableFrom(intf)) {
                         it.remove();
@@ -98,16 +95,16 @@ public class MXBeanSupport extends MBeanSupport<ConvertingMethod> {
                 }
             }
             final String msg =
-                "Class " + resourceClass.getName() + " implements more than " +
-                "one MXBean interface: " + candidates;
+                    "Class " + resourceClass.getName() + " implements more than " +
+                            "one MXBean interface: " + candidates;
             throw new IllegalArgumentException(msg);
         }
         if (candidates.iterator().hasNext()) {
             return Util.cast(candidates.iterator().next());
         } else {
             final String msg =
-                "Class " + resourceClass.getName() +
-                " is not a JMX compliant MXBean";
+                    "Class " + resourceClass.getName() +
+                            " is not a JMX compliant MXBean";
             throw new IllegalArgumentException(msg);
         }
     }
@@ -120,6 +117,7 @@ public class MXBeanSupport extends MBeanSupport<ConvertingMethod> {
         transitiveInterfaces(c, set);
         return set;
     }
+
     private static void transitiveInterfaces(Class<?> c, Set<Class<?>> intfs) {
         if (c == null)
             return;
@@ -171,6 +169,7 @@ public class MXBeanSupport extends MBeanSupport<ConvertingMethod> {
             }
         }
     }
+
     private final Object lock = new Object(); // for mxbeanLookup and objectName
 
     private MXBeanLookup mxbeanLookup;

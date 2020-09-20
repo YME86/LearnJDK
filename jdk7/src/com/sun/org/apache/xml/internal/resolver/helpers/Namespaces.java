@@ -33,7 +33,6 @@ import org.w3c.dom.*;
  *
  * @author Norman Walsh
  * <a href="mailto:Norman.Walsh@Sun.COM">Norman.Walsh@Sun.COM</a>
- *
  */
 public class Namespaces {
     /**
@@ -65,7 +64,7 @@ public class Namespaces {
         String name = element.getTagName();
 
         if (name.indexOf(':') > 0) {
-            name = name.substring(name.indexOf(':')+1);
+            name = name.substring(name.indexOf(':') + 1);
         }
 
         return name;
@@ -75,7 +74,7 @@ public class Namespaces {
      * Returns the namespace URI for the specified prefix at the
      * specified context node.
      *
-     * @param node The context node.
+     * @param node   The context node.
      * @param prefix The prefix.
      * @return The namespace URI associated with the prefix, or
      * null if no namespace declaration exists for the prefix.

@@ -35,12 +35,12 @@ import com.sun.org.apache.bcel.internal.generic.Type;
  */
 public final class AttributeSetMethodGenerator extends MethodGenerator {
 
-    protected static final int CURRENT_INDEX  = 4;
+    protected static final int CURRENT_INDEX = 4;
     private static final int PARAM_START_INDEX = 5;
 
     private static final String[] argNames = new String[4];
     private static final com.sun.org.apache.bcel.internal.generic.Type[] argTypes =
-        new com.sun.org.apache.bcel.internal.generic.Type[4];
+            new com.sun.org.apache.bcel.internal.generic.Type[4];
 
     static {
         argTypes[0] = Util.getJCRefType(DOM_INTF_SIG);
@@ -53,14 +53,14 @@ public final class AttributeSetMethodGenerator extends MethodGenerator {
         argNames[3] = NODE_PNAME;
     }
 
-   public AttributeSetMethodGenerator(String methodName, ClassGenerator classGen) {
+    public AttributeSetMethodGenerator(String methodName, ClassGenerator classGen) {
         super(com.sun.org.apache.bcel.internal.Constants.ACC_PRIVATE,
-              com.sun.org.apache.bcel.internal.generic.Type.VOID,
-              argTypes, argNames, methodName,
-              classGen.getClassName(),
-              new InstructionList(),
-              classGen.getConstantPool());
-   }
+                com.sun.org.apache.bcel.internal.generic.Type.VOID,
+                argTypes, argNames, methodName,
+                classGen.getClassName(),
+                new InstructionList(),
+                classGen.getConstantPool());
+    }
 
     public int getLocalIndex(String name) {
         if (name.equals("current")) {

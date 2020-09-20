@@ -26,6 +26,7 @@ package com.sun.jmx.snmp.agent;
 
 // java imports
 //
+
 import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Enumeration;
@@ -107,27 +108,24 @@ public class SnmpStandardObjectServer implements Serializable {
      * @param meta  A pointer to the generated meta-data object which
      *              implements the <code>SnmpStandardMetaServer</code>
      *              interface.
-     *
      * @param req   The sub-request that must be handled by this node.
-     *
      * @param depth The depth reached in the OID tree.
-     *
-     * @exception SnmpStatusException An error occurred while accessing
-     *  the MIB node.
+     * @throws SnmpStatusException An error occurred while accessing
+     *                             the MIB node.
      */
     public void get(SnmpStandardMetaServer meta, SnmpMibSubRequest req,
                     int depth)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
 
         final Object data = req.getUserData();
 
-        for (Enumeration e= req.getElements(); e.hasMoreElements();) {
-            final SnmpVarBind var= (SnmpVarBind) e.nextElement();
+        for (Enumeration e = req.getElements(); e.hasMoreElements(); ) {
+            final SnmpVarBind var = (SnmpVarBind) e.nextElement();
             try {
                 final long id = var.oid.getOidArc(depth);
                 var.value = meta.get(id, data);
-            } catch(SnmpStatusException x) {
-                req.registerGetException(var,x);
+            } catch (SnmpStatusException x) {
+                req.registerGetException(var, x);
             }
         }
     }
@@ -168,21 +166,18 @@ public class SnmpStandardObjectServer implements Serializable {
      * @param meta  A pointer to the generated meta-data object which
      *              implements the <code>SnmpStandardMetaServer</code>
      *              interface.
-     *
      * @param req   The sub-request that must be handled by this node.
-     *
      * @param depth The depth reached in the OID tree.
-     *
-     * @exception SnmpStatusException An error occurred while accessing
-     *  the MIB node.
+     * @throws SnmpStatusException An error occurred while accessing
+     *                             the MIB node.
      */
     public void set(SnmpStandardMetaServer meta, SnmpMibSubRequest req,
                     int depth)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
 
         final Object data = req.getUserData();
 
-        for (Enumeration e= req.getElements(); e.hasMoreElements();) {
+        for (Enumeration e = req.getElements(); e.hasMoreElements(); ) {
             SnmpVarBind var = null;
             var = (SnmpVarBind) e.nextElement();
             try {
@@ -191,8 +186,8 @@ public class SnmpStandardObjectServer implements Serializable {
                 //
                 final long id = var.oid.getOidArc(depth);
                 var.value = meta.set(var.value, id, data);
-            } catch(SnmpStatusException x) {
-                req.registerSetException(var,x);
+            } catch (SnmpStatusException x) {
+                req.registerSetException(var, x);
             }
         }
     }
@@ -234,30 +229,27 @@ public class SnmpStandardObjectServer implements Serializable {
      * @param meta  A pointer to the generated meta-data object which
      *              implements the <code>SnmpStandardMetaServer</code>
      *              interface.
-     *
      * @param req   The sub-request that must be handled by this node.
-     *
      * @param depth The depth reached in the OID tree.
-     *
-     * @exception SnmpStatusException An error occurred while accessing
-     *  the MIB node.
+     * @throws SnmpStatusException An error occurred while accessing
+     *                             the MIB node.
      */
     public void check(SnmpStandardMetaServer meta, SnmpMibSubRequest req,
                       int depth)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
 
         final Object data = req.getUserData();
 
-        for (Enumeration e= req.getElements(); e.hasMoreElements();) {
+        for (Enumeration e = req.getElements(); e.hasMoreElements(); ) {
             final SnmpVarBind var = (SnmpVarBind) e.nextElement();
             try {
                 // This method will generate a SnmpStatusException
                 // if `depth' is out of bounds.
                 //
                 final long id = var.oid.getOidArc(depth);
-                meta.check(var.value,id,data);
-            } catch(SnmpStatusException x) {
-                req.registerCheckException(var,x);
+                meta.check(var.value, id, data);
+            } catch (SnmpStatusException x) {
+                req.registerCheckException(var, x);
             }
         }
     }

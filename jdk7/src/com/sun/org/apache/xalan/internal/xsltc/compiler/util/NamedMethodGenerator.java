@@ -33,11 +33,12 @@ import com.sun.org.apache.bcel.internal.generic.Type;
 /**
  * This class is used for named templates. Named template methods have access
  * to the DOM, the current iterator, the handler and the current node.
+ *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  */
 public final class NamedMethodGenerator extends MethodGenerator {
-    protected static final int CURRENT_INDEX  = 4;
+    protected static final int CURRENT_INDEX = 4;
 
     // The index of the first parameter (after dom/iterator/handler/current)
     private static final int PARAM_START_INDEX = 5;
@@ -47,7 +48,7 @@ public final class NamedMethodGenerator extends MethodGenerator {
                                 String method_name, String class_name,
                                 InstructionList il, ConstantPoolGen cp) {
         super(access_flags, return_type, arg_types, arg_names, method_name,
-              class_name, il, cp);
+                class_name, il, cp);
     }
 
     public int getLocalIndex(String name) {

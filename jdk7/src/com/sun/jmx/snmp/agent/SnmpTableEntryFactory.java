@@ -52,10 +52,10 @@ public interface SnmpTableEntryFactory extends SnmpTableCallbackHandler {
     /**
      * This method is called by the SNMP runtime whenever a new entry
      * creation is requested by a remote manager.
-     *
+     * <p>
      * The factory is responsible for instantiating the appropriate MBean
      * and for registering it with the appropriate metadata object.
-     *
+     * <p>
      * Usually this method will:
      * <ul>
      * <li>Check whether the creation can be accepted
@@ -81,11 +81,9 @@ public interface SnmpTableEntryFactory extends SnmpTableCallbackHandler {
      *                which the columnar object ids start in the OIDs
      *                included in the varbind).
      * @param meta    The metadata object impacted by the subrequest
-     *
-     * @exception SnmpStatusException The new entry cannot be created.
-     *
+     * @throws SnmpStatusException The new entry cannot be created.
      **/
     public void createNewEntry(SnmpMibSubRequest request, SnmpOid rowOid,
                                int depth, SnmpMibTable meta)
-        throws SnmpStatusException;
+            throws SnmpStatusException;
 }

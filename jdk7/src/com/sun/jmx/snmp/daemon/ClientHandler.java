@@ -27,9 +27,9 @@
 package com.sun.jmx.snmp.daemon;
 
 
-
 // java import
 //
+
 import java.io.*;
 import java.util.logging.Level;
 
@@ -50,15 +50,15 @@ import static com.sun.jmx.defaults.JmxProperties.SNMP_ADAPTOR_LOGGER;
 abstract class ClientHandler implements Runnable {
 
     public ClientHandler(CommunicatorServer server, int id, MBeanServer f, ObjectName n) {
-        adaptorServer = server ;
-        requestId = id ;
-        mbs = f ;
-        objectName = n ;
-        interruptCalled = false ;
-        dbgTag = makeDebugTag() ;
+        adaptorServer = server;
+        requestId = id;
+        mbs = f;
+        objectName = n;
+        interruptCalled = false;
+        dbgTag = makeDebugTag();
         //if (mbs == null ){
         //thread = new Thread (this) ;
-        thread =  createThread(this);
+        thread = createThread(this);
 
         //} else {
         //thread = mbs.getThreadAllocatorSrvIf().obtainThread(objectName,this) ;
@@ -73,9 +73,9 @@ abstract class ClientHandler implements Runnable {
 
     public void interrupt() {
         SNMP_ADAPTOR_LOGGER.entering(dbgTag, "interrupt");
-        interruptCalled = true ;
+        interruptCalled = true;
         if (thread != null) {
-            thread.interrupt() ;
+            thread.interrupt();
         }
         SNMP_ADAPTOR_LOGGER.exiting(dbgTag, "interrupt");
     }
@@ -83,11 +83,10 @@ abstract class ClientHandler implements Runnable {
 
     public void join() {
         if (thread != null) {
-        try {
-            thread.join() ;
-        }
-        catch(InterruptedException x) {
-        }
+            try {
+                thread.join();
+            } catch (InterruptedException x) {
+            }
         }
     }
 
@@ -97,35 +96,34 @@ abstract class ClientHandler implements Runnable {
             //
             // Notify the server we are now active
             //
-            adaptorServer.notifyClientHandlerCreated(this) ;
+            adaptorServer.notifyClientHandlerCreated(this);
 
             //
             // Call protocol specific sequence
             //
-            doRun() ;
-        }
-        finally {
+            doRun();
+        } finally {
             //
             // Now notify the adaptor server that the handler is terminating.
             // This is important because the server may be blocked waiting for
             // a handler to terminate.
             //
-            adaptorServer.notifyClientHandlerDeleted(this) ;
+            adaptorServer.notifyClientHandlerDeleted(this);
         }
     }
 
     //
     // The protocol-dependent part of the request
     //
-    public abstract void doRun() ;
+    public abstract void doRun();
 
-    protected CommunicatorServer adaptorServer = null ;
-    protected int requestId = -1 ;
-    protected MBeanServer mbs = null ;
-    protected ObjectName objectName = null ;
-    protected Thread thread = null ;
-    protected boolean interruptCalled = false ;
-    protected String dbgTag = null ;
+    protected CommunicatorServer adaptorServer = null;
+    protected int requestId = -1;
+    protected MBeanServer mbs = null;
+    protected ObjectName objectName = null;
+    protected Thread thread = null;
+    protected boolean interruptCalled = false;
+    protected String dbgTag = null;
 
     protected String makeDebugTag() {
         return "ClientHandler[" + adaptorServer.getProtocol() + ":" + adaptorServer.getPort() + "][" + requestId + "]";

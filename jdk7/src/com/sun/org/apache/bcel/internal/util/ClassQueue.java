@@ -57,7 +57,9 @@ package com.sun.org.apache.bcel.internal.util;
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
+
 import java.util.LinkedList;
+
 import com.sun.org.apache.bcel.internal.classfile.JavaClass;
 
 /**
@@ -66,19 +68,23 @@ import com.sun.org.apache.bcel.internal.classfile.JavaClass;
  *
  * @author <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
  * @see ClassVector
-*/
+ */
 public class ClassQueue implements java.io.Serializable {
-  protected LinkedList vec  = new LinkedList();
+    protected LinkedList vec = new LinkedList();
 
-  public void enqueue(JavaClass clazz) { vec.addLast(clazz); }
+    public void enqueue(JavaClass clazz) {
+        vec.addLast(clazz);
+    }
 
-  public JavaClass dequeue()                {
-    return (JavaClass)vec.removeFirst();
-  }
+    public JavaClass dequeue() {
+        return (JavaClass) vec.removeFirst();
+    }
 
-  public boolean empty() { return vec.isEmpty(); }
+    public boolean empty() {
+        return vec.isEmpty();
+    }
 
-  public String toString() {
-    return vec.toString();
-  }
+    public String toString() {
+        return vec.toString();
+    }
 }

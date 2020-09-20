@@ -41,8 +41,7 @@ import java.io.IOException;
  *
  * @author <a href="mailto:arkin@intalio.com">Assaf Arkin</a>
  */
-public class Printer
-{
+public class Printer {
 
 
     /**
@@ -57,7 +56,7 @@ public class Printer
     /**
      * The writer to which the document is written.
      */
-    protected Writer             _writer;
+    protected Writer _writer;
 
 
     /**
@@ -66,21 +65,21 @@ public class Printer
      * the output is obtained as a string. Must not be reset to
      * null until we're done with the document.
      */
-    protected StringWriter       _dtdWriter;
+    protected StringWriter _dtdWriter;
 
 
     /**
      * Holds a reference to the document writer while we are
      * in DTD mode.
      */
-    protected Writer          _docWriter;
+    protected Writer _docWriter;
 
 
     /**
      * Holds the exception thrown by the serializer.  Exceptions do not cause
      * the serializer to quit, but are held and one is thrown at the end.
      */
-    protected IOException     _exception;
+    protected IOException _exception;
 
 
     /**
@@ -92,17 +91,16 @@ public class Printer
     /**
      * Output buffer.
      */
-    private final char[]  _buffer = new char[ BufferSize ];
+    private final char[] _buffer = new char[BufferSize];
 
 
     /**
      * Position within the output buffer.
      */
-    private int           _pos = 0;
+    private int _pos = 0;
 
 
-    public Printer( Writer writer, OutputFormat format)
-    {
+    public Printer(Writer writer, OutputFormat format) {
         _writer = writer;
         _format = format;
         _exception = null;
@@ -112,8 +110,7 @@ public class Printer
     }
 
 
-    public IOException getException()
-    {
+    public IOException getException() {
         return _exception;
     }
 
@@ -127,14 +124,13 @@ public class Printer
      * and get the accumulated DTD, call {@link #leaveDTD}.
      */
     public void enterDTD()
-        throws IOException
-    {
+            throws IOException {
         // Can only enter DTD state once. Once we're out of DTD
         // state, can no longer re-enter it.
-        if ( _dtdWriter == null ) {
-            flushLine( false );
+        if (_dtdWriter == null) {
+            flushLine(false);
 
-                        _dtdWriter = new StringWriter();
+            _dtdWriter = new StringWriter();
             _docWriter = _writer;
             _writer = _dtdWriter;
         }
@@ -147,102 +143,97 @@ public class Printer
      * textual content.
      */
     public String leaveDTD()
-        throws IOException
-    {
+            throws IOException {
         // Only works if we're going out of DTD mode.
-        if ( _writer == _dtdWriter ) {
-            flushLine( false );
+        if (_writer == _dtdWriter) {
+            flushLine(false);
 
-                        _writer = _docWriter;
+            _writer = _docWriter;
             return _dtdWriter.toString();
         } else
             return null;
     }
 
 
-    public void printText( String text )
-        throws IOException
-    {
+    public void printText(String text)
+            throws IOException {
         try {
             int length = text.length();
-            for ( int i = 0 ; i < length ; ++i ) {
-                if ( _pos == BufferSize ) {
-                    _writer.write( _buffer );
+            for (int i = 0; i < length; ++i) {
+                if (_pos == BufferSize) {
+                    _writer.write(_buffer);
                     _pos = 0;
                 }
-                _buffer[ _pos ] = text.charAt( i );
+                _buffer[_pos] = text.charAt(i);
                 ++_pos;
             }
-        } catch ( IOException except ) {
+        } catch (IOException except) {
             // We don't throw an exception, but hold it
             // until the end of the document.
-            if ( _exception == null )
+            if (_exception == null)
                 _exception = except;
             throw except;
         }
     }
 
 
-    public void printText( StringBuffer text )
-        throws IOException
-    {
+    public void printText(StringBuffer text)
+            throws IOException {
         try {
             int length = text.length();
-            for ( int i = 0 ; i < length ; ++i ) {
-                if ( _pos == BufferSize ) {
-                    _writer.write( _buffer );
+            for (int i = 0; i < length; ++i) {
+                if (_pos == BufferSize) {
+                    _writer.write(_buffer);
                     _pos = 0;
                 }
-                _buffer[ _pos ] = text.charAt( i );
+                _buffer[_pos] = text.charAt(i);
                 ++_pos;
             }
-        } catch ( IOException except ) {
+        } catch (IOException except) {
             // We don't throw an exception, but hold it
             // until the end of the document.
-            if ( _exception == null )
+            if (_exception == null)
                 _exception = except;
             throw except;
         }
     }
 
 
-    public void printText( char[] chars, int start, int length )
-        throws IOException
-    {
+    public void printText(char[] chars, int start, int length)
+            throws IOException {
         try {
-            while ( length-- > 0 ) {
-                if ( _pos == BufferSize ) {
-                    _writer.write( _buffer );
+            while (length-- > 0) {
+                if (_pos == BufferSize) {
+                    _writer.write(_buffer);
                     _pos = 0;
                 }
-                _buffer[ _pos ] = chars[ start ];
+                _buffer[_pos] = chars[start];
                 ++start;
                 ++_pos;
             }
-        } catch ( IOException except ) {
+        } catch (IOException except) {
             // We don't throw an exception, but hold it
             // until the end of the document.
-            if ( _exception == null )
+            if (_exception == null)
                 _exception = except;
             throw except;
         }
     }
 
 
-    public void printText( char ch )
-        throws IOException
-    {
+    public void printText(char ch)
+            throws IOException {
         try {
-            if ( _pos == BufferSize ) {
-                _writer.write( _buffer );
+            if (_pos == BufferSize) {
+                _writer.write(_buffer);
                 _pos = 0;
             }
-            _buffer[ _pos ] = ch;
+            _buffer[_pos] = ch;
             ++_pos;
-        } catch ( IOException except ) {
+        } catch (IOException except) {
             // We don't throw an exception, but hold it
             // until the end of the document.
-            if ( _exception == null )
+            if (_exception == null)
                 _exception = except;
             throw except;
         }
@@ -250,19 +241,18 @@ public class Printer
 
 
     public void printSpace()
-        throws IOException
-    {
+            throws IOException {
         try {
-            if ( _pos == BufferSize ) {
-                _writer.write( _buffer );
+            if (_pos == BufferSize) {
+                _writer.write(_buffer);
                 _pos = 0;
             }
-            _buffer[ _pos ] = ' ';
+            _buffer[_pos] = ' ';
             ++_pos;
-        } catch ( IOException except ) {
+        } catch (IOException except) {
             // We don't throw an exception, but hold it
             // until the end of the document.
-            if ( _exception == null )
+            if (_exception == null)
                 _exception = except;
             throw except;
         }
@@ -270,42 +260,39 @@ public class Printer
 
 
     public void breakLine()
-        throws IOException
-    {
+            throws IOException {
         try {
-            if ( _pos == BufferSize ) {
-                _writer.write( _buffer );
+            if (_pos == BufferSize) {
+                _writer.write(_buffer);
                 _pos = 0;
             }
-            _buffer[ _pos ] = '\n';
+            _buffer[_pos] = '\n';
             ++_pos;
-        } catch ( IOException except ) {
+        } catch (IOException except) {
             // We don't throw an exception, but hold it
             // until the end of the document.
-            if ( _exception == null )
+            if (_exception == null)
                 _exception = except;
             throw except;
         }
     }
 
 
-    public void breakLine( boolean preserveSpace )
-        throws IOException
-    {
+    public void breakLine(boolean preserveSpace)
+            throws IOException {
         breakLine();
     }
 
 
-    public void flushLine( boolean preserveSpace )
-        throws IOException
-    {
+    public void flushLine(boolean preserveSpace)
+            throws IOException {
         // Write anything left in the buffer into the writer.
         try {
-            _writer.write( _buffer, 0, _pos );
-        } catch ( IOException except ) {
+            _writer.write(_buffer, 0, _pos);
+        } catch (IOException except) {
             // We don't throw an exception, but hold it
             // until the end of the document.
-            if ( _exception == null )
+            if (_exception == null)
                 _exception = except;
         }
         _pos = 0;
@@ -317,15 +304,14 @@ public class Printer
      * the document, otherwise some text might be buffered.
      */
     public void flush()
-        throws IOException
-    {
+            throws IOException {
         try {
-            _writer.write( _buffer, 0, _pos );
+            _writer.write(_buffer, 0, _pos);
             _writer.flush();
-        } catch ( IOException except ) {
+        } catch (IOException except) {
             // We don't throw an exception, but hold it
             // until the end of the document.
-            if ( _exception == null )
+            if (_exception == null)
                 _exception = except;
             throw except;
         }
@@ -333,31 +319,26 @@ public class Printer
     }
 
 
-    public void indent()
-    {
+    public void indent() {
         // NOOP
     }
 
 
-    public void unindent()
-    {
+    public void unindent() {
         // NOOP
     }
 
 
-    public int getNextIndent()
-    {
+    public int getNextIndent() {
         return 0;
     }
 
 
-    public void setNextIndent( int indent )
-    {
+    public void setNextIndent(int indent) {
     }
 
 
-    public void setThisIndent( int indent )
-    {
+    public void setThisIndent(int indent) {
     }
 
 

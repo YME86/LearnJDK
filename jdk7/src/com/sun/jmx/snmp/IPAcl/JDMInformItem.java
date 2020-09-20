@@ -29,6 +29,7 @@ package com.sun.jmx.snmp.IPAcl;
 
 class JDMInformItem extends SimpleNode {
     protected JDMInformCommunity comm = null;
+
     JDMInformItem(int id) {
         super(id);
     }
@@ -45,7 +46,7 @@ class JDMInformItem extends SimpleNode {
         return new JDMInformItem(p, id);
     }
 
-    public JDMInformCommunity getCommunity(){
+    public JDMInformCommunity getCommunity() {
         return comm;
     }
 }

@@ -51,19 +51,17 @@ final class PositionCall extends FunctionCall {
         final InstructionList il = methodGen.getInstructionList();
 
         if (methodGen instanceof CompareGenerator) {
-            il.append(((CompareGenerator)methodGen).loadCurrentNode());
-        }
-        else if (methodGen instanceof TestGenerator) {
+            il.append(((CompareGenerator) methodGen).loadCurrentNode());
+        } else if (methodGen instanceof TestGenerator) {
             il.append(new ILOAD(POSITION_INDEX));
-        }
-        else {
+        } else {
             final ConstantPoolGen cpg = classGen.getConstantPool();
             final int index = cpg.addInterfaceMethodref(NODE_ITERATOR,
-                                                       "getPosition",
-                                                       "()I");
+                    "getPosition",
+                    "()I");
 
             il.append(methodGen.loadIterator());
-            il.append(new INVOKEINTERFACE(index,1));
+            il.append(new INVOKEINTERFACE(index, 1));
         }
     }
 }

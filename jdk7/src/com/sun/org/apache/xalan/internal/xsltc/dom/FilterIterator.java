@@ -34,6 +34,7 @@ import com.sun.org.apache.xml.internal.dtm.ref.DTMAxisIteratorBase;
  * simpler interface (only needs the node, no position, last, etc.)
  * It takes a source iterator and a Filter object and returns nodes
  * from the source after filtering them by calling filter.test(node).
+ *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  */
@@ -78,10 +79,9 @@ public final class FilterIterator extends DTMAxisIteratorBase {
             clone._source = _source.cloneIterator();
             clone._isRestartable = false;
             return clone.reset();
-        }
-        catch (CloneNotSupportedException e) {
+        } catch (CloneNotSupportedException e) {
             BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
-                                      e.toString());
+                    e.toString());
             return null;
         }
     }

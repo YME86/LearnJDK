@@ -42,7 +42,8 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.FlowList;
  * @author Santiago Pericas-Geertsen
  */
 public final class NodeSetType extends Type {
-    protected NodeSetType() {}
+    protected NodeSetType() {
+    }
 
     public String toString() {
         return "node-set";
@@ -66,31 +67,25 @@ public final class NodeSetType extends Type {
      * since node-sets are always converted to
      * reals in arithmetic expressions.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             Type type) {
         if (type == Type.String) {
             translateTo(classGen, methodGen, (StringType) type);
-        }
-        else if (type == Type.Boolean) {
+        } else if (type == Type.Boolean) {
             translateTo(classGen, methodGen, (BooleanType) type);
-        }
-        else if (type == Type.Real) {
+        } else if (type == Type.Real) {
             translateTo(classGen, methodGen, (RealType) type);
-        }
-        else if (type == Type.Node) {
+        } else if (type == Type.Node) {
             translateTo(classGen, methodGen, (NodeType) type);
-        }
-        else if (type == Type.Reference) {
+        } else if (type == Type.Reference) {
             translateTo(classGen, methodGen, (ReferenceType) type);
-        }
-        else if (type == Type.Object) {
+        } else if (type == Type.Object) {
             translateTo(classGen, methodGen, (ObjectType) type);
-        }
-        else {
+        } else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                        toString(), type.toString());
+                    toString(), type.toString());
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }
@@ -100,44 +95,41 @@ public final class NodeSetType extends Type {
      * Expects the Java object on the stack, pushes the internal type
      */
     public void translateFrom(ClassGenerator classGen,
-        MethodGenerator methodGen, Class clazz)
-    {
+                              MethodGenerator methodGen, Class clazz) {
 
         InstructionList il = methodGen.getInstructionList();
         ConstantPoolGen cpg = classGen.getConstantPool();
         if (clazz.getName().equals("org.w3c.dom.NodeList")) {
-           // w3c NodeList is on the stack from the external Java function call.
-           // call BasisFunction to consume NodeList and leave Iterator on
-           //    the stack.
-           il.append(classGen.loadTranslet());   // push translet onto stack
-           il.append(methodGen.loadDOM());       // push DOM onto stack
-           final int convert = cpg.addMethodref(BASIS_LIBRARY_CLASS,
-                                        "nodeList2Iterator",
-                                        "("
-                                         + "Lorg/w3c/dom/NodeList;"
-                                         + TRANSLET_INTF_SIG
-                                         + DOM_INTF_SIG
-                                         + ")" + NODE_ITERATOR_SIG );
-           il.append(new INVOKESTATIC(convert));
-        }
-        else if (clazz.getName().equals("org.w3c.dom.Node")) {
-           // w3c Node is on the stack from the external Java function call.
-           // call BasisLibrary.node2Iterator() to consume Node and leave
-           // Iterator on the stack.
-           il.append(classGen.loadTranslet());   // push translet onto stack
-           il.append(methodGen.loadDOM());       // push DOM onto stack
-           final int convert = cpg.addMethodref(BASIS_LIBRARY_CLASS,
-                                        "node2Iterator",
-                                        "("
-                                         + "Lorg/w3c/dom/Node;"
-                                         + TRANSLET_INTF_SIG
-                                         + DOM_INTF_SIG
-                                         + ")" + NODE_ITERATOR_SIG );
-           il.append(new INVOKESTATIC(convert));
-        }
-        else {
+            // w3c NodeList is on the stack from the external Java function call.
+            // call BasisFunction to consume NodeList and leave Iterator on
+            //    the stack.
+            il.append(classGen.loadTranslet());   // push translet onto stack
+            il.append(methodGen.loadDOM());       // push DOM onto stack
+            final int convert = cpg.addMethodref(BASIS_LIBRARY_CLASS,
+                    "nodeList2Iterator",
+                    "("
+                            + "Lorg/w3c/dom/NodeList;"
+                            + TRANSLET_INTF_SIG
+                            + DOM_INTF_SIG
+                            + ")" + NODE_ITERATOR_SIG);
+            il.append(new INVOKESTATIC(convert));
+        } else if (clazz.getName().equals("org.w3c.dom.Node")) {
+            // w3c Node is on the stack from the external Java function call.
+            // call BasisLibrary.node2Iterator() to consume Node and leave
+            // Iterator on the stack.
+            il.append(classGen.loadTranslet());   // push translet onto stack
+            il.append(methodGen.loadDOM());       // push DOM onto stack
+            final int convert = cpg.addMethodref(BASIS_LIBRARY_CLASS,
+                    "node2Iterator",
+                    "("
+                            + "Lorg/w3c/dom/Node;"
+                            + TRANSLET_INTF_SIG
+                            + DOM_INTF_SIG
+                            + ")" + NODE_ITERATOR_SIG);
+            il.append(new INVOKESTATIC(convert));
+        } else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                toString(), clazz.getName());
+                    toString(), clazz.getName());
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }
@@ -149,7 +141,7 @@ public final class NodeSetType extends Type {
      * and "false" otherwise. Notice that the
      * function getFirstNode() is called in translateToDesynthesized().
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             BooleanType type) {
@@ -165,7 +157,7 @@ public final class NodeSetType extends Type {
      * Translates a node-set into a string. The string value of a node-set is
      * value of its first element.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             StringType type) {
@@ -184,7 +176,7 @@ public final class NodeSetType extends Type {
      * Expects a node-set on the stack and pushes a real.
      * First the node-set is converted to string, and from string to real.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             RealType type) {
@@ -195,7 +187,7 @@ public final class NodeSetType extends Type {
     /**
      * Expects a node-set on the stack and pushes a node.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             NodeType type) {
@@ -205,11 +197,11 @@ public final class NodeSetType extends Type {
     /**
      * Subsume node-set into ObjectType.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             ObjectType type) {
-            methodGen.getInstructionList().append(NOP);
+        methodGen.getInstructionList().append(NOP);
     }
 
     /**
@@ -217,7 +209,7 @@ public final class NodeSetType extends Type {
      * push a 0 or a 1 but instead returns branchhandle list to be appended
      * to the false list.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateToDesynthesized
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateToDesynthesized
      */
     public FlowList translateToDesynthesized(ClassGenerator classGen,
                                              MethodGenerator methodGen,
@@ -231,7 +223,7 @@ public final class NodeSetType extends Type {
      * Expects a node-set on the stack and pushes a boxed node-set.
      * Node sets are already boxed so the translation is just a NOP.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             ReferenceType type) {
@@ -254,33 +246,30 @@ public final class NodeSetType extends Type {
 
         if (className.equals("org.w3c.dom.Node")) {
             int index = cpg.addInterfaceMethodref(DOM_INTF,
-                                                  MAKE_NODE,
-                                                  MAKE_NODE_SIG2);
+                    MAKE_NODE,
+                    MAKE_NODE_SIG2);
             il.append(new INVOKEINTERFACE(index, 2));
-        }
-        else if (className.equals("org.w3c.dom.NodeList") ||
-                 className.equals("java.lang.Object")) {
+        } else if (className.equals("org.w3c.dom.NodeList") ||
+                className.equals("java.lang.Object")) {
             int index = cpg.addInterfaceMethodref(DOM_INTF,
-                                                  MAKE_NODE_LIST,
-                                                  MAKE_NODE_LIST_SIG2);
+                    MAKE_NODE_LIST,
+                    MAKE_NODE_LIST_SIG2);
             il.append(new INVOKEINTERFACE(index, 2));
-        }
-        else if (className.equals("java.lang.String")) {
+        } else if (className.equals("java.lang.String")) {
             int next = cpg.addInterfaceMethodref(NODE_ITERATOR,
-                                                 "next", "()I");
+                    "next", "()I");
             int index = cpg.addInterfaceMethodref(DOM_INTF,
-                                                 GET_NODE_VALUE,
-                                                 "(I)"+STRING_SIG);
+                    GET_NODE_VALUE,
+                    "(I)" + STRING_SIG);
 
             // Get next node from the iterator
             il.append(new INVOKEINTERFACE(next, 1));
             // Get the node's string value (from the DOM)
             il.append(new INVOKEINTERFACE(index, 2));
 
-        }
-        else {
+        } else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                        toString(), className);
+                    toString(), className);
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }
@@ -293,8 +282,8 @@ public final class NodeSetType extends Type {
         final ConstantPoolGen cpg = classGen.getConstantPool();
         final InstructionList il = methodGen.getInstructionList();
         il.append(new INVOKEINTERFACE(cpg.addInterfaceMethodref(NODE_ITERATOR,
-                                                                NEXT,
-                                                                NEXT_SIG), 1));
+                NEXT,
+                NEXT_SIG), 1));
     }
 
     /**
@@ -317,7 +306,7 @@ public final class NodeSetType extends Type {
      * Returns the class name of an internal type's external representation.
      */
     public String getClassName() {
-        return(NODE_ITERATOR);
+        return (NODE_ITERATOR);
     }
 
 

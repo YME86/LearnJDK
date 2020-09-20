@@ -16,20 +16,22 @@ package com.sun.jmx.snmp.daemon;
  */
 
 final class SnmpRequestCounter {
-        /**
-         * A counter with value between 1...2^31-1.
-         */
-        int reqid = 0 ;
+    /**
+     * A counter with value between 1...2^31-1.
+     */
+    int reqid = 0;
 
-        public SnmpRequestCounter() {}
+    public SnmpRequestCounter() {
+    }
 
-        /**
-         * Returns the next request identifier.
-         * @return next request identifier.  The value wraps to 1 if it reaches negative value.
-         */
-        public synchronized int getNewId() {
-                if (++reqid  < 0)
-                        reqid = 1 ;
-                return reqid ;
-        }
+    /**
+     * Returns the next request identifier.
+     *
+     * @return next request identifier.  The value wraps to 1 if it reaches negative value.
+     */
+    public synchronized int getNewId() {
+        if (++reqid < 0)
+            reqid = 1;
+        return reqid;
+    }
 }

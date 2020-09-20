@@ -29,6 +29,7 @@ import com.sun.jmx.mbeanserver.Util;
 import com.sun.jmx.remote.security.NotificationAccessController;
 import com.sun.jmx.remote.util.ClassLogger;
 import com.sun.jmx.remote.util.EnvHelp;
+
 import java.io.IOException;
 import java.security.AccessControlContext;
 import java.security.AccessController;
@@ -70,18 +71,18 @@ public class ServerNotifForwarder {
         connectionTimeout = EnvHelp.getServerConnectionTimeout(env);
 
         String stringBoolean = (String) env.get("jmx.remote.x.check.notification.emission");
-        checkNotificationEmission = EnvHelp.computeBooleanFromString( stringBoolean );
+        checkNotificationEmission = EnvHelp.computeBooleanFromString(stringBoolean);
         notificationAccessController =
                 EnvHelp.getNotificationAccessController(env);
     }
 
     public Integer addNotificationListener(final ObjectName name,
-        final NotificationFilter filter)
-        throws InstanceNotFoundException, IOException {
+                                           final NotificationFilter filter)
+            throws InstanceNotFoundException, IOException {
 
         if (logger.traceOn()) {
             logger.trace("addNotificationListener",
-                "Add a listener at " + name);
+                    "Add a listener at " + name);
         }
 
         checkState();
@@ -91,21 +92,21 @@ public class ServerNotifForwarder {
         checkMBeanPermission(name, "addNotificationListener");
         if (notificationAccessController != null) {
             notificationAccessController.addNotificationListener(
-                connectionId, name, getSubject());
+                    connectionId, name, getSubject());
         }
         try {
             boolean instanceOf =
-            AccessController.doPrivileged(
-                    new PrivilegedExceptionAction<Boolean>() {
-                        public Boolean run() throws InstanceNotFoundException {
-                            return mbeanServer.isInstanceOf(name, broadcasterClass);
-                        }
-            });
+                    AccessController.doPrivileged(
+                            new PrivilegedExceptionAction<Boolean>() {
+                                public Boolean run() throws InstanceNotFoundException {
+                                    return mbeanServer.isInstanceOf(name, broadcasterClass);
+                                }
+                            });
             if (!instanceOf) {
                 throw new IllegalArgumentException("The specified MBean [" +
-                    name + "] is not a " +
-                    "NotificationBroadcaster " +
-                    "object.");
+                        name + "] is not a " +
+                        "NotificationBroadcaster " +
+                        "object.");
             }
         } catch (PrivilegedActionException e) {
             throw (InstanceNotFoundException) extractException(e);
@@ -118,7 +119,7 @@ public class ServerNotifForwarder {
         if (name.getDomain() == null || name.getDomain().equals("")) {
             try {
                 nn = ObjectName.getInstance(mbeanServer.getDefaultDomain(),
-                                            name.getKeyPropertyList());
+                        name.getKeyPropertyList());
             } catch (MalformedObjectNameException mfoe) {
                 // impossible, but...
                 IOException ioe = new IOException(mfoe.getMessage());
@@ -146,12 +147,12 @@ public class ServerNotifForwarder {
     }
 
     public void removeNotificationListener(ObjectName name,
-        Integer[] listenerIDs)
-        throws Exception {
+                                           Integer[] listenerIDs)
+            throws Exception {
 
         if (logger.traceOn()) {
             logger.trace("removeNotificationListener",
-                "Remove some listeners from " + name);
+                    "Remove some listeners from " + name);
         }
 
         checkState();
@@ -161,11 +162,11 @@ public class ServerNotifForwarder {
         checkMBeanPermission(name, "removeNotificationListener");
         if (notificationAccessController != null) {
             notificationAccessController.removeNotificationListener(
-                connectionId, name, getSubject());
+                    connectionId, name, getSubject());
         }
 
         Exception re = null;
-        for (int i = 0 ; i < listenerIDs.length ; i++) {
+        for (int i = 0; i < listenerIDs.length; i++) {
             try {
                 removeNotificationListener(name, listenerIDs[i]);
             } catch (Exception e) {
@@ -182,14 +183,14 @@ public class ServerNotifForwarder {
     }
 
     public void removeNotificationListener(ObjectName name, Integer listenerID)
-    throws
-        InstanceNotFoundException,
-        ListenerNotFoundException,
-        IOException {
+            throws
+            InstanceNotFoundException,
+            ListenerNotFoundException,
+            IOException {
 
         if (logger.traceOn()) {
             logger.trace("removeNotificationListener",
-                "Remove the listener " + listenerID + " from " + name);
+                    "Remove the listener " + listenerID + " from " + name);
         }
 
         checkState();
@@ -197,7 +198,7 @@ public class ServerNotifForwarder {
         if (name != null && !name.isPattern()) {
             if (!mbeanServer.isRegistered(name)) {
                 throw new InstanceNotFoundException("The MBean " + name +
-                    " is not registered.");
+                        " is not registered.");
             }
         }
 
@@ -257,31 +258,33 @@ public class ServerNotifForwarder {
                 }
             }
         }
-    };
+    }
+
+    ;
 
     public NotificationResult fetchNotifs(long startSequenceNumber,
-        long timeout,
-        int maxNotifications) {
+                                          long timeout,
+                                          int maxNotifications) {
         if (logger.traceOn()) {
             logger.trace("fetchNotifs", "Fetching notifications, the " +
-                "startSequenceNumber is " + startSequenceNumber +
-                ", the timeout is " + timeout +
-                ", the maxNotifications is " + maxNotifications);
+                    "startSequenceNumber is " + startSequenceNumber +
+                    ", the timeout is " + timeout +
+                    ", the maxNotifications is " + maxNotifications);
         }
 
         NotificationResult nr;
         final long t = Math.min(connectionTimeout, timeout);
         try {
             nr = notifBuffer.fetchNotifications(bufferFilter,
-                startSequenceNumber,
-                t, maxNotifications);
+                    startSequenceNumber,
+                    t, maxNotifications);
             snoopOnUnregister(nr);
         } catch (InterruptedException ire) {
             nr = new NotificationResult(0L, 0L, new TargetedNotification[0]);
         }
 
         if (logger.traceOn()) {
-            logger.trace("fetchNotifs", "Forwarding the notifs: "+nr);
+            logger.trace("fetchNotifs", "Forwarding the notifs: " + nr);
         }
 
         return nr;
@@ -320,14 +323,14 @@ public class ServerNotifForwarder {
             logger.trace("terminate", "Be called.");
         }
 
-        synchronized(terminationLock) {
+        synchronized (terminationLock) {
             if (terminated) {
                 return;
             }
 
             terminated = true;
 
-            synchronized(listenerMap) {
+            synchronized (listenerMap) {
                 listenerMap.clear();
             }
         }
@@ -346,7 +349,7 @@ public class ServerNotifForwarder {
     }
 
     private void checkState() throws IOException {
-        synchronized(terminationLock) {
+        synchronized (terminationLock) {
             if (terminated) {
                 throw new IOException("The connection has been terminated.");
             }
@@ -354,7 +357,7 @@ public class ServerNotifForwarder {
     }
 
     private Integer getListenerID() {
-        synchronized(listenerCounterLock) {
+        synchronized (listenerCounterLock) {
             return listenerCounter++;
         }
     }
@@ -366,7 +369,7 @@ public class ServerNotifForwarder {
     public final void checkMBeanPermission(
             final ObjectName name, final String actions)
             throws InstanceNotFoundException, SecurityException {
-        checkMBeanPermission(mbeanServer,name,actions);
+        checkMBeanPermission(mbeanServer, name, actions);
     }
 
     static void checkMBeanPermission(
@@ -379,21 +382,21 @@ public class ServerNotifForwarder {
             ObjectInstance oi;
             try {
                 oi = AccessController.doPrivileged(
-                    new PrivilegedExceptionAction<ObjectInstance>() {
-                        public ObjectInstance run()
-                        throws InstanceNotFoundException {
-                            return mbs.getObjectInstance(name);
-                        }
-                });
+                        new PrivilegedExceptionAction<ObjectInstance>() {
+                            public ObjectInstance run()
+                                    throws InstanceNotFoundException {
+                                return mbs.getObjectInstance(name);
+                            }
+                        });
             } catch (PrivilegedActionException e) {
                 throw (InstanceNotFoundException) extractException(e);
             }
             String classname = oi.getClassName();
             MBeanPermission perm = new MBeanPermission(
-                classname,
-                null,
-                name,
-                actions);
+                    classname,
+                    null,
+                    name,
+                    actions);
             sm.checkPermission(perm, acc);
         }
     }
@@ -435,7 +438,7 @@ public class ServerNotifForwarder {
      */
     private static Exception extractException(Exception e) {
         while (e instanceof PrivilegedActionException) {
-            e = ((PrivilegedActionException)e).getException();
+            e = ((PrivilegedActionException) e).getException();
         }
         return e;
     }
@@ -491,12 +494,12 @@ public class ServerNotifForwarder {
     private final int[] terminationLock = new int[0];
 
     static final String broadcasterClass =
-        NotificationBroadcaster.class.getName();
+            NotificationBroadcaster.class.getName();
 
     private final boolean checkNotificationEmission;
 
     private final NotificationAccessController notificationAccessController;
 
     private static final ClassLogger logger =
-        new ClassLogger("javax.management.remote.misc", "ServerNotifForwarder");
+            new ClassLogger("javax.management.remote.misc", "ServerNotifForwarder");
 }

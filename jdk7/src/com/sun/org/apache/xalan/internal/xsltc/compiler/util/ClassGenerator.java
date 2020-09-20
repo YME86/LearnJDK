@@ -35,21 +35,22 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.Stylesheet;
  * The class that implements any class that inherits from
  * <tt>AbstractTranslet</tt>, i.e. any translet. Methods in this
  * class may be of the following kinds:
- *
+ * <p>
  * 1. Main method: applyTemplates, implemented by intances of
  * <tt>MethodGenerator</tt>.
- *
+ * <p>
  * 2. Named methods: for named templates, implemented by instances
  * of <tt>NamedMethodGenerator</tt>.
- *
+ * <p>
  * 3. Rt methods: for result tree fragments, implemented by
  * instances of <tt>RtMethodGenerator</tt>.
+ *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  */
 public class ClassGenerator extends ClassGen {
     protected final static int TRANSLET_INDEX = 0;
-    protected static int INVALID_INDEX  = -1;
+    protected static int INVALID_INDEX = -1;
 
     private Stylesheet _stylesheet;
     private final Parser _parser;               // --> can be moved to XSLT
@@ -58,14 +59,14 @@ public class ClassGenerator extends ClassGen {
     private final String _domClass;
     private final String _domClassSig;
     private final String _applyTemplatesSig;
-        private final String _applyTemplatesSigForImport;
+    private final String _applyTemplatesSigForImport;
 
     public ClassGenerator(String class_name, String super_class_name,
                           String file_name,
                           int access_flags, String[] interfaces,
                           Stylesheet stylesheet) {
         super(class_name, super_class_name, file_name,
-              access_flags, interfaces);
+                access_flags, interfaces);
         _stylesheet = stylesheet;
         _parser = stylesheet.getParser();
         _aloadTranslet = new ALOAD(TRANSLET_INDEX);
@@ -73,23 +74,22 @@ public class ClassGenerator extends ClassGen {
         if (stylesheet.isMultiDocument()) {
             _domClass = "com.sun.org.apache.xalan.internal.xsltc.dom.MultiDOM";
             _domClassSig = "Lcom/sun/org/apache/xalan/internal/xsltc/dom/MultiDOM;";
-        }
-        else {
+        } else {
             _domClass = "com.sun.org.apache.xalan.internal.xsltc.dom.DOMAdapter";
             _domClassSig = "Lcom/sun/org/apache/xalan/internal/xsltc/dom/DOMAdapter;";
         }
         _applyTemplatesSig = "("
-            + Constants.DOM_INTF_SIG
-            + Constants.NODE_ITERATOR_SIG
-            + Constants.TRANSLET_OUTPUT_SIG
-            + ")V";
+                + Constants.DOM_INTF_SIG
+                + Constants.NODE_ITERATOR_SIG
+                + Constants.TRANSLET_OUTPUT_SIG
+                + ")V";
 
-    _applyTemplatesSigForImport = "("
-        + Constants.DOM_INTF_SIG
-        + Constants.NODE_ITERATOR_SIG
-        + Constants.TRANSLET_OUTPUT_SIG
-        + Constants.NODE_FIELD_SIG
-        + ")V";
+        _applyTemplatesSigForImport = "("
+                + Constants.DOM_INTF_SIG
+                + Constants.NODE_ITERATOR_SIG
+                + Constants.TRANSLET_OUTPUT_SIG
+                + Constants.NODE_FIELD_SIG
+                + ")V";
     }
 
     public final Parser getParser() {
@@ -125,7 +125,7 @@ public class ClassGenerator extends ClassGen {
     }
 
     public final String getApplyTemplatesSigForImport() {
-    return _applyTemplatesSigForImport;
+        return _applyTemplatesSigForImport;
     }
 
     /**
@@ -135,10 +135,11 @@ public class ClassGenerator extends ClassGen {
     public boolean isExternal() {
         return false;
     }
+
     public void addMethod(MethodGenerator methodGen) {
         Method[] methodsToAdd = methodGen.getGeneratedMethods(this);
         for (int i = 0; i < methodsToAdd.length; i++) {
             addMethod(methodsToAdd[i]);
-}
+        }
     }
 }

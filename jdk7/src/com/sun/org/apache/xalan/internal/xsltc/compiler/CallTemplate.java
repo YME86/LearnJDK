@@ -82,8 +82,7 @@ final class CallTemplate extends Instruction {
                 parser.reportError(Constants.ERROR, err);
             }
             _name = parser.getQNameIgnoreDefaultNs(name);
-        }
-        else {
+        } else {
             reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "name");
         }
         parseChildren(parser);
@@ -96,9 +95,8 @@ final class CallTemplate extends Instruction {
         final Template template = stable.lookupTemplate(_name);
         if (template != null) {
             typeCheckContents(stable);
-        }
-        else {
-            ErrorMsg err = new ErrorMsg(ErrorMsg.TEMPLATE_UNDEF_ERR,_name,this);
+        } else {
+            ErrorMsg err = new ErrorMsg(ErrorMsg.TEMPLATE_UNDEF_ERR, _name, this);
             throw new TypeCheckError(err);
         }
         return Type.Void;
@@ -122,8 +120,8 @@ final class CallTemplate extends Instruction {
             else {
                 // Push parameter frame
                 final int push = cpg.addMethodref(TRANSLET_CLASS,
-                                                  PUSH_PARAM_FRAME,
-                                                  PUSH_PARAM_FRAME_SIG);
+                        PUSH_PARAM_FRAME,
+                        PUSH_PARAM_FRAME_SIG);
                 il.append(classGen.loadTranslet());
                 il.append(new INVOKEVIRTUAL(push));
                 translateContents(classGen, methodGen);
@@ -143,7 +141,7 @@ final class CallTemplate extends Instruction {
 
         // Initialize prefix of method signature
         StringBuffer methodSig = new StringBuffer("(" + DOM_INTF_SIG
-            + NODE_ITERATOR_SIG + TRANSLET_OUTPUT_SIG + NODE_SIG);
+                + NODE_ITERATOR_SIG + TRANSLET_OUTPUT_SIG + NODE_SIG);
 
         // If calling a simply named template, push actual arguments
         if (_calleeTemplate != null) {
@@ -151,14 +149,13 @@ final class CallTemplate extends Instruction {
             int numParams = _parameters.length;
 
             for (int i = 0; i < numParams; i++) {
-                SyntaxTreeNode node = (SyntaxTreeNode)_parameters[i];
+                SyntaxTreeNode node = (SyntaxTreeNode) _parameters[i];
                 methodSig.append(OBJECT_SIG);   // append Object to signature
 
                 // Push 'null' if Param to indicate no actual parameter specified
                 if (node instanceof Param) {
                     il.append(ACONST_NULL);
-                }
-                else {  // translate WithParam
+                } else {  // translate WithParam
                     node.translate(classGen, methodGen);
                 }
             }
@@ -167,16 +164,16 @@ final class CallTemplate extends Instruction {
         // Complete signature and generate invokevirtual call
         methodSig.append(")V");
         il.append(new INVOKEVIRTUAL(cpg.addMethodref(className,
-                                                     methodName,
-                                                     methodSig.toString())));
+                methodName,
+                methodSig.toString())));
 
         // Do not need to call Translet.popParamFrame() if we are
         // calling a simple named template.
         if (_calleeTemplate == null && (stylesheet.hasLocalParams() || hasContents())) {
             // Pop parameter frame
             final int pop = cpg.addMethodref(TRANSLET_CLASS,
-                                             POP_PARAM_FRAME,
-                                             POP_PARAM_FRAME_SIG);
+                    POP_PARAM_FRAME,
+                    POP_PARAM_FRAME_SIG);
             il.append(classGen.loadTranslet());
             il.append(new INVOKEVIRTUAL(pop));
         }
@@ -189,7 +186,7 @@ final class CallTemplate extends Instruction {
      */
     public Template getCalleeTemplate() {
         Template foundTemplate
-            = getXSLTC().getParser().getSymbolTable().lookupTemplate(_name);
+                = getXSLTC().getParser().getSymbolTable().lookupTemplate(_name);
 
         return foundTemplate.isSimpleNamedTemplate() ? foundTemplate : null;
     }
@@ -217,20 +214,19 @@ final class CallTemplate extends Instruction {
 
             // Ignore if not WithParam
             if (node instanceof WithParam) {
-                WithParam withParam = (WithParam)node;
+                WithParam withParam = (WithParam) node;
                 QName name = withParam.getName();
 
                 // Search for a Param with the same name
                 for (int k = 0; k < numParams; k++) {
                     Object object = _parameters[k];
                     if (object instanceof Param
-                        && ((Param)object).getName().equals(name)) {
+                            && ((Param) object).getName().equals(name)) {
                         withParam.setDoParameterOptimization(true);
                         _parameters[k] = withParam;
                         break;
-                    }
-                    else if (object instanceof WithParam
-                        && ((WithParam)object).getName().equals(name)) {
+                    } else if (object instanceof WithParam
+                            && ((WithParam) object).getName().equals(name)) {
                         withParam.setDoParameterOptimization(true);
                         _parameters[k] = withParam;
                         break;
@@ -238,5 +234,5 @@ final class CallTemplate extends Instruction {
                 }
             }
         }
-     }
+    }
 }

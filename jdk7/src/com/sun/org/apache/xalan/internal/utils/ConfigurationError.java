@@ -27,13 +27,15 @@ package com.sun.org.apache.xalan.internal.utils;
  * A configuration error. This was an internal class in ObjectFactory previously
  */
 public final class ConfigurationError
-    extends Error {
+        extends Error {
 
     //
     // Data
     //
 
-    /** Exception. */
+    /**
+     * Exception.
+     */
     private Exception exception;
 
     //
@@ -53,7 +55,9 @@ public final class ConfigurationError
     // methods
     //
 
-    /** Returns the exception associated to this error. */
+    /**
+     * Returns the exception associated to this error.
+     */
     public Exception getException() {
         return exception;
     } // getException():Exception

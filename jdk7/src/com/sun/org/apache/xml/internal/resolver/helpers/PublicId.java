@@ -31,131 +31,127 @@ package com.sun.org.apache.xml.internal.resolver.helpers;
  *
  * @author Norman Walsh
  * <a href="mailto:Norman.Walsh@Sun.COM">Norman.Walsh@Sun.COM</a>
- *
  */
 public abstract class PublicId {
-  protected PublicId() { }
-
-  /**
-   * Normalize a public identifier.
-   *
-   * <p>Public identifiers must be normalized according to the following
-   * rules before comparisons between them can be made:</p>
-   *
-   * <ul>
-   * <li>Whitespace characters are normalized to spaces (e.g., line feeds,
-   * tabs, etc. become spaces).</li>
-   * <li>Leading and trailing whitespace is removed.</li>
-   * <li>Multiple internal whitespaces are normalized to a single
-   * space.</li>
-   * </ul>
-   *
-   * <p>This method is declared static so that other classes
-   * can use it directly.</p>
-   *
-   * @param publicId The unnormalized public identifier.
-   *
-   * @return The normalized identifier.
-   */
-  public static String normalize(String publicId) {
-    String normal = publicId.replace('\t', ' ');
-    normal = normal.replace('\r', ' ');
-    normal = normal.replace('\n', ' ');
-    normal = normal.trim();
-
-    int pos;
-
-    while ((pos = normal.indexOf("  ")) >= 0) {
-      normal = normal.substring(0, pos) + normal.substring(pos+1);
+    protected PublicId() {
     }
 
-    return normal;
-  }
+    /**
+     * Normalize a public identifier.
+     *
+     * <p>Public identifiers must be normalized according to the following
+     * rules before comparisons between them can be made:</p>
+     *
+     * <ul>
+     * <li>Whitespace characters are normalized to spaces (e.g., line feeds,
+     * tabs, etc. become spaces).</li>
+     * <li>Leading and trailing whitespace is removed.</li>
+     * <li>Multiple internal whitespaces are normalized to a single
+     * space.</li>
+     * </ul>
+     *
+     * <p>This method is declared static so that other classes
+     * can use it directly.</p>
+     *
+     * @param publicId The unnormalized public identifier.
+     * @return The normalized identifier.
+     */
+    public static String normalize(String publicId) {
+        String normal = publicId.replace('\t', ' ');
+        normal = normal.replace('\r', ' ');
+        normal = normal.replace('\n', ' ');
+        normal = normal.trim();
 
-  /**
-   * Encode a public identifier as a "publicid" URN.
-   *
-   * <p>This method is declared static so that other classes
-   * can use it directly.</p>
-   *
-   * @param publicId The unnormalized public identifier.
-   *
-   * @return The normalized identifier.
-   */
-  public static String encodeURN(String publicId) {
-    String urn = PublicId.normalize(publicId);
+        int pos;
 
-    urn = PublicId.stringReplace(urn, "%", "%25");
-    urn = PublicId.stringReplace(urn, ";", "%3B");
-    urn = PublicId.stringReplace(urn, "'", "%27");
-    urn = PublicId.stringReplace(urn, "?", "%3F");
-    urn = PublicId.stringReplace(urn, "#", "%23");
-    urn = PublicId.stringReplace(urn, "+", "%2B");
-    urn = PublicId.stringReplace(urn, " ", "+");
-    urn = PublicId.stringReplace(urn, "::", ";");
-    urn = PublicId.stringReplace(urn, ":", "%3A");
-    urn = PublicId.stringReplace(urn, "//", ":");
-    urn = PublicId.stringReplace(urn, "/", "%2F");
+        while ((pos = normal.indexOf("  ")) >= 0) {
+            normal = normal.substring(0, pos) + normal.substring(pos + 1);
+        }
 
-    return "urn:publicid:" + urn;
-  }
-
-  /**
-   * Decode a "publicid" URN into a public identifier.
-   *
-   * <p>This method is declared static so that other classes
-   * can use it directly.</p>
-   *
-   * @param urn The urn:publicid: URN
-   *
-   * @return The normalized identifier.
-   */
-  public static String decodeURN(String urn) {
-    String publicId = "";
-
-    if (urn.startsWith("urn:publicid:")) {
-      publicId = urn.substring(13);
-    } else {
-      return urn;
+        return normal;
     }
 
-    publicId = PublicId.stringReplace(publicId, "%2F", "/");
-    publicId = PublicId.stringReplace(publicId, ":", "//");
-    publicId = PublicId.stringReplace(publicId, "%3A", ":");
-    publicId = PublicId.stringReplace(publicId, ";", "::");
-    publicId = PublicId.stringReplace(publicId, "+", " ");
-    publicId = PublicId.stringReplace(publicId, "%2B", "+");
-    publicId = PublicId.stringReplace(publicId, "%23", "#");
-    publicId = PublicId.stringReplace(publicId, "%3F", "?");
-    publicId = PublicId.stringReplace(publicId, "%27", "'");
-    publicId = PublicId.stringReplace(publicId, "%3B", ";");
-    publicId = PublicId.stringReplace(publicId, "%25", "%");
+    /**
+     * Encode a public identifier as a "publicid" URN.
+     *
+     * <p>This method is declared static so that other classes
+     * can use it directly.</p>
+     *
+     * @param publicId The unnormalized public identifier.
+     * @return The normalized identifier.
+     */
+    public static String encodeURN(String publicId) {
+        String urn = PublicId.normalize(publicId);
 
-    return publicId;
+        urn = PublicId.stringReplace(urn, "%", "%25");
+        urn = PublicId.stringReplace(urn, ";", "%3B");
+        urn = PublicId.stringReplace(urn, "'", "%27");
+        urn = PublicId.stringReplace(urn, "?", "%3F");
+        urn = PublicId.stringReplace(urn, "#", "%23");
+        urn = PublicId.stringReplace(urn, "+", "%2B");
+        urn = PublicId.stringReplace(urn, " ", "+");
+        urn = PublicId.stringReplace(urn, "::", ";");
+        urn = PublicId.stringReplace(urn, ":", "%3A");
+        urn = PublicId.stringReplace(urn, "//", ":");
+        urn = PublicId.stringReplace(urn, "/", "%2F");
+
+        return "urn:publicid:" + urn;
     }
 
-  /**
-   * Replace one string with another.
-   *
-   */
-  private static String stringReplace(String str,
-                                      String oldStr,
-                                      String newStr) {
+    /**
+     * Decode a "publicid" URN into a public identifier.
+     *
+     * <p>This method is declared static so that other classes
+     * can use it directly.</p>
+     *
+     * @param urn The urn:publicid: URN
+     * @return The normalized identifier.
+     */
+    public static String decodeURN(String urn) {
+        String publicId = "";
 
-    String result = "";
-    int pos = str.indexOf(oldStr);
+        if (urn.startsWith("urn:publicid:")) {
+            publicId = urn.substring(13);
+        } else {
+            return urn;
+        }
 
-    //    System.out.println(str + ": " + oldStr + " => " + newStr);
+        publicId = PublicId.stringReplace(publicId, "%2F", "/");
+        publicId = PublicId.stringReplace(publicId, ":", "//");
+        publicId = PublicId.stringReplace(publicId, "%3A", ":");
+        publicId = PublicId.stringReplace(publicId, ";", "::");
+        publicId = PublicId.stringReplace(publicId, "+", " ");
+        publicId = PublicId.stringReplace(publicId, "%2B", "+");
+        publicId = PublicId.stringReplace(publicId, "%23", "#");
+        publicId = PublicId.stringReplace(publicId, "%3F", "?");
+        publicId = PublicId.stringReplace(publicId, "%27", "'");
+        publicId = PublicId.stringReplace(publicId, "%3B", ";");
+        publicId = PublicId.stringReplace(publicId, "%25", "%");
 
-    while (pos >= 0) {
-      //      System.out.println(str + " (" + pos + ")");
-      result += str.substring(0, pos);
-      result += newStr;
-      str = str.substring(pos+1);
-
-      pos = str.indexOf(oldStr);
+        return publicId;
     }
 
-    return result + str;
-  }
+    /**
+     * Replace one string with another.
+     */
+    private static String stringReplace(String str,
+                                        String oldStr,
+                                        String newStr) {
+
+        String result = "";
+        int pos = str.indexOf(oldStr);
+
+        //    System.out.println(str + ": " + oldStr + " => " + newStr);
+
+        while (pos >= 0) {
+            //      System.out.println(str + " (" + pos + ")");
+            result += str.substring(0, pos);
+            result += newStr;
+            str = str.substring(pos + 1);
+
+            pos = str.indexOf(oldStr);
+        }
+
+        return result + str;
+    }
 }

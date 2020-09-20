@@ -44,7 +44,7 @@ final class UseAttributeSets extends Instruction {
 
     // Only error that can occur:
     private final static String ATTR_SET_NOT_FOUND =
-        "";
+            "";
 
     // Contains the names of all references attribute sets
     private final Vector _sets = new Vector(2);
@@ -67,7 +67,7 @@ final class UseAttributeSets extends Instruction {
             final StringTokenizer tokens = new StringTokenizer(setNames);
             while (tokens.hasMoreTokens()) {
                 final QName qname =
-                    getParser().getQNameIgnoreDefaultNs(tokens.nextToken());
+                        getParser().getQNameIgnoreDefaultNs(tokens.nextToken());
                 _sets.add(qname);
             }
         }
@@ -90,9 +90,9 @@ final class UseAttributeSets extends Instruction {
         final SymbolTable symbolTable = getParser().getSymbolTable();
 
         // Go through each attribute set and generate a method call
-        for (int i=0; i<_sets.size(); i++) {
+        for (int i = 0; i < _sets.size(); i++) {
             // Get the attribute set name
-            final QName name = (QName)_sets.elementAt(i);
+            final QName name = (QName) _sets.elementAt(i);
             // Get the AttributeSet reference from the symbol table
             final AttributeSet attrs = symbolTable.lookupAttributeSet(name);
             // Compile the call to the set's method if the set exists
@@ -104,7 +104,7 @@ final class UseAttributeSets extends Instruction {
                 il.append(methodGen.loadHandler());
                 il.append(methodGen.loadCurrentNode());
                 final int method = cpg.addMethodref(classGen.getClassName(),
-                                                    methodName, ATTR_SET_SIG);
+                        methodName, ATTR_SET_SIG);
                 il.append(new INVOKESPECIAL(method));
             }
             // Generate an error if the attribute set does not exist

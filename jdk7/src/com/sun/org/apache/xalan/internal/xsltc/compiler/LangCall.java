@@ -45,7 +45,7 @@ final class LangCall extends FunctionCall {
 
     /**
      * Get the parameters passed to function:
-     *   lang(string)
+     * lang(string)
      */
     public LangCall(QName fname, Vector arguments) {
         super(fname, arguments);
@@ -67,7 +67,7 @@ final class LangCall extends FunctionCall {
      *
      */
     public Type getType() {
-        return(Type.Boolean);
+        return (Type.Boolean);
     }
 
     /**
@@ -80,9 +80,9 @@ final class LangCall extends FunctionCall {
         final InstructionList il = methodGen.getInstructionList();
 
         final int tst = cpg.addMethodref(BASIS_LIBRARY_CLASS,
-                                         "testLanguage",
-                                         "("+STRING_SIG+DOM_INTF_SIG+"I)Z");
-        _lang.translate(classGen,methodGen);
+                "testLanguage",
+                "(" + STRING_SIG + DOM_INTF_SIG + "I)Z");
+        _lang.translate(classGen, methodGen);
         il.append(methodGen.loadDOM());
         if (classGen instanceof FilterGenerator)
             il.append(new ILOAD(1));

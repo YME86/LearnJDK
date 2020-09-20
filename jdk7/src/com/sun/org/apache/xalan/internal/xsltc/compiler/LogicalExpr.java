@@ -39,14 +39,14 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.util.TypeCheckError;
  */
 final class LogicalExpr extends Expression {
 
-    public static final int OR  = 0;
+    public static final int OR = 0;
     public static final int AND = 1;
 
-    private final int  _op;     // operator
+    private final int _op;     // operator
     private Expression _left;   // first operand
     private Expression _right;  // second operand
 
-    private static final String[] Ops = { "or", "and" };
+    private static final String[] Ops = {"or", "and"};
 
     /**
      * Creates a new logical expression - either OR or AND. Note that the
@@ -72,7 +72,7 @@ final class LogicalExpr extends Expression {
      * Returns true if this expressions contains a call to last()
      */
     public boolean hasLastCall() {
-            return (_left.hasLastCall() || _right.hasLastCall());
+        return (_left.hasLastCall() || _right.hasLastCall());
     }
 
     /**
@@ -91,11 +91,10 @@ final class LogicalExpr extends Expression {
 
         if (_op == AND) {
             return (leftb == Boolean.TRUE && rightb == Boolean.TRUE) ?
-                Boolean.TRUE : Boolean.FALSE;
-        }
-        else {
+                    Boolean.TRUE : Boolean.FALSE;
+        } else {
             return (leftb == Boolean.TRUE || rightb == Boolean.TRUE) ?
-                Boolean.TRUE : Boolean.FALSE;
+                    Boolean.TRUE : Boolean.FALSE;
         }
     }
 
@@ -104,7 +103,7 @@ final class LogicalExpr extends Expression {
      * by 0 and 1 respectively.
      */
     public int getOp() {
-        return(_op);
+        return (_op);
     }
 
     /**
@@ -139,7 +138,7 @@ final class LogicalExpr extends Expression {
         // Yes, the operation is supported
         if (haveType != null) {
             // Check if left-hand side operand must be type casted
-            Type arg1 = (Type)haveType.argsType().elementAt(0);
+            Type arg1 = (Type) haveType.argsType().elementAt(0);
             if (!arg1.identicalTo(tleft))
                 _left = new CastExpr(_left, arg1);
             // Check if right-hand side operand must be type casted
@@ -190,26 +189,22 @@ final class LogicalExpr extends Expression {
             // Special case for OR-expression as a left child of AND.
             // The true-list of OR must point to second clause of AND.
             if ((_left instanceof LogicalExpr) &&
-                (((LogicalExpr)_left).getOp() == OR)) {
+                    (((LogicalExpr) _left).getOp() == OR)) {
                 _left.backPatchTrueList(middle);
-            }
-            else if (_left instanceof NotCall) {
+            } else if (_left instanceof NotCall) {
                 _left.backPatchTrueList(middle);
-            }
-            else {
+            } else {
                 _trueList.append(_left._trueList);
             }
 
             // Special case for OR-expression as a right child of AND
             // The true-list of OR must point to true-list of AND.
             if ((_right instanceof LogicalExpr) &&
-                (((LogicalExpr)_right).getOp() == OR)) {
+                    (((LogicalExpr) _right).getOp() == OR)) {
                 _right.backPatchTrueList(after);
-            }
-            else if (_right instanceof NotCall) {
+            } else if (_right instanceof NotCall) {
                 _right.backPatchTrueList(after);
-            }
-            else {
+            } else {
                 _trueList.append(_right._trueList);
             }
         }

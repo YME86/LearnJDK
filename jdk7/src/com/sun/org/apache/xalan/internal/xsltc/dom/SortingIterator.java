@@ -60,15 +60,14 @@ public final class SortingIterator extends DTMAxisIteratorBase {
 
             // gather all nodes from the source iterator
             while ((node = _source.next()) != END) {
-                addRecord(_factory.makeNodeSortRecord(node,_free));
+                addRecord(_factory.makeNodeSortRecord(node, _free));
             }
             // now sort the records
             quicksort(0, _free - 1);
 
             _current = 0;
             return this;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return this;
         }
     }
@@ -106,10 +105,9 @@ public final class SortingIterator extends DTMAxisIteratorBase {
             clone._current = _current;
             clone.setRestartable(false);
             return clone.reset();
-        }
-        catch (CloneNotSupportedException e) {
+        } catch (CloneNotSupportedException e) {
             BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
-                                      e.toString());
+                    e.toString());
             return null;
         }
     }
@@ -136,15 +134,14 @@ public final class SortingIterator extends DTMAxisIteratorBase {
         int i = p - 1;
         int j = r + 1;
         while (true) {
-            while (x.compareTo(_data[--j]) < 0);
-            while (x.compareTo(_data[++i]) > 0);
+            while (x.compareTo(_data[--j]) < 0) ;
+            while (x.compareTo(_data[++i]) > 0) ;
             if (i < j) {
                 final NodeSortRecord t = _data[i];
                 _data[i] = _data[j];
                 _data[j] = t;
-            }
-            else {
-                return(j);
+            } else {
+                return (j);
             }
         }
     }

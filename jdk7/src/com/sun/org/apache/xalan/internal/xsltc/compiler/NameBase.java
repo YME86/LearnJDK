@@ -40,7 +40,7 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.util.TypeCheckError;
 class NameBase extends FunctionCall {
 
     private Expression _param = null;
-    private Type       _paramType = Type.Node;
+    private Type _paramType = Type.Node;
 
     /**
      * Handles calls with no parameter (current node is implicit parameter).
@@ -65,21 +65,21 @@ class NameBase extends FunctionCall {
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 
         // Check the argument type (if any)
-        switch(argumentCount()) {
-        case 0:
-            _paramType = Type.Node;
-            break;
-        case 1:
-            _paramType = _param.typeCheck(stable);
-            break;
-        default:
-            throw new TypeCheckError(this);
+        switch (argumentCount()) {
+            case 0:
+                _paramType = Type.Node;
+                break;
+            case 1:
+                _paramType = _param.typeCheck(stable);
+                break;
+            default:
+                throw new TypeCheckError(this);
         }
 
         // The argument has to be a node, a node-set or a node reference
         if ((_paramType != Type.NodeSet) &&
-            (_paramType != Type.Node) &&
-            (_paramType != Type.Reference)) {
+                (_paramType != Type.Node) &&
+                (_paramType != Type.Reference)) {
             throw new TypeCheckError(this);
         }
 
@@ -108,16 +108,15 @@ class NameBase extends FunctionCall {
         // Function was called with node parameter
         else if (_paramType == Type.Node) {
             _param.translate(classGen, methodGen);
-        }
-        else if (_paramType == Type.Reference) {
+        } else if (_paramType == Type.Reference) {
             _param.translate(classGen, methodGen);
             il.append(new INVOKESTATIC(cpg.addMethodref
-                                       (BASIS_LIBRARY_CLASS,
-                                        "referenceToNodeSet",
-                                        "("
-                                        + OBJECT_SIG
-                                        + ")"
-                                        + NODE_ITERATOR_SIG)));
+                    (BASIS_LIBRARY_CLASS,
+                            "referenceToNodeSet",
+                            "("
+                                    + OBJECT_SIG
+                                    + ")"
+                                    + NODE_ITERATOR_SIG)));
             il.append(methodGen.nextNode());
         }
         // Function was called with node-set parameter

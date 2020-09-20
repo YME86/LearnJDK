@@ -22,6 +22,7 @@ package com.sun.org.apache.xml.internal.security.encryption;
 
 
 import java.util.Iterator;
+
 import org.w3c.dom.Element;
 
 /**
@@ -38,12 +39,12 @@ import org.w3c.dom.Element;
  * <xmp>
  * <element name='EncryptionProperty' type='xenc:EncryptionPropertyType'/>
  * <complexType name='EncryptionPropertyType' mixed='true'>
- *     <choice maxOccurs='unbounded'>
- *         <any namespace='##other' processContents='lax'/>
- *     </choice>
- *     <attribute name='Target' type='anyURI' use='optional'/>
- *     <attribute name='Id' type='ID' use='optional'/>
- *     <anyAttribute namespace="http://www.w3.org/XML/1998/namespace"/>
+ * <choice maxOccurs='unbounded'>
+ * <any namespace='##other' processContents='lax'/>
+ * </choice>
+ * <attribute name='Target' type='anyURI' use='optional'/>
+ * <attribute name='Id' type='ID' use='optional'/>
+ * <anyAttribute namespace="http://www.w3.org/XML/1998/namespace"/>
  * </complexType>
  * </xmp>
  *
@@ -54,7 +55,7 @@ public interface EncryptionProperty {
      * Returns the <code>EncryptedType</code> being described.
      *
      * @return the <code>EncryptedType</code> being described by this
-     *   <code>EncryptionProperty</code>.
+     * <code>EncryptionProperty</code>.
      */
     String getTarget();
 
@@ -91,7 +92,7 @@ public interface EncryptionProperty {
      * Set the attribute value.
      *
      * @param attribute the attribute's name.
-     * @param value the attribute's value.
+     * @param value     the attribute's value.
      */
     void setAttribute(String attribute, String value);
 
@@ -99,7 +100,7 @@ public interface EncryptionProperty {
      * Returns the properties of the <CODE>EncryptionProperty</CODE>.
      *
      * @return an <code>Iterator</code> over all the addiitonal encryption
-     *   information contained in this class.
+     * information contained in this class.
      */
     Iterator getEncryptionInformation();
 

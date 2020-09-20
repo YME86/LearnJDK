@@ -38,8 +38,8 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Util;
 
 final class ApplyImports extends Instruction {
 
-    private QName      _modeName;
-    private int        _precedence;
+    private QName _modeName;
+    private int _precedence;
 
     public void display(int indent) {
         indent(indent);
@@ -116,17 +116,17 @@ final class ApplyImports extends Instruction {
         // Push the arguments that are passed to applyTemplates()
         il.append(classGen.loadTranslet());
         il.append(methodGen.loadDOM());
-    il.append(methodGen.loadIterator());
+        il.append(methodGen.loadIterator());
         il.append(methodGen.loadHandler());
-    il.append(methodGen.loadCurrentNode());
+        il.append(methodGen.loadCurrentNode());
 
         // Push a new parameter frame in case imported template might expect
         // parameters.  The apply-imports has nothing that it can pass.
         if (stylesheet.hasLocalParams()) {
             il.append(classGen.loadTranslet());
             final int pushFrame = cpg.addMethodref(TRANSLET_CLASS,
-                                                   PUSH_PARAM_FRAME,
-                                                   PUSH_PARAM_FRAME_SIG);
+                    PUSH_PARAM_FRAME,
+                    PUSH_PARAM_FRAME_SIG);
             il.append(new INVOKEVIRTUAL(pushFrame));
         }
 
@@ -144,16 +144,16 @@ final class ApplyImports extends Instruction {
         final String className = classGen.getStylesheet().getClassName();
         final String signature = classGen.getApplyTemplatesSigForImport();
         final int applyTemplates = cpg.addMethodref(className,
-                                                    functionName,
-                                                    signature);
+                functionName,
+                signature);
         il.append(new INVOKEVIRTUAL(applyTemplates));
 
         // Pop any parameter frame that was pushed above.
         if (stylesheet.hasLocalParams()) {
             il.append(classGen.loadTranslet());
             final int pushFrame = cpg.addMethodref(TRANSLET_CLASS,
-                                                   POP_PARAM_FRAME,
-                                                   POP_PARAM_FRAME_SIG);
+                    POP_PARAM_FRAME,
+                    POP_PARAM_FRAME_SIG);
             il.append(new INVOKEVIRTUAL(pushFrame));
         }
     }

@@ -45,18 +45,18 @@ import javax.management.NotCompliantMBeanException;
  * a caller-supplied visitor method for each one.</p>
  *
  * @param <M> Method or ConvertingMethod according as this is a
- * Standard MBean or an MXBean.
- *
+ *            Standard MBean or an MXBean.
  * @since 1.6
  */
 class MBeanAnalyzer<M> {
 
     static interface MBeanVisitor<M> {
         public void visitAttribute(String attributeName,
-                M getter,
-                M setter);
+                                   M getter,
+                                   M setter);
+
         public void visitOperation(String operationName,
-                M operation);
+                                   M operation);
     }
 
     void visit(MBeanVisitor<M> visitor) {
@@ -96,13 +96,13 @@ class MBeanAnalyzer<M> {
     // an analyzer will not be recreated for a second MBean using the
     // same interface.
     static <M> MBeanAnalyzer<M> analyzer(Class<?> mbeanType,
-            MBeanIntrospector<M> introspector)
+                                         MBeanIntrospector<M> introspector)
             throws NotCompliantMBeanException {
         return new MBeanAnalyzer<M>(mbeanType, introspector);
     }
 
     private MBeanAnalyzer(Class<?> mbeanType,
-            MBeanIntrospector<M> introspector)
+                          MBeanIntrospector<M> introspector)
             throws NotCompliantMBeanException {
         if (!mbeanType.isInterface()) {
             throw new NotCompliantMBeanException("Not an interface: " +
@@ -112,14 +112,14 @@ class MBeanAnalyzer<M> {
         try {
             initMaps(mbeanType, introspector);
         } catch (Exception x) {
-            throw Introspector.throwException(mbeanType,x);
+            throw Introspector.throwException(mbeanType, x);
         }
     }
 
     // Introspect the mbeanInterface and initialize this object's maps.
     //
     private void initMaps(Class<?> mbeanType,
-            MBeanIntrospector<M> introspector) throws Exception {
+                          MBeanIntrospector<M> introspector) throws Exception {
         final List<Method> methods1 = introspector.getMethods(mbeanType);
         final List<Method> methods = eliminateCovariantMethods(methods1);
 
@@ -135,7 +135,7 @@ class MBeanAnalyzer<M> {
             if (name.startsWith("get"))
                 attrName = name.substring(3);
             else if (name.startsWith("is")
-            && m.getReturnType() == boolean.class)
+                    && m.getReturnType() == boolean.class)
                 attrName = name.substring(2);
 
             if (attrName.length() != 0 && nParams == 0
@@ -220,6 +220,7 @@ class MBeanAnalyzer<M> {
                 return -1;
             return +1;      // could assert bret.isAssignableFrom(aret)
         }
+
         public final static MethodOrder instance = new MethodOrder();
     }
 
@@ -235,17 +236,17 @@ class MBeanAnalyzer<M> {
        more than once in the given List then it will be completely deleted!
        So don't do that.  */
     static List<Method>
-            eliminateCovariantMethods(List<Method> startMethods) {
+    eliminateCovariantMethods(List<Method> startMethods) {
         // We are assuming that you never have very many methods with the
         // same name, so it is OK to use algorithms that are quadratic
         // in the number of methods with the same name.
 
         final int len = startMethods.size();
         final Method[] sorted = startMethods.toArray(new Method[len]);
-        Arrays.sort(sorted,MethodOrder.instance);
+        Arrays.sort(sorted, MethodOrder.instance);
         final Set<Method> overridden = newSet();
-        for (int i=1;i<len;i++) {
-            final Method m0 = sorted[i-1];
+        for (int i = 1; i < len; i++) {
+            final Method m0 = sorted[i - 1];
             final Method m1 = sorted[i];
 
             // Methods that don't have the same name can't override each other

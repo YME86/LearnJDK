@@ -28,6 +28,7 @@ package com.sun.jmx.snmp.agent;
 
 // java imports
 //
+
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -46,6 +47,7 @@ import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanRegistrationException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.RuntimeOperationsException;
+
 import com.sun.jmx.snmp.SnmpOid;
 import com.sun.jmx.snmp.SnmpValue;
 import com.sun.jmx.snmp.SnmpVarBind;
@@ -128,47 +130,46 @@ public class SnmpGenericObjectServer {
      * @param name  The ObjectName of the MBean impacted by this subrequest
      * @param req   The SNMP subrequest to execute on the MBean
      * @param depth The depth of the SNMP object in the OID tree.
-     *
-     * @exception SnmpStatusException whenever an SNMP exception must be
-     *      raised. Raising an exception will abort the request.<br>
-     *      Exceptions should never be raised directly, but only by means of
-     * <code>
-     * req.registerGetException(<i>VariableId</i>,<i>SnmpStatusException</i>)
-     * </code>
+     * @throws SnmpStatusException whenever an SNMP exception must be
+     *                             raised. Raising an exception will abort the request.<br>
+     *                             Exceptions should never be raised directly, but only by means of
+     *                             <code>
+     *                             req.registerGetException(<i>VariableId</i>,<i>SnmpStatusException</i>)
+     *                             </code>
      **/
     public void get(SnmpGenericMetaServer meta, ObjectName name,
                     SnmpMibSubRequest req, int depth)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
 
         // java.lang.System.out.println(">>>>>>>>> GET " + name);
 
-        final int           size     = req.getSize();
-        final Object        data     = req.getUserData();
-        final String[]      nameList = new String[size];
-        final SnmpVarBind[] varList  = new SnmpVarBind[size];
-        final long[]        idList   = new long[size];
-        int   i = 0;
+        final int size = req.getSize();
+        final Object data = req.getUserData();
+        final String[] nameList = new String[size];
+        final SnmpVarBind[] varList = new SnmpVarBind[size];
+        final long[] idList = new long[size];
+        int i = 0;
 
-        for (Enumeration e=req.getElements(); e.hasMoreElements();) {
-            final SnmpVarBind var= (SnmpVarBind) e.nextElement();
+        for (Enumeration e = req.getElements(); e.hasMoreElements(); ) {
+            final SnmpVarBind var = (SnmpVarBind) e.nextElement();
             try {
                 final long id = var.oid.getOidArc(depth);
-                nameList[i]   = meta.getAttributeName(id);
-                varList[i]    = var;
-                idList[i]     = id;
+                nameList[i] = meta.getAttributeName(id);
+                varList[i] = var;
+                idList[i] = id;
 
                 // Check the access rights according to the MIB.
                 // The MBean might be less restrictive (have a getter
                 // while the MIB defines the variable as AFN)
                 //
-                meta.checkGetAccess(id,data);
+                meta.checkGetAccess(id, data);
 
                 //java.lang.System.out.println(nameList[i] + " added.");
                 i++;
-            } catch(SnmpStatusException x) {
+            } catch (SnmpStatusException x) {
                 //java.lang.System.out.println("exception for " + nameList[i]);
                 //x.printStackTrace();
-                req.registerGetException(var,x);
+                req.registerGetException(var, x);
             }
         }
 
@@ -176,7 +177,7 @@ public class SnmpGenericObjectServer {
         int errorCode = SnmpStatusException.noSuchInstance;
 
         try {
-            result = server.getAttributes(name,nameList);
+            result = server.getAttributes(name, nameList);
         } catch (InstanceNotFoundException f) {
             //java.lang.System.out.println(name + ": instance not found.");
             //f.printStackTrace();
@@ -192,34 +193,34 @@ public class SnmpGenericObjectServer {
 
         final Iterator it = result.iterator();
 
-        for (int j=0; j < i; j++) {
+        for (int j = 0; j < i; j++) {
             if (!it.hasNext()) {
                 //java.lang.System.out.println(name + "variable[" + j +
                 //                           "] absent");
                 final SnmpStatusException x =
-                    new SnmpStatusException(errorCode);
-                req.registerGetException(varList[j],x);
+                        new SnmpStatusException(errorCode);
+                req.registerGetException(varList[j], x);
                 continue;
             }
 
             final Attribute att = (Attribute) it.next();
 
-            while ((j < i) && (! nameList[j].equals(att.getName()))) {
+            while ((j < i) && (!nameList[j].equals(att.getName()))) {
                 //java.lang.System.out.println(name + "variable[" +j +
                 //                           "] not found");
                 final SnmpStatusException x =
-                    new SnmpStatusException(errorCode);
-                req.registerGetException(varList[j],x);
+                        new SnmpStatusException(errorCode);
+                req.registerGetException(varList[j], x);
                 j++;
             }
 
-            if ( j == i) break;
+            if (j == i) break;
 
             try {
                 varList[j].value =
-                    meta.buildSnmpValue(idList[j],att.getValue());
+                        meta.buildSnmpValue(idList[j], att.getValue());
             } catch (SnmpStatusException x) {
-                req.registerGetException(varList[j],x);
+                req.registerGetException(varList[j], x);
             }
             //java.lang.System.out.println(att.getName() + " retrieved.");
         }
@@ -233,29 +234,27 @@ public class SnmpGenericObjectServer {
      * You should never need to use this method directly.
      * </i></b></p>
      *
-     * @param meta  The impacted metadata object
-     * @param name  The ObjectName of the impacted MBean
-     * @param id    The OID arc identifying the variable we're trying to set.
-     * @param data  User contextual data allocated through the
-     *        {@link com.sun.jmx.snmp.agent.SnmpUserDataFactory}
-     *
+     * @param meta The impacted metadata object
+     * @param name The ObjectName of the impacted MBean
+     * @param id   The OID arc identifying the variable we're trying to set.
+     * @param data User contextual data allocated through the
+     *             {@link com.sun.jmx.snmp.agent.SnmpUserDataFactory}
      * @return The value of the variable.
-     *
-     * @exception SnmpStatusException whenever an SNMP exception must be
-     *      raised. Raising an exception will abort the request. <br>
-     *      Exceptions should never be raised directly, but only by means of
-     * <code>
-     * req.registerGetException(<i>VariableId</i>,<i>SnmpStatusException</i>)
-     * </code>
+     * @throws SnmpStatusException whenever an SNMP exception must be
+     *                             raised. Raising an exception will abort the request. <br>
+     *                             Exceptions should never be raised directly, but only by means of
+     *                             <code>
+     *                             req.registerGetException(<i>VariableId</i>,<i>SnmpStatusException</i>)
+     *                             </code>
      **/
     public SnmpValue get(SnmpGenericMetaServer meta, ObjectName name,
                          long id, Object data)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
         final String attname = meta.getAttributeName(id);
         Object result = null;
 
         try {
-            result = server.getAttribute(name,attname);
+            result = server.getAttribute(name, attname);
         } catch (MBeanException m) {
             Exception t = m.getTargetException();
             if (t instanceof SnmpStatusException)
@@ -265,7 +264,7 @@ public class SnmpGenericObjectServer {
             throw new SnmpStatusException(SnmpStatusException.noSuchInstance);
         }
 
-        return meta.buildSnmpValue(id,result);
+        return meta.buildSnmpValue(id, result);
     }
 
     /**
@@ -293,40 +292,39 @@ public class SnmpGenericObjectServer {
      * @param name  The ObjectName of the MBean impacted by this subrequest
      * @param req   The SNMP subrequest to execute on the MBean
      * @param depth The depth of the SNMP object in the OID tree.
-     *
-     * @exception SnmpStatusException whenever an SNMP exception must be
-     *      raised. Raising an exception will abort the request. <br>
-     *      Exceptions should never be raised directly, but only by means of
-     * <code>
-     * req.registerGetException(<i>VariableId</i>,<i>SnmpStatusException</i>)
-     * </code>
+     * @throws SnmpStatusException whenever an SNMP exception must be
+     *                             raised. Raising an exception will abort the request. <br>
+     *                             Exceptions should never be raised directly, but only by means of
+     *                             <code>
+     *                             req.registerGetException(<i>VariableId</i>,<i>SnmpStatusException</i>)
+     *                             </code>
      **/
     public void set(SnmpGenericMetaServer meta, ObjectName name,
                     SnmpMibSubRequest req, int depth)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
 
-        final int size               = req.getSize();
-        final AttributeList attList  = new AttributeList(size);
-        final String[]      nameList = new String[size];
-        final SnmpVarBind[] varList  = new SnmpVarBind[size];
-        final long[]        idList   = new long[size];
-        int   i = 0;
+        final int size = req.getSize();
+        final AttributeList attList = new AttributeList(size);
+        final String[] nameList = new String[size];
+        final SnmpVarBind[] varList = new SnmpVarBind[size];
+        final long[] idList = new long[size];
+        int i = 0;
 
-        for (Enumeration e=req.getElements(); e.hasMoreElements();) {
-            final SnmpVarBind var= (SnmpVarBind) e.nextElement();
+        for (Enumeration e = req.getElements(); e.hasMoreElements(); ) {
+            final SnmpVarBind var = (SnmpVarBind) e.nextElement();
             try {
                 final long id = var.oid.getOidArc(depth);
                 final String attname = meta.getAttributeName(id);
-                final Object attvalue=
-                    meta.buildAttributeValue(id,var.value);
-                final Attribute att = new Attribute(attname,attvalue);
+                final Object attvalue =
+                        meta.buildAttributeValue(id, var.value);
+                final Attribute att = new Attribute(attname, attvalue);
                 attList.add(att);
-                nameList[i]   = attname;
-                varList[i]    = var;
-                idList[i]     = id;
+                nameList[i] = attname;
+                varList[i] = var;
+                idList[i] = id;
                 i++;
-            } catch(SnmpStatusException x) {
-                req.registerSetException(var,x);
+            } catch (SnmpStatusException x) {
+                req.registerSetException(var, x);
             }
         }
 
@@ -334,7 +332,7 @@ public class SnmpGenericObjectServer {
         int errorCode = SnmpStatusException.noAccess;
 
         try {
-            result = server.setAttributes(name,attList);
+            result = server.setAttributes(name, attList);
         } catch (InstanceNotFoundException f) {
             result = new AttributeList();
             errorCode = SnmpStatusException.snmpRspInconsistentName;
@@ -347,30 +345,30 @@ public class SnmpGenericObjectServer {
 
         final Iterator it = result.iterator();
 
-        for (int j=0; j < i; j++) {
+        for (int j = 0; j < i; j++) {
             if (!it.hasNext()) {
                 final SnmpStatusException x =
-                    new SnmpStatusException(errorCode);
-                req.registerSetException(varList[j],x);
+                        new SnmpStatusException(errorCode);
+                req.registerSetException(varList[j], x);
                 continue;
             }
 
             final Attribute att = (Attribute) it.next();
 
-            while ((j < i) && (! nameList[j].equals(att.getName()))) {
+            while ((j < i) && (!nameList[j].equals(att.getName()))) {
                 final SnmpStatusException x =
-                    new SnmpStatusException(SnmpStatusException.noAccess);
-                req.registerSetException(varList[j],x);
+                        new SnmpStatusException(SnmpStatusException.noAccess);
+                req.registerSetException(varList[j], x);
                 j++;
             }
 
-            if ( j == i) break;
+            if (j == i) break;
 
             try {
                 varList[j].value =
-                    meta.buildSnmpValue(idList[j],att.getValue());
+                        meta.buildSnmpValue(idList[j], att.getValue());
             } catch (SnmpStatusException x) {
-                req.registerSetException(varList[j],x);
+                req.registerSetException(varList[j], x);
             }
 
         }
@@ -383,56 +381,54 @@ public class SnmpGenericObjectServer {
      * You should never need to use this method directly.
      * </i></b></p>
      *
-     * @param meta  The impacted metadata object
-     * @param name  The ObjectName of the impacted MBean
-     * @param x     The new requested SnmpValue
-     * @param id    The OID arc identifying the variable we're trying to set.
-     * @param data  User contextual data allocated through the
-     *        {@link com.sun.jmx.snmp.agent.SnmpUserDataFactory}
-     *
+     * @param meta The impacted metadata object
+     * @param name The ObjectName of the impacted MBean
+     * @param x    The new requested SnmpValue
+     * @param id   The OID arc identifying the variable we're trying to set.
+     * @param data User contextual data allocated through the
+     *             {@link com.sun.jmx.snmp.agent.SnmpUserDataFactory}
      * @return The new value of the variable after the operation.
-     *
-     * @exception SnmpStatusException whenever an SNMP exception must be
-     *      raised. Raising an exception will abort the request. <br>
-     *      Exceptions should never be raised directly, but only by means of
-     * <code>
-     * req.registerSetException(<i>VariableId</i>,<i>SnmpStatusException</i>)
-     * </code>
+     * @throws SnmpStatusException whenever an SNMP exception must be
+     *                             raised. Raising an exception will abort the request. <br>
+     *                             Exceptions should never be raised directly, but only by means of
+     *                             <code>
+     *                             req.registerSetException(<i>VariableId</i>,<i>SnmpStatusException</i>)
+     *                             </code>
      **/
     public SnmpValue set(SnmpGenericMetaServer meta, ObjectName name,
                          SnmpValue x, long id, Object data)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
         final String attname = meta.getAttributeName(id);
-        final Object attvalue=
-            meta.buildAttributeValue(id,x);
-        final Attribute att = new Attribute(attname,attvalue);
+        final Object attvalue =
+                meta.buildAttributeValue(id, x);
+        final Attribute att = new Attribute(attname, attvalue);
 
         Object result = null;
 
         try {
-            server.setAttribute(name,att);
-            result = server.getAttribute(name,attname);
-        } catch(InvalidAttributeValueException iv) {
+            server.setAttribute(name, att);
+            result = server.getAttribute(name, attname);
+        } catch (InvalidAttributeValueException iv) {
             throw new
-                SnmpStatusException(SnmpStatusException.snmpRspWrongValue);
+                    SnmpStatusException(SnmpStatusException.snmpRspWrongValue);
         } catch (InstanceNotFoundException f) {
             throw new
-                SnmpStatusException(SnmpStatusException.snmpRspInconsistentName);
+                    SnmpStatusException(SnmpStatusException.snmpRspInconsistentName);
         } catch (ReflectionException r) {
             throw new
-                SnmpStatusException(SnmpStatusException.snmpRspInconsistentName);
+                    SnmpStatusException(SnmpStatusException.snmpRspInconsistentName);
         } catch (MBeanException m) {
             Exception t = m.getTargetException();
             if (t instanceof SnmpStatusException)
                 throw (SnmpStatusException) t;
             throw new
-                SnmpStatusException(SnmpStatusException.noAccess);
+                    SnmpStatusException(SnmpStatusException.noAccess);
         } catch (Exception e) {
             throw new
-                SnmpStatusException(SnmpStatusException.noAccess);
+                    SnmpStatusException(SnmpStatusException.noAccess);
         }
 
-        return meta.buildSnmpValue(id,result);
+        return meta.buildSnmpValue(id, result);
     }
 
     /**
@@ -454,29 +450,27 @@ public class SnmpGenericObjectServer {
      * @param name  The ObjectName of the MBean impacted by this subrequest
      * @param req   The SNMP subrequest to execute on the MBean
      * @param depth The depth of the SNMP object in the OID tree.
-     *
-     * @exception SnmpStatusException if the requested SET operation must
-     *      be rejected. Raising an exception will abort the request. <br>
-     *      Exceptions should never be raised directly, but only by means of
-     * <code>
-     * req.registerCheckException(<i>VariableId</i>,<i>SnmpStatusException</i>)
-     * </code>
-     *
+     * @throws SnmpStatusException if the requested SET operation must
+     *                             be rejected. Raising an exception will abort the request. <br>
+     *                             Exceptions should never be raised directly, but only by means of
+     *                             <code>
+     *                             req.registerCheckException(<i>VariableId</i>,<i>SnmpStatusException</i>)
+     *                             </code>
      **/
     public void check(SnmpGenericMetaServer meta, ObjectName name,
                       SnmpMibSubRequest req, int depth)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
 
         final Object data = req.getUserData();
 
-        for (Enumeration e=req.getElements(); e.hasMoreElements();) {
-            final SnmpVarBind var= (SnmpVarBind) e.nextElement();
+        for (Enumeration e = req.getElements(); e.hasMoreElements(); ) {
+            final SnmpVarBind var = (SnmpVarBind) e.nextElement();
             try {
                 final long id = var.oid.getOidArc(depth);
                 // call meta.check() here, and meta.check will call check()
-                check(meta,name,var.value,id,data);
-            } catch(SnmpStatusException x) {
-                req.registerCheckException(var,x);
+                check(meta, name, var.value, id, data);
+            } catch (SnmpStatusException x) {
+                req.registerCheckException(var, x);
             }
         }
     }
@@ -485,55 +479,52 @@ public class SnmpGenericObjectServer {
      * Checks whether a SET operation can be performed on a given SNMP
      * variable.
      *
-     * @param meta  The impacted metadata object
-     * @param name  The ObjectName of the impacted MBean
-     * @param x     The new requested SnmpValue
-     * @param id    The OID arc identifying the variable we're trying to set.
-     * @param data  User contextual data allocated through the
-     *        {@link com.sun.jmx.snmp.agent.SnmpUserDataFactory}
+     * @param meta The impacted metadata object
+     * @param name The ObjectName of the impacted MBean
+     * @param x    The new requested SnmpValue
+     * @param id   The OID arc identifying the variable we're trying to set.
+     * @param data User contextual data allocated through the
+     *             {@link com.sun.jmx.snmp.agent.SnmpUserDataFactory}
      *
-     * <p>
-     * This method calls checkSetAccess() on the meta object, and then
-     * tries to invoke the check<i>AttributeName</i>() method on the MBean.
-     * If this method is not defined then it is assumed that the SET
-     * won't fail.
-     * </p>
+     *             <p>
+     *             This method calls checkSetAccess() on the meta object, and then
+     *             tries to invoke the check<i>AttributeName</i>() method on the MBean.
+     *             If this method is not defined then it is assumed that the SET
+     *             won't fail.
+     *             </p>
      *
-     * <p><b><i>
-     * This method is called internally by <code>mibgen</code> generated
-     * objects and you should never need to call it directly.
-     * </i></b></p>
-     *
-     * @exception SnmpStatusException if the requested SET operation must
-     *      be rejected. Raising an exception will abort the request. <br>
-     *      Exceptions should never be raised directly, but only by means of
-     * <code>
-     * req.registerCheckException(<i>VariableId</i>,<i>SnmpStatusException</i>)
-     * </code>
-     *
+     *             <p><b><i>
+     *             This method is called internally by <code>mibgen</code> generated
+     *             objects and you should never need to call it directly.
+     *             </i></b></p>
+     * @throws SnmpStatusException if the requested SET operation must
+     *                             be rejected. Raising an exception will abort the request. <br>
+     *                             Exceptions should never be raised directly, but only by means of
+     *                             <code>
+     *                             req.registerCheckException(<i>VariableId</i>,<i>SnmpStatusException</i>)
+     *                             </code>
      **/
     // XXX xxx ZZZ zzz Maybe we should go through the MBeanInfo here?
     public void check(SnmpGenericMetaServer meta, ObjectName name,
                       SnmpValue x, long id, Object data)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
 
-        meta.checkSetAccess(x,id,data);
+        meta.checkSetAccess(x, id, data);
         try {
             final String attname = meta.getAttributeName(id);
-            final Object attvalue= meta.buildAttributeValue(id,x);
-            final  Object[] params = new Object[1];
-            final  String[] signature = new String[1];
+            final Object attvalue = meta.buildAttributeValue(id, x);
+            final Object[] params = new Object[1];
+            final String[] signature = new String[1];
 
-            params[0]    = attvalue;
+            params[0] = attvalue;
             signature[0] = attvalue.getClass().getName();
-            server.invoke(name,"check"+attname,params,signature);
+            server.invoke(name, "check" + attname, params, signature);
 
-        } catch( SnmpStatusException e) {
+        } catch (SnmpStatusException e) {
             throw e;
-        }
-        catch (InstanceNotFoundException i) {
+        } catch (InstanceNotFoundException i) {
             throw new
-                SnmpStatusException(SnmpStatusException.snmpRspInconsistentName);
+                    SnmpStatusException(SnmpStatusException.snmpRspInconsistentName);
         } catch (ReflectionException r) {
             // checkXXXX() not defined => do nothing
         } catch (MBeanException m) {
@@ -543,29 +534,29 @@ public class SnmpGenericObjectServer {
             throw new SnmpStatusException(SnmpStatusException.noAccess);
         } catch (Exception e) {
             throw new
-                SnmpStatusException(SnmpStatusException.noAccess);
+                    SnmpStatusException(SnmpStatusException.noAccess);
         }
     }
 
     public void registerTableEntry(SnmpMibTable meta, SnmpOid rowOid,
                                    ObjectName objname, Object entry)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
         if (objname == null)
-           throw new
-             SnmpStatusException(SnmpStatusException.snmpRspInconsistentName);
-        try  {
+            throw new
+                    SnmpStatusException(SnmpStatusException.snmpRspInconsistentName);
+        try {
             if (entry != null && !server.isRegistered(objname))
                 server.registerMBean(entry, objname);
         } catch (InstanceAlreadyExistsException e) {
             throw new
-              SnmpStatusException(SnmpStatusException.snmpRspInconsistentName);
+                    SnmpStatusException(SnmpStatusException.snmpRspInconsistentName);
         } catch (MBeanRegistrationException e) {
             throw new SnmpStatusException(SnmpStatusException.snmpRspNoAccess);
         } catch (NotCompliantMBeanException e) {
             throw new SnmpStatusException(SnmpStatusException.snmpRspGenErr);
         } catch (RuntimeOperationsException e) {
             throw new SnmpStatusException(SnmpStatusException.snmpRspGenErr);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new SnmpStatusException(SnmpStatusException.snmpRspGenErr);
         }
     }

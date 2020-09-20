@@ -40,6 +40,7 @@ import com.sun.org.apache.xml.internal.dtm.ref.DTMAxisIteratorBase;
  * Stores mappings of key values or IDs to DTM nodes.
  * <em>Use of an instance of this class as a {@link DTMAxisIterator} is
  * <b>deprecated.</b></em>
+ *
  * @author Morten Jorgensen
  * @author Santiago Pericas-Geertsen
  */
@@ -72,9 +73,9 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * The XSLTC DOM object if this KeyIndex is being used to implement the
      * id() function.
      */
-    private DOM        _dom;
+    private DOM _dom;
 
-    private DOMEnhancedForDTM    _enhancedDOM;
+    private DOMEnhancedForDTM _enhancedDOM;
 
     /**
      * Store position after call to setMark()
@@ -101,12 +102,12 @@ public class KeyIndex extends DTMAxisIteratorBase {
         IntegerArray nodes = (IntegerArray) _index.get(value);
 
         if (nodes == null) {
-             nodes = new IntegerArray();
+            nodes = new IntegerArray();
             _index.put(value, nodes);
             nodes.add(node);
 
-        // Because nodes are added in document order,
-        // duplicates can be eliminated easily at this stage.
+            // Because nodes are added in document order,
+            // duplicates can be eliminated easily at this stage.
         } else if (node != nodes.at(nodes.cardinality() - 1)) {
             nodes.add(node);
         }
@@ -114,6 +115,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
 
     /**
      * Merge the current value's nodeset set by lookupKey() with _nodes.
+     *
      * @deprecated
      */
     public void merge(KeyIndex other) {
@@ -121,9 +123,8 @@ public class KeyIndex extends DTMAxisIteratorBase {
 
         if (other._nodes != null) {
             if (_nodes == null) {
-                _nodes = (IntegerArray)other._nodes.clone();
-            }
-            else {
+                _nodes = (IntegerArray) other._nodes.clone();
+            } else {
                 _nodes.merge(other._nodes);
             }
         }
@@ -135,6 +136,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * id() differ in the way the lookup value can be whitespace separated
      * list of tokens for the id() function, but a single string for the
      * key() function.
+     *
      * @deprecated
      */
     public void lookupId(Object value) {
@@ -142,23 +144,22 @@ public class KeyIndex extends DTMAxisIteratorBase {
         _nodes = null;
 
         final StringTokenizer values = new StringTokenizer((String) value,
-                                                           " \n\t");
+                " \n\t");
         while (values.hasMoreElements()) {
             final String token = (String) values.nextElement();
             IntegerArray nodes = (IntegerArray) _index.get(token);
 
             if (nodes == null && _enhancedDOM != null
-                && _enhancedDOM.hasDOMSource()) {
+                    && _enhancedDOM.hasDOMSource()) {
                 nodes = getDOMNodeById(token);
             }
 
             if (nodes == null) continue;
 
             if (_nodes == null) {
-                 nodes = (IntegerArray)nodes.clone();
+                nodes = (IntegerArray) nodes.clone();
                 _nodes = nodes;
-            }
-            else {
+            } else {
                 _nodes.merge(nodes);
             }
         }
@@ -204,6 +205,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * prior to returning the node iterator.</p>
      * <p><em>Use of an instance of this class as a {@link DTMAxisIterator} is
      * <b>deprecated.</b></em></p>
+     *
      * @deprecated
      */
     public void lookupKey(Object value) {
@@ -216,13 +218,14 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * <p>Callers should not call next() after it returns END.</p>
      * <p><em>Use of an instance of this class as a {@link DTMAxisIterator} is
      * <b>deprecated.</b></em></p>
+     *
      * @deprecated
      */
     public int next() {
         if (_nodes == null) return DTMAxisIterator.END;
 
         return (_position < _nodes.cardinality()) ?
-            _dom.getNodeHandle(_nodes.at(_position++)) : DTMAxisIterator.END;
+                _dom.getNodeHandle(_nodes.at(_position++)) : DTMAxisIterator.END;
     }
 
     /**
@@ -231,20 +234,20 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * results from that reference to the <code>id</code> function.  This is
      * used in the implementation of <code>id</code> patterns.
      *
-     * @param node The context node
+     * @param node  The context node
      * @param value The argument to the <code>id</code> function
      * @return <code>1</code> if the context node is in the set of nodes
-     *         returned by the reference to the <code>id</code> function;
-     *         <code>0</code>, otherwise
+     * returned by the reference to the <code>id</code> function;
+     * <code>0</code>, otherwise
      */
     public int containsID(int node, Object value) {
-        final String string = (String)value;
+        final String string = (String) value;
         int rootHandle = _dom.getAxisIterator(Axis.ROOT)
-                                 .setStartNode(node).next();
+                .setStartNode(node).next();
 
         // Get the mapping table for the document containing the context node
         Hashtable index =
-            (Hashtable) _rootToIndexMap.get(new Integer(rootHandle));
+                (Hashtable) _rootToIndexMap.get(new Integer(rootHandle));
 
         // Split argument to id function into XML whitespace separated tokens
         final StringTokenizer values = new StringTokenizer(string, " \n\t");
@@ -260,7 +263,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
             // If input was from W3C DOM, use DOM's getElementById to do
             // the look-up.
             if (nodes == null && _enhancedDOM != null
-                && _enhancedDOM.hasDOMSource()) {
+                    && _enhancedDOM.hasDOMSource()) {
                 nodes = getDOMNodeById(token);
             }
 
@@ -283,19 +286,19 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * first argument to the <code>key</code> function, so it's not taken into
      * any further account.</p>
      *
-     * @param node The context node
+     * @param node  The context node
      * @param value The second argument to the <code>key</code> function
      * @return <code>1</code> if and only if the context node is in the set of
-     *         nodes returned by the reference to the <code>key</code> function;
-     *         <code>0</code>, otherwise
+     * nodes returned by the reference to the <code>key</code> function;
+     * <code>0</code>, otherwise
      */
     public int containsKey(int node, Object value) {
         int rootHandle = _dom.getAxisIterator(Axis.ROOT)
-                                 .setStartNode(node).next();
+                .setStartNode(node).next();
 
         // Get the mapping table for the document containing the context node
         Hashtable index =
-                    (Hashtable) _rootToIndexMap.get(new Integer(rootHandle));
+                (Hashtable) _rootToIndexMap.get(new Integer(rootHandle));
 
         // Check whether the context node is present in the set of nodes
         // returned by the key function
@@ -312,6 +315,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * <p>Resets the iterator to the last start node.</p>
      * <p><em>Use of an instance of this class as a {@link DTMAxisIterator} is
      * <b>deprecated.</b></em></p>
+     *
      * @deprecated
      */
     public DTMAxisIterator reset() {
@@ -323,6 +327,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * <p>Returns the number of elements in this iterator.</p>
      * <p><em>Use of an instance of this class as a {@link DTMAxisIterator} is
      * <b>deprecated.</b></em></p>
+     *
      * @deprecated
      */
     public int getLast() {
@@ -333,6 +338,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * <p>Returns the position of the current node in the set.</p>
      * <p><em>Use of an instance of this class as a {@link DTMAxisIterator} is
      * <b>deprecated.</b></em></p>
+     *
      * @deprecated
      */
     public int getPosition() {
@@ -343,6 +349,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * <p>Remembers the current node for the next call to gotoMark().</p>
      * <p><em>Use of an instance of this class as a {@link DTMAxisIterator} is
      * <b>deprecated.</b></em></p>
+     *
      * @deprecated
      */
     public void setMark() {
@@ -353,6 +360,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * <p>Restores the current node remembered by setMark().</p>
      * <p><em>Use of an instance of this class as a {@link DTMAxisIterator} is
      * <b>deprecated.</b></em></p>
+     *
      * @deprecated
      */
     public void gotoMark() {
@@ -364,13 +372,13 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * i.e. subsequent call to next() should return END.</p>
      * <p><em>Use of an instance of this class as a {@link DTMAxisIterator} is
      * <b>deprecated.</b></em></p>
+     *
      * @deprecated
      */
     public DTMAxisIterator setStartNode(int start) {
         if (start == DTMAxisIterator.END) {
             _nodes = null;
-        }
-        else if (_nodes != null) {
+        } else if (_nodes != null) {
             _position = 0;
         }
         return (DTMAxisIterator) this;
@@ -381,6 +389,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * i.e. subsequent call to next() should return END.</p>
      * <p><em>Use of an instance of this class as a {@link DTMAxisIterator} is
      * <b>deprecated.</b></em></p>
+     *
      * @deprecated
      */
     public int getStartNode() {
@@ -391,16 +400,18 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * <p>True if this iterator has a reversed axis.</p>
      * <p><em>Use of an instance of this class as a {@link DTMAxisIterator} is
      * <b>deprecated.</b></em></p>
+     *
      * @deprecated
      */
     public boolean isReverse() {
-        return(false);
+        return (false);
     }
 
     /**
      * <p>Returns a deep copy of this iterator.</p>
      * <p><em>Use of an instance of this class as a {@link DTMAxisIterator} is
      * <b>deprecated.</b></em></p>
+     *
      * @deprecated
      */
     public DTMAxisIterator cloneIterator() {
@@ -422,12 +433,11 @@ public class KeyIndex extends DTMAxisIteratorBase {
         }
 
         if (dom instanceof DOMEnhancedForDTM) {
-            _enhancedDOM = (DOMEnhancedForDTM)dom;
-        }
-        else if (dom instanceof DOMAdapter) {
-            DOM idom = ((DOMAdapter)dom).getDOMImpl();
+            _enhancedDOM = (DOMEnhancedForDTM) dom;
+        } else if (dom instanceof DOMAdapter) {
+            DOM idom = ((DOMAdapter) dom).getDOMImpl();
             if (idom instanceof DOMEnhancedForDTM) {
-                _enhancedDOM = (DOMEnhancedForDTM)idom;
+                _enhancedDOM = (DOMEnhancedForDTM) idom;
             }
         }
     }
@@ -437,11 +447,11 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * result from a reference to the XSLT <code>key</code> function or
      * XPath <code>id</code> function.
      *
-     * @param keyValue A string or iterator representing the key values or id
-     *                 references
+     * @param keyValue  A string or iterator representing the key values or id
+     *                  references
      * @param isKeyCall A <code>boolean</code> indicating whether the iterator
-     *                 is being created for a reference <code>key</code> or
-     *                 <code>id</code>
+     *                  is being created for a reference <code>key</code> or
+     *                  <code>id</code>
      */
     public KeyIndexIterator getKeyIndexIterator(Object keyValue,
                                                 boolean isKeyCall) {
@@ -449,7 +459,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
             return getKeyIndexIterator((DTMAxisIterator) keyValue, isKeyCall);
         } else {
             return getKeyIndexIterator(BasisLibrary.stringF(keyValue, _dom),
-                                       isKeyCall);
+                    isKeyCall);
         }
     }
 
@@ -458,11 +468,11 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * result from a reference to the XSLT <code>key</code> function or
      * XPath <code>id</code> function.
      *
-     * @param keyValue A string representing the key values or id
-     *                 references
+     * @param keyValue  A string representing the key values or id
+     *                  references
      * @param isKeyCall A <code>boolean</code> indicating whether the iterator
-     *                 is being created for a reference <code>key</code> or
-     *                 <code>id</code>
+     *                  is being created for a reference <code>key</code> or
+     *                  <code>id</code>
      */
     public KeyIndexIterator getKeyIndexIterator(String keyValue,
                                                 boolean isKeyCall) {
@@ -474,11 +484,11 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * result from a reference to the XSLT <code>key</code> function or
      * XPath <code>id</code> function.
      *
-     * @param keyValue An iterator representing the key values or id
-     *                 references
+     * @param keyValue  An iterator representing the key values or id
+     *                  references
      * @param isKeyCall A <code>boolean</code> indicating whether the iterator
-     *                 is being created for a reference <code>key</code> or
-     *                 <code>id</code>
+     *                  is being created for a reference <code>key</code> or
+     *                  <code>id</code>
      */
     public KeyIndexIterator getKeyIndexIterator(DTMAxisIterator keyValue,
                                                 boolean isKeyCall) {
@@ -538,8 +548,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
          * {@link MultiValuedNodeHeapIterator}.
          */
         protected class KeyIndexHeapNode
-                extends MultiValuedNodeHeapIterator.HeapNode
-        {
+                extends MultiValuedNodeHeapIterator.HeapNode {
             /**
              * {@link IntegerArray} of DTM nodes retrieved for one key value.
              * Must contain no duplicates and be stored in document order.
@@ -620,8 +629,8 @@ public class KeyIndex extends DTMAxisIteratorBase {
              *
              * @param heapNode the heap node against which to compare
              * @return <code>true</code> if and only if the current node for
-             *         this heap node is before the current node of the
-             *         argument heap node in document order.
+             * this heap node is before the current node of the
+             * argument heap node in document order.
              */
             public boolean isLessThan(HeapNode heapNode) {
                 return _node < heapNode._node;
@@ -652,11 +661,11 @@ public class KeyIndex extends DTMAxisIteratorBase {
          * Constructor used when the argument to <code>key</code> or
          * <code>id</code> is not a node set.
          *
-         * @param keyValue the argument to <code>key</code> or <code>id</code>
-         *                 cast to a <code>String</code>
+         * @param keyValue      the argument to <code>key</code> or <code>id</code>
+         *                      cast to a <code>String</code>
          * @param isKeyIterator indicates whether the constructed iterator
-         *                represents a reference to <code>key</code> or
-         *                <code>id</code>.
+         *                      represents a reference to <code>key</code> or
+         *                      <code>id</code>.
          */
         KeyIndexIterator(String keyValue, boolean isKeyIterator) {
             _isKeyIterator = isKeyIterator;
@@ -667,10 +676,10 @@ public class KeyIndex extends DTMAxisIteratorBase {
          * Constructor used when the argument to <code>key</code> or
          * <code>id</code> is a node set.
          *
-         * @param keyValues the argument to <code>key</code> or <code>id</code>
+         * @param keyValues     the argument to <code>key</code> or <code>id</code>
          * @param isKeyIterator indicates whether the constructed iterator
-         *                represents a reference to <code>key</code> or
-         *                <code>id</code>.
+         *                      represents a reference to <code>key</code> or
+         *                      <code>id</code>.
          */
         KeyIndexIterator(DTMAxisIterator keyValues, boolean isKeyIterator) {
             _keyValueIterator = keyValues;
@@ -681,7 +690,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
          * Retrieve nodes for a particular key value or a particular id
          * argument value.
          *
-         * @param root The root node of the document containing the context node
+         * @param root     The root node of the document containing the context node
          * @param keyValue The key value of id string argument value
          * @return an {@link IntegerArray} of the resulting nodes
          */
@@ -689,7 +698,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
             IntegerArray result = null;
 
             // Get mapping from key values/IDs to DTM nodes for this document
-            Hashtable index = (Hashtable)_rootToIndexMap.get(new Integer(root));
+            Hashtable index = (Hashtable) _rootToIndexMap.get(new Integer(root));
 
             if (!_isKeyIterator) {
                 // For id function, tokenize argument as whitespace separated
@@ -717,7 +726,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
                     // result
                     if (nodes != null) {
                         if (result == null) {
-                            result = (IntegerArray)nodes.clone();
+                            result = (IntegerArray) nodes.clone();
                         } else {
                             result.merge(nodes);
                         }
@@ -783,7 +792,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
          * Resets the iterator to the last start node.
          *
          * @return A DTMAxisIterator, which may or may not be the same as this
-         *         iterator.
+         * iterator.
          */
         public DTMAxisIterator reset() {
             if (_nodes == null) {
@@ -807,7 +816,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
 
             // All nodes retrieved are in the same document
             int rootHandle = _dom.getAxisIterator(Axis.ROOT)
-                                      .setStartNode(_startNode).next();
+                    .setStartNode(_startNode).next();
 
             // Is the argument not a node set?
             if (_keyValueIterator == null) {
@@ -886,7 +895,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
                 if (position > 0) {
                     if (position <= _nodes.cardinality()) {
                         _position = position;
-                        node = _nodes.at(position-1);
+                        node = _nodes.at(position - 1);
                     } else {
                         _position = _nodes.cardinality();
                     }

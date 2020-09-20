@@ -27,8 +27,6 @@
 package com.sun.jmx.snmp;
 
 
-
-
 /**
  * Is used to represent <CODE>get</CODE>, <CODE>get-next</CODE>, <CODE>set</CODE>, <CODE>response</CODE> and <CODE>SNMPv2-trap</CODE> PDUs.
  * <P>
@@ -41,25 +39,28 @@ package com.sun.jmx.snmp;
  */
 
 public class SnmpPduRequest extends SnmpPduPacket
-    implements SnmpPduRequestType {
+        implements SnmpPduRequestType {
     private static final long serialVersionUID = 2218754017025258979L;
 
 
     /**
      * Error status. Statuses are defined in
      * {@link com.sun.jmx.snmp.SnmpDefinitions SnmpDefinitions}.
+     *
      * @serial
      */
-    public int errorStatus=0 ;
+    public int errorStatus = 0;
 
 
     /**
      * Error index. Remember that SNMP indices start from 1.
      * Thus the corresponding <CODE>SnmpVarBind</CODE> is
      * <CODE>varBindList[errorIndex-1]</CODE>.
+     *
      * @serial
      */
-    public int errorIndex=0 ;
+    public int errorIndex = 0;
+
     /**
      * Implements <CODE>SnmpPduRequestType</CODE> interface.
      *
@@ -68,6 +69,7 @@ public class SnmpPduRequest extends SnmpPduPacket
     public void setErrorIndex(int i) {
         errorIndex = i;
     }
+
     /**
      * Implements <CODE>SnmpPduRequestType</CODE> interface.
      *
@@ -76,18 +78,25 @@ public class SnmpPduRequest extends SnmpPduPacket
     public void setErrorStatus(int i) {
         errorStatus = i;
     }
+
     /**
      * Implements <CODE>SnmpPduRequestType</CODE> interface.
      *
      * @since 1.5
      */
-    public int getErrorIndex() { return errorIndex; }
+    public int getErrorIndex() {
+        return errorIndex;
+    }
+
     /**
      * Implements <CODE>SnmpPduRequestType</CODE> interface.
      *
      * @since 1.5
      */
-    public int getErrorStatus() { return errorStatus; }
+    public int getErrorStatus() {
+        return errorStatus;
+    }
+
     /**
      * Implements <CODE>SnmpAckPdu</CODE> interface.
      *

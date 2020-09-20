@@ -34,16 +34,16 @@ package com.sun.org.apache.xml.internal.serializer;
  *     </B2>
  *   <A>
  * </pre>
- *
+ * <p>
  * A stack frame will be pushed for "A" at depth 1,
  * then another one for "B1" at depth 2.
  * Then "B1" stackframe is popped.  When the stack frame for "B2" is
  * pushed, this implementation re-uses the old stack fram object used
  * by "B1" to be efficient at not creating too many of these object.
- *
+ * <p>
  * This is by no means a public class, and neither are its fields or methods,
  * they are all helper fields for a serializer.
- *
+ * <p>
  * The purpose of this class is to be more consistent with pushing information
  * when a new element is being serialized and more quickly restoring the old
  * information about the parent element with a simple pop() when the
@@ -52,8 +52,7 @@ package com.sun.org.apache.xml.internal.serializer;
  *
  * @xsl.usage internal
  */
-final class ElemContext
-{
+final class ElemContext {
     // Fields that form the context of the element
 
     /**
@@ -61,7 +60,9 @@ final class ElemContext
      */
     final int m_currentElemDepth;
 
-    /** HTML field, the element description of the HTML element */
+    /**
+     * HTML field, the element description of the HTML element
+     */
     ElemDesc m_elementDesc = null;
 
     /**
@@ -79,21 +80,24 @@ final class ElemContext
      */
     String m_elementURI = null;
 
-    /** If the element is in the cdata-section-names list
+    /**
+     * If the element is in the cdata-section-names list
      * then the value is true. If it is true the text children of the element
      * should be output in CDATA section blocks.
      */
     boolean m_isCdataSection;
 
-    /** True if the current element has output escaping disabled.
+    /**
+     * True if the current element has output escaping disabled.
      * This is true for SCRIPT and STYLE elements.
      */
     boolean m_isRaw = false;
 
-    /** The next element "stack frame". This value will only be
+    /**
+     * The next element "stack frame". This value will only be
      * set once as deeper stack frames are not deleted when popped off,
      * but are rather re-used when a push is required.
-     *
+     * <p>
      * This makes for very fast pushing and popping of stack frames
      * because very few stack frame objects are ever created, they are
      * mostly re-used.  This re-use saves object creation but it also means
@@ -104,7 +108,9 @@ final class ElemContext
      */
     private ElemContext m_next;
 
-    /** The previous element "stack frame". */
+    /**
+     * The previous element "stack frame".
+     */
     final ElemContext m_prev;
 
     /**
@@ -115,10 +121,8 @@ final class ElemContext
 
     /**
      * Constructor to create the root of the element contexts.
-     *
      */
-    ElemContext()
-    {
+    ElemContext() {
         // this assignment means can never pop this context off
         m_prev = this;
         // depth 0 because it doesn't correspond to any element
@@ -127,26 +131,25 @@ final class ElemContext
 
     /**
      * Constructor to create the "stack frame" for a given element depth.
-     *
+     * <p>
      * This implementation will re-use the context at each depth. If
      * a documents deepest element depth is N then there will be (N+1)
      * such objects created, no more than that.
      *
      * @param previous The "stack frame" corresponding to the new
-     * elements parent element.
+     *                 elements parent element.
      */
-    private ElemContext(final ElemContext previous)
-    {
+    private ElemContext(final ElemContext previous) {
         m_prev = previous;
         m_currentElemDepth = previous.m_currentElemDepth + 1;
     }
 
     /**
      * Pop the current "stack frame".
+     *
      * @return Returns the parent "stack frame" of the one popped.
      */
-    final ElemContext pop()
-    {
+    final ElemContext pop() {
         /* a very simple pop.  No clean up is done of the deeper
          * stack frame.  All deeper stack frames are still attached
          * but dormant, just waiting to be re-used.
@@ -161,11 +164,9 @@ final class ElemContext
      * a stack frame for an HTML "IMG" tag which has no children and
      * the stack frame will almost immediately be popped.
      */
-    final ElemContext push()
-    {
+    final ElemContext push() {
         ElemContext frame = this.m_next;
-        if (frame == null)
-        {
+        if (frame == null) {
             /* We have never been at this depth yet, and there is no
              * stack frame to re-use, so we now make a new one.
              */
@@ -185,21 +186,20 @@ final class ElemContext
     /**
      * Push an element context on the stack. This context keeps track of
      * information gathered about the element.
-     * @param uri The URI for the namespace for the element name,
-     * can be null if it is not yet known.
+     *
+     * @param uri       The URI for the namespace for the element name,
+     *                  can be null if it is not yet known.
      * @param localName The local name of the element (no prefix),
-     * can be null.
-     * @param qName The qualified name (with prefix, if any)
-     * of the element, this parameter is required.
+     *                  can be null.
+     * @param qName     The qualified name (with prefix, if any)
+     *                  of the element, this parameter is required.
      */
     final ElemContext push(
-        final String uri,
-        final String localName,
-        final String qName)
-    {
+            final String uri,
+            final String localName,
+            final String qName) {
         ElemContext frame = this.m_next;
-        if (frame == null)
-        {
+        if (frame == null) {
             /* We have never been at this depth yet, and there is no
              * stack frame to re-use, so we now make a new one.
              */

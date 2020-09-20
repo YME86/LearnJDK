@@ -43,7 +43,8 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.FlowList;
  * @author Santiago Pericas-Geertsen
  */
 public class StringType extends Type {
-    protected StringType() {}
+    protected StringType() {
+    }
 
     public String toString() {
         return "string";
@@ -70,25 +71,21 @@ public class StringType extends Type {
      * The translation to int is undefined since strings are always converted
      * to reals in arithmetic expressions.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             Type type) {
         if (type == Type.Boolean) {
             translateTo(classGen, methodGen, (BooleanType) type);
-        }
-        else if (type == Type.Real) {
+        } else if (type == Type.Real) {
             translateTo(classGen, methodGen, (RealType) type);
-        }
-        else if (type == Type.Reference) {
+        } else if (type == Type.Reference) {
             translateTo(classGen, methodGen, (ReferenceType) type);
-        }
-        else if (type == Type.ObjectString) {
+        } else if (type == Type.ObjectString) {
             // NOP -> same representation
-        }
-        else {
+        } else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                        toString(), type.toString());
+                    toString(), type.toString());
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }
@@ -96,7 +93,7 @@ public class StringType extends Type {
     /**
      * Translates a string into a synthesized boolean.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             BooleanType type) {
@@ -112,15 +109,15 @@ public class StringType extends Type {
      * Translates a string into a real by calling stringToReal() from the
      * basis library.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             RealType type) {
         final ConstantPoolGen cpg = classGen.getConstantPool();
         final InstructionList il = methodGen.getInstructionList();
         il.append(new INVOKESTATIC(cpg.addMethodref(BASIS_LIBRARY_CLASS,
-                                                    STRING_TO_REAL,
-                                                    STRING_TO_REAL_SIG)));
+                STRING_TO_REAL,
+                STRING_TO_REAL_SIG)));
     }
 
     /**
@@ -128,7 +125,7 @@ public class StringType extends Type {
      * 0 or a 1 but instead returns branchhandle list to be appended to the
      * false list.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateToDesynthesized
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateToDesynthesized
      */
     public FlowList translateToDesynthesized(ClassGenerator classGen,
                                              MethodGenerator methodGen,
@@ -137,7 +134,7 @@ public class StringType extends Type {
         final InstructionList il = methodGen.getInstructionList();
 
         il.append(new INVOKEVIRTUAL(cpg.addMethodref(STRING_CLASS,
-                                                     "length", "()I")));
+                "length", "()I")));
         return new FlowList(il.append(new IFEQ(null)));
     }
 
@@ -145,7 +142,7 @@ public class StringType extends Type {
      * Expects a string on the stack and pushes a boxed string.
      * Strings are already boxed so the translation is just a NOP.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             ReferenceType type) {
@@ -155,18 +152,16 @@ public class StringType extends Type {
     /**
      * Translates a internal string into an external (Java) string.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateFrom
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateFrom
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
-                            Class clazz)
-    {
+                            Class clazz) {
         // Is String <: clazz? I.e. clazz in { String, Object }
         if (clazz.isAssignableFrom(java.lang.String.class)) {
             methodGen.getInstructionList().append(NOP);
-        }
-        else {
+        } else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                        toString(), clazz.getName());
+                    toString(), clazz.getName());
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }
@@ -174,11 +169,10 @@ public class StringType extends Type {
     /**
      * Translates an external (primitive) Java type into a string.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateFrom
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateFrom
      */
     public void translateFrom(ClassGenerator classGen,
-        MethodGenerator methodGen, Class clazz)
-    {
+                              MethodGenerator methodGen, Class clazz) {
         final ConstantPoolGen cpg = classGen.getConstantPool();
         final InstructionList il = methodGen.getInstructionList();
 
@@ -189,10 +183,9 @@ public class StringType extends Type {
             il.append(POP);
             il.append(new PUSH(cpg, ""));
             ifNonNull.setTarget(il.append(NOP));
-        }
-        else {
+        } else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                        toString(), clazz.getName());
+                    toString(), clazz.getName());
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }
@@ -217,7 +210,7 @@ public class StringType extends Type {
      * Returns the class name of an internal type's external representation.
      */
     public String getClassName() {
-        return(STRING_CLASS);
+        return (STRING_CLASS);
     }
 
 

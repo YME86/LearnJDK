@@ -85,31 +85,25 @@ public final class NodeType extends Type {
      * The translation to int is undefined since nodes are always converted
      * to reals in arithmetic expressions.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             Type type) {
         if (type == Type.String) {
             translateTo(classGen, methodGen, (StringType) type);
-        }
-        else if (type == Type.Boolean) {
+        } else if (type == Type.Boolean) {
             translateTo(classGen, methodGen, (BooleanType) type);
-        }
-        else if (type == Type.Real) {
+        } else if (type == Type.Real) {
             translateTo(classGen, methodGen, (RealType) type);
-        }
-        else if (type == Type.NodeSet) {
+        } else if (type == Type.NodeSet) {
             translateTo(classGen, methodGen, (NodeSetType) type);
-        }
-        else if (type == Type.Reference) {
+        } else if (type == Type.Reference) {
             translateTo(classGen, methodGen, (ReferenceType) type);
-        }
-        else if (type == Type.Object) {
+        } else if (type == Type.Object) {
             translateTo(classGen, methodGen, (ObjectType) type);
-        }
-        else {
+        } else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                        toString(), type.toString());
+                    toString(), type.toString());
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }
@@ -117,7 +111,7 @@ public final class NodeType extends Type {
     /**
      * Expects a node on the stack and pushes its string value.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             StringType type) {
@@ -125,33 +119,33 @@ public final class NodeType extends Type {
         final InstructionList il = methodGen.getInstructionList();
 
         switch (_type) {
-        case NodeTest.ROOT:
-        case NodeTest.ELEMENT:
-            il.append(methodGen.loadDOM());
-            il.append(SWAP); // dom ref must be below node index
-            int index = cpg.addInterfaceMethodref(DOM_INTF,
-                                                  GET_ELEMENT_VALUE,
-                                                  GET_ELEMENT_VALUE_SIG);
-            il.append(new INVOKEINTERFACE(index, 2));
-            break;
+            case NodeTest.ROOT:
+            case NodeTest.ELEMENT:
+                il.append(methodGen.loadDOM());
+                il.append(SWAP); // dom ref must be below node index
+                int index = cpg.addInterfaceMethodref(DOM_INTF,
+                        GET_ELEMENT_VALUE,
+                        GET_ELEMENT_VALUE_SIG);
+                il.append(new INVOKEINTERFACE(index, 2));
+                break;
 
-        case NodeTest.ANODE:
-        case NodeTest.COMMENT:
-        case NodeTest.ATTRIBUTE:
-        case NodeTest.PI:
-            il.append(methodGen.loadDOM());
-            il.append(SWAP); // dom ref must be below node index
-            index = cpg.addInterfaceMethodref(DOM_INTF,
-                                              GET_NODE_VALUE,
-                                              GET_NODE_VALUE_SIG);
-            il.append(new INVOKEINTERFACE(index, 2));
-            break;
+            case NodeTest.ANODE:
+            case NodeTest.COMMENT:
+            case NodeTest.ATTRIBUTE:
+            case NodeTest.PI:
+                il.append(methodGen.loadDOM());
+                il.append(SWAP); // dom ref must be below node index
+                index = cpg.addInterfaceMethodref(DOM_INTF,
+                        GET_NODE_VALUE,
+                        GET_NODE_VALUE_SIG);
+                il.append(new INVOKEINTERFACE(index, 2));
+                break;
 
-        default:
-            ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                        toString(), type.toString());
-            classGen.getParser().reportError(Constants.FATAL, err);
-            break;
+            default:
+                ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+                        toString(), type.toString());
+                classGen.getParser().reportError(Constants.FATAL, err);
+                break;
         }
     }
 
@@ -161,7 +155,7 @@ public final class NodeType extends Type {
      * then "true" is pushed iff "attr" is an attribute of the current node.
      * If the expression is ".", the result is always "true".
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             BooleanType type) {
@@ -177,7 +171,7 @@ public final class NodeType extends Type {
      * Expects a node on the stack and pushes a real.
      * First the node is converted to string, and from string to real.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             RealType type) {
@@ -189,7 +183,7 @@ public final class NodeType extends Type {
      * Expects a node on the stack and pushes a singleton node-set. Singleton
      * iterators are already started after construction.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             NodeSetType type) {
@@ -201,18 +195,18 @@ public final class NodeType extends Type {
         il.append(DUP_X1);
         il.append(SWAP);
         final int init = cpg.addMethodref(SINGLETON_ITERATOR, "<init>",
-                                          "(" + NODE_SIG +")V");
+                "(" + NODE_SIG + ")V");
         il.append(new INVOKESPECIAL(init));
     }
 
     /**
      * Subsume Node into ObjectType.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             ObjectType type) {
-            methodGen.getInstructionList().append(NOP);
+        methodGen.getInstructionList().append(NOP);
     }
 
     /**
@@ -220,7 +214,7 @@ public final class NodeType extends Type {
      * 0 or a 1 but instead returns branchhandle list to be appended to the
      * false list.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateToDesynthesized
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateToDesynthesized
      */
     public FlowList translateToDesynthesized(ClassGenerator classGen,
                                              MethodGenerator methodGen,
@@ -233,7 +227,7 @@ public final class NodeType extends Type {
      * Expects a node on the stack and pushes a boxed node. Boxed nodes
      * are represented by an instance of <code>com.sun.org.apache.xalan.internal.xsltc.dom.Node</code>.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             ReferenceType type) {
@@ -244,7 +238,7 @@ public final class NodeType extends Type {
         il.append(SWAP);
         il.append(new PUSH(cpg, _type));
         il.append(new INVOKESPECIAL(cpg.addMethodref(RUNTIME_NODE_CLASS,
-                                                     "<init>", "(II)V")));
+                "<init>", "(II)V")));
     }
 
     /**
@@ -259,29 +253,27 @@ public final class NodeType extends Type {
 
         String className = clazz.getName();
         if (className.equals("java.lang.String")) {
-           translateTo(classGen, methodGen, Type.String);
-           return;
+            translateTo(classGen, methodGen, Type.String);
+            return;
         }
 
         il.append(methodGen.loadDOM());
         il.append(SWAP);                // dom ref must be below node index
 
         if (className.equals("org.w3c.dom.Node") ||
-            className.equals("java.lang.Object")) {
+                className.equals("java.lang.Object")) {
             int index = cpg.addInterfaceMethodref(DOM_INTF,
-                                                  MAKE_NODE,
-                                                  MAKE_NODE_SIG);
+                    MAKE_NODE,
+                    MAKE_NODE_SIG);
             il.append(new INVOKEINTERFACE(index, 2));
-        }
-        else if (className.equals("org.w3c.dom.NodeList")) {
+        } else if (className.equals("org.w3c.dom.NodeList")) {
             int index = cpg.addInterfaceMethodref(DOM_INTF,
-                                                  MAKE_NODE_LIST,
-                                                  MAKE_NODE_LIST_SIG);
+                    MAKE_NODE_LIST,
+                    MAKE_NODE_LIST_SIG);
             il.append(new INVOKEINTERFACE(index, 2));
-        }
-        else {
+        } else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                        toString(), className);
+                    toString(), className);
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }
@@ -303,15 +295,15 @@ public final class NodeType extends Type {
         final InstructionList il = methodGen.getInstructionList();
         il.append(new CHECKCAST(cpg.addClass(RUNTIME_NODE_CLASS)));
         il.append(new GETFIELD(cpg.addFieldref(RUNTIME_NODE_CLASS,
-                                               NODE_FIELD,
-                                               NODE_FIELD_SIG)));
+                NODE_FIELD,
+                NODE_FIELD_SIG)));
     }
 
     /**
      * Returns the class name of an internal type's external representation.
      */
     public String getClassName() {
-        return(RUNTIME_NODE_CLASS);
+        return (RUNTIME_NODE_CLASS);
     }
 
     public Instruction LOAD(int slot) {

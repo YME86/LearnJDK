@@ -33,16 +33,15 @@ import org.w3c.dom.Node;
 
 /**
  * Simple static utility to convert Hashtable to a Node.
- *
+ * <p>
  * Please maintain JDK 1.1.x compatibility; no Collections!
  *
- * @see com.sun.org.apache.xalan.internal.xslt.EnvironmentCheck
- * @see com.sun.org.apache.xalan.internal.lib.Extensions
  * @author shane_curcuru@us.ibm.com
  * @xsl.usage general
+ * @see com.sun.org.apache.xalan.internal.xslt.EnvironmentCheck
+ * @see com.sun.org.apache.xalan.internal.lib.Extensions
  */
-public abstract class Hashtree2Node
-{
+public abstract class Hashtree2Node {
 
     /**
      * Convert a Hashtable into a Node tree.
@@ -57,18 +56,16 @@ public abstract class Hashtree2Node
      * Element with exception info; if that doesn't work we simply
      * return without doing anything else byt printStackTrace().</p>
      *
-     * @param hash to get info from (may have sub-hashtables)
-     * @param name to use as parent element for appended node
-     * futurework could have namespace and prefix as well
+     * @param hash      to get info from (may have sub-hashtables)
+     * @param name      to use as parent element for appended node
+     *                  futurework could have namespace and prefix as well
      * @param container Node to append our report to
-     * @param factory Document providing createElement, etc. services
+     * @param factory   Document providing createElement, etc. services
      */
     public static void appendHashToNode(Hashtable hash, String name,
-            Node container, Document factory)
-    {
+                                        Node container, Document factory) {
         // Required arguments must not be null
-        if ((null == container) || (null == factory) || (null == hash))
-        {
+        if ((null == container) || (null == factory) || (null == hash)) {
             return;
         }
 
@@ -79,40 +76,32 @@ public abstract class Hashtree2Node
         else
             elemName = name;
 
-        try
-        {
+        try {
             Element hashNode = factory.createElement(elemName);
             container.appendChild(hashNode);
 
             Enumeration keys = hash.keys();
             Vector v = new Vector();
 
-            while (keys.hasMoreElements())
-            {
+            while (keys.hasMoreElements()) {
                 Object key = keys.nextElement();
                 String keyStr = key.toString();
                 Object item = hash.get(key);
 
-                if (item instanceof Hashtable)
-                {
+                if (item instanceof Hashtable) {
                     // Ensure a pre-order traversal; add this hashes
                     //  items before recursing to child hashes
                     // Save name and hash in two steps
                     v.addElement(keyStr);
                     v.addElement((Hashtable) item);
-                }
-                else
-                {
-                    try
-                    {
+                } else {
+                    try {
                         // Add item to node
                         Element node = factory.createElement("item");
                         node.setAttribute("key", keyStr);
-                        node.appendChild(factory.createTextNode((String)item));
+                        node.appendChild(factory.createTextNode((String) item));
                         hashNode.appendChild(node);
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         Element node = factory.createElement("item");
                         node.setAttribute("key", keyStr);
                         node.appendChild(factory.createTextNode("ERROR: Reading " + key + " threw: " + e.toString()));
@@ -123,17 +112,14 @@ public abstract class Hashtree2Node
 
             // Now go back and do the saved hashes
             keys = v.elements();
-            while (keys.hasMoreElements())
-            {
+            while (keys.hasMoreElements()) {
                 // Retrieve name and hash in two steps
                 String n = (String) keys.nextElement();
                 Hashtable h = (Hashtable) keys.nextElement();
 
                 appendHashToNode(h, n, hashNode, factory);
             }
-        }
-        catch (Exception e2)
-        {
+        } catch (Exception e2) {
             // Ooops, just bail (suggestions for a safe thing
             //  to do in this case appreciated)
             e2.printStackTrace();

@@ -43,15 +43,14 @@ final class GenerateIdCall extends FunctionCall {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
         final InstructionList il = methodGen.getInstructionList();
         if (argumentCount() == 0) {
-           il.append(methodGen.loadContextNode());
-        }
-        else {                  // one argument
+            il.append(methodGen.loadContextNode());
+        } else {                  // one argument
             argument().translate(classGen, methodGen);
         }
         final ConstantPoolGen cpg = classGen.getConstantPool();
         il.append(new INVOKESTATIC(cpg.addMethodref(BASIS_LIBRARY_CLASS,
-                                                    "generate_idF",
-                                                    // reuse signature
-                                                    GET_NODE_NAME_SIG)));
+                "generate_idF",
+                // reuse signature
+                GET_NODE_NAME_SIG)));
     }
 }

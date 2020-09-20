@@ -27,6 +27,7 @@ package com.sun.jmx.snmp;
 
 // java import
 //
+
 import java.net.InetAddress;
 import java.util.Enumeration;
 
@@ -35,6 +36,7 @@ import java.util.Enumeration;
  * <p>
  * <p><b>This API is a Sun Microsystems internal API  and is subject
  * to change without notice.</b></p>
+ *
  * @since 1.5
  */
 
@@ -51,7 +53,6 @@ public interface InetAddressAcl {
      * Checks whether or not the specified host has <CODE>READ</CODE> access.
      *
      * @param address The host address to check.
-     *
      * @return <CODE>true</CODE> if the host has read permission, <CODE>false</CODE> otherwise.
      */
     public boolean checkReadPermission(InetAddress address);
@@ -59,9 +60,8 @@ public interface InetAddressAcl {
     /**
      * Checks whether or not the specified host and community have <CODE>READ</CODE> access.
      *
-     * @param address The host address to check.
+     * @param address   The host address to check.
      * @param community The community associated with the host.
-     *
      * @return <CODE>true</CODE> if the pair (host, community) has read permission, <CODE>false</CODE> otherwise.
      */
     public boolean checkReadPermission(InetAddress address, String community);
@@ -70,7 +70,6 @@ public interface InetAddressAcl {
      * Checks whether or not a community string is defined.
      *
      * @param community The community to check.
-     *
      * @return <CODE>true</CODE> if the community is known, <CODE>false</CODE> otherwise.
      */
     public boolean checkCommunity(String community);
@@ -79,7 +78,6 @@ public interface InetAddressAcl {
      * Checks whether or not the specified host has <CODE>WRITE</CODE> access.
      *
      * @param address The host address to check.
-     *
      * @return <CODE>true</CODE> if the host has write permission, <CODE>false</CODE> otherwise.
      */
     public boolean checkWritePermission(InetAddress address);
@@ -87,9 +85,8 @@ public interface InetAddressAcl {
     /**
      * Checks whether or not the specified host and community have <CODE>WRITE</CODE> access.
      *
-     * @param address The host address to check.
+     * @param address   The host address to check.
      * @param community The community associated with the host.
-     *
      * @return <CODE>true</CODE> if the pair (host, community) has write permission, <CODE>false</CODE> otherwise.
      */
     public boolean checkWritePermission(InetAddress address, String community);
@@ -105,7 +102,6 @@ public interface InetAddressAcl {
      * Returns an enumeration of trap communities for a given host.
      *
      * @param address The address of the host.
-     *
      * @return An enumeration of trap communities for a given host (enumeration of <CODE>String</CODE>).
      */
     public Enumeration getTrapCommunities(InetAddress address);
@@ -121,7 +117,6 @@ public interface InetAddressAcl {
      * Returns an enumeration of inform communities for a given host.
      *
      * @param address The address of the host.
-     *
      * @return An enumeration of inform communities for a given host (enumeration of <CODE>String</CODE>).
      */
     public Enumeration getInformCommunities(InetAddress address);

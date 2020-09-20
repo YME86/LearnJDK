@@ -57,7 +57,8 @@ import java.util.Map;
  * again.
  */
 class WeakIdentityHashMap<K, V> {
-    private WeakIdentityHashMap() {}
+    private WeakIdentityHashMap() {
+    }
 
     static <K, V> WeakIdentityHashMap<K, V> make() {
         return new WeakIdentityHashMap<K, V>();

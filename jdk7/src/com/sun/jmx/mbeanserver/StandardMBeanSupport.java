@@ -43,17 +43,17 @@ public class StandardMBeanSupport extends MBeanSupport<Method> {
      * <p>Construct a Standard MBean that wraps the given resource using the
      * given Standard MBean interface.</p>
      *
-     * @param resource the underlying resource for the new MBean.
+     * @param resource           the underlying resource for the new MBean.
      * @param mbeanInterfaceType the class or interface to be used to determine
-     *       the MBean's management interface.  An interface if this is a
-     *       classic Standard MBean; a class if this is a {@code @ManagedResource}.
-     * @param <T> a type parameter that allows the compiler to check
-     *       that {@code resource} implements {@code mbeanInterfaceType},
-     *       provided that {@code mbeanInterfaceType} is a class constant like
-     *       {@code SomeMBean.class}.
+     *                           the MBean's management interface.  An interface if this is a
+     *                           classic Standard MBean; a class if this is a {@code @ManagedResource}.
+     * @param <T>                a type parameter that allows the compiler to check
+     *                           that {@code resource} implements {@code mbeanInterfaceType},
+     *                           provided that {@code mbeanInterfaceType} is a class constant like
+     *                           {@code SomeMBean.class}.
      * @throws IllegalArgumentException if {@code resource} is null or
-     *       if it does not implement the class {@code mbeanInterfaceType} or if
-     *       that class is not a valid Standard MBean interface.
+     *                                  if it does not implement the class {@code mbeanInterfaceType} or if
+     *                                  that class is not a valid Standard MBean interface.
      */
     public <T> StandardMBeanSupport(T resource, Class<T> mbeanInterfaceType)
             throws NotCompliantMBeanException {
@@ -71,10 +71,12 @@ public class StandardMBeanSupport extends MBeanSupport<Method> {
     }
 
     @Override
-    public void register(MBeanServer mbs, ObjectName name) {}
+    public void register(MBeanServer mbs, ObjectName name) {
+    }
 
     @Override
-    public void unregister() {}
+    public void unregister() {
+    }
 
     /* Standard MBeans that are NotificationBroadcasters can return a different
      * MBeanNotificationInfo[] every time getMBeanInfo() is called, so we have

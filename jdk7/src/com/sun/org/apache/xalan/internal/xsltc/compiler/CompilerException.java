@@ -49,8 +49,8 @@ public final class CompilerException extends Exception {
         final int col = _msg.indexOf(':');
 
         if (col > -1)
-            return(_msg.substring(col));
+            return (_msg.substring(col));
         else
-            return(_msg);
+            return (_msg);
     }
 }

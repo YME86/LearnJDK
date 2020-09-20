@@ -104,243 +104,233 @@ import com.sun.org.apache.xml.internal.res.XMLMessages;
  * someday, rather than controlled threading. Arguably Coroutine
  * itself should be an interface much like Runnable, but I think that
  * can be built on top of this.</p>
- * */
-public class CoroutineManager
-{
-  /** "Is this coroutine ID number already in use" lookup table.
-   * Currently implemented as a bitset as a compromise between
-   * compactness and speed of access, but obviously other solutions
-   * could be applied.
-   * */
-  BitSet m_activeIDs=new BitSet();
+ */
+public class CoroutineManager {
+    /**
+     * "Is this coroutine ID number already in use" lookup table.
+     * Currently implemented as a bitset as a compromise between
+     * compactness and speed of access, but obviously other solutions
+     * could be applied.
+     */
+    BitSet m_activeIDs = new BitSet();
 
-  /** Limit on the coroutine ID numbers accepted. I didn't want the
-   * in-use table to grow without bound. If we switch to a more efficient
-   * sparse-array mechanism, it may be possible to raise or eliminate
-   * this boundary.
-   * @xsl.usage internal
-   */
-  static final int m_unreasonableId=1024;
+    /**
+     * Limit on the coroutine ID numbers accepted. I didn't want the
+     * in-use table to grow without bound. If we switch to a more efficient
+     * sparse-array mechanism, it may be possible to raise or eliminate
+     * this boundary.
+     *
+     * @xsl.usage internal
+     */
+    static final int m_unreasonableId = 1024;
 
-  /** Internal field used to hold the data being explicitly passed
-   * from one coroutine to another during a co_resume() operation.
-   * (Of course implicit data sharing may also occur; one of the reasons
-   * for using coroutines is that you're guaranteed that none of the
-   * other coroutines in your set are using shared structures at the time
-   * you access them.)
-   *
-   * %REVIEW% It's been proposed that we be able to pass types of data
-   * other than Object -- more specific object types, or
-   * lighter-weight primitives.  This would seem to create a potential
-   * explosion of "pass x recieve y back" methods (or require
-   * fracturing resume into two calls, resume-other and
-   * wait-to-be-resumed), and the weight issue could be managed by
-   * reusing a mutable buffer object to contain the primitive
-   * (remember that only one coroutine runs at a time, so once the
-   * buffer's set it won't be walked on). Typechecking objects is
-   * interesting from a code-robustness point of view, but it's
-   * unclear whether it makes sense to encapsulate that in the
-   * coroutine code or let the callers do it, since it depends on RTTI
-   * either way. Restricting the parameters to objects implementing a
-   * specific CoroutineParameter interface does _not_ seem to be a net
-   * win; applications can do so if they want via front-end code, but
-   * there seem to be too many use cases involving passing an existing
-   * object type that you may not have the freedom to alter and may
-   * not want to spend time wrapping another object around.
-   * */
-  Object m_yield=null;
+    /**
+     * Internal field used to hold the data being explicitly passed
+     * from one coroutine to another during a co_resume() operation.
+     * (Of course implicit data sharing may also occur; one of the reasons
+     * for using coroutines is that you're guaranteed that none of the
+     * other coroutines in your set are using shared structures at the time
+     * you access them.)
+     * <p>
+     * %REVIEW% It's been proposed that we be able to pass types of data
+     * other than Object -- more specific object types, or
+     * lighter-weight primitives.  This would seem to create a potential
+     * explosion of "pass x recieve y back" methods (or require
+     * fracturing resume into two calls, resume-other and
+     * wait-to-be-resumed), and the weight issue could be managed by
+     * reusing a mutable buffer object to contain the primitive
+     * (remember that only one coroutine runs at a time, so once the
+     * buffer's set it won't be walked on). Typechecking objects is
+     * interesting from a code-robustness point of view, but it's
+     * unclear whether it makes sense to encapsulate that in the
+     * coroutine code or let the callers do it, since it depends on RTTI
+     * either way. Restricting the parameters to objects implementing a
+     * specific CoroutineParameter interface does _not_ seem to be a net
+     * win; applications can do so if they want via front-end code, but
+     * there seem to be too many use cases involving passing an existing
+     * object type that you may not have the freedom to alter and may
+     * not want to spend time wrapping another object around.
+     */
+    Object m_yield = null;
 
-  // Expose???
-  final static int NOBODY=-1;
-  final static int ANYBODY=-1;
+    // Expose???
+    final static int NOBODY = -1;
+    final static int ANYBODY = -1;
 
-  /** Internal field used to confirm that the coroutine now waking up is
-   * in fact the one we intended to resume. Some such selection mechanism
-   * is needed when more that two coroutines are operating within the same
-   * group.
-   */
-  int m_nextCoroutine=NOBODY;
+    /**
+     * Internal field used to confirm that the coroutine now waking up is
+     * in fact the one we intended to resume. Some such selection mechanism
+     * is needed when more that two coroutines are operating within the same
+     * group.
+     */
+    int m_nextCoroutine = NOBODY;
 
-  /** <p>Each coroutine in the set managed by a single
-   * CoroutineManager is identified by a small positive integer. This
-   * brings up the question of how to manage those integers to avoid
-   * reuse... since if two coroutines use the same ID number, resuming
-   * that ID could resume either. I can see arguments for either
-   * allowing applications to select their own numbers (they may want
-   * to declare mnemonics via manefest constants) or generating
-   * numbers on demand.  This routine's intended to support both
-   * approaches.</p>
-   *
-   * <p>%REVIEW% We could use an object as the identifier. Not sure
-   * it's a net gain, though it would allow the thread to be its own
-   * ID. Ponder.</p>
-   *
-   * @param coroutineID  If >=0, requests that we reserve this number.
-   * If <0, requests that we find, reserve, and return an available ID
-   * number.
-   *
-   * @return If >=0, the ID number to be used by this coroutine. If <0,
-   * an error occurred -- the ID requested was already in use, or we
-   * couldn't assign one without going over the "unreasonable value" mark
-   * */
-  public synchronized int co_joinCoroutineSet(int coroutineID)
-  {
-    if(coroutineID>=0)
-      {
-        if(coroutineID>=m_unreasonableId || m_activeIDs.get(coroutineID))
-          return -1;
-      }
-    else
-      {
-        // What I want is "Find first clear bit". That doesn't exist.
-        // JDK1.2 added "find last set bit", but that doesn't help now.
-        coroutineID=0;
-        while(coroutineID<m_unreasonableId)
-          {
-            if(m_activeIDs.get(coroutineID))
-              ++coroutineID;
-            else
-              break;
-          }
-        if(coroutineID>=m_unreasonableId)
-          return -1;
-      }
+    /**
+     * <p>Each coroutine in the set managed by a single
+     * CoroutineManager is identified by a small positive integer. This
+     * brings up the question of how to manage those integers to avoid
+     * reuse... since if two coroutines use the same ID number, resuming
+     * that ID could resume either. I can see arguments for either
+     * allowing applications to select their own numbers (they may want
+     * to declare mnemonics via manefest constants) or generating
+     * numbers on demand.  This routine's intended to support both
+     * approaches.</p>
+     *
+     * <p>%REVIEW% We could use an object as the identifier. Not sure
+     * it's a net gain, though it would allow the thread to be its own
+     * ID. Ponder.</p>
+     *
+     * @param coroutineID If >=0, requests that we reserve this number.
+     *                    If <0, requests that we find, reserve, and return an available ID
+     *                    number.
+     * @return If >=0, the ID number to be used by this coroutine. If <0,
+     * an error occurred -- the ID requested was already in use, or we
+     * couldn't assign one without going over the "unreasonable value" mark
+     */
+    public synchronized int co_joinCoroutineSet(int coroutineID) {
+        if (coroutineID >= 0) {
+            if (coroutineID >= m_unreasonableId || m_activeIDs.get(coroutineID))
+                return -1;
+        } else {
+            // What I want is "Find first clear bit". That doesn't exist.
+            // JDK1.2 added "find last set bit", but that doesn't help now.
+            coroutineID = 0;
+            while (coroutineID < m_unreasonableId) {
+                if (m_activeIDs.get(coroutineID))
+                    ++coroutineID;
+                else
+                    break;
+            }
+            if (coroutineID >= m_unreasonableId)
+                return -1;
+        }
 
-    m_activeIDs.set(coroutineID);
-    return coroutineID;
-  }
+        m_activeIDs.set(coroutineID);
+        return coroutineID;
+    }
 
-  /** In the standard coroutine architecture, coroutines are
-   * identified by their method names and are launched and run up to
-   * their first yield by simply resuming them; its's presumed that
-   * this recognizes the not-already-running case and does the right
-   * thing. We seem to need a way to achieve that same threadsafe
-   * run-up...  eg, start the coroutine with a wait.
-   *
-   * %TBD% whether this makes any sense...
-   *
-   * @param thisCoroutine the identifier of this coroutine, so we can
-   * recognize when we are being resumed.
-   * @exception java.lang.NoSuchMethodException if thisCoroutine isn't
-   * a registered member of this group. %REVIEW% whether this is the
-   * best choice.
-   * */
-  public synchronized Object co_entry_pause(int thisCoroutine) throws java.lang.NoSuchMethodException
-  {
-    if(!m_activeIDs.get(thisCoroutine))
-      throw new java.lang.NoSuchMethodException();
+    /**
+     * In the standard coroutine architecture, coroutines are
+     * identified by their method names and are launched and run up to
+     * their first yield by simply resuming them; its's presumed that
+     * this recognizes the not-already-running case and does the right
+     * thing. We seem to need a way to achieve that same threadsafe
+     * run-up...  eg, start the coroutine with a wait.
+     * <p>
+     * %TBD% whether this makes any sense...
+     *
+     * @param thisCoroutine the identifier of this coroutine, so we can
+     *                      recognize when we are being resumed.
+     * @throws java.lang.NoSuchMethodException if thisCoroutine isn't
+     *                                         a registered member of this group. %REVIEW% whether this is the
+     *                                         best choice.
+     */
+    public synchronized Object co_entry_pause(int thisCoroutine) throws java.lang.NoSuchMethodException {
+        if (!m_activeIDs.get(thisCoroutine))
+            throw new java.lang.NoSuchMethodException();
 
-    while(m_nextCoroutine != thisCoroutine)
-      {
-        try
-          {
-            wait();
-          }
-        catch(java.lang.InterruptedException e)
-          {
-            // %TBD% -- Declare? Encapsulate? Ignore? Or
-            // dance widdershins about the instruction cache?
-          }
-      }
+        while (m_nextCoroutine != thisCoroutine) {
+            try {
+                wait();
+            } catch (java.lang.InterruptedException e) {
+                // %TBD% -- Declare? Encapsulate? Ignore? Or
+                // dance widdershins about the instruction cache?
+            }
+        }
 
-    return m_yield;
-  }
+        return m_yield;
+    }
 
-  /** Transfer control to another coroutine which has already been started and
-   * is waiting on this CoroutineManager. We won't return from this call
-   * until that routine has relinquished control.
-   *
-   * %TBD% What should we do if toCoroutine isn't registered? Exception?
-   *
-   * @param arg_object A value to be passed to the other coroutine.
-   * @param thisCoroutine Integer identifier for this coroutine. This is the
-   * ID we watch for to see if we're the ones being resumed.
-   * @param toCoroutine  Integer identifier for the coroutine we wish to
-   * invoke.
-   * @exception java.lang.NoSuchMethodException if toCoroutine isn't a
-   * registered member of this group. %REVIEW% whether this is the best choice.
-   * */
-  public synchronized Object co_resume(Object arg_object,int thisCoroutine,int toCoroutine) throws java.lang.NoSuchMethodException
-  {
-    if(!m_activeIDs.get(toCoroutine))
-      throw new java.lang.NoSuchMethodException(XMLMessages.createXMLMessage(XMLErrorResources.ER_COROUTINE_NOT_AVAIL, new Object[]{Integer.toString(toCoroutine)})); //"Coroutine not available, id="+toCoroutine);
+    /**
+     * Transfer control to another coroutine which has already been started and
+     * is waiting on this CoroutineManager. We won't return from this call
+     * until that routine has relinquished control.
+     * <p>
+     * %TBD% What should we do if toCoroutine isn't registered? Exception?
+     *
+     * @param arg_object    A value to be passed to the other coroutine.
+     * @param thisCoroutine Integer identifier for this coroutine. This is the
+     *                      ID we watch for to see if we're the ones being resumed.
+     * @param toCoroutine   Integer identifier for the coroutine we wish to
+     *                      invoke.
+     * @throws java.lang.NoSuchMethodException if toCoroutine isn't a
+     *                                         registered member of this group. %REVIEW% whether this is the best choice.
+     */
+    public synchronized Object co_resume(Object arg_object, int thisCoroutine, int toCoroutine) throws java.lang.NoSuchMethodException {
+        if (!m_activeIDs.get(toCoroutine))
+            throw new java.lang.NoSuchMethodException(XMLMessages.createXMLMessage(XMLErrorResources.ER_COROUTINE_NOT_AVAIL, new Object[]{Integer.toString(toCoroutine)})); //"Coroutine not available, id="+toCoroutine);
 
-    // We expect these values to be overwritten during the notify()/wait()
-    // periods, as other coroutines in this set get their opportunity to run.
-    m_yield=arg_object;
-    m_nextCoroutine=toCoroutine;
+        // We expect these values to be overwritten during the notify()/wait()
+        // periods, as other coroutines in this set get their opportunity to run.
+        m_yield = arg_object;
+        m_nextCoroutine = toCoroutine;
 
-    notify();
-    while(m_nextCoroutine != thisCoroutine || m_nextCoroutine==ANYBODY || m_nextCoroutine==NOBODY)
-      {
-        try
-          {
-            // System.out.println("waiting...");
-            wait();
-          }
-        catch(java.lang.InterruptedException e)
-          {
-            // %TBD% -- Declare? Encapsulate? Ignore? Or
-            // dance deasil about the program counter?
-          }
-      }
+        notify();
+        while (m_nextCoroutine != thisCoroutine || m_nextCoroutine == ANYBODY || m_nextCoroutine == NOBODY) {
+            try {
+                // System.out.println("waiting...");
+                wait();
+            } catch (java.lang.InterruptedException e) {
+                // %TBD% -- Declare? Encapsulate? Ignore? Or
+                // dance deasil about the program counter?
+            }
+        }
 
-    if(m_nextCoroutine==NOBODY)
-      {
-        // Pass it along
-        co_exit(thisCoroutine);
-        // And inform this coroutine that its partners are Going Away
-        // %REVIEW% Should this throw/return something more useful?
-        throw new java.lang.NoSuchMethodException(XMLMessages.createXMLMessage(XMLErrorResources.ER_COROUTINE_CO_EXIT, null)); //"CoroutineManager recieved co_exit() request");
-      }
+        if (m_nextCoroutine == NOBODY) {
+            // Pass it along
+            co_exit(thisCoroutine);
+            // And inform this coroutine that its partners are Going Away
+            // %REVIEW% Should this throw/return something more useful?
+            throw new java.lang.NoSuchMethodException(XMLMessages.createXMLMessage(XMLErrorResources.ER_COROUTINE_CO_EXIT, null)); //"CoroutineManager recieved co_exit() request");
+        }
 
-    return m_yield;
-  }
+        return m_yield;
+    }
 
-  /** Terminate this entire set of coroutines. The others will be
-   * deregistered and have exceptions thrown at them. Note that this
-   * is intended as a panic-shutdown operation; under normal
-   * circumstances a coroutine should always end with co_exit_to() in
-   * order to politely inform at least one of its partners that it is
-   * going away.
-   *
-   * %TBD% This may need significantly more work.
-   *
-   * %TBD% Should this just be co_exit_to(,,CoroutineManager.PANIC)?
-   *
-   * @param thisCoroutine Integer identifier for the coroutine requesting exit.
-   * */
-  public synchronized void co_exit(int thisCoroutine)
-  {
-    m_activeIDs.clear(thisCoroutine);
-    m_nextCoroutine=NOBODY; // %REVIEW%
-    notify();
-  }
+    /**
+     * Terminate this entire set of coroutines. The others will be
+     * deregistered and have exceptions thrown at them. Note that this
+     * is intended as a panic-shutdown operation; under normal
+     * circumstances a coroutine should always end with co_exit_to() in
+     * order to politely inform at least one of its partners that it is
+     * going away.
+     * <p>
+     * %TBD% This may need significantly more work.
+     * <p>
+     * %TBD% Should this just be co_exit_to(,,CoroutineManager.PANIC)?
+     *
+     * @param thisCoroutine Integer identifier for the coroutine requesting exit.
+     */
+    public synchronized void co_exit(int thisCoroutine) {
+        m_activeIDs.clear(thisCoroutine);
+        m_nextCoroutine = NOBODY; // %REVIEW%
+        notify();
+    }
 
-  /** Make the ID available for reuse and terminate this coroutine,
-   * transferring control to the specified coroutine. Note that this
-   * returns immediately rather than waiting for any further coroutine
-   * traffic, so the thread can proceed with other shutdown activities.
-   *
-   * @param arg_object    A value to be passed to the other coroutine.
-   * @param thisCoroutine Integer identifier for the coroutine leaving the set.
-   * @param toCoroutine   Integer identifier for the coroutine we wish to
-   * invoke.
-   * @exception java.lang.NoSuchMethodException if toCoroutine isn't a
-   * registered member of this group. %REVIEW% whether this is the best choice.
-   * */
-  public synchronized void co_exit_to(Object arg_object,int thisCoroutine,int toCoroutine) throws java.lang.NoSuchMethodException
-  {
-    if(!m_activeIDs.get(toCoroutine))
-      throw new java.lang.NoSuchMethodException(XMLMessages.createXMLMessage(XMLErrorResources.ER_COROUTINE_NOT_AVAIL, new Object[]{Integer.toString(toCoroutine)})); //"Coroutine not available, id="+toCoroutine);
+    /**
+     * Make the ID available for reuse and terminate this coroutine,
+     * transferring control to the specified coroutine. Note that this
+     * returns immediately rather than waiting for any further coroutine
+     * traffic, so the thread can proceed with other shutdown activities.
+     *
+     * @param arg_object    A value to be passed to the other coroutine.
+     * @param thisCoroutine Integer identifier for the coroutine leaving the set.
+     * @param toCoroutine   Integer identifier for the coroutine we wish to
+     *                      invoke.
+     * @throws java.lang.NoSuchMethodException if toCoroutine isn't a
+     *                                         registered member of this group. %REVIEW% whether this is the best choice.
+     */
+    public synchronized void co_exit_to(Object arg_object, int thisCoroutine, int toCoroutine) throws java.lang.NoSuchMethodException {
+        if (!m_activeIDs.get(toCoroutine))
+            throw new java.lang.NoSuchMethodException(XMLMessages.createXMLMessage(XMLErrorResources.ER_COROUTINE_NOT_AVAIL, new Object[]{Integer.toString(toCoroutine)})); //"Coroutine not available, id="+toCoroutine);
 
-    // We expect these values to be overwritten during the notify()/wait()
-    // periods, as other coroutines in this set get their opportunity to run.
-    m_yield=arg_object;
-    m_nextCoroutine=toCoroutine;
+        // We expect these values to be overwritten during the notify()/wait()
+        // periods, as other coroutines in this set get their opportunity to run.
+        m_yield = arg_object;
+        m_nextCoroutine = toCoroutine;
 
-    m_activeIDs.clear(thisCoroutine);
+        m_activeIDs.clear(thisCoroutine);
 
-    notify();
-  }
+        notify();
+    }
 }

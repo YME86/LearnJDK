@@ -27,7 +27,6 @@
 package com.sun.jmx.snmp.IPAcl;
 
 
-
 import java.io.Serializable;
 
 
@@ -38,52 +37,52 @@ import java.io.Serializable;
  */
 
 class PermissionImpl implements java.security.acl.Permission, Serializable {
-  private static final long serialVersionUID = 4478110422746916589L;
+    private static final long serialVersionUID = 4478110422746916589L;
 
-  private String perm = null;
+    private String perm = null;
 
-  /**
-   * Constructs a permission.
-   *
-   * @param s the string representing the permission.
-   */
-  public PermissionImpl(String s) {
+    /**
+     * Constructs a permission.
+     *
+     * @param s the string representing the permission.
+     */
+    public PermissionImpl(String s) {
         perm = s;
-  }
+    }
 
-  public int hashCode() {
+    public int hashCode() {
         return super.hashCode();
-  }
+    }
 
-  /**
-   * Returns true if the object passed matches the permission represented in.
-   *
-   * @param p the Permission object to compare with.
-   * @return true if the Permission objects are equal, false otherwise.
-   */
-  public boolean equals(Object p){
-        if (p instanceof PermissionImpl){
-          return perm.equals(((PermissionImpl)p).getString());
+    /**
+     * Returns true if the object passed matches the permission represented in.
+     *
+     * @param p the Permission object to compare with.
+     * @return true if the Permission objects are equal, false otherwise.
+     */
+    public boolean equals(Object p) {
+        if (p instanceof PermissionImpl) {
+            return perm.equals(((PermissionImpl) p).getString());
         } else {
-          return false;
+            return false;
         }
-  }
+    }
 
-  /**
-   * Prints a string representation of this permission.
-   *
-   * @return a string representation of this permission.
-   */
-  public String toString(){
+    /**
+     * Prints a string representation of this permission.
+     *
+     * @return a string representation of this permission.
+     */
+    public String toString() {
         return perm;
-  }
+    }
 
-  /**
-   * Prints the permission.
-   *
-   * @return a string representation of this permission.
-   */
-  public String getString(){
+    /**
+     * Prints the permission.
+     *
+     * @return a string representation of this permission.
+     */
+    public String getString() {
         return perm;
-  }
+    }
 }

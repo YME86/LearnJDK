@@ -23,6 +23,7 @@
 package com.sun.org.apache.xml.internal.serializer;
 
 import com.sun.org.apache.xalan.internal.utils.SecuritySupport;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -84,22 +85,22 @@ import com.sun.org.apache.xml.internal.serializer.utils.WrappedRuntimeException;
  * @see Method
  * @see Serializer
  */
-public final class OutputPropertiesFactory
-{
-    /** S_BUILTIN_EXTENSIONS_URL is a mnemonic for the XML Namespace
-     *(http://xml.apache.org/xalan) predefined to signify Xalan's
+public final class OutputPropertiesFactory {
+    /**
+     * S_BUILTIN_EXTENSIONS_URL is a mnemonic for the XML Namespace
+     * (http://xml.apache.org/xalan) predefined to signify Xalan's
      * built-in XSLT Extensions. When used in stylesheets, this is often
      * bound to the "xalan:" prefix.
      */
     private static final String
-      S_BUILTIN_EXTENSIONS_URL = "http://xml.apache.org/xalan";
+            S_BUILTIN_EXTENSIONS_URL = "http://xml.apache.org/xalan";
 
     /**
      * The old built-in extension url. It is still supported for
      * backward compatibility.
      */
     private static final String
-      S_BUILTIN_OLD_EXTENSIONS_URL = "http://xml.apache.org/xslt";
+            S_BUILTIN_OLD_EXTENSIONS_URL = "http://xml.apache.org/xslt";
 
     //************************************************************
     //*  PUBLIC CONSTANTS
@@ -112,7 +113,7 @@ public final class OutputPropertiesFactory
      * name".
      */
     public static final String S_BUILTIN_EXTENSIONS_UNIVERSAL =
-        "{" + S_BUILTIN_EXTENSIONS_URL + "}";
+            "{" + S_BUILTIN_EXTENSIONS_URL + "}";
 
     // Some special Xalan keys.
 
@@ -122,7 +123,7 @@ public final class OutputPropertiesFactory
      * if indent="yes".
      */
     public static final String S_KEY_INDENT_AMOUNT =
-        S_BUILTIN_EXTENSIONS_UNIVERSAL + "indent-amount";
+            S_BUILTIN_EXTENSIONS_UNIVERSAL + "indent-amount";
 
     /**
      * The non-standard property key to use to set the
@@ -130,43 +131,45 @@ public final class OutputPropertiesFactory
      * if indent="yes".
      */
     public static final String S_KEY_LINE_SEPARATOR =
-        S_BUILTIN_EXTENSIONS_UNIVERSAL + "line-separator";
+            S_BUILTIN_EXTENSIONS_UNIVERSAL + "line-separator";
 
-    /** This non-standard property key is used to set the name of the fully qualified
+    /**
+     * This non-standard property key is used to set the name of the fully qualified
      * Java class that implements the ContentHandler interface.
      * Fully qualified name of class with a default constructor that
-     *  implements the ContentHandler interface, where the result tree events
-     *  will be sent to.
+     * implements the ContentHandler interface, where the result tree events
+     * will be sent to.
      */
 
     public static final String S_KEY_CONTENT_HANDLER =
-        S_BUILTIN_EXTENSIONS_UNIVERSAL + "content-handler";
+            S_BUILTIN_EXTENSIONS_UNIVERSAL + "content-handler";
 
     /**
      * This non-standard property key is used to specify the name of the property file
      * that specifies character to entity reference mappings.
      */
     public static final String S_KEY_ENTITIES =
-        S_BUILTIN_EXTENSIONS_UNIVERSAL + "entities";
+            S_BUILTIN_EXTENSIONS_UNIVERSAL + "entities";
 
     /**
      * This non-standard property key is used to set a value of "yes" if the href values for HTML serialization should
-     *  use %xx escaping. */
+     * use %xx escaping.
+     */
     public static final String S_USE_URL_ESCAPING =
-        S_BUILTIN_EXTENSIONS_UNIVERSAL + "use-url-escaping";
+            S_BUILTIN_EXTENSIONS_UNIVERSAL + "use-url-escaping";
 
     /**
      * This non-standard property key is used to set a value of "yes" if the META tag should be omitted where it would
-     *  otherwise be supplied.
+     * otherwise be supplied.
      */
     public static final String S_OMIT_META_TAG =
-        S_BUILTIN_EXTENSIONS_UNIVERSAL + "omit-meta-tag";
+            S_BUILTIN_EXTENSIONS_UNIVERSAL + "omit-meta-tag";
 
     /**
      * The old built-in extension namespace, this is not a public API.
      */
     public static final String S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL =
-        "{" + S_BUILTIN_OLD_EXTENSIONS_URL + "}";
+            "{" + S_BUILTIN_OLD_EXTENSIONS_URL + "}";
 
     /**
      * This is not a public API, it is only public because it is used
@@ -174,7 +177,7 @@ public final class OutputPropertiesFactory
      * it is the length of the old built-in extension namespace.
      */
     public static final int S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL_LEN =
-        S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL.length();
+            S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL.length();
 
     /**
      * This non-standard, Oracle-impl only property key is used as if OutputKeys.STANDALONE is specified but
@@ -182,18 +185,18 @@ public final class OutputPropertiesFactory
      * Since Xalan patch 1495 can cause incompatible behavior, this property is add for application to neutralize
      * the effect of Xalan patch 1495
      */
-        /**
-         * <p>Is Standalone</p>
-         *
-         * <ul>
-         *   <li>
-         *     <code>yes</code> to indicate the output is intended to be used as standalone
-         *   </li>
-         *   <li>
-         *     <code>no</code> has no effect.
-         *   </li>
-         * </ul>
-         */
+    /**
+     * <p>Is Standalone</p>
+     *
+     * <ul>
+     *   <li>
+     *     <code>yes</code> to indicate the output is intended to be used as standalone
+     *   </li>
+     *   <li>
+     *     <code>no</code> has no effect.
+     *   </li>
+     * </ul>
+     */
     public static final String ORACLE_IS_STANDALONE = "http://www.oracle.com/xml/is-standalone";
 
     //************************************************************
@@ -205,42 +208,61 @@ public final class OutputPropertiesFactory
     private static final String S_XALAN_PREFIX = "org.apache.xslt.";
     private static final int S_XALAN_PREFIX_LEN = S_XALAN_PREFIX.length();
 
-    /** Synchronization object for lazy initialization of the above tables. */
+    /**
+     * Synchronization object for lazy initialization of the above tables.
+     */
     private static Integer m_synch_object = new Integer(1);
 
-    /** the directory in which the various method property files are located */
+    /**
+     * the directory in which the various method property files are located
+     */
     private static final String PROP_DIR = "com/sun/org/apache/xml/internal/serializer/";
-    /** property file for default XML properties */
+    /**
+     * property file for default XML properties
+     */
     private static final String PROP_FILE_XML = "output_xml.properties";
-    /** property file for default TEXT properties */
+    /**
+     * property file for default TEXT properties
+     */
     private static final String PROP_FILE_TEXT = "output_text.properties";
-    /** property file for default HTML properties */
+    /**
+     * property file for default HTML properties
+     */
     private static final String PROP_FILE_HTML = "output_html.properties";
-    /** property file for default UNKNOWN (Either XML or HTML, to be determined later) properties */
+    /**
+     * property file for default UNKNOWN (Either XML or HTML, to be determined later) properties
+     */
     private static final String PROP_FILE_UNKNOWN = "output_unknown.properties";
 
     //************************************************************
     //*  PRIVATE STATIC FIELDS
     //************************************************************
 
-    /** The default properties of all output files. */
+    /**
+     * The default properties of all output files.
+     */
     private static Properties m_xml_properties = null;
 
-    /** The default properties when method="html". */
+    /**
+     * The default properties when method="html".
+     */
     private static Properties m_html_properties = null;
 
-    /** The default properties when method="text". */
+    /**
+     * The default properties when method="text".
+     */
     private static Properties m_text_properties = null;
 
-    /** The properties when method="" for the "unknown" wrapper */
+    /**
+     * The properties when method="" for the "unknown" wrapper
+     */
     private static Properties m_unknown_properties = null;
 
     private static final Class
-        ACCESS_CONTROLLER_CLASS = findAccessControllerClass();
+            ACCESS_CONTROLLER_CLASS = findAccessControllerClass();
 
     private static Class findAccessControllerClass() {
-        try
-        {
+        try {
             // This Class was introduced in JDK 1.2. With the re-architecture of
             // security mechanism ( starting in JDK 1.2 ), we have option of
             // giving privileges to certain part of code using doPrivileged block.
@@ -249,9 +271,7 @@ public final class OutputPropertiesFactory
             // and trusted for having access to resources.
 
             return Class.forName("java.security.AccessController");
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             //User may be using older JDK ( JDK <1.2 ). Allow him/her to use it.
             // But don't try to use doPrivileged
         }
@@ -268,20 +288,16 @@ public final class OutputPropertiesFactory
      * <p>Anything other than 'text', 'xml', and 'html', will
      * use the output_xml.properties file.</p>
      *
-     * @param   method non-null reference to method name.
-     *
+     * @param method non-null reference to method name.
      * @return Properties object that holds the defaults for the given method.
      */
-    static public final Properties getDefaultMethodProperties(String method)
-    {
+    static public final Properties getDefaultMethodProperties(String method) {
         String fileName = null;
         Properties defaultProperties = null;
         // According to this article : Double-check locking does not work
         // http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-toolbox.html
-        try
-        {
-            synchronized (m_synch_object)
-            {
+        try {
+            synchronized (m_synch_object) {
                 if (null == m_xml_properties) // double check
                 {
                     fileName = PROP_FILE_XML;
@@ -289,64 +305,52 @@ public final class OutputPropertiesFactory
                 }
             }
 
-            if (method.equals(Method.XML))
-            {
+            if (method.equals(Method.XML)) {
                 defaultProperties = m_xml_properties;
-            }
-            else if (method.equals(Method.HTML))
-            {
+            } else if (method.equals(Method.HTML)) {
                 if (null == m_html_properties) // double check
                 {
                     fileName = PROP_FILE_HTML;
                     m_html_properties =
-                        loadPropertiesFile(fileName, m_xml_properties);
+                            loadPropertiesFile(fileName, m_xml_properties);
                 }
 
                 defaultProperties = m_html_properties;
-            }
-            else if (method.equals(Method.TEXT))
-            {
+            } else if (method.equals(Method.TEXT)) {
                 if (null == m_text_properties) // double check
                 {
                     fileName = PROP_FILE_TEXT;
                     m_text_properties =
-                        loadPropertiesFile(fileName, m_xml_properties);
+                            loadPropertiesFile(fileName, m_xml_properties);
                     if (null
-                        == m_text_properties.getProperty(OutputKeys.ENCODING))
-                    {
+                            == m_text_properties.getProperty(OutputKeys.ENCODING)) {
                         String mimeEncoding = Encodings.getMimeEncoding(null);
                         m_text_properties.put(
-                            OutputKeys.ENCODING,
-                            mimeEncoding);
+                                OutputKeys.ENCODING,
+                                mimeEncoding);
                     }
                 }
 
                 defaultProperties = m_text_properties;
-            }
-            else if (method.equals(com.sun.org.apache.xml.internal.serializer.Method.UNKNOWN))
-            {
+            } else if (method.equals(com.sun.org.apache.xml.internal.serializer.Method.UNKNOWN)) {
                 if (null == m_unknown_properties) // double check
                 {
                     fileName = PROP_FILE_UNKNOWN;
                     m_unknown_properties =
-                        loadPropertiesFile(fileName, m_xml_properties);
+                            loadPropertiesFile(fileName, m_xml_properties);
                 }
 
                 defaultProperties = m_unknown_properties;
-            }
-            else
-            {
+            } else {
                 // TODO: Calculate res file from name.
                 defaultProperties = m_xml_properties;
             }
-        }
-        catch (IOException ioe)
-        {
+        } catch (IOException ioe) {
             throw new WrappedRuntimeException(
-                Utils.messages.createMessage(
-                    MsgKey.ER_COULD_NOT_LOAD_METHOD_PROPERTY,
-                    new Object[] { fileName, method }),
-                ioe);
+                    Utils.messages.createMessage(
+                            MsgKey.ER_COULD_NOT_LOAD_METHOD_PROPERTY,
+                            new Object[]{fileName, method}),
+                    ioe);
         }
         // wrap these cached defaultProperties in a new Property object just so
         // that the caller of this method can't modify the default values
@@ -363,13 +367,12 @@ public final class OutputPropertiesFactory
      * handle the escape sequence (at least in key names).
      *
      * @param resourceName non-null reference to resource name.
-     * @param defaults Default properties, which may be null.
+     * @param defaults     Default properties, which may be null.
      */
     static private Properties loadPropertiesFile(
-        final String resourceName,
-        Properties defaults)
-        throws IOException
-    {
+            final String resourceName,
+            Properties defaults)
+            throws IOException {
 
         // This static method should eventually be moved to a thread-specific class
         // so that we can cache the ContextClassLoader and bottleneck all properties file
@@ -380,70 +383,51 @@ public final class OutputPropertiesFactory
         InputStream is = null;
         BufferedInputStream bis = null;
 
-        try
-        {
-            if (ACCESS_CONTROLLER_CLASS != null)
-            {
+        try {
+            if (ACCESS_CONTROLLER_CLASS != null) {
                 is = (InputStream) AccessController
-                    .doPrivileged(new PrivilegedAction() {
-                        public Object run()
-                        {
-                            return OutputPropertiesFactory.class
-                                .getResourceAsStream(resourceName);
-                        }
-                    });
-            }
-            else
-            {
+                        .doPrivileged(new PrivilegedAction() {
+                            public Object run() {
+                                return OutputPropertiesFactory.class
+                                        .getResourceAsStream(resourceName);
+                            }
+                        });
+            } else {
                 // User may be using older JDK ( JDK < 1.2 )
                 is = OutputPropertiesFactory.class
-                    .getResourceAsStream(resourceName);
+                        .getResourceAsStream(resourceName);
             }
 
             bis = new BufferedInputStream(is);
             props.load(bis);
-        }
-        catch (IOException ioe)
-        {
-            if (defaults == null)
-            {
+        } catch (IOException ioe) {
+            if (defaults == null) {
                 throw ioe;
-            }
-            else
-            {
+            } else {
                 throw new WrappedRuntimeException(
-                    Utils.messages.createMessage(
-                        MsgKey.ER_COULD_NOT_LOAD_RESOURCE,
-                        new Object[] { resourceName }),
-                    ioe);
+                        Utils.messages.createMessage(
+                                MsgKey.ER_COULD_NOT_LOAD_RESOURCE,
+                                new Object[]{resourceName}),
+                        ioe);
                 //"Could not load '"+resourceName+"' (check CLASSPATH), now using just the defaults ", ioe);
             }
-        }
-        catch (SecurityException se)
-        {
+        } catch (SecurityException se) {
             // Repeat IOException handling for sandbox/applet case -sc
-            if (defaults == null)
-            {
+            if (defaults == null) {
                 throw se;
-            }
-            else
-            {
+            } else {
                 throw new WrappedRuntimeException(
-                    Utils.messages.createMessage(
-                        MsgKey.ER_COULD_NOT_LOAD_RESOURCE,
-                        new Object[] { resourceName }),
-                    se);
+                        Utils.messages.createMessage(
+                                MsgKey.ER_COULD_NOT_LOAD_RESOURCE,
+                                new Object[]{resourceName}),
+                        se);
                 //"Could not load '"+resourceName+"' (check CLASSPATH, applet security), now using just the defaults ", se);
             }
-        }
-        finally
-        {
-            if (bis != null)
-            {
+        } finally {
+            if (bis != null) {
                 bis.close();
             }
-            if (is != null)
-            {
+            if (is != null) {
                 is.close();
             }
         }
@@ -463,19 +447,15 @@ public final class OutputPropertiesFactory
         // <padraig@gradient.ie> for finding this problem.  Bugzilla 2000.
 
         Enumeration keys = ((Properties) props.clone()).keys();
-        while (keys.hasMoreElements())
-        {
+        while (keys.hasMoreElements()) {
             String key = (String) keys.nextElement();
             // Now check if the given key was specified as a
             // System property. If so, the system property
             // overides the default value in the propery file.
             String value = null;
-            try
-            {
+            try {
                 value = SecuritySupport.getSystemProperty(key);
-            }
-            catch (SecurityException se)
-            {
+            } catch (SecurityException se) {
                 // No-op for sandbox/applet case, leave null -sc
             }
             if (value == null)
@@ -483,12 +463,9 @@ public final class OutputPropertiesFactory
 
             String newKey = fixupPropertyString(key, true);
             String newValue = null;
-            try
-            {
+            try {
                 newValue = SecuritySupport.getSystemProperty(newKey);
-            }
-            catch (SecurityException se)
-            {
+            } catch (SecurityException se) {
                 // No-op for sandbox/applet case, leave null -sc
             }
             if (newValue == null)
@@ -496,8 +473,7 @@ public final class OutputPropertiesFactory
             else
                 newValue = fixupPropertyString(newValue, false);
 
-            if (key != newKey || value != newValue)
-            {
+            if (key != newKey || value != newValue) {
                 props.remove(key);
                 props.put(newKey, newValue);
             }
@@ -514,21 +490,17 @@ public final class OutputPropertiesFactory
      * @param s non-null reference to string that may need to be fixed up.
      * @return A new string if fixup occured, otherwise the s argument.
      */
-    static private String fixupPropertyString(String s, boolean doClipping)
-    {
+    static private String fixupPropertyString(String s, boolean doClipping) {
         int index;
-        if (doClipping && s.startsWith(S_XSLT_PREFIX))
-        {
+        if (doClipping && s.startsWith(S_XSLT_PREFIX)) {
             s = s.substring(S_XSLT_PREFIX_LEN);
         }
-        if (s.startsWith(S_XALAN_PREFIX))
-        {
+        if (s.startsWith(S_XALAN_PREFIX)) {
             s =
-                S_BUILTIN_EXTENSIONS_UNIVERSAL
-                    + s.substring(S_XALAN_PREFIX_LEN);
+                    S_BUILTIN_EXTENSIONS_UNIVERSAL
+                            + s.substring(S_XALAN_PREFIX_LEN);
         }
-        if ((index = s.indexOf("\\u003a")) > 0)
-        {
+        if ((index = s.indexOf("\\u003a")) > 0) {
             String temp = s.substring(index + 6);
             s = s.substring(0, index) + ":" + temp;
 

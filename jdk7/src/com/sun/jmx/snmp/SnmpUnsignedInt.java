@@ -27,7 +27,6 @@
 package com.sun.jmx.snmp;
 
 
-
 /**
  * Is the base for all SNMP syntaxes based on unsigned integers.
  *
@@ -40,15 +39,17 @@ public abstract class SnmpUnsignedInt extends SnmpInt {
     /**
      * The largest value of the type <code>unsigned int</code> (2^32 - 1).
      */
-    public static final long   MAX_VALUE = 0x0ffffffffL;
+    public static final long MAX_VALUE = 0x0ffffffffL;
 
     // CONSTRUCTORS
     //-------------
+
     /**
      * Constructs a new <CODE>SnmpUnsignedInt</CODE> from the specified integer value.
+     *
      * @param v The initialization value.
-     * @exception IllegalArgumentException The specified value is negative
-     * or larger than {@link #MAX_VALUE SnmpUnsignedInt.MAX_VALUE}.
+     * @throws IllegalArgumentException The specified value is negative
+     *                                  or larger than {@link #MAX_VALUE SnmpUnsignedInt.MAX_VALUE}.
      */
     public SnmpUnsignedInt(int v) throws IllegalArgumentException {
         super(v);
@@ -56,9 +57,10 @@ public abstract class SnmpUnsignedInt extends SnmpInt {
 
     /**
      * Constructs a new <CODE>SnmpUnsignedInt</CODE> from the specified <CODE>Integer</CODE> value.
+     *
      * @param v The initialization value.
-     * @exception IllegalArgumentException The specified value is negative
-     * or larger than {@link #MAX_VALUE SnmpUnsignedInt.MAX_VALUE}.
+     * @throws IllegalArgumentException The specified value is negative
+     *                                  or larger than {@link #MAX_VALUE SnmpUnsignedInt.MAX_VALUE}.
      */
     public SnmpUnsignedInt(Integer v) throws IllegalArgumentException {
         super(v);
@@ -66,9 +68,10 @@ public abstract class SnmpUnsignedInt extends SnmpInt {
 
     /**
      * Constructs a new <CODE>SnmpUnsignedInt</CODE> from the specified long value.
+     *
      * @param v The initialization value.
-     * @exception IllegalArgumentException The specified value is negative
-     * or larger than {@link #MAX_VALUE SnmpUnsignedInt.MAX_VALUE}.
+     * @throws IllegalArgumentException The specified value is negative
+     *                                  or larger than {@link #MAX_VALUE SnmpUnsignedInt.MAX_VALUE}.
      */
     public SnmpUnsignedInt(long v) throws IllegalArgumentException {
         super(v);
@@ -76,9 +79,10 @@ public abstract class SnmpUnsignedInt extends SnmpInt {
 
     /**
      * Constructs a new <CODE>SnmpUnsignedInt</CODE> from the specified <CODE>Long</CODE> value.
+     *
      * @param v The initialization value.
-     * @exception IllegalArgumentException The specified value is negative
-     * or larger than {@link #MAX_VALUE SnmpUnsignedInt.MAX_VALUE}.
+     * @throws IllegalArgumentException The specified value is negative
+     *                                  or larger than {@link #MAX_VALUE SnmpUnsignedInt.MAX_VALUE}.
      */
     public SnmpUnsignedInt(Long v) throws IllegalArgumentException {
         super(v);
@@ -86,12 +90,14 @@ public abstract class SnmpUnsignedInt extends SnmpInt {
 
     // PUBLIC METHODS
     //---------------
+
     /**
      * Returns a textual description of the type object.
+     *
      * @return ASN.1 textual description.
      */
     public String getTypeName() {
-        return name ;
+        return name;
     }
 
     /**
@@ -121,5 +127,5 @@ public abstract class SnmpUnsignedInt extends SnmpInt {
     /**
      * Name of the type.
      */
-    final static String name = "Unsigned32" ;
+    final static String name = "Unsigned32";
 }

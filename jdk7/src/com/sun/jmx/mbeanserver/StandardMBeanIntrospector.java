@@ -38,6 +38,7 @@ import javax.management.MBeanOperationInfo;
 import javax.management.NotCompliantMBeanException;
 import javax.management.NotificationBroadcaster;
 import javax.management.NotificationBroadcasterSupport;
+
 import sun.reflect.misc.MethodUtil;
 
 /**
@@ -45,7 +46,7 @@ import sun.reflect.misc.MethodUtil;
  */
 class StandardMBeanIntrospector extends MBeanIntrospector<Method> {
     private static final StandardMBeanIntrospector instance =
-        new StandardMBeanIntrospector();
+            new StandardMBeanIntrospector();
 
     static StandardMBeanIntrospector getInstance() {
         return instance;
@@ -108,7 +109,7 @@ class StandardMBeanIntrospector extends MBeanIntrospector<Method> {
     @Override
     Object invokeM2(Method m, Object target, Object[] args, Object cookie)
             throws InvocationTargetException, IllegalAccessException,
-                   MBeanException {
+            MBeanException {
         return MethodUtil.invoke(m, target, args);
     }
 
@@ -119,12 +120,12 @@ class StandardMBeanIntrospector extends MBeanIntrospector<Method> {
 
     @Override
     MBeanAttributeInfo getMBeanAttributeInfo(String attributeName,
-            Method getter, Method setter) {
+                                             Method getter, Method setter) {
 
         final String description = "Attribute exposed for management";
         try {
             return new MBeanAttributeInfo(attributeName, description,
-                                          getter, setter);
+                    getter, setter);
         } catch (IntrospectionException e) {
             throw new RuntimeException(e); // should not happen
         }
@@ -132,7 +133,7 @@ class StandardMBeanIntrospector extends MBeanIntrospector<Method> {
 
     @Override
     MBeanOperationInfo getMBeanOperationInfo(String operationName,
-            Method operation) {
+                                             Method operation) {
         final String description = "Operation exposed for management";
         return new MBeanOperationInfo(description, operation);
     }
@@ -149,7 +150,7 @@ class StandardMBeanIntrospector extends MBeanIntrospector<Method> {
     Descriptor getMBeanDescriptor(Class<?> resourceClass) {
         boolean immutable = isDefinitelyImmutableInfo(resourceClass);
         return new ImmutableDescriptor("mxbean=false",
-                                       "immutableInfo=" + immutable);
+                "immutableInfo=" + immutable);
     }
 
     /* Return true if and only if we can be sure that the given MBean implementation
@@ -183,11 +184,12 @@ class StandardMBeanIntrospector extends MBeanIntrospector<Method> {
             return immutable;
         }
     }
+
     private static final WeakHashMap<Class<?>, Boolean> definitelyImmutable =
             new WeakHashMap<Class<?>, Boolean>();
 
     private static final PerInterfaceMap<Method>
-        perInterfaceMap = new PerInterfaceMap<Method>();
+            perInterfaceMap = new PerInterfaceMap<Method>();
 
     private static final MBeanInfoMap mbeanInfoMap = new MBeanInfoMap();
 }

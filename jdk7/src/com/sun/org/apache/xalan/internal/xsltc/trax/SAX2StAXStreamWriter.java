@@ -42,93 +42,93 @@ import org.xml.sax.ext.Locator2;
 public class SAX2StAXStreamWriter extends SAX2StAXBaseWriter {
 
 
-        private XMLStreamWriter writer;
+    private XMLStreamWriter writer;
 
-        private boolean needToCallStartDocument = false;
+    private boolean needToCallStartDocument = false;
 
-        public SAX2StAXStreamWriter() {
+    public SAX2StAXStreamWriter() {
 
-        }
+    }
 
-        public SAX2StAXStreamWriter(XMLStreamWriter writer) {
+    public SAX2StAXStreamWriter(XMLStreamWriter writer) {
 
-                this.writer = writer;
+        this.writer = writer;
 
-        }
-
-
-        public XMLStreamWriter getStreamWriter() {
-
-                return writer;
-
-        }
+    }
 
 
-        public void setStreamWriter(XMLStreamWriter writer) {
+    public XMLStreamWriter getStreamWriter() {
 
-                this.writer = writer;
+        return writer;
 
-        }
+    }
 
-        public void startDocument() throws SAXException {
 
-                super.startDocument();
-                // Encoding and version info will be available only after startElement
-                // is called for first time. So, defer START_DOCUMENT event of StAX till
-                // that point of time.
-                needToCallStartDocument = true;
-        }
+    public void setStreamWriter(XMLStreamWriter writer) {
 
-        public void endDocument() throws SAXException {
+        this.writer = writer;
 
-                try {
+    }
 
-                        writer.writeEndDocument();
+    public void startDocument() throws SAXException {
 
-                } catch (XMLStreamException e) {
+        super.startDocument();
+        // Encoding and version info will be available only after startElement
+        // is called for first time. So, defer START_DOCUMENT event of StAX till
+        // that point of time.
+        needToCallStartDocument = true;
+    }
 
-                        throw new SAXException(e);
+    public void endDocument() throws SAXException {
 
-                }
+        try {
 
-                super.endDocument();
+            writer.writeEndDocument();
+
+        } catch (XMLStreamException e) {
+
+            throw new SAXException(e);
 
         }
 
-        public void startElement(String uri, String localName, String qName,
-                        Attributes attributes) throws SAXException {
+        super.endDocument();
 
-                if (needToCallStartDocument) {
+    }
+
+    public void startElement(String uri, String localName, String qName,
+                             Attributes attributes) throws SAXException {
+
+        if (needToCallStartDocument) {
+            try {
+                if (docLocator == null)
+                    writer.writeStartDocument();
+                else {
                     try {
-                        if (docLocator == null)
-                            writer.writeStartDocument();
-                        else {
-                            try{
-                                writer.writeStartDocument(((Locator2)docLocator).getXMLVersion());
-                            }catch(ClassCastException e){
-                                writer.writeStartDocument();
-                            }
-                        }
-
-                    } catch (XMLStreamException e) {
-
-                            throw new SAXException(e);
-
+                        writer.writeStartDocument(((Locator2) docLocator).getXMLVersion());
+                    } catch (ClassCastException e) {
+                        writer.writeStartDocument();
                     }
-                    needToCallStartDocument = false;
                 }
 
-                try {
+            } catch (XMLStreamException e) {
 
-                        String[] qname = {null, null};
-                        parseQName(qName, qname);
-                        //Do not call writeStartElement with prefix and namespaceURI, as it writes out
-                        //namespace declaration.
-                        //writer.writeStartElement(qname[0], qname[1], uri);
-                        writer.writeStartElement(qName);
+                throw new SAXException(e);
+
+            }
+            needToCallStartDocument = false;
+        }
+
+        try {
+
+            String[] qname = {null, null};
+            parseQName(qName, qname);
+            //Do not call writeStartElement with prefix and namespaceURI, as it writes out
+            //namespace declaration.
+            //writer.writeStartElement(qname[0], qname[1], uri);
+            writer.writeStartElement(qName);
 
 
-                        // No need to write namespaces, as they are written as part of attributes.
+            // No need to write namespaces, as they are written as part of attributes.
                         /*if (namespaces != null) {
 
                             final int nDecls = namespaces.size();
@@ -146,157 +146,157 @@ public class SAX2StAXStreamWriter extends SAX2StAXBaseWriter {
 
                         }*/
 
-                        // write attributes
-                        for (int i = 0, s = attributes.getLength(); i < s; i++) {
+            // write attributes
+            for (int i = 0, s = attributes.getLength(); i < s; i++) {
 
-                                parseQName(attributes.getQName(i), qname);
+                parseQName(attributes.getQName(i), qname);
 
-                                String attrPrefix = qname[0];
-                                String attrLocal = qname[1];
+                String attrPrefix = qname[0];
+                String attrLocal = qname[1];
 
-                                String attrQName = attributes.getQName(i);
-                                String attrValue = attributes.getValue(i);
-                                String attrURI = attributes.getURI(i);
+                String attrQName = attributes.getQName(i);
+                String attrValue = attributes.getValue(i);
+                String attrURI = attributes.getURI(i);
 
-                                if ("xmlns".equals(attrPrefix) || "xmlns".equals(attrQName)) {
+                if ("xmlns".equals(attrPrefix) || "xmlns".equals(attrQName)) {
 
-                                        // namespace declaration disguised as an attribute.
-                                        // write it as an namespace
+                    // namespace declaration disguised as an attribute.
+                    // write it as an namespace
 
-                                        if (attrLocal.length() == 0) {
+                    if (attrLocal.length() == 0) {
 
-                                            writer.setDefaultNamespace(attrValue);
+                        writer.setDefaultNamespace(attrValue);
 
-                                        } else {
+                    } else {
 
-                                            writer.setPrefix(attrLocal, attrValue);
+                        writer.setPrefix(attrLocal, attrValue);
 
-                                        }
+                    }
 
-                                        writer.writeNamespace(attrLocal, attrValue);
+                    writer.writeNamespace(attrLocal, attrValue);
 
-                                } else if (attrPrefix.length() > 0) {
+                } else if (attrPrefix.length() > 0) {
 
-                                        writer.writeAttribute(attrPrefix, attrURI, attrLocal,
-                                                        attrValue);
+                    writer.writeAttribute(attrPrefix, attrURI, attrLocal,
+                            attrValue);
 
-                                } else {
-                                        writer.writeAttribute(attrQName, attrValue);
-                                }
-
-                        }
-
-                } catch (XMLStreamException e) {
-                        throw new SAXException(e);
-
-                } finally {
-
-                        super.startElement(uri, localName, qName, attributes);
-
+                } else {
+                    writer.writeAttribute(attrQName, attrValue);
                 }
+
+            }
+
+        } catch (XMLStreamException e) {
+            throw new SAXException(e);
+
+        } finally {
+
+            super.startElement(uri, localName, qName, attributes);
 
         }
 
-        public void endElement(String uri, String localName, String qName)
-                        throws SAXException {
+    }
 
-                try {
+    public void endElement(String uri, String localName, String qName)
+            throws SAXException {
 
-                        writer.writeEndElement();
+        try {
 
-                } catch (XMLStreamException e) {
+            writer.writeEndElement();
 
-                        throw new SAXException(e);
+        } catch (XMLStreamException e) {
 
-                } finally {
+            throw new SAXException(e);
 
-                        super.endElement(uri, localName, qName);
+        } finally {
 
-                }
-
-        }
-
-        public void comment(char[] ch, int start, int length) throws SAXException {
-
-                super.comment(ch, start, length);
-                try {
-
-                        writer.writeComment(new String(ch, start, length));
-
-                } catch (XMLStreamException e) {
-
-                        throw new SAXException(e);
-
-                }
+            super.endElement(uri, localName, qName);
 
         }
 
-        public void characters(char[] ch, int start, int length)
-                        throws SAXException {
+    }
 
-                super.characters(ch, start, length);
-                try {
+    public void comment(char[] ch, int start, int length) throws SAXException {
 
-                        if (!isCDATA) {
+        super.comment(ch, start, length);
+        try {
 
-                                writer.writeCharacters(ch, start, length);
+            writer.writeComment(new String(ch, start, length));
 
-                        }
+        } catch (XMLStreamException e) {
 
-                } catch (XMLStreamException e) {
-
-                        throw new SAXException(e);
-
-                }
+            throw new SAXException(e);
 
         }
 
-        public void endCDATA() throws SAXException {
+    }
 
-                try {
+    public void characters(char[] ch, int start, int length)
+            throws SAXException {
 
-                        writer.writeCData(CDATABuffer.toString());
+        super.characters(ch, start, length);
+        try {
 
-                } catch (XMLStreamException e) {
+            if (!isCDATA) {
 
-                        throw new SAXException(e);
+                writer.writeCharacters(ch, start, length);
 
-                }
+            }
 
-                super.endCDATA();
+        } catch (XMLStreamException e) {
 
-        }
-
-        public void ignorableWhitespace(char[] ch, int start, int length)
-                        throws SAXException {
-
-                super.ignorableWhitespace(ch, start, length);
-                try {
-
-                        writer.writeCharacters(ch, start, length);
-
-                } catch (XMLStreamException e) {
-
-                        throw new SAXException(e);
-
-                }
+            throw new SAXException(e);
 
         }
 
-        public void processingInstruction(String target, String data)
-                        throws SAXException {
+    }
 
-                super.processingInstruction(target, data);
-                try {
+    public void endCDATA() throws SAXException {
 
-                        writer.writeProcessingInstruction(target, data);
+        try {
 
-                } catch (XMLStreamException e) {
+            writer.writeCData(CDATABuffer.toString());
 
-                        throw new SAXException(e);
+        } catch (XMLStreamException e) {
 
-                }
+            throw new SAXException(e);
 
         }
+
+        super.endCDATA();
+
+    }
+
+    public void ignorableWhitespace(char[] ch, int start, int length)
+            throws SAXException {
+
+        super.ignorableWhitespace(ch, start, length);
+        try {
+
+            writer.writeCharacters(ch, start, length);
+
+        } catch (XMLStreamException e) {
+
+            throw new SAXException(e);
+
+        }
+
+    }
+
+    public void processingInstruction(String target, String data)
+            throws SAXException {
+
+        super.processingInstruction(target, data);
+        try {
+
+            writer.writeProcessingInstruction(target, data);
+
+        } catch (XMLStreamException e) {
+
+            throw new SAXException(e);
+
+        }
+
+    }
 
 }

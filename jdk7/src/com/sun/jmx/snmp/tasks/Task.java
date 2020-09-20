@@ -51,8 +51,8 @@ package com.sun.jmx.snmp.tasks;
  * which it will be executed.
  * <p><b>This API is a Sun Microsystems internal API  and is subject
  * to change without notice.</b></p>
- * @see com.sun.jmx.snmp.tasks.TaskServer
  *
+ * @see com.sun.jmx.snmp.tasks.TaskServer
  * @since 1.5
  **/
 public interface Task extends Runnable {

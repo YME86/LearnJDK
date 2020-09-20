@@ -21,7 +21,6 @@
 package com.sun.org.apache.xml.internal.security.transforms.params;
 
 
-
 import java.util.Iterator;
 import java.util.Set;
 import java.util.SortedSet;
@@ -47,136 +46,142 @@ import org.w3c.dom.Element;
 public class InclusiveNamespaces extends ElementProxy
         implements TransformParam {
 
-   /** Field _TAG_EC_INCLUSIVENAMESPACES */
-   public static final String _TAG_EC_INCLUSIVENAMESPACES =
-      "InclusiveNamespaces";
+    /**
+     * Field _TAG_EC_INCLUSIVENAMESPACES
+     */
+    public static final String _TAG_EC_INCLUSIVENAMESPACES =
+            "InclusiveNamespaces";
 
-   /** Field _ATT_EC_PREFIXLIST */
-   public static final String _ATT_EC_PREFIXLIST = "PrefixList";
+    /**
+     * Field _ATT_EC_PREFIXLIST
+     */
+    public static final String _ATT_EC_PREFIXLIST = "PrefixList";
 
-   /** Field ExclusiveCanonicalizationNamespace */
-   public static final String ExclusiveCanonicalizationNamespace =
-      "http://www.w3.org/2001/10/xml-exc-c14n#";
+    /**
+     * Field ExclusiveCanonicalizationNamespace
+     */
+    public static final String ExclusiveCanonicalizationNamespace =
+            "http://www.w3.org/2001/10/xml-exc-c14n#";
 
-   /**
-    * Constructor XPathContainer
-    *
-    * @param doc
-    * @param prefixList
-    */
-   public InclusiveNamespaces(Document doc, String prefixList) {
-      this(doc, InclusiveNamespaces.prefixStr2Set(prefixList));
-   }
+    /**
+     * Constructor XPathContainer
+     *
+     * @param doc
+     * @param prefixList
+     */
+    public InclusiveNamespaces(Document doc, String prefixList) {
+        this(doc, InclusiveNamespaces.prefixStr2Set(prefixList));
+    }
 
-   /**
-    * Constructor InclusiveNamespaces
-    *
-    * @param doc
-    * @param prefixes
-    */
-   public InclusiveNamespaces(Document doc, Set prefixes) {
+    /**
+     * Constructor InclusiveNamespaces
+     *
+     * @param doc
+     * @param prefixes
+     */
+    public InclusiveNamespaces(Document doc, Set prefixes) {
 
-      super(doc);
+        super(doc);
 
-      StringBuffer sb = new StringBuffer();
-      SortedSet prefixList = new TreeSet(prefixes);
+        StringBuffer sb = new StringBuffer();
+        SortedSet prefixList = new TreeSet(prefixes);
 
 
-      Iterator it = prefixList.iterator();
+        Iterator it = prefixList.iterator();
 
-      while (it.hasNext()) {
-         String prefix = (String) it.next();
+        while (it.hasNext()) {
+            String prefix = (String) it.next();
 
-         if (prefix.equals("xmlns")) {
-            sb.append("#default ");
-         } else {
-            sb.append(prefix + " ");
-         }
-      }
+            if (prefix.equals("xmlns")) {
+                sb.append("#default ");
+            } else {
+                sb.append(prefix + " ");
+            }
+        }
 
-      this._constructionElement
-         .setAttributeNS(null, InclusiveNamespaces._ATT_EC_PREFIXLIST,
-                       sb.toString().trim());
-   }
+        this._constructionElement
+                .setAttributeNS(null, InclusiveNamespaces._ATT_EC_PREFIXLIST,
+                        sb.toString().trim());
+    }
 
-   /**
-    * Method getInclusiveNamespaces
-    *
-    * @return The Inclusive Namespace string
-    */
-   public String getInclusiveNamespaces() {
-      return this._constructionElement
-         .getAttributeNS(null, InclusiveNamespaces._ATT_EC_PREFIXLIST);
-   }
+    /**
+     * Method getInclusiveNamespaces
+     *
+     * @return The Inclusive Namespace string
+     */
+    public String getInclusiveNamespaces() {
+        return this._constructionElement
+                .getAttributeNS(null, InclusiveNamespaces._ATT_EC_PREFIXLIST);
+    }
 
-   /**
-    * Constructor InclusiveNamespaces
-    *
-    * @param element
-    * @param BaseURI
-    * @throws XMLSecurityException
-    */
-   public InclusiveNamespaces(Element element, String BaseURI)
-           throws XMLSecurityException {
-      super(element, BaseURI);
-   }
+    /**
+     * Constructor InclusiveNamespaces
+     *
+     * @param element
+     * @param BaseURI
+     * @throws XMLSecurityException
+     */
+    public InclusiveNamespaces(Element element, String BaseURI)
+            throws XMLSecurityException {
+        super(element, BaseURI);
+    }
 
-   /**
-    * Decodes the <code>inclusiveNamespaces</code> String and returns all
-    * selected namespace prefixes as a Set. The <code>#default</code>
-    * namespace token is represented as an empty namespace prefix
-    * (<code>"xmlns"</code>).
-    * <BR/>
-    * The String <code>inclusiveNamespaces=" xenc    ds #default"</code>
-    * is returned as a Set containing the following Strings:
-    * <UL>
-    * <LI><code>xmlns</code></LI>
-    * <LI><code>xenc</code></LI>
-    * <LI><code>ds</code></LI>
-    * </UL>
-    *
-    * @param inclusiveNamespaces
-    * @return A set to string
-    */
-   public static SortedSet prefixStr2Set(String inclusiveNamespaces) {
+    /**
+     * Decodes the <code>inclusiveNamespaces</code> String and returns all
+     * selected namespace prefixes as a Set. The <code>#default</code>
+     * namespace token is represented as an empty namespace prefix
+     * (<code>"xmlns"</code>).
+     * <BR/>
+     * The String <code>inclusiveNamespaces=" xenc    ds #default"</code>
+     * is returned as a Set containing the following Strings:
+     * <UL>
+     * <LI><code>xmlns</code></LI>
+     * <LI><code>xenc</code></LI>
+     * <LI><code>ds</code></LI>
+     * </UL>
+     *
+     * @param inclusiveNamespaces
+     * @return A set to string
+     */
+    public static SortedSet prefixStr2Set(String inclusiveNamespaces) {
 
-      SortedSet prefixes = new TreeSet();
+        SortedSet prefixes = new TreeSet();
 
-      if ((inclusiveNamespaces == null)
-              || (inclusiveNamespaces.length() == 0)) {
-         return prefixes;
-      }
+        if ((inclusiveNamespaces == null)
+                || (inclusiveNamespaces.length() == 0)) {
+            return prefixes;
+        }
 
-      StringTokenizer st = new StringTokenizer(inclusiveNamespaces, " \t\r\n");
+        StringTokenizer st = new StringTokenizer(inclusiveNamespaces, " \t\r\n");
 
-      while (st.hasMoreTokens()) {
-         String prefix = st.nextToken();
+        while (st.hasMoreTokens()) {
+            String prefix = st.nextToken();
 
-         if (prefix.equals("#default")) {
-            prefixes.add("xmlns" );
-         } else {
-            prefixes.add( prefix);
-         }
-      }
+            if (prefix.equals("#default")) {
+                prefixes.add("xmlns");
+            } else {
+                prefixes.add(prefix);
+            }
+        }
 
-      return prefixes;
-   }
+        return prefixes;
+    }
 
-   /**
-    * Method getBaseNamespace
-    *
-    * @inheritDoc
-    */
-   public String getBaseNamespace() {
-      return InclusiveNamespaces.ExclusiveCanonicalizationNamespace;
-   }
+    /**
+     * Method getBaseNamespace
+     *
+     * @inheritDoc
+     */
+    public String getBaseNamespace() {
+        return InclusiveNamespaces.ExclusiveCanonicalizationNamespace;
+    }
 
-   /**
-    * Method getBaseLocalName
-    *
-    * @inheritDoc
-    */
-   public String getBaseLocalName() {
-      return InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES;
-   }
+    /**
+     * Method getBaseLocalName
+     *
+     * @inheritDoc
+     */
+    public String getBaseLocalName() {
+        return InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES;
+    }
 }

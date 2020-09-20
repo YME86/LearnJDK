@@ -54,20 +54,23 @@ public class ObjectFactory {
     //
     // Constants
     //
-     private static final String JAXP_INTERNAL = "com.sun.org.apache";
-     private static final String STAX_INTERNAL = "com.sun.xml.internal";
+    private static final String JAXP_INTERNAL = "com.sun.org.apache";
+    private static final String STAX_INTERNAL = "com.sun.xml.internal";
 
     // name of default properties file to look for in JDK's jre/lib directory
     private static final String DEFAULT_PROPERTIES_FILENAME =
-                                                     "xalan.properties";
+            "xalan.properties";
 
     private static final String SERVICES_PATH = "META-INF/services/";
 
-    /** Set to true for debugging */
+    /**
+     * Set to true for debugging
+     */
     private static final boolean DEBUG = false;
 
-    /** cache the contents of the xalan.properties file.
-     *  Until an attempt has been made to read this file, this will
+    /**
+     * cache the contents of the xalan.properties file.
+     * Until an attempt has been made to read this file, this will
      * be null; if the file does not exist or we encounter some other error
      * during the read, this will be empty.
      */
@@ -93,17 +96,15 @@ public class ObjectFactory {
      *  <li>use fallback classname
      * </ol>
      *
+     * @param factoryId         Name of the factory to find, same as
+     *                          a property name
+     * @param fallbackClassName Implementation class name, if nothing else
+     *                          is found.  Use null to mean no fallback.
      * @return instance of factory, never null
-     *
-     * @param factoryId             Name of the factory to find, same as
-     *                              a property name
-     * @param fallbackClassName     Implementation class name, if nothing else
-     *                              is found.  Use null to mean no fallback.
-     *
-     * @exception ObjectFactory.ConfigurationError
+     * @throws ObjectFactory.ConfigurationError
      */
     public static Object createObject(String factoryId, String fallbackClassName)
-        throws ConfigurationError {
+            throws ConfigurationError {
         return createObject(factoryId, null, fallbackClassName);
     } // createObject(String,String):Object
 
@@ -117,40 +118,37 @@ public class ObjectFactory {
      *  <li>use fallback classname
      * </ol>
      *
-     * @return instance of factory, never null
-     *
-     * @param factoryId             Name of the factory to find, same as
-     *                              a property name
+     * @param factoryId          Name of the factory to find, same as
+     *                           a property name
      * @param propertiesFilename The filename in the $java.home/lib directory
      *                           of the properties file.  If none specified,
      *                           ${java.home}/lib/xalan.properties will be used.
-     * @param fallbackClassName     Implementation class name, if nothing else
-     *                              is found.  Use null to mean no fallback.
-     *
-     * @exception ObjectFactory.ConfigurationError
+     * @param fallbackClassName  Implementation class name, if nothing else
+     *                           is found.  Use null to mean no fallback.
+     * @return instance of factory, never null
+     * @throws ObjectFactory.ConfigurationError
      */
     static Object createObject(String factoryId,
-                                      String propertiesFilename,
-                                      String fallbackClassName)
-        throws ConfigurationError
-    {
+                               String propertiesFilename,
+                               String fallbackClassName)
+            throws ConfigurationError {
         Class factoryClass = lookUpFactoryClass(factoryId,
-                                                propertiesFilename,
-                                                fallbackClassName);
+                propertiesFilename,
+                fallbackClassName);
 
         if (factoryClass == null) {
             throw new ConfigurationError(
-                "Provider for " + factoryId + " cannot be found", null);
+                    "Provider for " + factoryId + " cannot be found", null);
         }
 
-        try{
+        try {
             Object instance = factoryClass.newInstance();
             if (DEBUG) debugPrintln("created new instance of factory " + factoryId);
             return instance;
         } catch (Exception x) {
             throw new ConfigurationError(
-                "Provider for factory " + factoryId
-                    + " could not be instantiated: " + x, x);
+                    "Provider for factory " + factoryId
+                            + " could not be instantiated: " + x, x);
         }
     } // createObject(String,String,String):Object
 
@@ -164,21 +162,18 @@ public class ObjectFactory {
      *  <li>use fallback classname
      * </ol>
      *
-     * @return Class object of factory, never null
-     *
-     * @param factoryId             Name of the factory to find, same as
-     *                              a property name
+     * @param factoryId          Name of the factory to find, same as
+     *                           a property name
      * @param propertiesFilename The filename in the $java.home/lib directory
      *                           of the properties file.  If none specified,
      *                           ${java.home}/lib/xalan.properties will be used.
-     * @param fallbackClassName     Implementation class name, if nothing else
-     *                              is found.  Use null to mean no fallback.
-     *
-     * @exception ObjectFactory.ConfigurationError
+     * @param fallbackClassName  Implementation class name, if nothing else
+     *                           is found.  Use null to mean no fallback.
+     * @return Class object of factory, never null
+     * @throws ObjectFactory.ConfigurationError
      */
     public static Class lookUpFactoryClass(String factoryId)
-        throws ConfigurationError
-    {
+            throws ConfigurationError {
         return lookUpFactoryClass(factoryId, null, null);
     } // lookUpFactoryClass(String):Class
 
@@ -192,26 +187,23 @@ public class ObjectFactory {
      *  <li>use fallback classname
      * </ol>
      *
-     * @return Class object that provides factory service, never null
-     *
-     * @param factoryId             Name of the factory to find, same as
-     *                              a property name
+     * @param factoryId          Name of the factory to find, same as
+     *                           a property name
      * @param propertiesFilename The filename in the $java.home/lib directory
      *                           of the properties file.  If none specified,
      *                           ${java.home}/lib/xalan.properties will be used.
-     * @param fallbackClassName     Implementation class name, if nothing else
-     *                              is found.  Use null to mean no fallback.
-     *
-     * @exception ObjectFactory.ConfigurationError
+     * @param fallbackClassName  Implementation class name, if nothing else
+     *                           is found.  Use null to mean no fallback.
+     * @return Class object that provides factory service, never null
+     * @throws ObjectFactory.ConfigurationError
      */
     public static Class lookUpFactoryClass(String factoryId,
                                            String propertiesFilename,
                                            String fallbackClassName)
-        throws ConfigurationError
-    {
+            throws ConfigurationError {
         String factoryClassName = lookUpFactoryClassName(factoryId,
-                                                         propertiesFilename,
-                                                         fallbackClassName);
+                propertiesFilename,
+                fallbackClassName);
         ClassLoader cl = findClassLoader();
 
         if (factoryClassName == null) {
@@ -219,20 +211,20 @@ public class ObjectFactory {
         }
 
         // assert(className != null);
-        try{
+        try {
             Class providerClass = findProviderClass(factoryClassName,
-                                                    cl,
-                                                    true);
+                    cl,
+                    true);
             if (DEBUG) debugPrintln("created new instance of " + providerClass +
-                   " using ClassLoader: " + cl);
+                    " using ClassLoader: " + cl);
             return providerClass;
         } catch (ClassNotFoundException x) {
             throw new ConfigurationError(
-                "Provider " + factoryClassName + " not found", x);
+                    "Provider " + factoryClassName + " not found", x);
         } catch (Exception x) {
             throw new ConfigurationError(
-                "Provider "+factoryClassName+" could not be instantiated: "+x,
-                x);
+                    "Provider " + factoryClassName + " could not be instantiated: " + x,
+                    x);
         }
     } // lookUpFactoryClass(String,String,String):Class
 
@@ -246,22 +238,19 @@ public class ObjectFactory {
      *  <li>use fallback classname
      * </ol>
      *
-     * @return name of class that provides factory service, never null
-     *
-     * @param factoryId             Name of the factory to find, same as
-     *                              a property name
+     * @param factoryId          Name of the factory to find, same as
+     *                           a property name
      * @param propertiesFilename The filename in the $java.home/lib directory
      *                           of the properties file.  If none specified,
      *                           ${java.home}/lib/xalan.properties will be used.
-     * @param fallbackClassName     Implementation class name, if nothing else
-     *                              is found.  Use null to mean no fallback.
-     *
-     * @exception ObjectFactory.ConfigurationError
+     * @param fallbackClassName  Implementation class name, if nothing else
+     *                           is found.  Use null to mean no fallback.
+     * @return name of class that provides factory service, never null
+     * @throws ObjectFactory.ConfigurationError
      */
     static String lookUpFactoryClassName(String factoryId,
-                                                String propertiesFilename,
-                                                String fallbackClassName)
-    {
+                                         String propertiesFilename,
+                                         String fallbackClassName) {
         // Use the system property first
         try {
             String systemProp = SecuritySupport.getSystemProperty(factoryId);
@@ -284,7 +273,7 @@ public class ObjectFactory {
             try {
                 String javah = SecuritySupport.getSystemProperty("java.home");
                 propertiesFilename = javah + File.separator +
-                    "lib" + File.separator + DEFAULT_PROPERTIES_FILENAME;
+                        "lib" + File.separator + DEFAULT_PROPERTIES_FILENAME;
                 propertiesFile = new File(propertiesFilename);
                 propertiesFileExists = SecuritySupport.getFileExists(propertiesFile);
             } catch (SecurityException e) {
@@ -298,25 +287,25 @@ public class ObjectFactory {
                 FileInputStream fis = null;
                 try {
                     // file existed last time
-                    if(fLastModified >= 0) {
-                        if(propertiesFileExists &&
+                    if (fLastModified >= 0) {
+                        if (propertiesFileExists &&
                                 (fLastModified < (fLastModified = SecuritySupport.getLastModified(propertiesFile)))) {
                             loadProperties = true;
                         } else {
                             // file has stopped existing...
-                            if(!propertiesFileExists) {
+                            if (!propertiesFileExists) {
                                 fLastModified = -1;
                                 fXalanProperties = null;
                             } // else, file wasn't modified!
                         }
                     } else {
                         // file has started to exist:
-                        if(propertiesFileExists) {
+                        if (propertiesFileExists) {
                             loadProperties = true;
                             fLastModified = SecuritySupport.getLastModified(propertiesFile);
                         } // else, nothing's changed
                     }
-                    if(loadProperties) {
+                    if (loadProperties) {
                         // must never have attempted to read xalan.properties
                         // before (or it's outdeated)
                         fXalanProperties = new Properties();
@@ -329,19 +318,19 @@ public class ObjectFactory {
                     // assert(x instanceof FileNotFoundException
                     //        || x instanceof SecurityException)
                     // In both cases, ignore and continue w/ next location
-                }
-                finally {
+                } finally {
                     // try to close the input stream if one was opened.
                     if (fis != null) {
                         try {
                             fis.close();
                         }
                         // Ignore the exception.
-                        catch (IOException exc) {}
+                        catch (IOException exc) {
+                        }
                     }
                 }
             }
-            if(fXalanProperties != null) {
+            if (fXalanProperties != null) {
                 factoryClassName = fXalanProperties.getProperty(factoryId);
             }
         } else {
@@ -355,21 +344,21 @@ public class ObjectFactory {
                 // assert(x instanceof FileNotFoundException
                 //        || x instanceof SecurityException)
                 // In both cases, ignore and continue w/ next location
-            }
-            finally {
+            } finally {
                 // try to close the input stream if one was opened.
                 if (fis != null) {
                     try {
                         fis.close();
                     }
                     // Ignore the exception.
-                    catch (IOException exc) {}
+                    catch (IOException exc) {
+                    }
                 }
             }
         }
         if (factoryClassName != null) {
             if (DEBUG) debugPrintln("found in " + propertiesFilename + ", value="
-                          + factoryClassName);
+                    + factoryClassName);
             return factoryClassName;
         }
 
@@ -381,7 +370,9 @@ public class ObjectFactory {
     // Private static methods
     //
 
-    /** Prints a message to standard error if debugging is enabled. */
+    /**
+     * Prints a message to standard error if debugging is enabled.
+     */
     private static void debugPrintln(String msg) {
         if (DEBUG) {
             System.err.println("JAXP: " + msg);
@@ -393,9 +384,8 @@ public class ObjectFactory {
      * the context ClassLoader.
      */
     public static ClassLoader findClassLoader()
-        throws ConfigurationError
-    {
-        if (System.getSecurityManager()!=null) {
+            throws ConfigurationError {
+        if (System.getSecurityManager() != null) {
             //this will ensure bootclassloader is used
             return null;
         }
@@ -456,13 +446,12 @@ public class ObjectFactory {
      * or bootclassloader when Security Manager is in place
      */
     public static Object newInstance(String className, boolean doFallback)
-        throws ConfigurationError
-    {
-        if (System.getSecurityManager()!=null) {
+            throws ConfigurationError {
+        if (System.getSecurityManager() != null) {
             return newInstance(className, null, doFallback);
         } else {
             return newInstance(className,
-                findClassLoader (), doFallback);
+                    findClassLoader(), doFallback);
         }
     }
 
@@ -470,23 +459,22 @@ public class ObjectFactory {
      * Create an instance of a class using the specified ClassLoader
      */
     static Object newInstance(String className, ClassLoader cl,
-                                      boolean doFallback)
-        throws ConfigurationError
-    {
+                              boolean doFallback)
+            throws ConfigurationError {
         // assert(className != null);
-        try{
+        try {
             Class providerClass = findProviderClass(className, cl, doFallback);
             Object instance = providerClass.newInstance();
             if (DEBUG) debugPrintln("created new instance of " + providerClass +
-                   " using ClassLoader: " + cl);
+                    " using ClassLoader: " + cl);
             return instance;
         } catch (ClassNotFoundException x) {
             throw new ConfigurationError(
-                "Provider " + className + " not found", x);
+                    "Provider " + className + " not found", x);
         } catch (Exception x) {
             throw new ConfigurationError(
-                "Provider " + className + " could not be instantiated: " + x,
-                x);
+                    "Provider " + className + " could not be instantiated: " + x,
+                    x);
         }
     }
 
@@ -495,26 +483,24 @@ public class ObjectFactory {
      * or bootclassloader when Security Manager is in place
      */
     public static Class findProviderClass(String className, boolean doFallback)
-        throws ClassNotFoundException, ConfigurationError
-    {
-        return findProviderClass (className,
-                findClassLoader (), doFallback);
+            throws ClassNotFoundException, ConfigurationError {
+        return findProviderClass(className,
+                findClassLoader(), doFallback);
     }
 
     /**
      * Find a Class using the specified ClassLoader
      */
     static Class findProviderClass(String className, ClassLoader cl,
-                                           boolean doFallback)
-        throws ClassNotFoundException, ConfigurationError
-    {
+                                   boolean doFallback)
+            throws ClassNotFoundException, ConfigurationError {
         //throw security exception if the calling thread is not allowed to access the
         //class. Restrict the access to the package classes as specified in java.security policy.
         SecurityManager security = System.getSecurityManager();
-        try{
-            if (security != null){
+        try {
+            if (security != null) {
                 if (className.startsWith(JAXP_INTERNAL) ||
-                    className.startsWith(STAX_INTERNAL)) {
+                        className.startsWith(STAX_INTERNAL)) {
                     cl = null;
                 } else {
                     final int lastDot = className.lastIndexOf(".");
@@ -522,8 +508,8 @@ public class ObjectFactory {
                     if (lastDot != -1) packageName = className.substring(0, lastDot);
                     security.checkPackageAccess(packageName);
                 }
-             }
-        }catch(SecurityException e){
+            }
+        } catch (SecurityException e) {
             throw e;
         }
 
@@ -559,8 +545,7 @@ public class ObjectFactory {
      *
      * @return instance of provider class if found or null
      */
-    private static String findJarServiceProviderName(String factoryId)
-    {
+    private static String findJarServiceProviderName(String factoryId) {
         String serviceId = SERVICES_PATH + factoryId;
         InputStream is = null;
 
@@ -584,7 +569,7 @@ public class ObjectFactory {
         }
 
         if (DEBUG) debugPrintln("found jar resource=" + serviceId +
-               " using ClassLoader: " + cl);
+                " using ClassLoader: " + cl);
 
         // Read the service provider name in UTF-8 as specified in
         // the jar spec.  Unfortunately this fails in Microsoft
@@ -617,20 +602,20 @@ public class ObjectFactory {
         } catch (IOException x) {
             // No provider found
             return null;
-        }
-        finally {
+        } finally {
             try {
                 // try to close the reader.
                 rd.close();
             }
             // Ignore the exception.
-            catch (IOException exc) {}
+            catch (IOException exc) {
+            }
         }
 
         if (factoryClassName != null &&
-            ! "".equals(factoryClassName)) {
+                !"".equals(factoryClassName)) {
             if (DEBUG) debugPrintln("found in resource, value="
-                   + factoryClassName);
+                    + factoryClassName);
 
             // Note: here we do not want to fall back to the current
             // ClassLoader because we want to avoid the case where the

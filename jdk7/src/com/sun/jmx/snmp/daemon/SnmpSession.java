@@ -9,6 +9,7 @@ package com.sun.jmx.snmp.daemon;
 
 // java imports
 //
+
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -21,6 +22,7 @@ import java.io.InterruptedIOException;
 // jmx imports
 //
 import static com.sun.jmx.defaults.JmxProperties.SNMP_ADAPTOR_LOGGER;
+
 import com.sun.jmx.snmp.SnmpDefinitions;
 import com.sun.jmx.snmp.SnmpStatusException;
 import com.sun.jmx.snmp.SnmpVarBindList;
@@ -28,17 +30,16 @@ import com.sun.jmx.snmp.SnmpScopedPduRequest;
 
 /**
  * This class is used for sending INFORM REQUESTS from an agent to a manager.
- *
+ * <p>
  * Creates, controls, and manages one or more inform requests.
- *
+ * <p>
  * The SnmpSession maintains the list of all active inform requests and inform responses.
  * Each SnmpSession has a dispatcher that is a thread used to service all the inform requests it creates
  * and each SnmpSession uses a separate socket for sending/receiving inform requests/responses.
- *
+ * <p>
  * An SnmpSession object is associated with an SNMP adaptor server.
  * It is created the first time an inform request is sent by the SNMP adaptor server
  * and is destroyed (with its associated SnmpSocket) when the SNMP adaptor server is stopped.
- *
  */
 
 class SnmpSession implements SnmpDefinitions, Runnable {
@@ -77,7 +78,7 @@ class SnmpSession implements SnmpDefinitions, Runnable {
      * Request being synchronized from session thread. This happens when
      * a user does sync operation from a callback.
      */
-    private transient SnmpInformRequest syncInformReq ;
+    private transient SnmpInformRequest syncInformReq;
 
     SnmpQManager snmpQman = null;
 
@@ -88,8 +89,9 @@ class SnmpSession implements SnmpDefinitions, Runnable {
 
     /**
      * Constructor for creating a new session.
+     *
      * @param adp The SNMP adaptor associated with this SnmpSession.
-     * @exception SocketException Unable to initialize the SnmpSocket.
+     * @throws SocketException Unable to initialize the SnmpSocket.
      */
     public SnmpSession(SnmpAdaptorServer adp) throws SocketException {
         adaptor = adp;
@@ -97,6 +99,7 @@ class SnmpSession implements SnmpDefinitions, Runnable {
         SnmpResponseHandler snmpRespHdlr = new SnmpResponseHandler(adp, snmpQman);
         initialize(adp, snmpRespHdlr);
     }
+
     /**
      * Constructor for creating a new session. Allows subclassing.
      */
@@ -104,14 +107,16 @@ class SnmpSession implements SnmpDefinitions, Runnable {
     }
     // OTHER METHODS
     //--------------
+
     /**
      * Initializes the SnmpSession.
+     *
      * @param adp The SNMP adaptor associated with this SnmpSession.
-     * @exception SocketException Unable to initialize the SnmpSocket.
+     * @throws SocketException Unable to initialize the SnmpSocket.
      */
     protected synchronized void initialize(SnmpAdaptorServer adp,
                                            SnmpResponseHandler snmpRespHdlr)
-        throws SocketException {
+            throws SocketException {
         informSocket = new SnmpSocket(snmpRespHdlr, adp.getAddress(), adp.getBufferSize().intValue());
 
         myThread = new Thread(this, "SnmpSession");
@@ -120,6 +125,7 @@ class SnmpSession implements SnmpDefinitions, Runnable {
 
     /**
      * Indicates whether the thread for this session is active and the SNMP adaptor server ONLINE.
+     *
      * @return true if active, false otherwise.
      */
     synchronized boolean isSessionActive() {
@@ -129,6 +135,7 @@ class SnmpSession implements SnmpDefinitions, Runnable {
 
     /**
      * Gets the SnmpSocket which will be used by inform requests created in this session.
+     *
      * @return The socket which will be used in this session.
      */
     SnmpSocket getSocket() {
@@ -137,6 +144,7 @@ class SnmpSession implements SnmpDefinitions, Runnable {
 
     /**
      * Gets the SnmpQManager which will be used by inform requests created in this session.
+     *
      * @return The SnmpQManager which will be used in this session.
      */
     SnmpQManager getSnmpQManager() {
@@ -145,23 +153,24 @@ class SnmpSession implements SnmpDefinitions, Runnable {
 
     /**
      * Indicates whether this session is performing synchronous operation for an inform request.
+     *
      * @return <CODE>true</CODE> if the session is performing synchronous operation, <CODE>false</CODE> otherwise.
      */
     private synchronized boolean syncInProgress() {
-        return syncInformReq != null ;
+        return syncInformReq != null;
     }
 
     private synchronized void setSyncMode(SnmpInformRequest req) {
-        syncInformReq = req ;
+        syncInformReq = req;
     }
 
     private synchronized void resetSyncMode() {
         if (syncInformReq == null)
-            return ;
-        syncInformReq = null ;
+            return;
+        syncInformReq = null;
         if (thisSessionContext())
-            return ;
-        this.notifyAll() ;
+            return;
+        this.notifyAll();
     }
 
     /**
@@ -169,25 +178,27 @@ class SnmpSession implements SnmpDefinitions, Runnable {
      * Typically used to detect whether the user is doing a sync operation from
      * this dispatcher context. For instance, a user gives a sync command
      * from within a request callback using its associated session.
+     *
      * @return <CODE>true</CODE> if current thread is this session's dispatcher, <CODE>false</CODE> otherwise.
      */
     boolean thisSessionContext() {
-        return (Thread.currentThread() == myThread) ;
+        return (Thread.currentThread() == myThread);
     }
 
     /**
      * Sends an inform request to the specified InetAddress destination using the specified community string.
-     * @param addr The InetAddress destination for this inform request.
-     * @param cs The community string to be used for the inform request.
-     * @param cb The callback that is invoked when a request is complete.
+     *
+     * @param addr  The InetAddress destination for this inform request.
+     * @param cs    The community string to be used for the inform request.
+     * @param cb    The callback that is invoked when a request is complete.
      * @param vblst A list of SnmpVarBind instances or null.
-     * @exception SnmpStatusException SNMP adaptor is not ONLINE or session
-     *            is dead.
+     * @throws SnmpStatusException SNMP adaptor is not ONLINE or session
+     *                             is dead.
      */
     SnmpInformRequest makeAsyncRequest(InetAddress addr, String cs,
                                        SnmpInformHandler cb,
                                        SnmpVarBindList vblst, int port)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
 
         if (!isSessionActive()) {
             throw new SnmpStatusException("SNMP adaptor server not ONLINE");
@@ -204,43 +215,43 @@ class SnmpSession implements SnmpDefinitions, Runnable {
      */
     void waitForResponse(SnmpInformRequest req, long waitTime) {
 
-        if (! req.inProgress())
-            return ;
-        setSyncMode(req) ;
+        if (!req.inProgress())
+            return;
+        setSyncMode(req);
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSession.class.getName(),
-                "waitForResponse", "Session switching to sync mode for inform request " + req.getRequestId());
+                    "waitForResponse", "Session switching to sync mode for inform request " + req.getRequestId());
         }
-        long maxTime ;
+        long maxTime;
         if (waitTime <= 0)
-            maxTime = System.currentTimeMillis() + 6000 * 1000 ;
+            maxTime = System.currentTimeMillis() + 6000 * 1000;
         else
-            maxTime = System.currentTimeMillis() + waitTime ;
+            maxTime = System.currentTimeMillis() + waitTime;
 
         while (req.inProgress() || syncInProgress()) {
-            waitTime = maxTime - System.currentTimeMillis() ;
+            waitTime = maxTime - System.currentTimeMillis();
             if (waitTime <= 0)
-                break ;
+                break;
             synchronized (this) {
-                if (! informRespq.removeElement(req)) {
+                if (!informRespq.removeElement(req)) {
                     try {
-                        this.wait(waitTime) ;
-                    } catch(InterruptedException e) {
+                        this.wait(waitTime);
+                    } catch (InterruptedException e) {
                     }
-                    continue ;
+                    continue;
                 }
             }
             try {
-                processResponse(req) ;
+                processResponse(req);
             } catch (Exception e) {
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSession.class.getName(),
-                        "waitForResponse", "Got unexpected exception", e);
+                            "waitForResponse", "Got unexpected exception", e);
                 }
             }
         }
-        resetSyncMode() ;
-        return ;
+        resetSyncMode();
+        return;
     }
 
     /**
@@ -263,16 +274,16 @@ class SnmpSession implements SnmpDefinitions, Runnable {
                 myThread = null;
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSession.class.getName(),
-                        "run", "ThreadDeath, session thread unexpectedly shutting down");
+                            "run", "ThreadDeath, session thread unexpectedly shutting down");
                 }
-                throw d ;
+                throw d;
             }
         }
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSession.class.getName(),
-                "run", "Session thread shutting down");
+                    "run", "Session thread shutting down");
         }
-        myThread = null ;
+        myThread = null;
     }
 
     private void processResponse(SnmpInformRequest reqc) {
@@ -283,21 +294,21 @@ class SnmpSession implements SnmpDefinitions, Runnable {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSession.class.getName(),
                             "processResponse", "Processing response to req = " + reqc.getRequestId());
                 }
-                reqc.processResponse() ;  // Handles out of memory.
-                reqc = null ;  // finished processing.
+                reqc.processResponse();  // Handles out of memory.
+                reqc = null;  // finished processing.
             } catch (Exception e) {
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSession.class.getName(),
-                        "processResponse", "Got unexpected exception", e);
+                            "processResponse", "Got unexpected exception", e);
                 }
-                reqc = null ;
+                reqc = null;
             } catch (OutOfMemoryError ome) {
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSession.class.getName(),
-                        "processResponse", "Out of memory error in session thread", ome);
+                            "processResponse", "Out of memory error in session thread", ome);
                 }
                 Thread.currentThread().yield();
-                continue ;   // re-process the request.
+                continue;   // re-process the request.
             }
         }
     }
@@ -307,31 +318,33 @@ class SnmpSession implements SnmpDefinitions, Runnable {
 
     /**
      * Adds an inform request.
+     *
      * @param snmpreq The inform request to add.
-     * @exception SnmpStatusException SNMP adaptor is not ONLINE or session is dead.
+     * @throws SnmpStatusException SNMP adaptor is not ONLINE or session is dead.
      */
     synchronized void addInformRequest(SnmpInformRequest snmpreq) throws SnmpStatusException {
 
         // If the adaptor is not ONLINE, stop adding requests.
         //
         if (!isSessionActive()) {
-            throw new SnmpStatusException("SNMP adaptor is not ONLINE or session is dead...") ;
+            throw new SnmpStatusException("SNMP adaptor is not ONLINE or session is dead...");
         }
         informRequestList.put(snmpreq, snmpreq);
     }
 
     /**
      * Deletes an inform request.
+     *
      * @param snmpreq The inform request to delete.
      */
     synchronized void removeInformRequest(SnmpInformRequest snmpreq) {
         // deleteRequest can be called from destroySnmpSession.
         //In such a case remove is done in cancelAllRequest method.
-        if(!isBeingCancelled)
-            informRequestList.remove(snmpreq) ;
+        if (!isBeingCancelled)
+            informRequestList.remove(snmpreq);
 
         if (syncInformReq != null && syncInformReq == snmpreq) {
-            resetSyncMode() ;
+            resetSyncMode();
         }
     }
 
@@ -341,10 +354,10 @@ class SnmpSession implements SnmpDefinitions, Runnable {
     private void cancelAllRequests() {
         final SnmpInformRequest[] list;
 
-        synchronized(this) {
+        synchronized (this) {
 
             if (informRequestList.isEmpty()) {
-                return ;
+                return;
             }
 
             isBeingCancelled = true;
@@ -352,15 +365,15 @@ class SnmpSession implements SnmpDefinitions, Runnable {
             list = new SnmpInformRequest[informRequestList.size()];
             java.util.Iterator it = informRequestList.values().iterator();
             int i = 0;
-            while(it.hasNext()) {
-                SnmpInformRequest req = (SnmpInformRequest)it.next();
+            while (it.hasNext()) {
+                SnmpInformRequest req = (SnmpInformRequest) it.next();
                 list[i++] = req;
                 it.remove();
             }
             informRequestList.clear();
         }
 
-        for(int i = 0; i < list.length; i++)
+        for (int i = 0; i < list.length; i++)
             list[i].cancelRequest();
     }
 
@@ -368,23 +381,24 @@ class SnmpSession implements SnmpDefinitions, Runnable {
      * Adds the inform request object which received a response to an inform request
      * generated by the session.  This is added to a private store, which
      * will be eventually picked up by the dispatcher for processing.
+     *
      * @param reqc The inform request that received the response from the manager.
      */
     void addResponse(SnmpInformRequest reqc) {
 
         SnmpInformRequest snmpreq = reqc;
         if (isSessionActive()) {
-            synchronized(this) {
-                informRespq.push(reqc) ;
-                this.notifyAll() ;
+            synchronized (this) {
+                informRespq.push(reqc);
+                this.notifyAll();
             }
         } else {
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSession.class.getName(),
-                    "addResponse", "Adaptor not ONLINE or session thread dead, so inform response is dropped..." + reqc.getRequestId());
+                        "addResponse", "Adaptor not ONLINE or session thread dead, so inform response is dropped..." + reqc.getRequestId());
             }
         }
-        return ;
+        return;
     }
 
     private synchronized SnmpInformRequest nextResponse() {
@@ -393,24 +407,24 @@ class SnmpSession implements SnmpDefinitions, Runnable {
             try {
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSession.class.getName(),
-                       "nextResponse", "Blocking for response");
+                            "nextResponse", "Blocking for response");
                 }
                 this.wait();
-            } catch(InterruptedException e) {
+            } catch (InterruptedException e) {
             }
         }
         if (informRespq.isEmpty())
             return null;
         SnmpInformRequest reqc = informRespq.firstElement();
-        informRespq.removeElementAt(0) ;
-        return reqc ;
+        informRespq.removeElementAt(0);
+        return reqc;
     }
 
     private synchronized void cancelAllResponses() {
         if (informRespq != null) {
-            syncInformReq = null ;
-            informRespq.removeAllElements() ;
-            this.notifyAll() ;
+            syncInformReq = null;
+            informRespq.removeAllElements();
+            this.notifyAll();
         }
     }
 
@@ -420,15 +434,15 @@ class SnmpSession implements SnmpDefinitions, Runnable {
      */
     final void destroySession() {
 
-        cancelAllRequests() ;
-        cancelAllResponses() ;
-        synchronized(this) {
-            informSocket.close() ;
-            informSocket = null ;
+        cancelAllRequests();
+        cancelAllResponses();
+        synchronized (this) {
+            informSocket.close();
+            informSocket = null;
         }
-        snmpQman.stopQThreads() ;
-        snmpQman = null ;
-        killSessionThread() ;
+        snmpQman.stopQThreads();
+        snmpQman = null;
+        killSessionThread();
     }
 
     /**
@@ -440,13 +454,13 @@ class SnmpSession implements SnmpDefinitions, Runnable {
         if ((myThread != null) && (myThread.isAlive())) {
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSession.class.getName(),
-                   "killSessionThread", "Destroying session");
+                        "killSessionThread", "Destroying session");
             }
             if (!thisSessionContext()) {
-                myThread = null ;
-                this.notifyAll() ;
+                myThread = null;
+                this.notifyAll();
             } else
-                myThread = null ;
+                myThread = null;
         }
     }
 
@@ -461,17 +475,17 @@ class SnmpSession implements SnmpDefinitions, Runnable {
 
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSession.class.getName(),
-               "finalize", "Shutting all servers");
+                    "finalize", "Shutting all servers");
         }
 
         if (informRespq != null)
-            informRespq.removeAllElements() ;
-        informRespq = null ;
+            informRespq.removeAllElements();
+        informRespq = null;
         if (informSocket != null)
-            informSocket.close() ;
-        informSocket = null ;
+            informSocket.close();
+        informSocket = null;
 
-        snmpQman = null ;
+        snmpQman = null;
     }
 
 }

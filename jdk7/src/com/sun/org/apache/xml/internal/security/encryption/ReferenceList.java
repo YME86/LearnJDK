@@ -32,12 +32,12 @@ import java.util.Iterator;
  * It is defined as follows:
  * <xmp>
  * <element name='ReferenceList'>
- *     <complexType>
- *         <choice minOccurs='1' maxOccurs='unbounded'>
- *             <element name='DataReference' type='xenc:ReferenceType'/>
- *             <element name='KeyReference' type='xenc:ReferenceType'/>
- *         </choice>
- *     </complexType>
+ * <complexType>
+ * <choice minOccurs='1' maxOccurs='unbounded'>
+ * <element name='DataReference' type='xenc:ReferenceType'/>
+ * <element name='KeyReference' type='xenc:ReferenceType'/>
+ * </choice>
+ * </complexType>
  * </element>
  * </xmp>
  *
@@ -45,17 +45,21 @@ import java.util.Iterator;
  * @see Reference
  */
 public interface ReferenceList {
-        /** DATA TAG */
+    /**
+     * DATA TAG
+     */
     public static final int DATA_REFERENCE = 0x00000001;
-    /** KEY TAG */
-    public static final int KEY_REFERENCE  = 0x00000002;
+    /**
+     * KEY TAG
+     */
+    public static final int KEY_REFERENCE = 0x00000002;
 
     /**
      * Adds a reference to this reference list.
      *
      * @param reference the reference to add.
      * @throws IllegalAccessException if the <code>Reference</code> is not an
-     *   instance of <code>DataReference</code> or <code>KeyReference</code>.
+     *                                instance of <code>DataReference</code> or <code>KeyReference</code>.
      */
     public void add(Reference reference);
 
@@ -77,7 +81,7 @@ public interface ReferenceList {
      * Indicates if the <code>ReferenceList</code> is empty.
      *
      * @return <code><b>true</b></code> if the <code>ReferenceList</code> is
-     *     empty, else <code><b>false</b></code>.
+     * empty, else <code><b>false</b></code>.
      */
     public boolean isEmpty();
 
@@ -92,6 +96,7 @@ public interface ReferenceList {
     /**
      * <code>DataReference</code> factory method. Returns a
      * <code>DataReference</code>.
+     *
      * @param uri
      * @return
      */
@@ -100,6 +105,7 @@ public interface ReferenceList {
     /**
      * <code>KeyReference</code> factory method. Returns a
      * <code>KeyReference</code>.
+     *
      * @param uri
      * @return
      */

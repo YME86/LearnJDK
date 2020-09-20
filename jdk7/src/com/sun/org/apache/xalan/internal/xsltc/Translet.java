@@ -33,25 +33,35 @@ import com.sun.org.apache.xml.internal.serializer.SerializationHandler;
 public interface Translet {
 
     public void transform(DOM document, SerializationHandler handler)
-        throws TransletException;
+            throws TransletException;
+
     public void transform(DOM document, SerializationHandler[] handlers)
-        throws TransletException;
+            throws TransletException;
+
     public void transform(DOM document, DTMAxisIterator iterator,
                           SerializationHandler handler)
-        throws TransletException;
+            throws TransletException;
 
     public Object addParameter(String name, Object value);
 
     public void buildKeys(DOM document, DTMAxisIterator iterator,
                           SerializationHandler handler, int root)
-        throws TransletException;
+            throws TransletException;
+
     public void addAuxiliaryClass(Class auxClass);
+
     public Class getAuxiliaryClass(String className);
+
     public String[] getNamesArray();
+
     public String[] getUrisArray();
-    public int[]    getTypesArray();
+
+    public int[] getTypesArray();
+
     public String[] getNamespaceArray();
+
     public boolean useServicesMechnism();
+
     public void setServicesMechnism(boolean flag);
 
 }

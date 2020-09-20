@@ -21,6 +21,7 @@
  * $Id: Serializer.java,v 1.2.4.1 2005/09/15 08:15:22 suresh_emailid Exp $
  */
 package com.sun.org.apache.xml.internal.serializer;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -79,16 +80,15 @@ import org.xml.sax.ContentHandler;
  * ser.reset(); // get ready to use the serializer for another document
  *              // of the same output method.
  * </pre>
- *
+ * <p>
  * This interface is a public API.
  *
+ * @xsl.usage general
  * @see Method
  * @see OutputPropertiesFactory
  * @see SerializerFactory
  * @see DOMSerializer
  * @see ContentHandler
- *
- * @xsl.usage general
  */
 public interface Serializer {
 
@@ -188,7 +188,7 @@ public interface Serializer {
      * should be called.
      *
      * @return A {@link ContentHandler} interface into this serializer,
-     *  or null if the serializer is not SAX 2 capable
+     * or null if the serializer is not SAX 2 capable
      * @throws IOException An I/O exception occured
      */
     public ContentHandler asContentHandler() throws IOException;
@@ -204,7 +204,7 @@ public interface Serializer {
      * should be called.
      *
      * @return A {@link DOMSerializer} interface into this serializer,
-     *  or null if the serializer is not DOM capable
+     * or null if the serializer is not DOM capable
      * @throws IOException An I/O exception occured
      */
     public DOMSerializer asDOMSerializer() throws IOException;

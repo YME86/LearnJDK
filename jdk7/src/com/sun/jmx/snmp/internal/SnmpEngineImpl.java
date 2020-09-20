@@ -39,6 +39,7 @@ import com.sun.jmx.snmp.SnmpUnknownModelException;
 
 import com.sun.jmx.snmp.internal.SnmpTools;
 import com.sun.jmx.snmp.SnmpBadSecurityLevelException;
+
 import static com.sun.jmx.defaults.JmxProperties.SNMP_LOGGER;
 
 /**
@@ -50,23 +51,24 @@ import static com.sun.jmx.defaults.JmxProperties.SNMP_LOGGER;
  * An engine is composed of a set of sub systems
  * {@link com.sun.jmx.snmp.internal.SnmpSubSystem}. An <CODE>SNMP</CODE>
  * engine can contain a:
- *<ul>
- *<li> Message Processing Sub System :
+ * <ul>
+ * <li> Message Processing Sub System :
  * {@link com.sun.jmx.snmp.internal.SnmpMsgProcessingSubSystem}</li>
- *<li> Security Sub System :
+ * <li> Security Sub System :
  * {@link com.sun.jmx.snmp.internal.SnmpSecuritySubSystem} </li>
- *<li> Access Control Sub System :
+ * <li> Access Control Sub System :
  * {@link com.sun.jmx.snmp.internal.SnmpAccessControlSubSystem}</li>
- *</ul>
- *<P> Each sub system contains a set of models. A model is an implementation
+ * </ul>
+ * <P> Each sub system contains a set of models. A model is an implementation
  * of a particular treatement (eg: the User based Security Model defined in
  * RFC 2574 is a functional element dealing with authentication and privacy).
- *</P>
+ * </P>
  * Engine instantiation is based on a factory. This factory, implementing
  * mandatorily {@link com.sun.jmx.snmp.SnmpEngineFactory  SnmpEngineFactory}
  * is set in the method <CODE>setFactory</CODE>.
  * <p><b>This API is a Sun Microsystems internal API  and is subject
  * to change without notice.</b></p>
+ *
  * @since 1.5
  */
 public class SnmpEngineImpl implements SnmpEngine, Serializable {
@@ -123,18 +125,19 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
 
     /**
      * Gets the engine time in seconds. This is the time from the last reboot.
+     *
      * @return The time from the last reboot.
      */
     public synchronized int getEngineTime() {
         //We do the counter wrap in a lazt way. Each time Engine is asked for his time it checks. So if nobody use the Engine, the time can wrap and wrap again without incrementing nb boot. We can imagine that it is irrelevant due to the amount of time needed to wrap.
         long delta = (System.currentTimeMillis() / 1000) - startTime;
-        if(delta >  0x7FFFFFFF) {
+        if (delta > 0x7FFFFFFF) {
             //67 years of running. That is a great thing!
             //Reinitialize startTime.
             startTime = System.currentTimeMillis() / 1000;
 
             //Can't do anything with this counter.
-            if(boot != 0x7FFFFFFF)
+            if (boot != 0x7FFFFFFF)
                 boot += 1;
             //Store for future use.
             storeNBBoots(boot);
@@ -145,6 +148,7 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
 
     /**
      * Gets the engine Id. This is unique for each engine.
+     *
      * @return The engine Id object.
      */
     public SnmpEngineId getEngineId() {
@@ -153,6 +157,7 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
 
     /**
      * Gets the Usm key handler.
+     *
      * @return The key handler.
      */
     public SnmpUsmKeyHandler getUsmKeyHandler() {
@@ -161,20 +166,23 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
 
     /**
      * Gets the engine Lcd.
+     *
      * @return The engine Lcd.
      */
     public SnmpLcd getLcd() {
         return lcd;
     }
+
     /**
      * Gets the engine boot number. This is the number of time this engine has rebooted. Each time an <CODE>SnmpEngine</CODE> is instantiated, it will read this value in its Lcd, and store back the value incremented by one.
+     *
      * @return The engine's number of reboot.
      */
     public int getEngineBoots() {
         return boot;
     }
 
-     /**
+    /**
      * Constructor. A Local Configuration Datastore is passed to the engine. It will be used to store and retrieve data (engine Id, engine boots).
      * <P> WARNING : The SnmpEngineId is computed as follow:
      * <ul>
@@ -183,8 +191,9 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
      * <li> If not, a time based engineID is computed.</li>
      * </ul>
      * This constructor should be called by an <CODE>SnmpEngineFactory</CODE>. Don't call it directly.
-     * @param fact The factory used to instantiate this engine.
-     * @param lcd The local configuration datastore.
+     *
+     * @param fact     The factory used to instantiate this engine.
+     * @param lcd      The local configuration datastore.
      * @param engineid The engine ID to use. If null is provided, an SnmpEngineId is computed using the current time.
      * @throws UnknownHostException Exception thrown, if the host name located in the property "localEngineID" is invalid.
      */
@@ -194,8 +203,8 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
 
         init(lcd, fact);
         initEngineID();
-        if(this.engineid == null) {
-            if(engineid != null)
+        if (this.engineid == null) {
+            if (engineid != null)
                 this.engineid = engineid;
             else
                 this.engineid = SnmpEngineId.createEngineId();
@@ -207,6 +216,7 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
                     "LOCAL ENGINE ID: " + this.engineid);
         }
     }
+
     /**
      * Constructor. A Local Configuration Datastore is passed to the engine. It will be used to store and retrieve data (engine ID, engine boots).
      * <P> WARNING : The SnmpEngineId is computed as follow:
@@ -215,9 +225,10 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
      * <li> If not, the passed address and port are used to compute one.</li>
      * </ul>
      * This constructor should be called by an <CODE>SnmpEngineFactory</CODE>. Don't call it directly.
-     * @param fact The factory used to instantiate this engine.
-     * @param lcd The local configuration datastore.
-     * @param port UDP port to use in order to calculate the engine ID.
+     *
+     * @param fact    The factory used to instantiate this engine.
+     * @param lcd     The local configuration datastore.
+     * @param port    UDP port to use in order to calculate the engine ID.
      * @param address An IP address used to calculate the engine ID.
      * @throws UnknownHostException Exception thrown, if the host name located in the property "localEngineID" is invalid.
      */
@@ -227,7 +238,7 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
                           int port) throws UnknownHostException {
         init(lcd, fact);
         initEngineID();
-        if(engineid == null)
+        if (engineid == null)
             engineid = SnmpEngineId.createEngineId(address, port);
 
         lcd.storeEngineId(engineid);
@@ -236,8 +247,8 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
             SNMP_LOGGER.logp(Level.FINER, SnmpEngineImpl.class.getName(),
                     "SnmpEngineImpl(SnmpEngineFactory,SnmpLcd,InetAddress,int)",
                     "LOCAL ENGINE ID: " + engineid + " / " +
-                    "LOCAL ENGINE NB BOOTS: " + boot + " / " +
-                    "LOCAL ENGINE START TIME: " + getEngineTime());
+                            "LOCAL ENGINE NB BOOTS: " + boot + " / " +
+                            "LOCAL ENGINE START TIME: " + getEngineTime());
         }
     }
 
@@ -249,8 +260,9 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
      * <li> If not, The passed port is used to compute one.</li>
      * </ul>
      * This constructor should be called by an <CODE>SnmpEngineFactory</CODE>. Don't call it directly.
+     *
      * @param fact The factory used to instantiate this engine.
-     * @param lcd The local configuration datastore
+     * @param lcd  The local configuration datastore
      * @param port UDP port to use in order to calculate the engine ID.
      * @throws UnknownHostException Exception thrown, if the host name located in the property "localEngineID" is invalid.
      */
@@ -259,8 +271,8 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
                           int port) throws UnknownHostException {
         init(lcd, fact);
         initEngineID();
-        if(engineid == null)
-           engineid = SnmpEngineId.createEngineId(port);
+        if (engineid == null)
+            engineid = SnmpEngineId.createEngineId(port);
 
         lcd.storeEngineId(engineid);
 
@@ -268,8 +280,8 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
             SNMP_LOGGER.logp(Level.FINER, SnmpEngineImpl.class.getName(),
                     "SnmpEngineImpl(SnmpEngineFactory,SnmpLcd,int)",
                     "LOCAL ENGINE ID: " + engineid + " / " +
-                    "LOCAL ENGINE NB BOOTS: " + boot + " / " +
-                    "LOCAL ENGINE START TIME: " + getEngineTime());
+                            "LOCAL ENGINE NB BOOTS: " + boot + " / " +
+                            "LOCAL ENGINE START TIME: " + getEngineTime());
         }
     }
 
@@ -282,14 +294,15 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
      * </ul>
      * When no configuration nor java property is set for the engine ID value, a unique time based engine ID will be generated.
      * This constructor should be called by an <CODE>SnmpEngineFactory</CODE>. Don't call it directly.
+     *
      * @param fact The factory used to instantiate this engine.
-     * @param lcd The local configuration datastore.
+     * @param lcd  The local configuration datastore.
      */
     public SnmpEngineImpl(SnmpEngineFactory fact,
                           SnmpLcd lcd) throws UnknownHostException {
         init(lcd, fact);
         initEngineID();
-        if(engineid == null)
+        if (engineid == null)
             engineid = SnmpEngineId.createEngineId();
 
         lcd.storeEngineId(engineid);
@@ -298,8 +311,8 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
             SNMP_LOGGER.logp(Level.FINER, SnmpEngineImpl.class.getName(),
                     "SnmpEngineImpl(SnmpEngineFactory,SnmpLcd)",
                     "LOCAL ENGINE ID: " + engineid + " / " +
-                    "LOCAL ENGINE NB BOOTS: " + boot + " / " +
-                    "LOCAL ENGINE START TIME: " + getEngineTime());
+                            "LOCAL ENGINE NB BOOTS: " + boot + " / " +
+                            "LOCAL ENGINE START TIME: " + getEngineTime());
         }
     }
 
@@ -326,11 +339,10 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
 
     //Do some check and store the nb boots value.
     private void storeNBBoots(int boot) {
-        if(boot < 0 || boot == 0x7FFFFFFF) {
+        if (boot < 0 || boot == 0x7FFFFFFF) {
             boot = 0x7FFFFFFF;
             lcd.storeEngineBoots(boot);
-        }
-        else
+        } else
             lcd.storeEngineBoots(boot + 1);
     }
 
@@ -340,7 +352,7 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
         this.lcd = lcd;
         boot = lcd.getEngineBoots();
 
-        if(boot == -1 || boot == 0)
+        if (boot == -1 || boot == 0)
             boot = 1;
 
         storeNBBoots(boot);
@@ -356,7 +368,7 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
     //Initialize the engineID.
     private void initEngineID() throws UnknownHostException {
         String id = lcd.getEngineId();
-        if(id != null) {
+        if (id != null) {
             engineid = SnmpEngineId.createEngineId(id);
         }
     }
@@ -364,6 +376,7 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
 
     /**
      * Returns the Message Processing Sub System.
+     *
      * @return The Message Processing Sub System.
      */
     public SnmpMsgProcessingSubSystem getMsgProcessingSubSystem() {
@@ -372,28 +385,34 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
 
     /**
      * Sets the Message Processing Sub System.
+     *
      * @param sys The Message Processing Sub System.
      */
     public void setMsgProcessingSubSystem(SnmpMsgProcessingSubSystem sys) {
         messageSub = sys;
     }
 
-     /**
+    /**
      * Returns the Security Sub System.
+     *
      * @return The Security Sub System.
      */
     public SnmpSecuritySubSystem getSecuritySubSystem() {
         return securitySub;
     }
+
     /**
      * Sets the Security Sub System.
+     *
      * @param sys The Security Sub System.
      */
     public void setSecuritySubSystem(SnmpSecuritySubSystem sys) {
         securitySub = sys;
     }
-     /**
+
+    /**
      * Sets the Access Control Sub System.
+     *
      * @param sys The Access Control Sub System.
      */
     public void setAccessControlSubSystem(SnmpAccessControlSubSystem sys) {
@@ -402,22 +421,25 @@ public class SnmpEngineImpl implements SnmpEngine, Serializable {
 
     /**
      * Returns the Access Control Sub System.
+     *
      * @return The Access Control Sub System.
      */
     public SnmpAccessControlSubSystem getAccessControlSubSystem() {
         return accessSub;
     }
+
     /**
      * Checks the passed msg flags according to the rules specified in RFC 2572.
+     *
      * @param msgFlags The msg flags.
      */
     public static void checkSecurityLevel(byte msgFlags)
-        throws SnmpBadSecurityLevelException {
+            throws SnmpBadSecurityLevelException {
         int secLevel = msgFlags & SnmpDefinitions.authPriv;
-        if((secLevel & SnmpDefinitions.privMask) != 0)
-            if((secLevel & SnmpDefinitions.authMask) == 0) {
-                throw new SnmpBadSecurityLevelException("Security level:"+
-                                                        " noAuthPriv!!!");
+        if ((secLevel & SnmpDefinitions.privMask) != 0)
+            if ((secLevel & SnmpDefinitions.authMask) == 0) {
+                throw new SnmpBadSecurityLevelException("Security level:" +
+                        " noAuthPriv!!!");
             }
     }
 

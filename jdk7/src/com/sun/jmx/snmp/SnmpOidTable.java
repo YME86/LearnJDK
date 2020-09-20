@@ -9,6 +9,7 @@ package com.sun.jmx.snmp;
 
 // java import
 //
+
 import java.util.Vector;
 
 
@@ -24,9 +25,8 @@ import java.util.Vector;
  *
  * <p><b>This API is a Sun Microsystems internal API  and is subject
  * to change without notice.</b></p>
+ *
  * @see com.sun.jmx.snmp.SnmpOidRecord
- *
- *
  */
 
 
@@ -38,10 +38,10 @@ public interface SnmpOidTable {
      *
      * @param name The name of the MIB variable.
      * @return The <CODE>SnmpOidRecord</CODE> object containing information on the variable.
-     * @exception SnmpStatusException If the variable is not found.
+     * @throws SnmpStatusException If the variable is not found.
      */
     public SnmpOidRecord resolveVarName(String name)
-        throws SnmpStatusException;
+            throws SnmpStatusException;
 
 
     /**
@@ -50,14 +50,15 @@ public interface SnmpOidTable {
      *
      * @param oid The OID of the MIB variable.
      * @return The <CODE>SnmpOidRecord</CODE> object containing information
-     *         on the variable.
-     * @exception SnmpStatusException If the variable is not found.
+     * on the variable.
+     * @throws SnmpStatusException If the variable is not found.
      */
     public SnmpOidRecord resolveVarOid(String oid)
-        throws SnmpStatusException;
+            throws SnmpStatusException;
 
     /**
      * Returns a list that can be used to traverse all the entries this <CODE>SnmpOidTable</CODE>.
+     *
      * @return A Vector of {@link com.sun.jmx.snmp.SnmpOidRecord} objects.
      */
     public Vector<?> getAllEntries();

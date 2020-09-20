@@ -36,14 +36,14 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.util.TypeCheckError;
  * @author Santiago Pericas-Geertsen
  */
 final class BinOpExpr extends Expression {
-    public static final int PLUS  = 0;
+    public static final int PLUS = 0;
     public static final int MINUS = 1;
     public static final int TIMES = 2;
-    public static final int DIV   = 3;
-    public static final int MOD   = 4;
+    public static final int DIV = 3;
+    public static final int MOD = 4;
 
     private static final String[] Ops = {
-        "+", "-", "*", "/", "%"
+            "+", "-", "*", "/", "%"
     };
 
     private int _op;
@@ -69,7 +69,7 @@ final class BinOpExpr extends Expression {
      * Returns true if this expressions contains a call to last()
      */
     public boolean hasLastCall() {
-            return (_left.hasLastCall() || _right.hasLastCall());
+        return (_left.hasLastCall() || _right.hasLastCall());
     }
 
     public void setParser(Parser parser) {
@@ -82,8 +82,8 @@ final class BinOpExpr extends Expression {
         final Type tleft = _left.typeCheck(stable);
         final Type tright = _right.typeCheck(stable);
         final MethodType ptype = lookupPrimop(stable, Ops[_op],
-                                              new MethodType(Type.Void,
-                                                             tleft, tright));
+                new MethodType(Type.Void,
+                        tleft, tright));
         if (ptype != null) {
             final Type arg1 = (Type) ptype.argsType().elementAt(0);
             if (!arg1.identicalTo(tleft)) {
@@ -105,24 +105,24 @@ final class BinOpExpr extends Expression {
         _right.translate(classGen, methodGen);
 
         switch (_op) {
-        case PLUS:
-            il.append(_type.ADD());
-            break;
-        case MINUS:
-            il.append(_type.SUB());
-            break;
-        case TIMES:
-            il.append(_type.MUL());
-            break;
-        case DIV:
-            il.append(_type.DIV());
-            break;
-        case MOD:
-            il.append(_type.REM());
-            break;
-        default:
-            ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_BINARY_OP_ERR, this);
-            getParser().reportError(Constants.ERROR, msg);
+            case PLUS:
+                il.append(_type.ADD());
+                break;
+            case MINUS:
+                il.append(_type.SUB());
+                break;
+            case TIMES:
+                il.append(_type.MUL());
+                break;
+            case DIV:
+                il.append(_type.DIV());
+                break;
+            case MOD:
+                il.append(_type.REM());
+                break;
+            default:
+                ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_BINARY_OP_ERR, this);
+                getParser().reportError(Constants.ERROR, msg);
         }
     }
 

@@ -55,8 +55,7 @@ public class SingletonIterator extends DTMAxisIteratorBase {
         if (_isConstant) {
             _node = _startNode;
             return resetPosition();
-        }
-        else if (_isRestartable) {
+        } else if (_isRestartable) {
             if (_node <= 0)
                 _node = _startNode = node;
             return resetPosition();
@@ -68,8 +67,7 @@ public class SingletonIterator extends DTMAxisIteratorBase {
         if (_isConstant) {
             _node = _startNode;
             return resetPosition();
-        }
-        else {
+        } else {
             final boolean temp = _isRestartable;
             _isRestartable = true;
             setStartNode(_startNode);

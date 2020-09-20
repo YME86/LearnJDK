@@ -30,13 +30,12 @@ import org.w3c.dom.Node;
  * DOM backpointers for things that are normally created via
  * SAX events.
  */
-public interface NodeConsumer
-{
+public interface NodeConsumer {
 
-  /**
-   * Set the node that is originating the SAX event.
-   *
-   * @param n Reference to node that originated the current event.
-   */
-  public void setOriginatingNode(Node n);
+    /**
+     * Set the node that is originating the SAX event.
+     *
+     * @param n Reference to node that originated the current event.
+     */
+    public void setOriginatingNode(Node n);
 }

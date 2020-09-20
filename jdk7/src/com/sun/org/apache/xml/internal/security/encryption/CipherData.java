@@ -32,19 +32,23 @@ package com.sun.org.apache.xml.internal.security.encryption;
  * <xmp>
  * <element name='CipherData' type='xenc:CipherDataType'/>
  * <complexType name='CipherDataType'>
- *     <choice>
- *         <element name='CipherValue' type='base64Binary'/>
- *         <element ref='xenc:CipherReference'/>
- *     </choice>
+ * <choice>
+ * <element name='CipherValue' type='base64Binary'/>
+ * <element ref='xenc:CipherReference'/>
+ * </choice>
  * </complexType>
  * </xmp>
  *
  * @author Axl Mattheus
  */
 public interface CipherData {
-    /** VALUE_TYPE ASN */
+    /**
+     * VALUE_TYPE ASN
+     */
     public static final int VALUE_TYPE = 0x00000001;
-    /** REFERENCE_TYPE ASN */
+    /**
+     * REFERENCE_TYPE ASN
+     */
     public static final int REFERENCE_TYPE = 0x00000002;
 
     /**
@@ -52,8 +56,8 @@ public interface CipherData {
      * <code>CipherData</code>.
      *
      * @return <code>VALUE_TYPE</code> if the encrypted data is contained as
-     *   <code>CipherValue</code> or <code>REFERENCE_TYPE</code> if the
-     *   encrypted data is contained as <code>CipherReference</code>.
+     * <code>CipherValue</code> or <code>REFERENCE_TYPE</code> if the
+     * encrypted data is contained as <code>CipherReference</code>.
      */
     int getDataType();
 
@@ -77,7 +81,7 @@ public interface CipherData {
      * octet sequence (<code>byte</code> array).
      *
      * @return the reference to an external location containing the enctrypted
-     *   octet sequence.
+     * octet sequence.
      */
     CipherReference getCipherReference();
 
@@ -85,9 +89,9 @@ public interface CipherData {
      * Sets the <code>CipherData</code>'s reference.
      *
      * @param reference an external location containing the enctrypted octet
-     *   sequence.
+     *                  sequence.
      * @throws XMLEncryptionException
      */
     void setCipherReference(CipherReference reference) throws
-        XMLEncryptionException;
+            XMLEncryptionException;
 }

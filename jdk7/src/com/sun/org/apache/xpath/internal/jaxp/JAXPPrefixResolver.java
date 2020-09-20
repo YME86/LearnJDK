@@ -34,19 +34,18 @@ import javax.xml.namespace.NamespaceContext;
  * for the XPath object.
  * This class delegates the resolution to the passed NamespaceContext
  */
-public class JAXPPrefixResolver implements PrefixResolver
-{
+public class JAXPPrefixResolver implements PrefixResolver {
 
     private NamespaceContext namespaceContext;
 
 
-    public JAXPPrefixResolver ( NamespaceContext nsContext ) {
+    public JAXPPrefixResolver(NamespaceContext nsContext) {
         this.namespaceContext = nsContext;
     }
 
 
-    public String getNamespaceForPrefix( String prefix ) {
-        return namespaceContext.getNamespaceURI( prefix );
+    public String getNamespaceForPrefix(String prefix) {
+        return namespaceContext.getNamespaceURI(prefix);
     }
 
     /**
@@ -72,21 +71,22 @@ public class JAXPPrefixResolver implements PrefixResolver
      */
 
     public static final String S_XMLNAMESPACEURI =
-        "http://www.w3.org/XML/1998/namespace";
+            "http://www.w3.org/XML/1998/namespace";
 
 
     /**
      * Given a prefix and a Context Node, get the corresponding namespace.
      * Warning: This will not work correctly if namespaceContext
      * is an attribute node.
-     * @param prefix Prefix to resolve.
+     *
+     * @param prefix           Prefix to resolve.
      * @param namespaceContext Node from which to start searching for a
-     * xmlns attribute that binds a prefix to a namespace.
+     *                         xmlns attribute that binds a prefix to a namespace.
      * @return Namespace that prefix resolves to, or null if prefix
      * is not bound.
      */
     public String getNamespaceForPrefix(String prefix,
-                                      org.w3c.dom.Node namespaceContext) {
+                                        org.w3c.dom.Node namespaceContext) {
         Node parent = namespaceContext;
         String namespace = null;
 
@@ -96,7 +96,7 @@ public class JAXPPrefixResolver implements PrefixResolver
             int type;
 
             while ((null != parent) && (null == namespace)
-                && (((type = parent.getNodeType()) == Node.ELEMENT_NODE)
+                    && (((type = parent.getNodeType()) == Node.ELEMENT_NODE)
                     || (type == Node.ENTITY_REFERENCE_NODE))) {
 
                 if (type == Node.ELEMENT_NODE) {
@@ -109,7 +109,7 @@ public class JAXPPrefixResolver implements PrefixResolver
 
                         if (isPrefix || aname.equals("xmlns")) {
                             int index = aname.indexOf(':');
-                            String p =isPrefix ?aname.substring(index + 1) :"";
+                            String p = isPrefix ? aname.substring(index + 1) : "";
 
                             if (p.equals(prefix)) {
                                 namespace = attr.getNodeValue();

@@ -76,20 +76,19 @@ final class ParentPattern extends RelativePathPattern {
         final ConstantPoolGen cpg = classGen.getConstantPool();
         final InstructionList il = methodGen.getInstructionList();
         final LocalVariableGen local =
-            methodGen.addLocalVariable2("ppt",
-                                        Util.getJCRefType(NODE_SIG),
-                                        null);
+                methodGen.addLocalVariable2("ppt",
+                        Util.getJCRefType(NODE_SIG),
+                        null);
 
         final com.sun.org.apache.bcel.internal.generic.Instruction loadLocal =
-            new ILOAD(local.getIndex());
+                new ILOAD(local.getIndex());
         final com.sun.org.apache.bcel.internal.generic.Instruction storeLocal =
-            new ISTORE(local.getIndex());
+                new ISTORE(local.getIndex());
 
         if (_right.isWildcard()) {
             il.append(methodGen.loadDOM());
             il.append(SWAP);
-        }
-        else if (_right instanceof StepPattern) {
+        } else if (_right instanceof StepPattern) {
             il.append(DUP);
             local.setStart(il.append(storeLocal));
 
@@ -97,8 +96,7 @@ final class ParentPattern extends RelativePathPattern {
 
             il.append(methodGen.loadDOM());
             local.setEnd(il.append(loadLocal));
-        }
-        else {
+        } else {
             _right.translate(classGen, methodGen);
 
             if (_right instanceof AncestorPattern) {
@@ -108,17 +106,15 @@ final class ParentPattern extends RelativePathPattern {
         }
 
         final int getParent = cpg.addInterfaceMethodref(DOM_INTF,
-                                                        GET_PARENT,
-                                                        GET_PARENT_SIG);
+                GET_PARENT,
+                GET_PARENT_SIG);
         il.append(new INVOKEINTERFACE(getParent, 2));
 
         final SyntaxTreeNode p = getParent();
         if (p == null || p instanceof Instruction ||
-            p instanceof TopLevelElement)
-        {
+                p instanceof TopLevelElement) {
             _left.translate(classGen, methodGen);
-        }
-        else {
+        } else {
             il.append(DUP);
             InstructionHandle storeInst = il.append(storeLocal);
 

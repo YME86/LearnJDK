@@ -28,14 +28,14 @@ import java.net.InetAddress;
  *
  * <p><b>This API is a Sun Microsystems internal API  and is subject
  * to change without notice.</b></p>
+ *
  * @see SnmpMessage
  * @see SnmpPduFactory
- *
  */
 
 public abstract class SnmpPduPacket extends SnmpPdu implements Serializable {
     /**
      * The pdu community string.
      */
-    public byte[] community ;
+    public byte[] community;
 }

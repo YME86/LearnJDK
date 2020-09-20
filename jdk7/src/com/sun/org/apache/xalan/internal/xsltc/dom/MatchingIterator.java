@@ -34,9 +34,9 @@ import com.sun.org.apache.xml.internal.dtm.ref.DTMAxisIteratorBase;
  * by calling getPosition().
  * It is an iterator even though next() will never be called. It is used to
  * match patterns with a single predicate like:
- *
- *    BOOK[position() = last()]
- *
+ * <p>
+ * BOOK[position() = last()]
+ * <p>
  * In this example, the source iterator will return elements of type BOOK,
  * a call to position() will return the position of N. Notice that because
  * of the way the pattern matching is implemented, N will always be a node
@@ -44,6 +44,7 @@ import com.sun.org.apache.xml.internal.dtm.ref.DTMAxisIteratorBase;
  * considered and (ii) the source iterator is initialized with M which is
  * the parent of N. Also, and still in this example, a call to last() will
  * return the number of elements in the source (i.e. the number of BOOKs).
+ *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  */
@@ -77,10 +78,9 @@ public final class MatchingIterator extends DTMAxisIteratorBase {
             clone._source = _source.cloneIterator();
             clone._isRestartable = false;
             return clone.reset();
-        }
-        catch (CloneNotSupportedException e) {
+        } catch (CloneNotSupportedException e) {
             BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
-                                      e.toString());
+                    e.toString());
             return null;
         }
     }

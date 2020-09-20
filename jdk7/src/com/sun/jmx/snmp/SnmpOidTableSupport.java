@@ -9,6 +9,7 @@ package com.sun.jmx.snmp;
 
 // java import
 //
+
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.logging.Level;
@@ -16,6 +17,7 @@ import java.util.Hashtable;
 
 //RI import
 import static com.sun.jmx.defaults.JmxProperties.SNMP_LOGGER;
+
 import com.sun.jmx.snmp.SnmpOidTable;
 import com.sun.jmx.snmp.SnmpOidRecord;
 import com.sun.jmx.snmp.SnmpStatusException;
@@ -31,8 +33,8 @@ import com.sun.jmx.snmp.SnmpStatusException;
  * <P>
  * <p><b>This API is a Sun Microsystems internal API  and is subject
  * to change without notice.</b></p>
- * @see com.sun.jmx.snmp.SnmpOidRecord
  *
+ * @see com.sun.jmx.snmp.SnmpOidRecord
  */
 
 public class SnmpOidTableSupport implements SnmpOidTable {
@@ -41,10 +43,11 @@ public class SnmpOidTableSupport implements SnmpOidTable {
      * Creates an <CODE>SnmpOidTableSupport</CODE> with the specified name.
      * This name identifies the MIB to which belong  the MIB variables contained
      * in this <CODE>SnmpOidTableSupport</CODE> object.
+     *
      * @param name The OID table name.
      */
     public SnmpOidTableSupport(String name) {
-        myName=name;
+        myName = name;
     }
 
     /**
@@ -53,15 +56,15 @@ public class SnmpOidTableSupport implements SnmpOidTable {
      *
      * @param name The name of the MIB variable.
      * @return The <CODE>SnmpOidRecord</CODE> object containing information on the variable.
-     * @exception SnmpStatusException If the variable is not found.
+     * @throws SnmpStatusException If the variable is not found.
      */
     public SnmpOidRecord resolveVarName(String name) throws SnmpStatusException {
 
-        SnmpOidRecord var  = oidStore.get(name) ;
+        SnmpOidRecord var = oidStore.get(name);
         if (var != null) {
             return var;
         } else {
-            throw new SnmpStatusException("Variable name <" + name + "> not found in Oid repository") ;
+            throw new SnmpStatusException("Variable name <" + name + "> not found in Oid repository");
         }
     }
 
@@ -71,35 +74,36 @@ public class SnmpOidTableSupport implements SnmpOidTable {
      *
      * @param oid The OID of the MIB variable.
      * @return The <CODE>SnmpOidRecord</CODE> object containing information on the variable.
-     * @exception SnmpStatusException If the variable is not found.
+     * @throws SnmpStatusException If the variable is not found.
      */
     public SnmpOidRecord resolveVarOid(String oid) throws SnmpStatusException {
 
         // Try to see if the variable name is actually an OID to resolve.
         //
-        int index = oid.indexOf('.') ;
+        int index = oid.indexOf('.');
         if (index < 0) {
-            throw new SnmpStatusException("Variable oid <" + oid + "> not found in Oid repository") ;
+            throw new SnmpStatusException("Variable oid <" + oid + "> not found in Oid repository");
         }
         if (index == 0) {
             // The oid starts with a '.' ala CMU.
             //
-            oid= oid.substring(1, oid.length());
+            oid = oid.substring(1, oid.length());
         }
 
         // Go through the oidStore ... Good luck !
         //
-        for(Enumeration list= oidStore.elements(); list.hasMoreElements(); ) {
-            SnmpOidRecord element= (SnmpOidRecord) list.nextElement();
+        for (Enumeration list = oidStore.elements(); list.hasMoreElements(); ) {
+            SnmpOidRecord element = (SnmpOidRecord) list.nextElement();
             if (element.getOid().equals(oid))
                 return element;
         }
 
-        throw new SnmpStatusException("Variable oid <" + oid + "> not found in Oid repository") ;
+        throw new SnmpStatusException("Variable oid <" + oid + "> not found in Oid repository");
     }
 
     /**
      * Returns a list that can be used to traverse all the entries in this <CODE>SnmpOidTable</CODE>.
+     *
      * @return A vector of {@link com.sun.jmx.snmp.SnmpOidRecord} objects.
      */
     public Vector<SnmpOidRecord> getAllEntries() {
@@ -110,25 +114,26 @@ public class SnmpOidTableSupport implements SnmpOidTable {
              e.hasMoreElements(); ) {
             elementsVector.addElement(e.nextElement());
         }
-        return elementsVector ;
+        return elementsVector;
     }
 
     /**
      * Loads a list of variables into the storage area,
      * which is kept in memory. If you have new MIB variables,
      * this method can be called to load them.
+     *
      * @param mibs The list of variables to load.
      */
     public synchronized void loadMib(SnmpOidRecord[] mibs) {
         try {
             for (int i = 0; ; i++) {
-                SnmpOidRecord s = mibs[i] ;
+                SnmpOidRecord s = mibs[i];
                 if (SNMP_LOGGER.isLoggable(Level.FINER)) {
                     SNMP_LOGGER.logp(Level.FINER,
                             SnmpOidTableSupport.class.getName(),
                             "loadMib", "Load " + s.getName());
                 }
-                oidStore.put(s.getName(), s) ;
+                oidStore.put(s.getName(), s);
             }
         } catch (ArrayIndexOutOfBoundsException e) {
         }
@@ -136,6 +141,7 @@ public class SnmpOidTableSupport implements SnmpOidTable {
 
     /**
      * Checks if the specified <CODE>Object</CODE> is equal to this <CODE>SnmpOidTableSupport</CODE>.
+     *
      * @param object The <CODE>Object</CODE> to be compared.
      * @return <CODE>true</CODE> if <CODE>object</CODE> is an <CODE>SnmpOidTableSupport</CODE> instance and equals to this,
      * <CODE>false</CODE> otherwise.
@@ -151,6 +157,7 @@ public class SnmpOidTableSupport implements SnmpOidTable {
 
     /**
      * Returns the name identifying this <CODE>SnmpOidTableSupport</CODE> object.
+     *
      * @return The OID table name.
      */
     public String getName() {
@@ -161,7 +168,6 @@ public class SnmpOidTableSupport implements SnmpOidTable {
      *   PRIVATE METHODS
      * ------------------------------------------
      */
-
 
 
     private Hashtable<String, SnmpOidRecord> oidStore =

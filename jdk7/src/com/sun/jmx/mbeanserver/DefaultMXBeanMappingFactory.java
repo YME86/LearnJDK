@@ -73,23 +73,24 @@ import javax.management.openmbean.SimpleType;
 import javax.management.openmbean.TabularData;
 import javax.management.openmbean.TabularDataSupport;
 import javax.management.openmbean.TabularType;
+
 import sun.reflect.misc.MethodUtil;
 import sun.reflect.misc.ReflectUtil;
 
 /**
- *   <p>A converter between Java types and the limited set of classes
- *   defined by Open MBeans.</p>
+ * <p>A converter between Java types and the limited set of classes
+ * defined by Open MBeans.</p>
  *
- *   <p>A Java type is an instance of java.lang.reflect.Type.  For our
- *   purposes, it is either a Class, such as String.class or int.class;
- *   or a ParameterizedType, such as List<String> or Map<Integer,
- *   String[]>.  On J2SE 1.4 and earlier, it can only be a Class.</p>
+ * <p>A Java type is an instance of java.lang.reflect.Type.  For our
+ * purposes, it is either a Class, such as String.class or int.class;
+ * or a ParameterizedType, such as List<String> or Map<Integer,
+ * String[]>.  On J2SE 1.4 and earlier, it can only be a Class.</p>
  *
- *   <p>Each Type is associated with an DefaultMXBeanMappingFactory.  The
- *   DefaultMXBeanMappingFactory defines an OpenType corresponding to the Type, plus a
- *   Java class corresponding to the OpenType.  For example:</p>
+ * <p>Each Type is associated with an DefaultMXBeanMappingFactory.  The
+ * DefaultMXBeanMappingFactory defines an OpenType corresponding to the Type, plus a
+ * Java class corresponding to the OpenType.  For example:</p>
  *
- *   <pre>
+ * <pre>
  *   Type                     Open class     OpenType
  *   ----                     ----------     --------
  *   Integer                Integer        SimpleType.INTEGER
@@ -108,12 +109,12 @@ import sun.reflect.misc.ReflectUtil;
  *                                           indexNames={"key"})
  *   </pre>
  *
- *   <p>Apart from simple types, arrays, and collections, Java types are
- *   converted through introspection into CompositeType.  The Java type
- *   must have at least one getter (method such as "int getSize()" or
- *   "boolean isBig()"), and we must be able to deduce how to
- *   reconstruct an instance of the Java class from the values of the
- *   getters using one of various heuristics.</p>
+ * <p>Apart from simple types, arrays, and collections, Java types are
+ * converted through introspection into CompositeType.  The Java type
+ * must have at least one getter (method such as "int getSize()" or
+ * "boolean isBig()"), and we must be able to deduce how to
+ * reconstruct an instance of the Java class from the values of the
+ * getters using one of various heuristics.</p>
  *
  * @since 1.6
  */
@@ -125,7 +126,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
 
         @Override
         public final Object fromOpenValue(Object openValue)
-        throws InvalidObjectException {
+                throws InvalidObjectException {
             if (openValue == null)
                 return null;
             else
@@ -141,10 +142,10 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
         }
 
         abstract Object fromNonNullOpenValue(Object openValue)
-        throws InvalidObjectException;
+                throws InvalidObjectException;
 
         abstract Object toNonNullOpenValue(Object javaValue)
-        throws OpenDataException;
+                throws OpenDataException;
 
         /**
          * <p>True if and only if this MXBeanMapping's toOpenValue and
@@ -161,12 +162,15 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
     }
 
     private static final class Mappings
-        extends WeakHashMap<Type, WeakReference<MXBeanMapping>> {}
+            extends WeakHashMap<Type, WeakReference<MXBeanMapping>> {
+    }
 
     private static final Mappings mappings = new Mappings();
 
-    /** Following List simply serves to keep a reference to predefined
-        MXBeanMappings so they don't get garbage collected. */
+    /**
+     * Following List simply serves to keep a reference to predefined
+     * MXBeanMappings so they don't get garbage collected.
+     */
     private static final List<MXBeanMapping> permanentMappings = newList();
 
     private static synchronized MXBeanMapping getMapping(Type type) {
@@ -176,7 +180,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
 
     private static synchronized void putMapping(Type type, MXBeanMapping mapping) {
         WeakReference<MXBeanMapping> wr =
-            new WeakReference<MXBeanMapping>(mapping);
+                new WeakReference<MXBeanMapping>(mapping);
         mappings.put(type, wr);
     }
 
@@ -190,9 +194,9 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
         /* Set up the mappings for Java types that map to SimpleType.  */
 
         final OpenType<?>[] simpleTypes = {
-            BIGDECIMAL, BIGINTEGER, BOOLEAN, BYTE, CHARACTER, DATE,
-            DOUBLE, FLOAT, INTEGER, LONG, OBJECTNAME, SHORT, STRING,
-            VOID,
+                BIGDECIMAL, BIGINTEGER, BOOLEAN, BYTE, CHARACTER, DATE,
+                DOUBLE, FLOAT, INTEGER, LONG, OBJECTNAME, SHORT, STRING,
+                VOID,
         };
 
         for (int i = 0; i < simpleTypes.length; i++) {
@@ -200,7 +204,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
             Class<?> c;
             try {
                 c = Class.forName(t.getClassName(), false,
-                                  ObjectName.class.getClassLoader());
+                        ObjectName.class.getClassLoader());
             } catch (ClassNotFoundException e) {
                 // the classes that these predefined types declare must exist!
                 throw new Error(e);
@@ -213,30 +217,32 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                     final Field typeField = c.getField("TYPE");
                     final Class<?> primitiveType = (Class<?>) typeField.get(null);
                     final MXBeanMapping primitiveMapping =
-                        new IdentityMapping(primitiveType, t);
+                            new IdentityMapping(primitiveType, t);
                     putPermanentMapping(primitiveType, primitiveMapping);
                     if (primitiveType != void.class) {
                         final Class<?> primitiveArrayType =
-                            Array.newInstance(primitiveType, 0).getClass();
+                                Array.newInstance(primitiveType, 0).getClass();
                         final OpenType<?> primitiveArrayOpenType =
-                            ArrayType.getPrimitiveArrayType(primitiveArrayType);
+                                ArrayType.getPrimitiveArrayType(primitiveArrayType);
                         final MXBeanMapping primitiveArrayMapping =
-                            new IdentityMapping(primitiveArrayType,
-                                                primitiveArrayOpenType);
+                                new IdentityMapping(primitiveArrayType,
+                                        primitiveArrayOpenType);
                         putPermanentMapping(primitiveArrayType,
-                                            primitiveArrayMapping);
+                                primitiveArrayMapping);
                     }
                 } catch (NoSuchFieldException e) {
                     // OK: must not be a primitive wrapper
                 } catch (IllegalAccessException e) {
                     // Should not reach here
-                    assert(false);
+                    assert (false);
                 }
             }
         }
     }
 
-    /** Get the converter for the given Java type, creating it if necessary. */
+    /**
+     * Get the converter for the given Java type, creating it if necessary.
+     */
     @Override
     public synchronized MXBeanMapping mappingForType(Type objType,
                                                      MXBeanMappingFactory factory)
@@ -266,14 +272,14 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
     }
 
     private MXBeanMapping makeMapping(Type objType, MXBeanMappingFactory factory)
-    throws OpenDataException {
+            throws OpenDataException {
 
         /* It's not yet worth formalizing these tests by having for example
            an array of factory classes, each of which says whether it
            recognizes the Type (Chain of Responsibility pattern).  */
         if (objType instanceof GenericArrayType) {
             Type componentType =
-                ((GenericArrayType) objType).getGenericComponentType();
+                    ((GenericArrayType) objType).getGenericComponentType();
             return makeArrayOrCollectionMapping(objType, componentType, factory);
         } else if (objType instanceof Class<?>) {
             Class<?> objClass = (Class<?>) objType;
@@ -293,13 +299,13 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
             }
         } else if (objType instanceof ParameterizedType) {
             return makeParameterizedTypeMapping((ParameterizedType) objType,
-                                                factory);
+                    factory);
         } else
             throw new OpenDataException("Cannot map type: " + objType);
     }
 
     private static <T extends Enum<T>> MXBeanMapping
-            makeEnumMapping(Class<?> enumClass, Class<T> fake) {
+    makeEnumMapping(Class<?> enumClass, Class<T> fake) {
         ReflectUtil.checkPackageAccess(enumClass);
         return new EnumMapping<T>(Util.<Class<T>>cast(enumClass));
     }
@@ -310,8 +316,8 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
      * converter and are registered as such in the static initializer.
      */
     private MXBeanMapping
-        makeArrayOrCollectionMapping(Type collectionType, Type elementType,
-                                     MXBeanMappingFactory factory)
+    makeArrayOrCollectionMapping(Type collectionType, Type elementType,
+                                 MXBeanMappingFactory factory)
             throws OpenDataException {
 
         final MXBeanMapping elementMapping = factory.mappingForType(elementType, factory);
@@ -333,17 +339,17 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
 
         if (collectionType instanceof ParameterizedType) {
             return new CollectionMapping(collectionType,
-                                         openType, openArrayClass,
-                                         elementMapping);
+                    openType, openArrayClass,
+                    elementMapping);
         } else {
             if (isIdentity(elementMapping)) {
                 return new IdentityMapping(collectionType,
-                                           openType);
+                        openType);
             } else {
                 return new ArrayMapping(collectionType,
-                                          openType,
-                                          openArrayClass,
-                                          elementMapping);
+                        openType,
+                        openArrayClass,
+                        elementMapping);
             }
         }
     }
@@ -352,9 +358,9 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
     private static final String[] keyValueArray = {"key", "value"};
 
     private MXBeanMapping
-        makeTabularMapping(Type objType, boolean sortedMap,
-                           Type keyType, Type valueType,
-                           MXBeanMappingFactory factory)
+    makeTabularMapping(Type objType, boolean sortedMap,
+                       Type keyType, Type valueType,
+                       MXBeanMappingFactory factory)
             throws OpenDataException {
 
         final String objTypeName = typeName(objType);
@@ -363,15 +369,15 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
         final OpenType<?> keyOpenType = keyMapping.getOpenType();
         final OpenType<?> valueOpenType = valueMapping.getOpenType();
         final CompositeType rowType =
-            new CompositeType(objTypeName,
-                              objTypeName,
-                              keyValueArray,
-                              keyValueArray,
-                              new OpenType<?>[] {keyOpenType, valueOpenType});
+                new CompositeType(objTypeName,
+                        objTypeName,
+                        keyValueArray,
+                        keyValueArray,
+                        new OpenType<?>[]{keyOpenType, valueOpenType});
         final TabularType tabularType =
-            new TabularType(objTypeName, objTypeName, rowType, keyArray);
+                new TabularType(objTypeName, objTypeName, rowType, keyArray);
         return new TabularMapping(objType, sortedMap, tabularType,
-                                    keyMapping, valueMapping);
+                keyMapping, valueMapping);
     }
 
     /* We know how to translate List<E>, Set<E>, SortedSet<E>,
@@ -380,8 +386,8 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
        them.  We don't accept Queue<E> because it is unlikely people
        would use that as a parameter or return type in an MBean.  */
     private MXBeanMapping
-            makeParameterizedTypeMapping(ParameterizedType objType,
-                                         MXBeanMappingFactory factory)
+    makeParameterizedTypeMapping(ParameterizedType objType,
+                                 MXBeanMappingFactory factory)
             throws OpenDataException {
 
         final Type rawType = objType.getRawType();
@@ -390,7 +396,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
             Class<?> c = (Class<?>) rawType;
             if (c == List.class || c == Set.class || c == SortedSet.class) {
                 Type[] actuals = objType.getActualTypeArguments();
-                assert(actuals.length == 1);
+                assert (actuals.length == 1);
                 if (c == SortedSet.class)
                     mustBeComparable(c, actuals[0]);
                 return makeArrayOrCollectionMapping(objType, actuals[0], factory);
@@ -398,7 +404,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                 boolean sortedMap = (c == SortedMap.class);
                 if (c == Map.class || sortedMap) {
                     Type[] actuals = objType.getActualTypeArguments();
-                    assert(actuals.length == 2);
+                    assert (actuals.length == 2);
                     if (sortedMap)
                         mustBeComparable(c, actuals[0]);
                     return makeTabularMapping(objType, sortedMap,
@@ -422,13 +428,13 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
         // shouldn't count its CompositeData.getCompositeType() field as
         // an item in the computed CompositeType.
         final boolean gcInfoHack =
-            (c.getName().equals("com.sun.management.GcInfo") &&
-                c.getClassLoader() == null);
+                (c.getName().equals("com.sun.management.GcInfo") &&
+                        c.getClassLoader() == null);
 
         ReflectUtil.checkPackageAccess(c);
         final List<Method> methods =
                 MBeanAnalyzer.eliminateCovariantMethods(Arrays.asList(c.getMethods()));
-        final SortedMap<String,Method> getterMap = newSortedMap();
+        final SortedMap<String, Method> getterMap = newSortedMap();
 
         /* Select public methods that look like "T getX()" or "boolean
            isX()", where T is not void and X is not the empty
@@ -442,12 +448,12 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                 continue;
 
             Method old =
-                getterMap.put(decapitalize(propertyName),
+                    getterMap.put(decapitalize(propertyName),
                             method);
             if (old != null) {
                 final String msg =
-                    "Class " + c.getName() + " has method name clash: " +
-                    old.getName() + ", " + method.getName();
+                        "Class " + c.getName() + " has method name clash: " +
+                                old.getName() + ", " + method.getName();
                 throw new OpenDataException(msg);
             }
         }
@@ -456,14 +462,14 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
 
         if (nitems == 0) {
             throw new OpenDataException("Can't map " + c.getName() +
-                                        " to an open data type");
+                    " to an open data type");
         }
 
         final Method[] getters = new Method[nitems];
         final String[] itemNames = new String[nitems];
         final OpenType<?>[] openTypes = new OpenType<?>[nitems];
         int i = 0;
-        for (Map.Entry<String,Method> entry : getterMap.entrySet()) {
+        for (Map.Entry<String, Method> entry : getterMap.entrySet()) {
             itemNames[i] = entry.getKey();
             final Method getter = entry.getValue();
             getters[i] = getter;
@@ -473,17 +479,17 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
         }
 
         CompositeType compositeType =
-            new CompositeType(c.getName(),
-                              c.getName(),
-                              itemNames, // field names
-                              itemNames, // field descriptions
-                              openTypes);
+                new CompositeType(c.getName(),
+                        c.getName(),
+                        itemNames, // field names
+                        itemNames, // field descriptions
+                        openTypes);
 
         return new CompositeMapping(c,
-                                    compositeType,
-                                    itemNames,
-                                    getters,
-                                    factory);
+                compositeType,
+                itemNames,
+                getters,
+                factory);
     }
 
     /* Converter for classes where the open data is identical to the
@@ -503,7 +509,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
 
         @Override
         Object fromNonNullOpenValue(Object openValue)
-        throws InvalidObjectException {
+                throws InvalidObjectException {
             return openValue;
         }
 
@@ -533,7 +539,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                 return Enum.valueOf(enumClass, (String) value);
             } catch (Exception e) {
                 throw invalidObjectException("Cannot convert to enum: " +
-                                             value, e);
+                        value, e);
             }
         }
 
@@ -554,7 +560,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
             Object[] valueArray = (Object[]) value;
             final int len = valueArray.length;
             final Object[] openArray = (Object[])
-                Array.newInstance(getOpenClass().getComponentType(), len);
+                    Array.newInstance(getOpenClass().getComponentType(), len);
             for (int i = 0; i < len; i++)
                 openArray[i] = elementMapping.toOpenValue(valueArray[i]);
             return openArray;
@@ -569,16 +575,16 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
             final Type componentType;
             if (javaType instanceof GenericArrayType) {
                 componentType =
-                    ((GenericArrayType) javaType).getGenericComponentType();
+                        ((GenericArrayType) javaType).getGenericComponentType();
             } else if (javaType instanceof Class<?> &&
-                       ((Class<?>) javaType).isArray()) {
+                    ((Class<?>) javaType).isArray()) {
                 componentType = ((Class<?>) javaType).getComponentType();
             } else {
                 throw new IllegalArgumentException("Not an array: " +
-                                                   javaType);
+                        javaType);
             }
             valueArray = (Object[]) Array.newInstance((Class<?>) componentType,
-                                                      openArray.length);
+                    openArray.length);
             for (int i = 0; i < openArray.length; i++)
                 valueArray[i] = elementMapping.fromOpenValue(openArray[i]);
             return valueArray;
@@ -590,8 +596,8 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
 
         /**
          * DefaultMXBeanMappingFactory for the elements of this array.  If this is an
-         *          array of arrays, the converter converts the second-level arrays,
-         *          not the deepest elements.
+         * array of arrays, the converter converts the second-level arrays,
+         * not the deepest elements.
          */
         private final MXBeanMapping elementMapping;
     }
@@ -618,7 +624,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
             else if (c == SortedSet.class)
                 collC = TreeSet.class;
             else { // can't happen
-                assert(false);
+                assert (false);
                 collC = null;
             }
             collectionClass = Util.cast(collC);
@@ -630,17 +636,17 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
             final Collection<?> valueCollection = (Collection<?>) value;
             if (valueCollection instanceof SortedSet<?>) {
                 Comparator<?> comparator =
-                    ((SortedSet<?>) valueCollection).comparator();
+                        ((SortedSet<?>) valueCollection).comparator();
                 if (comparator != null) {
                     final String msg =
-                        "Cannot convert SortedSet with non-null comparator: " +
-                        comparator;
+                            "Cannot convert SortedSet with non-null comparator: " +
+                                    comparator;
                     throw openDataException(msg, new IllegalArgumentException(msg));
                 }
             }
             final Object[] openArray = (Object[])
-                Array.newInstance(getOpenClass().getComponentType(),
-                                  valueCollection.size());
+                    Array.newInstance(getOpenClass().getComponentType(),
+                            valueCollection.size());
             int i = 0;
             for (Object o : valueCollection)
                 openArray[i++] = elementMapping.toOpenValue(o);
@@ -661,9 +667,9 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                 Object value = elementMapping.fromOpenValue(o);
                 if (!valueCollection.add(value)) {
                     final String msg =
-                        "Could not add " + o + " to " +
-                        collectionClass.getName() +
-                        " (duplicate set element?)";
+                            "Could not add " + o + " to " +
+                                    collectionClass.getName() +
+                                    " (duplicate set element?)";
                     throw new InvalidObjectException(msg);
                 }
             }
@@ -699,22 +705,22 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
             MXBeanLookup lookup = lookupNotNull(InvalidObjectException.class);
             ObjectName name = (ObjectName) openValue;
             Object mxbean =
-                lookup.objectNameToMXBean(name, (Class<?>) getJavaType());
+                    lookup.objectNameToMXBean(name, (Class<?>) getJavaType());
             if (mxbean == null) {
                 final String msg =
-                    "No MXBean for name: " + name;
+                        "No MXBean for name: " + name;
                 throw new InvalidObjectException(msg);
             }
             return mxbean;
         }
 
         private <T extends Exception> MXBeanLookup
-            lookupNotNull(Class<T> excClass)
+        lookupNotNull(Class<T> excClass)
                 throws T {
             MXBeanLookup lookup = MXBeanLookup.getLookup();
             if (lookup == null) {
                 final String msg =
-                    "Cannot convert MXBean interface in this context";
+                        "Cannot convert MXBean interface in this context";
                 T exc;
                 try {
                     Constructor<T> con = excClass.getConstructor(String.class);
@@ -743,12 +749,12 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
         @Override
         final Object toNonNullOpenValue(Object value) throws OpenDataException {
             final Map<Object, Object> valueMap = cast(value);
-            if (valueMap instanceof SortedMap<?,?>) {
-                Comparator<?> comparator = ((SortedMap<?,?>) valueMap).comparator();
+            if (valueMap instanceof SortedMap<?, ?>) {
+                Comparator<?> comparator = ((SortedMap<?, ?>) valueMap).comparator();
                 if (comparator != null) {
                     final String msg =
-                        "Cannot convert SortedMap with non-null comparator: " +
-                        comparator;
+                            "Cannot convert SortedMap with non-null comparator: " +
+                                    comparator;
                     throw openDataException(msg, new IllegalArgumentException(msg));
                 }
             }
@@ -760,9 +766,9 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                 final Object openValue = valueMapping.toOpenValue(entry.getValue());
                 final CompositeData row;
                 row =
-                    new CompositeDataSupport(rowType, keyValueArray,
-                                             new Object[] {openKey,
-                                                           openValue});
+                        new CompositeDataSupport(rowType, keyValueArray,
+                                new Object[]{openKey,
+                                        openValue});
                 table.put(row);
             }
             return table;
@@ -774,15 +780,15 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
             final TabularData table = (TabularData) openValue;
             final Collection<CompositeData> rows = cast(table.values());
             final Map<Object, Object> valueMap =
-                sortedMap ? newSortedMap() : newInsertionOrderMap();
+                    sortedMap ? newSortedMap() : newInsertionOrderMap();
             for (CompositeData row : rows) {
                 final Object key =
-                    keyMapping.fromOpenValue(row.get("key"));
+                        keyMapping.fromOpenValue(row.get("key"));
                 final Object value =
-                    valueMapping.fromOpenValue(row.get("value"));
+                        valueMapping.fromOpenValue(row.get("value"));
                 if (valueMap.put(key, value) != null) {
                     final String msg =
-                        "Duplicate entry in TabularData: key=" + key;
+                            "Duplicate entry in TabularData: key=" + key;
                     throw new InvalidObjectException(msg);
                 }
             }
@@ -808,7 +814,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                          MXBeanMappingFactory factory) throws OpenDataException {
             super(targetClass, compositeType);
 
-            assert(itemNames.length == getters.length);
+            assert (itemNames.length == getters.length);
 
             this.itemNames = itemNames;
             this.getters = getters;
@@ -835,16 +841,18 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                     values[i] = getterMappings[i].toOpenValue(got);
                 } catch (Exception e) {
                     throw openDataException("Error calling getter for " +
-                                            itemNames[i] + ": " + e, e);
+                            itemNames[i] + ": " + e, e);
                 }
             }
             return new CompositeDataSupport(ct, itemNames, values);
         }
 
-        /** Determine how to convert back from the CompositeData into
-            the original Java type.  For a type that is not reconstructible,
-            this method will fail every time, and will throw the right
-            exception. */
+        /**
+         * Determine how to convert back from the CompositeData into
+         * the original Java type.  For a type that is not reconstructible,
+         * this method will fail every time, and will throw the right
+         * exception.
+         */
         private synchronized void makeCompositeBuilder()
                 throws InvalidObjectException {
             if (compositeBuilder != null)
@@ -855,18 +863,18 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                there is no point in consulting the ones after the first if
                the first refuses.  */
             CompositeBuilder[][] builders = {
-                {
-                    new CompositeBuilderViaFrom(targetClass, itemNames),
-                },
-                {
-                    new CompositeBuilderViaConstructor(targetClass, itemNames),
-                },
-                {
-                    new CompositeBuilderCheckGetters(targetClass, itemNames,
-                                                     getterMappings),
-                    new CompositeBuilderViaSetters(targetClass, itemNames),
-                    new CompositeBuilderViaProxy(targetClass, itemNames),
-                },
+                    {
+                            new CompositeBuilderViaFrom(targetClass, itemNames),
+                    },
+                    {
+                            new CompositeBuilderViaConstructor(targetClass, itemNames),
+                    },
+                    {
+                            new CompositeBuilderCheckGetters(targetClass, itemNames,
+                                    getterMappings),
+                            new CompositeBuilderViaSetters(targetClass, itemNames),
+                            new CompositeBuilderViaProxy(targetClass, itemNames),
+                    },
             };
             CompositeBuilder foundBuilder = null;
             /* We try to make a meaningful exception message by
@@ -874,7 +882,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                isn't applicable.  */
             final StringBuilder whyNots = new StringBuilder();
             Throwable possibleCause = null;
-        find:
+            find:
             for (CompositeBuilder[] relatedBuilders : builders) {
                 for (int i = 0; i < relatedBuilders.length; i++) {
                     CompositeBuilder builder = relatedBuilders[i];
@@ -891,14 +899,14 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                             whyNots.append("; ");
                         whyNots.append(whyNot);
                         if (i == 0)
-                           break; // skip other builders in this group
+                            break; // skip other builders in this group
                     }
                 }
             }
             if (foundBuilder == null) {
                 String msg =
-                    "Do not know how to make a " + targetClass.getName() +
-                    " from a CompositeData: " + whyNots;
+                        "Do not know how to make a " + targetClass.getName() +
+                                " from a CompositeData: " + whyNots;
                 if (possibleCause != null)
                     msg += ". Remaining exceptions show a POSSIBLE cause.";
                 throw invalidObjectException(msg, possibleCause);
@@ -916,8 +924,8 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                 throws InvalidObjectException {
             makeCompositeBuilder();
             return compositeBuilder.fromCompositeData((CompositeData) value,
-                                                      itemNames,
-                                                      getterMappings);
+                    itemNames,
+                    getterMappings);
         }
 
         private final String[] itemNames;
@@ -926,7 +934,9 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
         private CompositeBuilder compositeBuilder;
     }
 
-    /** Converts from a CompositeData to an instance of the targetClass.  */
+    /**
+     * Converts from a CompositeData to an instance of the targetClass.
+     */
     private static abstract class CompositeBuilder {
         CompositeBuilder(Class<?> targetClass, String[] itemNames) {
             this.targetClass = targetClass;
@@ -941,20 +951,24 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
             return itemNames;
         }
 
-        /** If the subclass is appropriate for targetClass, then the
-            method returns null.  If the subclass is not appropriate,
-            then the method returns an explanation of why not.  If the
-            subclass should be appropriate but there is a problem,
-            then the method throws InvalidObjectException.  */
+        /**
+         * If the subclass is appropriate for targetClass, then the
+         * method returns null.  If the subclass is not appropriate,
+         * then the method returns an explanation of why not.  If the
+         * subclass should be appropriate but there is a problem,
+         * then the method throws InvalidObjectException.
+         */
         abstract String applicable(Method[] getters)
                 throws InvalidObjectException;
 
-        /** If the subclass returns an explanation of why it is not applicable,
-            it can additionally indicate an exception with details.  This is
-            potentially confusing, because the real problem could be that one
-            of the other subclasses is supposed to be applicable but isn't.
-            But the advantage of less information loss probably outweighs the
-            disadvantage of possible confusion.  */
+        /**
+         * If the subclass returns an explanation of why it is not applicable,
+         * it can additionally indicate an exception with details.  This is
+         * potentially confusing, because the real problem could be that one
+         * of the other subclasses is supposed to be applicable but isn't.
+         * But the advantage of less information loss probably outweighs the
+         * disadvantage of possible confusion.
+         */
         Throwable possibleCause() {
             return null;
         }
@@ -968,8 +982,10 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
         private final String[] itemNames;
     }
 
-    /** Builder for when the target class has a method "public static
-        from(CompositeData)".  */
+    /**
+     * Builder for when the target class has a method "public static
+     * from(CompositeData)".
+     */
     private static final class CompositeBuilderViaFrom
             extends CompositeBuilder {
 
@@ -983,19 +999,19 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
             Class<?> targetClass = getTargetClass();
             try {
                 Method fromMethod =
-                    targetClass.getMethod("from", CompositeData.class);
+                        targetClass.getMethod("from", CompositeData.class);
 
                 if (!Modifier.isStatic(fromMethod.getModifiers())) {
                     final String msg =
-                        "Method from(CompositeData) is not static";
+                            "Method from(CompositeData) is not static";
                     throw new InvalidObjectException(msg);
                 }
 
                 if (fromMethod.getReturnType() != getTargetClass()) {
                     final String msg =
-                        "Method from(CompositeData) returns " +
-                        typeName(fromMethod.getReturnType()) +
-                        " not " + typeName(targetClass);
+                            "Method from(CompositeData) returns " +
+                                    typeName(fromMethod.getReturnType()) +
+                                    " not " + typeName(targetClass);
                     throw new InvalidObjectException(msg);
                 }
 
@@ -1014,7 +1030,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                                        MXBeanMapping[] converters)
                 throws InvalidObjectException {
             try {
-                return MethodUtil.invoke(fromMethod, null, new Object[] {cd});
+                return MethodUtil.invoke(fromMethod, null, new Object[]{cd});
             } catch (Exception e) {
                 final String msg = "Failed to invoke from(CompositeData)";
                 throw invalidObjectException(msg, e);
@@ -1024,16 +1040,18 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
         private Method fromMethod;
     }
 
-    /** This builder never actually returns success.  It simply serves
-        to check whether the other builders in the same group have any
-        chance of success.  If any getter in the targetClass returns
-        a type that we don't know how to reconstruct, then we will
-        not be able to make a builder, and there is no point in repeating
-        the error about the problematic getter as many times as there are
-        candidate builders.  Instead, the "applicable" method will return
-        an explanatory string, and the other builders will be skipped.
-        If all the getters are OK, then the "applicable" method will return
-        an empty string and the other builders will be tried.  */
+    /**
+     * This builder never actually returns success.  It simply serves
+     * to check whether the other builders in the same group have any
+     * chance of success.  If any getter in the targetClass returns
+     * a type that we don't know how to reconstruct, then we will
+     * not be able to make a builder, and there is no point in repeating
+     * the error about the problematic getter as many times as there are
+     * candidate builders.  Instead, the "applicable" method will return
+     * an explanatory string, and the other builders will be skipped.
+     * If all the getters are OK, then the "applicable" method will return
+     * an empty string and the other builders will be tried.
+     */
     private static class CompositeBuilderCheckGetters extends CompositeBuilder {
         CompositeBuilderCheckGetters(Class<?> targetClass, String[] itemNames,
                                      MXBeanMapping[] getterConverters) {
@@ -1048,7 +1066,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                 } catch (InvalidObjectException e) {
                     possibleCause = e;
                     return "method " + getters[i].getName() + " returns type " +
-                        "that cannot be mapped back from OpenData";
+                            "that cannot be mapped back from OpenData";
                 }
             }
             return "";
@@ -1069,7 +1087,9 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
         private Throwable possibleCause;
     }
 
-    /** Builder for when the target class has a setter for every getter. */
+    /**
+     * Builder for when the target class has a setter for every getter.
+     */
     private static class CompositeBuilderViaSetters extends CompositeBuilder {
 
         CompositeBuilderViaSetters(Class<?> targetClass, String[] itemNames) {
@@ -1096,7 +1116,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                         throw new Exception();
                 } catch (Exception e) {
                     return "not all getters have corresponding setters " +
-                           "(" + getter + ")";
+                            "(" + getter + ")";
                 }
                 setters[i] = setter;
             }
@@ -1117,8 +1137,8 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                     if (cd.containsKey(itemNames[i])) {
                         Object openItem = cd.get(itemNames[i]);
                         Object javaItem =
-                            converters[i].fromOpenValue(openItem);
-                        MethodUtil.invoke(setters[i], o, new Object[] {javaItem});
+                                converters[i].fromOpenValue(openItem);
+                        MethodUtil.invoke(setters[i], o, new Object[]{javaItem});
                     }
                 }
             } catch (Exception e) {
@@ -1130,9 +1150,11 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
         private Method[] setters;
     }
 
-    /** Builder for when the target class has a constructor that is
-        annotated with @ConstructorProperties so we can see the correspondence
-        to getters.  */
+    /**
+     * Builder for when the target class has a constructor that is
+     * annotated with @ConstructorProperties so we can see the correspondence
+     * to getters.
+     */
     private static final class CompositeBuilderViaConstructor
             extends CompositeBuilder {
 
@@ -1181,13 +1203,13 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
             Set<BitSet> getterIndexSets = newSet();
             for (Constructor<?> constr : annotatedConstrList) {
                 String[] propertyNames =
-                    constr.getAnnotation(propertyNamesClass).value();
+                        constr.getAnnotation(propertyNamesClass).value();
 
                 Type[] paramTypes = constr.getGenericParameterTypes();
                 if (paramTypes.length != propertyNames.length) {
                     final String msg =
-                        "Number of constructor params does not match " +
-                        "@ConstructorProperties annotation: " + constr;
+                            "Number of constructor params does not match " +
+                                    "@ConstructorProperties annotation: " + constr;
                     throw new InvalidObjectException(msg);
                 }
 
@@ -1200,8 +1222,8 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                     String propertyName = propertyNames[i];
                     if (!getterMap.containsKey(propertyName)) {
                         String msg =
-                            "@ConstructorProperties includes name " + propertyName +
-                            " which does not correspond to a property";
+                                "@ConstructorProperties includes name " + propertyName +
+                                        " which does not correspond to a property";
                         for (String getterName : getterMap.keySet()) {
                             if (getterName.equalsIgnoreCase(propertyName)) {
                                 msg += " (differs only in case from property " +
@@ -1215,8 +1237,8 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                     paramIndexes[getterIndex] = i;
                     if (present.get(getterIndex)) {
                         final String msg =
-                            "@ConstructorProperties contains property " +
-                            propertyName + " more than once: " + constr;
+                                "@ConstructorProperties contains property " +
+                                        propertyName + " more than once: " + constr;
                         throw new InvalidObjectException(msg);
                     }
                     present.set(getterIndex);
@@ -1224,18 +1246,18 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                     Type propertyType = getter.getGenericReturnType();
                     if (!propertyType.equals(paramTypes[i])) {
                         final String msg =
-                            "@ConstructorProperties gives property " + propertyName +
-                            " of type " + propertyType + " for parameter " +
-                            " of type " + paramTypes[i] + ": " + constr;
+                                "@ConstructorProperties gives property " + propertyName +
+                                        " of type " + propertyType + " for parameter " +
+                                        " of type " + paramTypes[i] + ": " + constr;
                         throw new InvalidObjectException(msg);
                     }
                 }
 
                 if (!getterIndexSets.add(present)) {
                     final String msg =
-                        "More than one constructor has a @ConstructorProperties " +
-                        "annotation with this set of names: " +
-                        Arrays.toString(propertyNames);
+                            "More than one constructor has a @ConstructorProperties " +
+                                    "annotation with this set of names: " +
+                                    Arrays.toString(propertyNames);
                     throw new InvalidObjectException(msg);
                 }
 
@@ -1265,16 +1287,17 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                         seen = true;
                     else if (seen) {
                         BitSet u = new BitSet();
-                        u.or(a); u.or(b);
+                        u.or(a);
+                        u.or(b);
                         if (!getterIndexSets.contains(u)) {
                             Set<String> names = new TreeSet<String>();
                             for (int i = u.nextSetBit(0); i >= 0;
-                                 i = u.nextSetBit(i+1))
+                                 i = u.nextSetBit(i + 1))
                                 names.add(itemNames[i]);
                             final String msg =
-                                "Constructors with @ConstructorProperties annotation " +
-                                " would be ambiguous for these items: " +
-                                names;
+                                    "Constructors with @ConstructorProperties annotation " +
+                                            " would be ambiguous for these items: " +
+                                            names;
                             throw new InvalidObjectException(msg);
                         }
                     }
@@ -1304,14 +1327,14 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
             for (Constr constr : annotatedConstructors) {
                 if (subset(constr.presentParams, present) &&
                         (max == null ||
-                         subset(max.presentParams, constr.presentParams)))
+                                subset(max.presentParams, constr.presentParams)))
                     max = constr;
             }
 
             if (max == null) {
                 final String msg =
-                    "No constructor has a @ConstructorProperties for this set of " +
-                    "items: " + ct.keySet();
+                        "No constructor has a @ConstructorProperties for this set of " +
+                                "items: " + ct.keySet();
                 throw new InvalidObjectException(msg);
             }
 
@@ -1331,7 +1354,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                 return max.constructor.newInstance(params);
             } catch (Exception e) {
                 final String msg =
-                    "Exception constructing " + getTargetClass().getName();
+                        "Exception constructing " + getTargetClass().getName();
                 throw invalidObjectException(msg, e);
             }
         }
@@ -1346,6 +1369,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
             final Constructor<?> constructor;
             final int[] paramIndexes;
             final BitSet presentParams;
+
             Constr(Constructor<?> constructor, int[] paramIndexes,
                    BitSet presentParams) {
                 this.constructor = constructor;
@@ -1357,10 +1381,12 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
         private List<Constr> annotatedConstructors;
     }
 
-    /** Builder for when the target class is an interface and contains
-        no methods other than getters.  Then we can make an instance
-        using a dynamic proxy that forwards the getters to the source
-        CompositeData.  */
+    /**
+     * Builder for when the target class is an interface and contains
+     * no methods other than getters.  Then we can make an instance
+     * using a dynamic proxy that forwards the getters to the source
+     * CompositeData.
+     */
     private static final class CompositeBuilderViaProxy
             extends CompositeBuilder {
 
@@ -1373,7 +1399,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
             if (!targetClass.isInterface())
                 return "not an interface";
             Set<Method> methods =
-                newSet(Arrays.asList(targetClass.getMethods()));
+                    newSet(Arrays.asList(targetClass.getMethods()));
             methods.removeAll(Arrays.asList(getters));
             /* If the interface has any methods left over, they better be
              * public methods that are already present in java.lang.Object.
@@ -1404,9 +1430,9 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                                        MXBeanMapping[] converters) {
             final Class<?> targetClass = getTargetClass();
             return
-                Proxy.newProxyInstance(targetClass.getClassLoader(),
-                                       new Class<?>[] {targetClass},
-                                       new CompositeDataInvocationHandler(cd));
+                    Proxy.newProxyInstance(targetClass.getClassLoader(),
+                            new Class<?>[]{targetClass},
+                            new CompositeDataInvocationHandler(cd));
         }
     }
 
@@ -1430,11 +1456,11 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
     static void mustBeComparable(Class<?> collection, Type element)
             throws OpenDataException {
         if (!(element instanceof Class<?>)
-            || !Comparable.class.isAssignableFrom((Class<?>) element)) {
+                || !Comparable.class.isAssignableFrom((Class<?>) element)) {
             final String msg =
-                "Parameter class " + element + " of " +
-                collection.getName() + " does not implement " +
-                Comparable.class.getName();
+                    "Parameter class " + element + " of " +
+                            collection.getName() + " does not implement " +
+                            Comparable.class.getName();
             throw new OpenDataException(msg);
         }
     }
@@ -1449,8 +1475,8 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
      * Thus "FooBah" becomes "fooBah" and "X" becomes "x", but "URL" stays
      * as "URL".
      *
-     * @param  name The string to be decapitalized.
-     * @return  The decapitalized version of the string.
+     * @param name The string to be decapitalized.
+     * @return The decapitalized version of the string.
      */
     public static String decapitalize(String name) {
         if (name == null || name.length() == 0) {
@@ -1462,7 +1488,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
                 Character.isUpperCase(name.codePointAt(offset1)))
             return name;
         return name.substring(0, offset1).toLowerCase() +
-               name.substring(offset1);
+                name.substring(offset1);
     }
 
     /**
@@ -1476,7 +1502,7 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
             return name;
         int offset1 = name.offsetByCodePoints(0, 1);
         return name.substring(0, offset1).toUpperCase() +
-               name.substring(offset1);
+                name.substring(offset1);
     }
 
     public static String propertyName(Method m) {
@@ -1487,9 +1513,9 @@ public class DefaultMXBeanMappingFactory extends MXBeanMappingFactory {
         else if (name.startsWith("is") && m.getReturnType() == boolean.class)
             rest = name.substring(2);
         if (rest == null || rest.length() == 0
-            || m.getParameterTypes().length > 0
-            || m.getReturnType() == void.class
-            || name.equals("getClass"))
+                || m.getParameterTypes().length > 0
+                || m.getReturnType() == void.class
+                || name.equals("getClass"))
             return null;
         return rest;
     }

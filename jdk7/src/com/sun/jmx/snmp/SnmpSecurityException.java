@@ -28,6 +28,7 @@ package com.sun.jmx.snmp;
  * This exception is thrown when an error occurs in an <CODE> SnmpSecurityModel </CODE>.
  * <p><b>This API is a Sun Microsystems internal API  and is subject
  * to change without notice.</b></p>
+ *
  * @since 1.5
  */
 public class SnmpSecurityException extends Exception {
@@ -49,16 +50,18 @@ public class SnmpSecurityException extends Exception {
      * The current context engine Id.
      */
     public byte[] contextEngineId = null;
-     /**
+    /**
      * The current context name.
      */
     public byte[] contextName = null;
-     /**
+    /**
      * The current flags.
      */
     public byte flags = (byte) SnmpDefinitions.noAuthNoPriv;
+
     /**
      * Constructor.
+     *
      * @param msg The exception msg to display.
      */
     public SnmpSecurityException(String msg) {

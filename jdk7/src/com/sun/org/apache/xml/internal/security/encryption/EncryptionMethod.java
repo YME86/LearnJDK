@@ -22,6 +22,7 @@ package com.sun.org.apache.xml.internal.security.encryption;
 
 
 import java.util.Iterator;
+
 import org.w3c.dom.Element;
 
 
@@ -33,12 +34,12 @@ import org.w3c.dom.Element;
  * It is defined as follows:
  * <xmp>
  * <complexType name='EncryptionMethodType' mixed='true'>
- *     <sequence>
- *         <element name='KeySize' minOccurs='0' type='xenc:KeySizeType'/>
- *         <element name='OAEPparams' minOccurs='0' type='base64Binary'/>
- *         <any namespace='##other' minOccurs='0' maxOccurs='unbounded'/>
- *     </sequence>
- *     <attribute name='Algorithm' type='anyURI' use='required'/>
+ * <sequence>
+ * <element name='KeySize' minOccurs='0' type='xenc:KeySizeType'/>
+ * <element name='OAEPparams' minOccurs='0' type='base64Binary'/>
+ * <any namespace='##other' minOccurs='0' maxOccurs='unbounded'/>
+ * </sequence>
+ * <attribute name='Algorithm' type='anyURI' use='required'/>
  * </complexType>
  * </xmp>
  *
@@ -87,7 +88,7 @@ public interface EncryptionMethod {
      * <code>EncryptionMethod</code>.
      *
      * @return an <code>Iterator</code> over all the additional infomation
-     *   about the <code>EncryptionMethod</code>.
+     * about the <code>EncryptionMethod</code>.
      */
     Iterator getEncryptionMethodInformation();
 
@@ -102,7 +103,7 @@ public interface EncryptionMethod {
      * Removes encryption method information.
      *
      * @param information the information to remove from the
-     *   <code>EncryptionMethod</code>.
+     *                    <code>EncryptionMethod</code>.
      */
     void removeEncryptionMethodInformation(Element information);
 }

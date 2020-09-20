@@ -36,7 +36,7 @@ import com.sun.jmx.snmp.SnmpEngine;
  * a specific MIB. One object implementing this interface will be created
  * for every MIB involved in a SNMP request, and that object will be passed
  * to the SnmpMibAgent in charge of handling that MIB.
- *
+ * <p>
  * Objects implementing this interface will be allocated by the SNMP engine.
  * You will never need to implement this interface. You will only use it.
  *
@@ -48,7 +48,7 @@ public interface SnmpMibRequest {
      * Returns the list of varbind to be handled by the SNMP mib node.
      *
      * @return The element of the enumeration are instances of
-     *         {@link com.sun.jmx.snmp.SnmpVarBind}
+     * {@link com.sun.jmx.snmp.SnmpVarBind}
      */
     public Enumeration getElements();
 
@@ -57,7 +57,7 @@ public interface SnmpMibRequest {
      * The caller shall not modify this vector.
      *
      * @return The element of the vector are instances of
-     *         {@link com.sun.jmx.snmp.SnmpVarBind}
+     * {@link com.sun.jmx.snmp.SnmpVarBind}
      */
     public Vector<SnmpVarBind> getSubList();
 
@@ -72,50 +72,54 @@ public interface SnmpMibRequest {
      * Returns the SNMP protocol version of the original request. No translation is done on the version. The actual received request SNMP version is returned.
      *
      * @return The SNMP protocol version of the original request.
-     *
      * @since 1.5
      */
     public int getRequestPduVersion();
 
     /**
      * Returns the local engine. This parameter is returned only if <CODE> SnmpV3AdaptorServer </CODE> is the adaptor receiving this request. Otherwise null is returned.
-     * @return the local engine.
      *
+     * @return the local engine.
      * @since 1.5
      */
     public SnmpEngine getEngine();
+
     /**
      * Gets the incoming request principal. This parameter is returned only if <CODE> SnmpV3AdaptorServer </CODE> is the adaptor receiving this request. Otherwise null is returned.
-     * @return The request principal.
      *
+     * @return The request principal.
      * @since 1.5
      **/
     public String getPrincipal();
+
     /**
      * Gets the incoming request security level. This level is defined in {@link com.sun.jmx.snmp.SnmpEngine SnmpEngine}. This parameter is returned only if <CODE> SnmpV3AdaptorServer </CODE> is the adaptor receiving this request. Otherwise -1 is returned.
-     * @return The security level.
      *
+     * @return The security level.
      * @since 1.5
      */
     public int getSecurityLevel();
+
     /**
      * Gets the incoming request security model. This parameter is returned only if <CODE> SnmpV3AdaptorServer </CODE> is the adaptor receiving this request. Otherwise -1 is returned.
-     * @return The security model.
      *
+     * @return The security model.
      * @since 1.5
      */
     public int getSecurityModel();
+
     /**
      * Gets the incoming request context name. This parameter is returned only if <CODE> SnmpV3AdaptorServer </CODE> is the adaptor receiving this request. Otherwise null is returned.
-     * @return The context name.
      *
+     * @return The context name.
      * @since 1.5
      */
     public byte[] getContextName();
+
     /**
      * Gets the incoming request context name used by Access Control Model in order to allow or deny the access to OIDs. This parameter is returned only if <CODE> SnmpV3AdaptorServer </CODE> is the adaptor receiving this request. Otherwise null is returned.
-     * @return The checked context name.
      *
+     * @return The checked context name.
      * @since 1.5
      */
     public byte[] getAccessContextName();
@@ -138,13 +142,12 @@ public interface SnmpMibRequest {
      * index value that will be returned in the result PDU.
      *
      * @param varbind The varbind for which the index value is
-     *        querried. Note that this varbind <b>must</b> have
-     *        been obtained from the enumeration returned by
-     *        <CODE>getElements()</CODE>, or from the vector
-     *        returned by <CODE>getSublist()</CODE>.
-     *
+     *                querried. Note that this varbind <b>must</b> have
+     *                been obtained from the enumeration returned by
+     *                <CODE>getElements()</CODE>, or from the vector
+     *                returned by <CODE>getSublist()</CODE>.
      * @return The varbind index that should be embedded in an
-     *         SnmpStatusException for this particular varbind.
+     * SnmpStatusException for this particular varbind.
      */
     public int getVarIndex(SnmpVarBind varbind);
 
@@ -153,7 +156,6 @@ public interface SnmpMibRequest {
      * internal purposes and you should never need to call it directly.
      *
      * @param varbind The varbind to be added in the sublist.
-     *
      */
     public void addVarBind(SnmpVarBind varbind);
 
@@ -162,13 +164,13 @@ public interface SnmpMibRequest {
      * Returns the number of elements (varbinds) in this request sublist.
      *
      * @return The number of elements in the sublist.
-     *
      **/
     public int getSize();
+
     /**
      * Returns the SNMP PDU attached to the request.
-     * @return The SNMP PDU.
      *
+     * @return The SNMP PDU.
      * @since 1.5
      **/
     public SnmpPdu getPdu();

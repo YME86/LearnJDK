@@ -33,18 +33,19 @@ import com.sun.org.apache.xml.internal.dtm.ref.DTMAxisIteratorBase;
  * a merged NodeSet in document order with duplicates removed
  * The individual iterators are supposed to generate nodes
  * in document order
+ *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  */
 public final class UnionIterator extends MultiValuedNodeHeapIterator {
-    /** wrapper for NodeIterators to support iterator
-        comparison on the value of their next() method
-    */
+    /**
+     * wrapper for NodeIterators to support iterator
+     * comparison on the value of their next() method
+     */
     final private DOM _dom;
 
     private final class LookAheadIterator
-            extends MultiValuedNodeHeapIterator.HeapNode
-    {
+            extends MultiValuedNodeHeapIterator.HeapNode {
         public DTMAxisIterator iterator;
 
         public LookAheadIterator(DTMAxisIterator iterator) {

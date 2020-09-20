@@ -36,12 +36,12 @@ import com.sun.jmx.snmp.Enumerated;
 /**
  * This class is an internal class which is used to represent RowStatus
  * codes as defined in RFC 2579.
- *
+ * <p>
  * It defines an additional code, <i>unspecified</i>, which is
  * implementation specific, and is used to identify
  * unspecified actions (when for instance the RowStatus variable
  * is not present in the varbind list) or uninitialized values.
- *
+ * <p>
  * mibgen does not generate objects of this class but any variable
  * using the RowStatus textual convention can be converted into an
  * object of this class thanks to the
@@ -59,7 +59,7 @@ public class EnumRowStatus extends Enumerated implements Serializable {
      * unspecified actions (when for instance the RowStatus variable
      * is not present in the varbind list) or uninitialized values.
      */
-    public final static int unspecified   = 0;
+    public final static int unspecified = 0;
 
     /**
      * This value corresponds to the <i>active</i> RowStatus, as defined in
@@ -69,7 +69,7 @@ public class EnumRowStatus extends Enumerated implements Serializable {
      * use by the managed device;
      * </ul>
      */
-    public final static int active        = 1;
+    public final static int active = 1;
 
     /**
      * This value corresponds to the <i>notInService</i> RowStatus, as
@@ -83,7 +83,7 @@ public class EnumRowStatus extends Enumerated implements Serializable {
      * the current state of the managed device;
      * </ul>
      **/
-    public final static int notInService  = 2;
+    public final static int notInService = 2;
 
     /**
      * This value corresponds to the <i>notReady</i> RowStatus, as defined
@@ -96,7 +96,7 @@ public class EnumRowStatus extends Enumerated implements Serializable {
      * the conceptual row have not been instantiated);
      * </ul>
      */
-    public final static int notReady      = 3;
+    public final static int notReady = 3;
 
     /**
      * This value corresponds to the <i>createAndGo</i> RowStatus,
@@ -109,7 +109,7 @@ public class EnumRowStatus extends Enumerated implements Serializable {
      * device;
      * </ul>
      */
-    public final static int createAndGo   = 4;
+    public final static int createAndGo = 4;
 
     /**
      * This value corresponds to the <i>createAndWait</i> RowStatus,
@@ -132,65 +132,70 @@ public class EnumRowStatus extends Enumerated implements Serializable {
      * an existing conceptual row.
      * </ul>
      */
-    public final static int destroy       = 6;
+    public final static int destroy = 6;
 
     /**
      * Build an <code>EnumRowStatus</code> from an <code>int</code>.
+     *
      * @param valueIndex should be either 0 (<i>unspecified</i>), or one of
-     *        the values defined in RFC 2579.
-     * @exception IllegalArgumentException if the given
-     *            <code>valueIndex</code> is not valid.
+     *                   the values defined in RFC 2579.
+     * @throws IllegalArgumentException if the given
+     *                                  <code>valueIndex</code> is not valid.
      **/
     public EnumRowStatus(int valueIndex)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         super(valueIndex);
     }
 
     /**
      * Build an <code>EnumRowStatus</code> from an <code>Enumerated</code>.
+     *
      * @param valueIndex should be either 0 (<i>unspecified</i>), or one of
-     *        the values defined in RFC 2579.
-     * @exception IllegalArgumentException if the given
-     *            <code>valueIndex</code> is not valid.
+     *                   the values defined in RFC 2579.
+     * @throws IllegalArgumentException if the given
+     *                                  <code>valueIndex</code> is not valid.
      **/
     public EnumRowStatus(Enumerated valueIndex)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         this(valueIndex.intValue());
     }
 
     /**
      * Build an <code>EnumRowStatus</code> from a <code>long</code>.
+     *
      * @param valueIndex should be either 0 (<i>unspecified</i>), or one of
-     *        the values defined in RFC 2579.
-     * @exception IllegalArgumentException if the given
-     *            <code>valueIndex</code> is not valid.
+     *                   the values defined in RFC 2579.
+     * @throws IllegalArgumentException if the given
+     *                                  <code>valueIndex</code> is not valid.
      **/
     public EnumRowStatus(long valueIndex)
-        throws IllegalArgumentException {
-        this((int)valueIndex);
+            throws IllegalArgumentException {
+        this((int) valueIndex);
     }
 
     /**
      * Build an <code>EnumRowStatus</code> from an <code>Integer</code>.
+     *
      * @param valueIndex should be either 0 (<i>unspecified</i>), or one of
-     *        the values defined in RFC 2579.
-     * @exception IllegalArgumentException if the given
-     *            <code>valueIndex</code> is not valid.
+     *                   the values defined in RFC 2579.
+     * @throws IllegalArgumentException if the given
+     *                                  <code>valueIndex</code> is not valid.
      **/
     public EnumRowStatus(Integer valueIndex)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         super(valueIndex);
     }
 
     /**
      * Build an <code>EnumRowStatus</code> from a <code>Long</code>.
+     *
      * @param valueIndex should be either 0 (<i>unspecified</i>), or one of
-     *        the values defined in RFC 2579.
-     * @exception IllegalArgumentException if the given
-     *            <code>valueIndex</code> is not valid.
+     *                   the values defined in RFC 2579.
+     * @throws IllegalArgumentException if the given
+     *                                  <code>valueIndex</code> is not valid.
      **/
     public EnumRowStatus(Long valueIndex)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         this(valueIndex.longValue());
     }
 
@@ -198,52 +203,54 @@ public class EnumRowStatus extends Enumerated implements Serializable {
      * Build an <code>EnumRowStatus</code> with <i>unspecified</i> value.
      **/
     public EnumRowStatus()
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         this(unspecified);
     }
 
     /**
      * Build an <code>EnumRowStatus</code> from a <code>String</code>.
+     *
      * @param x should be either "unspecified", or one of
-     *        the values defined in RFC 2579 ("active", "notReady", etc...)
-     * @exception IllegalArgumentException if the given String
-     *            <code>x</code> is not valid.
+     *          the values defined in RFC 2579 ("active", "notReady", etc...)
+     * @throws IllegalArgumentException if the given String
+     *                                  <code>x</code> is not valid.
      **/
     public EnumRowStatus(String x)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         super(x);
     }
 
     /**
      * Build an <code>EnumRowStatus</code> from an <code>SnmpInt</code>.
+     *
      * @param valueIndex should be either 0 (<i>unspecified</i>), or one of
-     *        the values defined in RFC 2579.
-     * @exception IllegalArgumentException if the given
-     *            <code>valueIndex</code> is not valid.
+     *                   the values defined in RFC 2579.
+     * @throws IllegalArgumentException if the given
+     *                                  <code>valueIndex</code> is not valid.
      **/
     public EnumRowStatus(SnmpInt valueIndex)
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         this(valueIndex.intValue());
     }
 
     /**
      * Build an SnmpValue from this object.
      *
-     * @exception IllegalArgumentException if this object holds an
-     *            <i>unspecified</i> value.
      * @return an SnmpInt containing this object value.
+     * @throws IllegalArgumentException if this object holds an
+     *                                  <i>unspecified</i> value.
      **/
     public SnmpInt toSnmpValue()
-        throws IllegalArgumentException {
+            throws IllegalArgumentException {
         if (value == unspecified)
             throw new
-        IllegalArgumentException("`unspecified' is not a valid SNMP value.");
+                    IllegalArgumentException("`unspecified' is not a valid SNMP value.");
         return new SnmpInt(value);
     }
 
     /**
      * Check that the given <code>value</code> is valid.
-     *
+     * <p>
      * Valid values are:
      * <ul><li><i>unspecified(0)</i></li>
      *     <li><i>active(1)</i></li>
@@ -253,7 +260,6 @@ public class EnumRowStatus extends Enumerated implements Serializable {
      *     <li><i>createAndWait(5)</i></li>
      *     <li><i>destroy(6)</i></li>
      * </ul>
-     *
      **/
     static public boolean isValidValue(int value) {
         if (value < 0) return false;
@@ -270,15 +276,15 @@ public class EnumRowStatus extends Enumerated implements Serializable {
     // Documented in Enumerated
     //
     protected Hashtable getStringTable() {
-        return  EnumRowStatus.getRSStringTable();
+        return EnumRowStatus.getRSStringTable();
     }
 
     static final Hashtable getRSIntTable() {
-        return intTable ;
+        return intTable;
     }
 
     static final Hashtable getRSStringTable() {
-        return stringTable ;
+        return stringTable;
     }
 
     // Initialize the mapping tables.
@@ -287,7 +293,8 @@ public class EnumRowStatus extends Enumerated implements Serializable {
             new Hashtable<Integer, String>();
     final static Hashtable<String, Integer> stringTable =
             new Hashtable<String, Integer>();
-    static  {
+
+    static {
         intTable.put(new Integer(0), "unspecified");
         intTable.put(new Integer(3), "notReady");
         intTable.put(new Integer(6), "destroy");

@@ -24,6 +24,7 @@
  */
 
 package com.sun.jmx.mbeanserver;
+
 import java.io.InvalidObjectException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -33,6 +34,7 @@ import javax.management.Descriptor;
 import javax.management.MBeanException;
 import javax.management.openmbean.OpenDataException;
 import javax.management.openmbean.OpenType;
+
 import sun.reflect.misc.MethodUtil;
 
 final class ConvertingMethod {
@@ -41,8 +43,8 @@ final class ConvertingMethod {
             return new ConvertingMethod(m);
         } catch (OpenDataException ode) {
             final String msg = "Method " + m.getDeclaringClass().getName() +
-                "." + m.getName() + " has parameter or return type that " +
-                "cannot be translated into an open type";
+                    "." + m.getName() + " has parameter or return type that " +
+                    "cannot be translated into an open type";
             throw new IllegalArgumentException(msg, ode);
         }
     }
@@ -154,21 +156,21 @@ final class ConvertingMethod {
     final Object toOpenParameter(MXBeanLookup lookup,
                                  Object param,
                                  int paramNo)
-        throws OpenDataException {
+            throws OpenDataException {
         return paramMappings[paramNo].toOpenValue(param);
     }
 
     final Object fromOpenParameter(MXBeanLookup lookup,
                                    Object param,
                                    int paramNo)
-        throws InvalidObjectException {
+            throws InvalidObjectException {
         return paramMappings[paramNo].fromOpenValue(param);
     }
 
     Object invokeWithOpenReturn(MXBeanLookup lookup,
                                 Object obj, Object[] params)
             throws MBeanException, IllegalAccessException,
-                   InvocationTargetException {
+            InvocationTargetException {
         MXBeanLookup old = MXBeanLookup.getLookup();
         try {
             MXBeanLookup.setLookup(lookup);
@@ -180,14 +182,14 @@ final class ConvertingMethod {
 
     private Object invokeWithOpenReturn(Object obj, Object[] params)
             throws MBeanException, IllegalAccessException,
-                   InvocationTargetException {
+            InvocationTargetException {
         final Object[] javaParams;
         try {
             javaParams = fromOpenParameters(params);
         } catch (InvalidObjectException e) {
             // probably can't happen
             final String msg = methodName() + ": cannot convert parameters " +
-                "from open values: " + e;
+                    "from open values: " + e;
             throw new MBeanException(e, msg);
         }
         final Object javaReturn = MethodUtil.invoke(method, obj, javaParams);
@@ -196,7 +198,7 @@ final class ConvertingMethod {
         } catch (OpenDataException e) {
             // probably can't happen
             final String msg = methodName() + ": cannot convert return " +
-                "value to open value: " + e;
+                    "value to open value: " + e;
             throw new MBeanException(e, msg);
         }
     }

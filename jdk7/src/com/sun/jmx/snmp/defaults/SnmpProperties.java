@@ -27,6 +27,7 @@ package com.sun.jmx.snmp.defaults;
 
 // java import
 //
+
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.IOException;
@@ -60,9 +61,9 @@ public class SnmpProperties {
         InputStream is = new FileInputStream(file);
         props.load(is);
         is.close();
-        for (final Enumeration e = props.keys(); e.hasMoreElements() ; ) {
+        for (final Enumeration e = props.keys(); e.hasMoreElements(); ) {
             final String key = (String) e.nextElement();
-            System.setProperty(key,props.getProperty(key));
+            System.setProperty(key, props.getProperty(key));
         }
     }
 
@@ -116,7 +117,7 @@ public class SnmpProperties {
      * <p>
      * Property Name: <B>jmx.specification.name</B>
      */
-     public static final String JMX_SPEC_NAME = "jmx.specification.name";
+    public static final String JMX_SPEC_NAME = "jmx.specification.name";
 
     /**
      * References the property that specifies the version of the JMX
@@ -124,7 +125,7 @@ public class SnmpProperties {
      * <p>
      * Property Name: <B>jmx.specification.version</B>
      */
-     public static final String JMX_SPEC_VERSION = "jmx.specification.version";
+    public static final String JMX_SPEC_VERSION = "jmx.specification.version";
 
     /**
      * References the property that specifies the vendor of the JMX
@@ -132,7 +133,7 @@ public class SnmpProperties {
      * <p>
      * Property Name: <B>jmx.specification.vendor</B>
      */
-     public static final String JMX_SPEC_VENDOR = "jmx.specification.vendor";
+    public static final String JMX_SPEC_VENDOR = "jmx.specification.vendor";
 
     /**
      * References the property that specifies the full name of this product

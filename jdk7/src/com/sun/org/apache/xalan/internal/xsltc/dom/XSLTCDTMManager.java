@@ -52,28 +52,31 @@ import org.xml.sax.XMLReader;
 /**
  * The default implementation for the DTMManager.
  */
-public class XSLTCDTMManager extends DTMManagerDefault
-{
+public class XSLTCDTMManager extends DTMManagerDefault {
 
-    /** The default class name to use as the manager. */
+    /**
+     * The default class name to use as the manager.
+     */
     private static final String DEFAULT_CLASS_NAME =
-        "com.sun.org.apache.xalan.internal.xsltc.dom.XSLTCDTMManager";
+            "com.sun.org.apache.xalan.internal.xsltc.dom.XSLTCDTMManager";
 
     private static final String DEFAULT_PROP_NAME =
-        "com.sun.org.apache.xalan.internal.xsltc.dom.XSLTCDTMManager";
+            "com.sun.org.apache.xalan.internal.xsltc.dom.XSLTCDTMManager";
 
-    /** Set this to true if you want a dump of the DTM after creation */
+    /**
+     * Set this to true if you want a dump of the DTM after creation
+     */
     private static final boolean DUMPTREE = false;
 
-    /** Set this to true if you want basic diagnostics */
+    /**
+     * Set this to true if you want basic diagnostics
+     */
     private static final boolean DEBUG = false;
 
     /**
      * Constructor DTMManagerDefault
-     *
      */
-    public XSLTCDTMManager()
-    {
+    public XSLTCDTMManager() {
         super();
     }
 
@@ -82,8 +85,7 @@ public class XSLTCDTMManager extends DTMManagerDefault
      * This static method creates a new factory instance.
      * The current implementation just returns a new XSLTCDTMManager instance.
      */
-    public static XSLTCDTMManager newInstance()
-    {
+    public static XSLTCDTMManager newInstance() {
         return new XSLTCDTMManager();
     }
 
@@ -110,8 +112,8 @@ public class XSLTCDTMManager extends DTMManagerDefault
         Class mgrClass = null;
         if (useServicesMechanism) {
             mgrClass = ObjectFactory.lookUpFactoryClass(DEFAULT_PROP_NAME,
-                                                          null,
-                                                          DEFAULT_CLASS_NAME);
+                    null,
+                    DEFAULT_CLASS_NAME);
         } else {
             try {
                 mgrClass = ObjectFactory.findProviderClass(DEFAULT_CLASS_NAME, true);
@@ -134,24 +136,22 @@ public class XSLTCDTMManager extends DTMManagerDefault
      * (I think more parameters will need to be added for error handling, and
      * entity resolution).
      *
-     * @param source the specification of the source object.
-     * @param unique true if the returned DTM must be unique, probably because it
-     * is going to be mutated.
+     * @param source           the specification of the source object.
+     * @param unique           true if the returned DTM must be unique, probably because it
+     *                         is going to be mutated.
      * @param whiteSpaceFilter Enables filtering of whitespace nodes, and may
      *                         be null.
-     * @param incremental true if the DTM should be built incrementally, if
-     *                    possible.
-     * @param doIndexing true if the caller considers it worth it to use
-     *                   indexing schemes.
-     *
+     * @param incremental      true if the DTM should be built incrementally, if
+     *                         possible.
+     * @param doIndexing       true if the caller considers it worth it to use
+     *                         indexing schemes.
      * @return a non-null DTM reference.
      */
     public DTM getDTM(Source source, boolean unique,
                       DTMWSFilter whiteSpaceFilter, boolean incremental,
-                      boolean doIndexing)
-    {
+                      boolean doIndexing) {
         return getDTM(source, unique, whiteSpaceFilter, incremental,
-                      doIndexing, false, 0, true, false);
+                doIndexing, false, 0, true, false);
     }
 
     /**
@@ -163,25 +163,23 @@ public class XSLTCDTMManager extends DTMManagerDefault
      * (I think more parameters will need to be added for error handling, and
      * entity resolution).
      *
-     * @param source the specification of the source object.
-     * @param unique true if the returned DTM must be unique, probably because it
-     * is going to be mutated.
+     * @param source           the specification of the source object.
+     * @param unique           true if the returned DTM must be unique, probably because it
+     *                         is going to be mutated.
      * @param whiteSpaceFilter Enables filtering of whitespace nodes, and may
      *                         be null.
-     * @param incremental true if the DTM should be built incrementally, if
-     *                    possible.
-     * @param doIndexing true if the caller considers it worth it to use
-     *                   indexing schemes.
-     * @param buildIdIndex true if the id index table should be built.
-     *
+     * @param incremental      true if the DTM should be built incrementally, if
+     *                         possible.
+     * @param doIndexing       true if the caller considers it worth it to use
+     *                         indexing schemes.
+     * @param buildIdIndex     true if the id index table should be built.
      * @return a non-null DTM reference.
      */
     public DTM getDTM(Source source, boolean unique,
                       DTMWSFilter whiteSpaceFilter, boolean incremental,
-                      boolean doIndexing, boolean buildIdIndex)
-    {
+                      boolean doIndexing, boolean buildIdIndex) {
         return getDTM(source, unique, whiteSpaceFilter, incremental,
-                      doIndexing, false, 0, buildIdIndex, false);
+                doIndexing, false, 0, buildIdIndex, false);
     }
 
     /**
@@ -193,31 +191,29 @@ public class XSLTCDTMManager extends DTMManagerDefault
      * (I think more parameters will need to be added for error handling, and
      * entity resolution).
      *
-     * @param source the specification of the source object.
-     * @param unique true if the returned DTM must be unique, probably because it
-     * is going to be mutated.
+     * @param source           the specification of the source object.
+     * @param unique           true if the returned DTM must be unique, probably because it
+     *                         is going to be mutated.
      * @param whiteSpaceFilter Enables filtering of whitespace nodes, and may
      *                         be null.
-     * @param incremental true if the DTM should be built incrementally, if
-     *                    possible.
-     * @param doIndexing true if the caller considers it worth it to use
-     *                   indexing schemes.
-     * @param buildIdIndex true if the id index table should be built.
-     * @param newNameTable true if we want to use a separate ExpandedNameTable
-     *                     for this DTM.
-     *
+     * @param incremental      true if the DTM should be built incrementally, if
+     *                         possible.
+     * @param doIndexing       true if the caller considers it worth it to use
+     *                         indexing schemes.
+     * @param buildIdIndex     true if the id index table should be built.
+     * @param newNameTable     true if we want to use a separate ExpandedNameTable
+     *                         for this DTM.
      * @return a non-null DTM reference.
      */
-  public DTM getDTM(Source source, boolean unique,
-                    DTMWSFilter whiteSpaceFilter, boolean incremental,
-                    boolean doIndexing, boolean buildIdIndex,
-                    boolean newNameTable)
-  {
-    return getDTM(source, unique, whiteSpaceFilter, incremental,
-                  doIndexing, false, 0, buildIdIndex, newNameTable);
-  }
+    public DTM getDTM(Source source, boolean unique,
+                      DTMWSFilter whiteSpaceFilter, boolean incremental,
+                      boolean doIndexing, boolean buildIdIndex,
+                      boolean newNameTable) {
+        return getDTM(source, unique, whiteSpaceFilter, incremental,
+                doIndexing, false, 0, buildIdIndex, newNameTable);
+    }
 
-  /**
+    /**
      * Get an instance of a DTM, loaded with the content from the
      * specified source.  If the unique flag is true, a new instance will
      * always be returned.  Otherwise it is up to the DTMManager to return a
@@ -226,35 +222,33 @@ public class XSLTCDTMManager extends DTMManagerDefault
      * (I think more parameters will need to be added for error handling, and
      * entity resolution).
      *
-     * @param source the specification of the source object.
-     * @param unique true if the returned DTM must be unique, probably because it
-     * is going to be mutated.
+     * @param source           the specification of the source object.
+     * @param unique           true if the returned DTM must be unique, probably because it
+     *                         is going to be mutated.
      * @param whiteSpaceFilter Enables filtering of whitespace nodes, and may
      *                         be null.
-     * @param incremental true if the DTM should be built incrementally, if
-     *                    possible.
-     * @param doIndexing true if the caller considers it worth it to use
-     *                   indexing schemes.
-     * @param hasUserReader true if <code>source</code> is a
-     *                      <code>SAXSource</code> object that has an
-     *                      <code>XMLReader</code>, that was specified by the
-     *                      user.
-     * @param size  Specifies initial size of tables that represent the DTM
-     * @param buildIdIndex true if the id index table should be built.
-     *
+     * @param incremental      true if the DTM should be built incrementally, if
+     *                         possible.
+     * @param doIndexing       true if the caller considers it worth it to use
+     *                         indexing schemes.
+     * @param hasUserReader    true if <code>source</code> is a
+     *                         <code>SAXSource</code> object that has an
+     *                         <code>XMLReader</code>, that was specified by the
+     *                         user.
+     * @param size             Specifies initial size of tables that represent the DTM
+     * @param buildIdIndex     true if the id index table should be built.
      * @return a non-null DTM reference.
      */
     public DTM getDTM(Source source, boolean unique,
                       DTMWSFilter whiteSpaceFilter, boolean incremental,
                       boolean doIndexing, boolean hasUserReader, int size,
-                      boolean buildIdIndex)
-    {
-      return getDTM(source, unique, whiteSpaceFilter, incremental,
-                    doIndexing, hasUserReader, size,
-                    buildIdIndex, false);
-  }
+                      boolean buildIdIndex) {
+        return getDTM(source, unique, whiteSpaceFilter, incremental,
+                doIndexing, hasUserReader, size,
+                buildIdIndex, false);
+    }
 
-  /**
+    /**
      * Get an instance of a DTM, loaded with the content from the
      * specified source.  If the unique flag is true, a new instance will
      * always be returned.  Otherwise it is up to the DTMManager to return a
@@ -263,42 +257,40 @@ public class XSLTCDTMManager extends DTMManagerDefault
      * (I think more parameters will need to be added for error handling, and
      * entity resolution).
      *
-     * @param source the specification of the source object.
-     * @param unique true if the returned DTM must be unique, probably because it
-     * is going to be mutated.
+     * @param source           the specification of the source object.
+     * @param unique           true if the returned DTM must be unique, probably because it
+     *                         is going to be mutated.
      * @param whiteSpaceFilter Enables filtering of whitespace nodes, and may
      *                         be null.
-     * @param incremental true if the DTM should be built incrementally, if
-     *                    possible.
-     * @param doIndexing true if the caller considers it worth it to use
-     *                   indexing schemes.
-     * @param hasUserReader true if <code>source</code> is a
-     *                      <code>SAXSource</code> object that has an
-     *                      <code>XMLReader</code>, that was specified by the
-     *                      user.
-     * @param size  Specifies initial size of tables that represent the DTM
-     * @param buildIdIndex true if the id index table should be built.
-     * @param newNameTable true if we want to use a separate ExpandedNameTable
-     *                     for this DTM.
-     *
+     * @param incremental      true if the DTM should be built incrementally, if
+     *                         possible.
+     * @param doIndexing       true if the caller considers it worth it to use
+     *                         indexing schemes.
+     * @param hasUserReader    true if <code>source</code> is a
+     *                         <code>SAXSource</code> object that has an
+     *                         <code>XMLReader</code>, that was specified by the
+     *                         user.
+     * @param size             Specifies initial size of tables that represent the DTM
+     * @param buildIdIndex     true if the id index table should be built.
+     * @param newNameTable     true if we want to use a separate ExpandedNameTable
+     *                         for this DTM.
      * @return a non-null DTM reference.
      */
-  public DTM getDTM(Source source, boolean unique,
-                    DTMWSFilter whiteSpaceFilter, boolean incremental,
-                    boolean doIndexing, boolean hasUserReader, int size,
-                    boolean buildIdIndex, boolean newNameTable)
-  {
-        if(DEBUG && null != source) {
-            System.out.println("Starting "+
-                         (unique ? "UNIQUE" : "shared")+
-                         " source: "+source.getSystemId());
+    public DTM getDTM(Source source, boolean unique,
+                      DTMWSFilter whiteSpaceFilter, boolean incremental,
+                      boolean doIndexing, boolean hasUserReader, int size,
+                      boolean buildIdIndex, boolean newNameTable) {
+        if (DEBUG && null != source) {
+            System.out.println("Starting " +
+                    (unique ? "UNIQUE" : "shared") +
+                    " source: " + source.getSystemId());
         }
 
         int dtmPos = getFirstFreeDTMID();
         int documentID = dtmPos << IDENT_DTM_NODE_BITS;
 
         if ((null != source) && source instanceof StAXSource) {
-            final StAXSource staxSource = (StAXSource)source;
+            final StAXSource staxSource = (StAXSource) source;
             StAXEvent2SAX staxevent2sax = null;
             StAXStream2SAX staxStream2SAX = null;
             if (staxSource.getXMLEventReader() != null) {
@@ -313,13 +305,13 @@ public class XSLTCDTMManager extends DTMManagerDefault
 
             if (size <= 0) {
                 dtm = new SAXImpl(this, source, documentID,
-                                  whiteSpaceFilter, null, doIndexing,
-                                  DTMDefaultBase.DEFAULT_BLOCKSIZE,
-                                  buildIdIndex, newNameTable);
+                        whiteSpaceFilter, null, doIndexing,
+                        DTMDefaultBase.DEFAULT_BLOCKSIZE,
+                        buildIdIndex, newNameTable);
             } else {
                 dtm = new SAXImpl(this, source, documentID,
-                                  whiteSpaceFilter, null, doIndexing,
-                                  size, buildIdIndex, newNameTable);
+                        whiteSpaceFilter, null, doIndexing,
+                        size, buildIdIndex, newNameTable);
             }
 
             dtm.setDocumentURI(source.getSystemId());
@@ -330,22 +322,19 @@ public class XSLTCDTMManager extends DTMManagerDefault
                 if (staxevent2sax != null) {
                     staxevent2sax.setContentHandler(dtm);
                     staxevent2sax.parse();
-                }
-                else if (staxStream2SAX != null) {
+                } else if (staxStream2SAX != null) {
                     staxStream2SAX.setContentHandler(dtm);
                     staxStream2SAX.parse();
                 }
 
-            }
-            catch (RuntimeException re) {
+            } catch (RuntimeException re) {
                 throw re;
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new com.sun.org.apache.xml.internal.utils.WrappedRuntimeException(e);
             }
 
             return dtm;
-        }else if ((null != source) && source instanceof DOMSource) {
+        } else if ((null != source) && source instanceof DOMSource) {
             final DOMSource domsrc = (DOMSource) source;
             final org.w3c.dom.Node node = domsrc.getNode();
             final DOM2SAX dom2sax = new DOM2SAX(node);
@@ -354,13 +343,13 @@ public class XSLTCDTMManager extends DTMManagerDefault
 
             if (size <= 0) {
                 dtm = new SAXImpl(this, source, documentID,
-                                  whiteSpaceFilter, null, doIndexing,
-                                  DTMDefaultBase.DEFAULT_BLOCKSIZE,
-                                  buildIdIndex, newNameTable);
+                        whiteSpaceFilter, null, doIndexing,
+                        DTMDefaultBase.DEFAULT_BLOCKSIZE,
+                        buildIdIndex, newNameTable);
             } else {
                 dtm = new SAXImpl(this, source, documentID,
-                                  whiteSpaceFilter, null, doIndexing,
-                                  size, buildIdIndex, newNameTable);
+                        whiteSpaceFilter, null, doIndexing,
+                        size, buildIdIndex, newNameTable);
             }
 
             dtm.setDocumentURI(source.getSystemId());
@@ -371,22 +360,18 @@ public class XSLTCDTMManager extends DTMManagerDefault
 
             try {
                 dom2sax.parse();
-            }
-            catch (RuntimeException re) {
+            } catch (RuntimeException re) {
                 throw re;
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new com.sun.org.apache.xml.internal.utils.WrappedRuntimeException(e);
             }
 
             return dtm;
-        }
-        else
-        {
+        } else {
             boolean isSAXSource = (null != source)
-                                  ? (source instanceof SAXSource) : true;
+                    ? (source instanceof SAXSource) : true;
             boolean isStreamSource = (null != source)
-                                  ? (source instanceof StreamSource) : false;
+                    ? (source instanceof StreamSource) : false;
 
             if (isSAXSource || isStreamSource) {
                 XMLReader reader;
@@ -396,8 +381,7 @@ public class XSLTCDTMManager extends DTMManagerDefault
                     xmlSource = null;
                     reader = null;
                     hasUserReader = false;  // Make sure the user didn't lie
-                }
-                else {
+                } else {
                     reader = getXMLReader(source);
                     xmlSource = SAXSource.sourceToInputSource(source);
 
@@ -406,8 +390,7 @@ public class XSLTCDTMManager extends DTMManagerDefault
                     if (null != urlOfSource) {
                         try {
                             urlOfSource = SystemIDResolver.getAbsoluteURI(urlOfSource);
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                             // %REVIEW% Is there a better way to send a warning?
                             System.err.println("Can not absolutize URL: " + urlOfSource);
                         }
@@ -420,9 +403,9 @@ public class XSLTCDTMManager extends DTMManagerDefault
                 SAXImpl dtm;
                 if (size <= 0) {
                     dtm = new SAXImpl(this, source, documentID, whiteSpaceFilter,
-                                      null, doIndexing,
-                                      DTMDefaultBase.DEFAULT_BLOCKSIZE,
-                                      buildIdIndex, newNameTable);
+                            null, doIndexing,
+                            DTMDefaultBase.DEFAULT_BLOCKSIZE,
+                            buildIdIndex, newNameTable);
                 } else {
                     dtm = new SAXImpl(this, source, documentID, whiteSpaceFilter,
                             null, doIndexing, size, buildIdIndex, newNameTable);
@@ -444,23 +427,21 @@ public class XSLTCDTMManager extends DTMManagerDefault
                     reader.setDTDHandler(dtm);
                 }
 
-                if(!hasUserReader || null == reader.getErrorHandler()) {
+                if (!hasUserReader || null == reader.getErrorHandler()) {
                     reader.setErrorHandler(dtm);
                 }
 
                 try {
                     reader.setProperty("http://xml.org/sax/properties/lexical-handler", dtm);
+                } catch (SAXNotRecognizedException e) {
+                } catch (SAXNotSupportedException e) {
                 }
-                catch (SAXNotRecognizedException e){}
-                catch (SAXNotSupportedException e){}
 
                 try {
                     reader.parse(xmlSource);
-                }
-                catch (RuntimeException re) {
+                } catch (RuntimeException re) {
                     throw re;
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     throw new com.sun.org.apache.xml.internal.utils.WrappedRuntimeException(e);
                 } finally {
                     if (!hasUserReader) {
@@ -474,8 +455,7 @@ public class XSLTCDTMManager extends DTMManagerDefault
                 }
 
                 return dtm;
-            }
-            else {
+            } else {
                 // It should have been handled by a derived class or the caller
                 // made a mistake.
                 throw new DTMException(XMLMessages.createXMLMessage(XMLErrorResources.ER_NOT_SUPPORTED, new Object[]{source}));

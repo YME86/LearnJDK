@@ -98,7 +98,7 @@ abstract class Expression extends SyntaxTreeNode {
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
         ErrorMsg msg = new ErrorMsg(ErrorMsg.NOT_IMPLEMENTED_ERR,
-                                    getClass(), this);
+                getClass(), this);
         getParser().reportError(FATAL, msg);
     }
 
@@ -131,7 +131,7 @@ abstract class Expression extends SyntaxTreeNode {
      * reference, then call setStartNode() passing the context node.
      */
     public void startIterator(ClassGenerator classGen,
-                                   MethodGenerator methodGen) {
+                              MethodGenerator methodGen) {
         // Ignore if type is not node-set
         if (_type instanceof NodeSetType == false) {
             return;

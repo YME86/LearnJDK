@@ -148,11 +148,15 @@ public class AtomicStampedReference<V> {
                                  int newStamp) {
         Pair<V> current = pair;
         return
+            // 本来的对象要和传入的对象一致
             expectedReference == current.reference &&
+            // 版本戳要一直,防止 ABA 问题
             expectedStamp == current.stamp &&
-            ((newReference == current.reference &&
-              newStamp == current.stamp) ||
-             casPair(current, Pair.of(newReference, newStamp)));
+            // 如果要更新的数据和原本的一样,就直接返回了
+            ((newReference == current.reference && newStamp == current.stamp) ||
+                    // attention: Pair.of 实现了对多个变量同时修改的功能!
+                    // casPair: 真正的 CAS
+                    casPair(current, Pair.of(newReference, newStamp)));
     }
 
     /**

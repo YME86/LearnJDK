@@ -45,6 +45,7 @@ import javax.security.auth.login.Configuration;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
+
 import com.sun.jmx.remote.util.ClassLogger;
 import com.sun.jmx.remote.util.EnvHelp;
 
@@ -84,8 +85,8 @@ public final class JMXPluggableAuthenticator implements JMXAuthenticator {
      * @param env the environment containing configuration properties for the
      *            authenticator. Can be null, which is equivalent to an empty
      *            Map.
-     * @exception SecurityException if the authentication mechanism cannot be
-     *            initialized.
+     * @throws SecurityException if the authentication mechanism cannot be
+     *                           initialized.
      */
     public JMXPluggableAuthenticator(Map<?, ?> env) {
 
@@ -102,7 +103,7 @@ public final class JMXPluggableAuthenticator implements JMXAuthenticator {
             if (loginConfigName != null) {
                 // use the supplied JAAS login configuration
                 loginContext =
-                    new LoginContext(loginConfigName, new JMXCallbackHandler());
+                        new LoginContext(loginConfigName, new JMXCallbackHandler());
 
             } else {
                 // use the default JAAS login configuration (file-based)
@@ -110,21 +111,21 @@ public final class JMXPluggableAuthenticator implements JMXAuthenticator {
                 if (sm != null) {
                     sm.checkPermission(
                             new AuthPermission("createLoginContext." +
-                                               LOGIN_CONFIG_NAME));
+                                    LOGIN_CONFIG_NAME));
                 }
 
                 final String pf = passwordFile;
                 try {
                     loginContext = AccessController.doPrivileged(
-                        new PrivilegedExceptionAction<LoginContext>() {
-                            public LoginContext run() throws LoginException {
-                                return new LoginContext(
-                                                LOGIN_CONFIG_NAME,
-                                                null,
-                                                new JMXCallbackHandler(),
-                                                new FileLoginConfig(pf));
-                            }
-                        });
+                            new PrivilegedExceptionAction<LoginContext>() {
+                                public LoginContext run() throws LoginException {
+                                    return new LoginContext(
+                                            LOGIN_CONFIG_NAME,
+                                            null,
+                                            new JMXCallbackHandler(),
+                                            new FileLoginConfig(pf));
+                                }
+                            });
                 } catch (PrivilegedActionException pae) {
                     throw (LoginException) pae.getException();
                 }
@@ -143,16 +144,14 @@ public final class JMXPluggableAuthenticator implements JMXAuthenticator {
      * with the given client credentials.
      *
      * @param credentials the user-defined credentials to be passed in
-     * to the server in order to authenticate the user before creating
-     * the <code>MBeanServerConnection</code>.  This parameter must
-     * be a two-element <code>String[]</code> containing the client's
-     * username and password in that order.
-     *
+     *                    to the server in order to authenticate the user before creating
+     *                    the <code>MBeanServerConnection</code>.  This parameter must
+     *                    be a two-element <code>String[]</code> containing the client's
+     *                    username and password in that order.
      * @return the authenticated subject containing a
      * <code>JMXPrincipal(username)</code>.
-     *
-     * @exception SecurityException if the server cannot authenticate the user
-     * with the provided credentials.
+     * @throws SecurityException if the server cannot authenticate the user
+     *                           with the provided credentials.
      */
     public Subject authenticate(Object credentials) {
         // Verify that credentials is of type String[].
@@ -163,8 +162,8 @@ public final class JMXPluggableAuthenticator implements JMXAuthenticator {
                 authenticationFailure("authenticate", "Credentials required");
 
             final String message =
-                "Credentials should be String[] instead of " +
-                 credentials.getClass().getName();
+                    "Credentials should be String[] instead of " +
+                            credentials.getClass().getName();
             authenticationFailure("authenticate", message);
         }
         // Verify that the array contains two elements.
@@ -172,8 +171,8 @@ public final class JMXPluggableAuthenticator implements JMXAuthenticator {
         final String[] aCredentials = (String[]) credentials;
         if (aCredentials.length != 2) {
             final String message =
-                "Credentials should have 2 elements not " +
-                aCredentials.length;
+                    "Credentials should have 2 elements not " +
+                            aCredentials.length;
             authenticationFailure("authenticate", message);
         }
         // Verify that username exists and the associated
@@ -191,11 +190,11 @@ public final class JMXPluggableAuthenticator implements JMXAuthenticator {
             loginContext.login();
             final Subject subject = loginContext.getSubject();
             AccessController.doPrivileged(new PrivilegedAction<Void>() {
-                    public Void run() {
-                        subject.setReadOnly();
-                        return null;
-                    }
-                });
+                public Void run() {
+                    subject.setReadOnly();
+                    return null;
+                }
+            });
 
             return subject;
 
@@ -206,7 +205,7 @@ public final class JMXPluggableAuthenticator implements JMXAuthenticator {
     }
 
     private static void authenticationFailure(String method, String message)
-        throws SecurityException {
+            throws SecurityException {
         final String msg = "Authentication failed! " + message;
         final SecurityException e = new SecurityException(msg);
         logException(method, msg, e);
@@ -215,7 +214,7 @@ public final class JMXPluggableAuthenticator implements JMXAuthenticator {
 
     private static void authenticationFailure(String method,
                                               Exception exception)
-        throws SecurityException {
+            throws SecurityException {
         String msg;
         SecurityException se;
         if (exception instanceof SecurityException) {
@@ -246,101 +245,101 @@ public final class JMXPluggableAuthenticator implements JMXAuthenticator {
     private String username;
     private String password;
     private static final String LOGIN_CONFIG_PROP =
-        "jmx.remote.x.login.config";
+            "jmx.remote.x.login.config";
     private static final String LOGIN_CONFIG_NAME = "JMXPluggableAuthenticator";
     private static final String PASSWORD_FILE_PROP =
-        "jmx.remote.x.password.file";
+            "jmx.remote.x.password.file";
     private static final ClassLogger logger =
-        new ClassLogger("javax.management.remote.misc", LOGIN_CONFIG_NAME);
-
-/**
- * This callback handler supplies the username and password (which was
- * originally supplied by the JMX user) to the JAAS login module performing
- * the authentication. No interactive user prompting is required because the
- * credentials are already available to this class (via its enclosing class).
- */
-private final class JMXCallbackHandler implements CallbackHandler {
+            new ClassLogger("javax.management.remote.misc", LOGIN_CONFIG_NAME);
 
     /**
-     * Sets the username and password in the appropriate Callback object.
+     * This callback handler supplies the username and password (which was
+     * originally supplied by the JMX user) to the JAAS login module performing
+     * the authentication. No interactive user prompting is required because the
+     * credentials are already available to this class (via its enclosing class).
      */
-    public void handle(Callback[] callbacks)
-        throws IOException, UnsupportedCallbackException {
+    private final class JMXCallbackHandler implements CallbackHandler {
 
-        for (int i = 0; i < callbacks.length; i++) {
-            if (callbacks[i] instanceof NameCallback) {
-                ((NameCallback)callbacks[i]).setName(username);
+        /**
+         * Sets the username and password in the appropriate Callback object.
+         */
+        public void handle(Callback[] callbacks)
+                throws IOException, UnsupportedCallbackException {
 
-            } else if (callbacks[i] instanceof PasswordCallback) {
-                ((PasswordCallback)callbacks[i])
-                    .setPassword(password.toCharArray());
+            for (int i = 0; i < callbacks.length; i++) {
+                if (callbacks[i] instanceof NameCallback) {
+                    ((NameCallback) callbacks[i]).setName(username);
 
-            } else {
-                throw new UnsupportedCallbackException
-                    (callbacks[i], "Unrecognized Callback");
+                } else if (callbacks[i] instanceof PasswordCallback) {
+                    ((PasswordCallback) callbacks[i])
+                            .setPassword(password.toCharArray());
+
+                } else {
+                    throw new UnsupportedCallbackException
+                            (callbacks[i], "Unrecognized Callback");
+                }
             }
         }
     }
-}
-
-/**
- * This class defines the JAAS configuration for file-based authentication.
- * It is equivalent to the following textual configuration entry:
- * <pre>
- *     JMXPluggableAuthenticator {
- *         com.sun.jmx.remote.security.FileLoginModule required;
- *     };
- * </pre>
- */
-private static class FileLoginConfig extends Configuration {
-
-    // The JAAS configuration for file-based authentication
-    private AppConfigurationEntry[] entries;
-
-    // The classname of the login module for file-based authentication
-    private static final String FILE_LOGIN_MODULE =
-        FileLoginModule.class.getName();
-
-    // The option that identifies the password file to use
-    private static final String PASSWORD_FILE_OPTION = "passwordFile";
 
     /**
-     * Creates an instance of <code>FileLoginConfig</code>
-     *
-     * @param passwordFile A filepath that identifies the password file to use.
-     *                     If null then the default password file is used.
+     * This class defines the JAAS configuration for file-based authentication.
+     * It is equivalent to the following textual configuration entry:
+     * <pre>
+     *     JMXPluggableAuthenticator {
+     *         com.sun.jmx.remote.security.FileLoginModule required;
+     *     };
+     * </pre>
      */
-    public FileLoginConfig(String passwordFile) {
+    private static class FileLoginConfig extends Configuration {
 
-        Map<String, String> options;
-        if (passwordFile != null) {
-            options = new HashMap<String, String>(1);
-            options.put(PASSWORD_FILE_OPTION, passwordFile);
-        } else {
-            options = Collections.emptyMap();
+        // The JAAS configuration for file-based authentication
+        private AppConfigurationEntry[] entries;
+
+        // The classname of the login module for file-based authentication
+        private static final String FILE_LOGIN_MODULE =
+                FileLoginModule.class.getName();
+
+        // The option that identifies the password file to use
+        private static final String PASSWORD_FILE_OPTION = "passwordFile";
+
+        /**
+         * Creates an instance of <code>FileLoginConfig</code>
+         *
+         * @param passwordFile A filepath that identifies the password file to use.
+         *                     If null then the default password file is used.
+         */
+        public FileLoginConfig(String passwordFile) {
+
+            Map<String, String> options;
+            if (passwordFile != null) {
+                options = new HashMap<String, String>(1);
+                options.put(PASSWORD_FILE_OPTION, passwordFile);
+            } else {
+                options = Collections.emptyMap();
+            }
+
+            entries = new AppConfigurationEntry[]{
+                    new AppConfigurationEntry(FILE_LOGIN_MODULE,
+                            AppConfigurationEntry.LoginModuleControlFlag.REQUIRED,
+                            options)
+            };
         }
 
-        entries = new AppConfigurationEntry[] {
-            new AppConfigurationEntry(FILE_LOGIN_MODULE,
-                AppConfigurationEntry.LoginModuleControlFlag.REQUIRED,
-                    options)
-        };
-    }
+        /**
+         * Gets the JAAS configuration for file-based authentication
+         */
+        public AppConfigurationEntry[] getAppConfigurationEntry(String name) {
 
-    /**
-     * Gets the JAAS configuration for file-based authentication
-     */
-    public AppConfigurationEntry[] getAppConfigurationEntry(String name) {
+            return name.equals(LOGIN_CONFIG_NAME) ? entries : null;
+        }
 
-        return name.equals(LOGIN_CONFIG_NAME) ? entries : null;
+        /**
+         * Refreshes the configuration.
+         */
+        public void refresh() {
+            // the configuration is fixed
+        }
     }
-
-    /**
-     * Refreshes the configuration.
-     */
-    public void refresh() {
-        // the configuration is fixed
-    }
-}
 
 }

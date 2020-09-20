@@ -56,6 +56,7 @@ import com.sun.org.apache.xml.internal.dtm.DTM;
  * Mode gathers all the templates belonging to a given mode;
  * it is responsible for generating an appropriate
  * applyTemplates + (mode name) method in the translet.
+ *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
@@ -169,10 +170,10 @@ final class Mode implements Constants {
     /**
      * Creates a new Mode.
      *
-     * @param name A textual representation of the mode's QName
+     * @param name       A textual representation of the mode's QName
      * @param stylesheet The Stylesheet in which the mode occured
-     * @param suffix A suffix to append to the method name for this mode
-     *               (normally a sequence number - still in a String).
+     * @param suffix     A suffix to append to the method name for this mode
+     *                   (normally a sequence number - still in a String).
      */
     public Mode(QName name, Stylesheet stylesheet, String suffix) {
         _name = name;
@@ -226,16 +227,15 @@ final class Mode implements Constants {
     }
 
     private int partition(Vector templates, int p, int r) {
-        final Template x = (Template)templates.elementAt(p);
+        final Template x = (Template) templates.elementAt(p);
         int i = p - 1;
         int j = r + 1;
         while (true) {
-            while (x.compareTo((Template)templates.elementAt(--j)) > 0);
-            while (x.compareTo((Template)templates.elementAt(++i)) < 0);
+            while (x.compareTo((Template) templates.elementAt(--j)) > 0) ;
+            while (x.compareTo((Template) templates.elementAt(++i)) < 0) ;
             if (i < j) {
                 templates.set(j, templates.set(i, templates.elementAt(j)));
-            }
-            else {
+            } else {
                 return j;
             }
         }
@@ -273,7 +273,7 @@ for (int i = 0; i < _templates.size(); i++) {
         final Enumeration templates = _templates.elements();
         while (templates.hasMoreElements()) {
             // Get the next template
-            final Template template = (Template)templates.nextElement();
+            final Template template = (Template) templates.nextElement();
 
             /*
              * Add this template to a table of named templates if it has a name.
@@ -305,20 +305,20 @@ for (int i = 0; i < _templates.size(); i++) {
         // any kernel node type (it can be anything as long as the node is in
         // the id's or key's index).
         if (pattern instanceof IdKeyPattern) {
-            final IdKeyPattern idkey = (IdKeyPattern)pattern;
+            final IdKeyPattern idkey = (IdKeyPattern) pattern;
             idkey.setTemplate(template);
             if (_idxGroup == null) _idxGroup = new Vector();
             _idxGroup.add(pattern);
         }
         // Alternative patterns are broken up and re-processed recursively
         else if (pattern instanceof AlternativePattern) {
-            final AlternativePattern alt = (AlternativePattern)pattern;
+            final AlternativePattern alt = (AlternativePattern) pattern;
             flattenAlternative(alt.getLeft(), template, keys);
             flattenAlternative(alt.getRight(), template, keys);
         }
         // Finally we have a pattern that can be added to a test sequence!
         else if (pattern instanceof LocationPathPattern) {
-            final LocationPathPattern lpp = (LocationPathPattern)pattern;
+            final LocationPathPattern lpp = (LocationPathPattern) pattern;
             lpp.setTemplate(template);
             addPatternToGroup(lpp);
         }
@@ -339,9 +339,8 @@ for (int i = 0; i < _templates.size(); i++) {
             final StepPattern kernel = lpp.getKernelPattern();
             if (kernel != null) {
                 addPattern(kernel.getNodeType(), lpp);
-            }
-            else if (_rootPattern == null ||
-                     lpp.noSmallerThan(_rootPattern)) {
+            } else if (_rootPattern == null ||
+                    lpp.noSmallerThan(_rootPattern)) {
                 _rootPattern = lpp;
             }
         }
@@ -365,27 +364,24 @@ for (int i = 0; i < _templates.size(); i++) {
         if (kernelType == DOM.NO_TYPE) {
             if (pattern.getAxis() == Axis.ATTRIBUTE) {
                 patterns = (_attribNodeGroup == null) ?
-                    (_attribNodeGroup = new Vector(2)) : _attribNodeGroup;
-            }
-            else {
+                        (_attribNodeGroup = new Vector(2)) : _attribNodeGroup;
+            } else {
                 patterns = (_childNodeGroup == null) ?
-                    (_childNodeGroup = new Vector(2)) : _childNodeGroup;
+                        (_childNodeGroup = new Vector(2)) : _childNodeGroup;
             }
-        }
-        else {
+        } else {
             patterns = (_patternGroups[kernelType] == null) ?
-                (_patternGroups[kernelType] = new Vector(2)) :
-                _patternGroups[kernelType];
+                    (_patternGroups[kernelType] = new Vector(2)) :
+                    _patternGroups[kernelType];
         }
 
         if (patterns.size() == 0) {
             patterns.addElement(pattern);
-        }
-        else {
+        } else {
             boolean inserted = false;
             for (int i = 0; i < patterns.size(); i++) {
                 final LocationPathPattern lppToCompare =
-                    (LocationPathPattern)patterns.elementAt(i);
+                        (LocationPathPattern) patterns.elementAt(i);
 
                 if (pattern.noSmallerThan(lppToCompare)) {
                     inserted = true;
@@ -407,12 +403,11 @@ for (int i = 0; i < _templates.size(); i++) {
         if (patterns != null) {
             if (_patternGroups[nodeType] == null) {
                 _patternGroups[nodeType] = patterns;
-            }
-            else {
+            } else {
                 final int m = patterns.size();
                 for (int j = 0; j < m; j++) {
                     addPattern(nodeType,
-                        (LocationPathPattern) patterns.elementAt(j));
+                            (LocationPathPattern) patterns.elementAt(j));
                 }
             }
         }
@@ -444,8 +439,7 @@ for (int i = 0; i < _templates.size(); i++) {
 
         final Vector names = _stylesheet.getXSLTC().getNamesIndex();
         if (starGroup != null || atStarGroup != null ||
-            _childNodeGroup != null || _attribNodeGroup != null)
-        {
+                _childNodeGroup != null || _attribNodeGroup != null) {
             final int n = _patternGroups.length;
 
             // Complete test sequence for user-defined types
@@ -460,8 +454,7 @@ for (int i = 0; i < _templates.size(); i++) {
 
                     // And also copy "attribute::node()" to its test sequence
                     completeTestSequences(i, _attribNodeGroup);
-                }
-                else {
+                } else {
                     // If an element then copy "*" to its test sequence
                     completeTestSequences(i, starGroup);
 
@@ -525,7 +518,7 @@ for (int i = 0; i < _templates.size(); i++) {
 
         // Initialize the types and names arrays for the NamedMethodGenerator.
         com.sun.org.apache.bcel.internal.generic.Type[] types =
-            new com.sun.org.apache.bcel.internal.generic.Type[4 + numParams];
+                new com.sun.org.apache.bcel.internal.generic.Type[4 + numParams];
         String[] names = new String[4 + numParams];
         types[0] = Util.getJCRefType(DOM_INTF_SIG);
         types[1] = Util.getJCRefType(NODE_ITERATOR_SIG);
@@ -541,14 +534,14 @@ for (int i = 0; i < _templates.size(); i++) {
         // template.
         for (int i = 4; i < 4 + numParams; i++) {
             types[i] = Util.getJCRefType(OBJECT_SIG);
-            names[i] = "param" + String.valueOf(i-4);
+            names[i] = "param" + String.valueOf(i - 4);
         }
 
         NamedMethodGenerator methodGen =
                 new NamedMethodGenerator(ACC_PUBLIC,
-                                     com.sun.org.apache.bcel.internal.generic.Type.VOID,
-                                     types, names, methodName,
-                                     getClassName(), il, cpg);
+                        com.sun.org.apache.bcel.internal.generic.Type.VOID,
+                        types, names, methodName,
+                        getClassName(), il, cpg);
 
         il.append(template.compile(classGen, methodGen));
         il.append(RETURN);
@@ -558,25 +551,23 @@ for (int i = 0; i < _templates.size(); i++) {
 
     private void compileTemplates(ClassGenerator classGen,
                                   MethodGenerator methodGen,
-                                  InstructionHandle next)
-    {
+                                  InstructionHandle next) {
         Enumeration templates = _namedTemplates.keys();
         while (templates.hasMoreElements()) {
-            final Template template = (Template)templates.nextElement();
+            final Template template = (Template) templates.nextElement();
             compileNamedTemplate(template, classGen);
         }
 
         templates = _neededTemplates.keys();
         while (templates.hasMoreElements()) {
-            final Template template = (Template)templates.nextElement();
+            final Template template = (Template) templates.nextElement();
             if (template.hasContents()) {
                 // !!! TODO templates both named and matched
                 InstructionList til = template.compile(classGen, methodGen);
                 til.append(new GOTO_W(next));
                 _templateILs.put(template, til);
                 _templateIHs.put(template, til.getStart());
-            }
-            else {
+            } else {
                 // empty template
                 _templateIHs.put(template, next);
             }
@@ -587,9 +578,9 @@ for (int i = 0; i < _templates.size(); i++) {
         final Enumeration templates = _neededTemplates.keys();
         while (templates.hasMoreElements()) {
             final Object iList =
-                _templateILs.get(templates.nextElement());
+                    _templateILs.get(templates.nextElement());
             if (iList != null) {
-                body.append((InstructionList)iList);
+                body.append((InstructionList) iList);
             }
         }
     }
@@ -613,8 +604,8 @@ for (int i = 0; i < _templates.size(); i++) {
         final ConstantPoolGen cpg = classGen.getConstantPool();
         final InstructionList il = methodGen.getInstructionList();
         final int git = cpg.addInterfaceMethodref(DOM_INTF,
-                                                  GET_CHILDREN,
-                                                  GET_CHILDREN_SIG);
+                GET_CHILDREN,
+                GET_CHILDREN_SIG);
         il.append(methodGen.loadDOM());
         il.append(new ILOAD(node));
         il.append(new INVOKEINTERFACE(git, 2));
@@ -630,11 +621,11 @@ for (int i = 0; i < _templates.size(); i++) {
         final InstructionList il = new InstructionList();
         final String applyTemplatesSig = classGen.getApplyTemplatesSig();
         final int git = cpg.addInterfaceMethodref(DOM_INTF,
-                                                  GET_CHILDREN,
-                                                  GET_CHILDREN_SIG);
+                GET_CHILDREN,
+                GET_CHILDREN_SIG);
         final int applyTemplates = cpg.addMethodref(getClassName(),
-                                                    functionName(),
-                                                    applyTemplatesSig);
+                functionName(),
+                applyTemplatesSig);
         il.append(classGen.loadTranslet());
         il.append(methodGen.loadDOM());
 
@@ -658,8 +649,8 @@ for (int i = 0; i < _templates.size(); i++) {
         final InstructionList il = new InstructionList();
 
         final int chars = cpg.addInterfaceMethodref(DOM_INTF,
-                                                    CHARACTERS,
-                                                    CHARACTERS_SIG);
+                CHARACTERS,
+                CHARACTERS_SIG);
         il.append(methodGen.loadDOM());
         il.append(new ILOAD(_currentIndex));
         il.append(methodGen.loadHandler());
@@ -697,42 +688,41 @@ for (int i = 0; i < _templates.size(); i++) {
             }
 
             // Add test sequences for known namespace types
-            for (int i = DTM.NTYPES; i < (DTM.NTYPES+namesCount); i++) {
+            for (int i = DTM.NTYPES; i < (DTM.NTYPES + namesCount); i++) {
                 if ((isNamespace[i]) && (isAttribute[i] == attrFlag)) {
-                    String name = (String)names.elementAt(i-DTM.NTYPES);
-                    String namespace = name.substring(0,name.lastIndexOf(':'));
+                    String name = (String) names.elementAt(i - DTM.NTYPES);
+                    String namespace = name.substring(0, name.lastIndexOf(':'));
                     final int type = xsltc.registerNamespace(namespace);
 
                     if ((i < _testSeq.length) &&
-                        (_testSeq[i] != null)) {
+                            (_testSeq[i] != null)) {
                         targets[type] =
-                            (_testSeq[i]).compile(classGen,
-                                                       methodGen,
-                                                       defaultTarget);
+                                (_testSeq[i]).compile(classGen,
+                                        methodGen,
+                                        defaultTarget);
                         compiled = true;
                     }
                 }
             }
 
             // Return "null" if no test sequences were compiled
-            if (!compiled) return(null);
+            if (!compiled) return (null);
 
             // Append first code in applyTemplates() - get type of current node
             final int getNS = cpg.addInterfaceMethodref(DOM_INTF,
-                                                        "getNamespaceType",
-                                                        "(I)I");
+                    "getNamespaceType",
+                    "(I)I");
             il.append(methodGen.loadDOM());
             il.append(new ILOAD(_currentIndex));
             il.append(new INVOKEINTERFACE(getNS, 2));
             il.append(new SWITCH(types, targets, defaultTarget));
-            return(il);
-        }
-        else {
-            return(null);
+            return (il);
+        } else {
+            return (null);
         }
     }
 
-   /**
+    /**
      * Compiles the applyTemplates() method and adds it to the translet.
      * This is the main dispatch method.
      */
@@ -743,7 +733,7 @@ for (int i = 0; i < _templates.size(); i++) {
 
         // Create the applyTemplates() method
         final com.sun.org.apache.bcel.internal.generic.Type[] argTypes =
-            new com.sun.org.apache.bcel.internal.generic.Type[3];
+                new com.sun.org.apache.bcel.internal.generic.Type[3];
         argTypes[0] = Util.getJCRefType(DOM_INTF_SIG);
         argTypes[1] = Util.getJCRefType(NODE_ITERATOR_SIG);
         argTypes[2] = Util.getJCRefType(TRANSLET_OUTPUT_SIG);
@@ -755,11 +745,11 @@ for (int i = 0; i < _templates.size(); i++) {
 
         final InstructionList mainIL = new InstructionList();
         final MethodGenerator methodGen =
-            new MethodGenerator(ACC_PUBLIC | ACC_FINAL,
-                                com.sun.org.apache.bcel.internal.generic.Type.VOID,
-                                argTypes, argNames, functionName(),
-                                getClassName(), mainIL,
-                                classGen.getConstantPool());
+                new MethodGenerator(ACC_PUBLIC | ACC_FINAL,
+                        com.sun.org.apache.bcel.internal.generic.Type.VOID,
+                        argTypes, argNames, functionName(),
+                        getClassName(), mainIL,
+                        classGen.getConstantPool());
         methodGen.addException("com.sun.org.apache.xalan.internal.xsltc.TransletException");
         // Insert an extra NOP just to keep "current" from appearing as if it
         // has a value before the start of the loop.
@@ -769,8 +759,8 @@ for (int i = 0; i < _templates.size(); i++) {
         // Create a local variable to hold the current node
         final LocalVariableGen current;
         current = methodGen.addLocalVariable2("current",
-                                              com.sun.org.apache.bcel.internal.generic.Type.INT,
-                                              null);
+                com.sun.org.apache.bcel.internal.generic.Type.INT,
+                null);
         _currentIndex = current.getIndex();
 
         // Create the "body" instruction list that will eventually hold the
@@ -800,12 +790,12 @@ for (int i = 0; i < _templates.size(); i++) {
 
         // Compile default handling of elements (traverse children)
         InstructionList ilRecurse =
-            compileDefaultRecursion(classGen, methodGen, ihLoop);
+                compileDefaultRecursion(classGen, methodGen, ihLoop);
         InstructionHandle ihRecurse = ilRecurse.getStart();
 
         // Compile default handling of text/attribute nodes (output text)
         InstructionList ilText =
-            compileDefaultText(classGen, methodGen, ihLoop);
+                compileDefaultText(classGen, methodGen, ihLoop);
         InstructionHandle ihText = ilText.getStart();
 
         // Distinguish attribute/element/namespace tests for further processing
@@ -818,7 +808,7 @@ for (int i = 0; i < _templates.size(); i++) {
         final boolean[] isAttribute = new boolean[types.length];
         final boolean[] isNamespace = new boolean[types.length];
         for (int i = 0; i < names.size(); i++) {
-            final String name = (String)names.elementAt(i);
+            final String name = (String) names.elementAt(i);
             isAttribute[i + DTM.NTYPES] = isAttributeName(name);
             isNamespace[i + DTM.NTYPES] = isNamespaceName(name);
         }
@@ -843,8 +833,7 @@ for (int i = 0; i < _templates.size(); i++) {
         if (_idxTestSeq != null) {
             loop.setTarget(_idxTestSeq.compile(classGen, methodGen, body.getStart()));
             ilKey = _idxTestSeq.getInstructionList();
-        }
-        else {
+        } else {
             loop.setTarget(body.getStart());
         }
 
@@ -853,32 +842,30 @@ for (int i = 0; i < _templates.size(); i++) {
         if (_childNodeTestSeq != null) {
             // Compare priorities of node() and "*"
             double nodePrio = _childNodeTestSeq.getPriority();
-            int    nodePos  = _childNodeTestSeq.getPosition();
+            int nodePos = _childNodeTestSeq.getPosition();
             double elemPrio = (0 - Double.MAX_VALUE);
-            int    elemPos  = Integer.MIN_VALUE;
+            int elemPos = Integer.MIN_VALUE;
 
             if (elemTest != null) {
                 elemPrio = elemTest.getPriority();
-                elemPos  = elemTest.getPosition();
+                elemPos = elemTest.getPosition();
             }
             if (elemPrio == Double.NaN || elemPrio < nodePrio ||
-                (elemPrio == nodePrio && elemPos < nodePos))
-            {
+                    (elemPrio == nodePrio && elemPos < nodePos)) {
                 ihElem = _childNodeTestSeq.compile(classGen, methodGen, ihLoop);
             }
 
             // Compare priorities of node() and text()
             final TestSeq textTest = _testSeq[DTM.TEXT_NODE];
             double textPrio = (0 - Double.MAX_VALUE);
-            int    textPos  = Integer.MIN_VALUE;
+            int textPos = Integer.MIN_VALUE;
 
             if (textTest != null) {
                 textPrio = textTest.getPriority();
-                textPos  = textTest.getPosition();
+                textPos = textTest.getPosition();
             }
             if (textPrio == Double.NaN || textPrio < nodePrio ||
-                (textPrio == nodePrio && textPos < nodePos))
-            {
+                    (textPrio == nodePrio && textPos < nodePos)) {
                 ihText = _childNodeTestSeq.compile(classGen, methodGen, ihLoop);
                 _testSeq[DTM.TEXT_NODE] = _childNodeTestSeq;
             }
@@ -887,15 +874,15 @@ for (int i = 0; i < _templates.size(); i++) {
         // Handle templates with "ns:*" pattern
         InstructionHandle elemNamespaceHandle = ihElem;
         InstructionList nsElem = compileNamespaces(classGen, methodGen,
-                                                   isNamespace, isAttribute,
-                                                   false, ihElem);
+                isNamespace, isAttribute,
+                false, ihElem);
         if (nsElem != null) elemNamespaceHandle = nsElem.getStart();
 
         // Handle templates with "ns:@*" pattern
         InstructionHandle attrNamespaceHandle = ihAttr;
         InstructionList nsAttr = compileNamespaces(classGen, methodGen,
-                                                   isNamespace, isAttribute,
-                                                   true, ihAttr);
+                isNamespace, isAttribute,
+                true, ihAttr);
         if (nsAttr != null) attrNamespaceHandle = nsAttr.getStart();
 
         // Handle templates with "ns:elem" or "ns:@attr" pattern
@@ -913,12 +900,11 @@ for (int i = 0; i < _templates.size(); i++) {
             else if (testSeq != null) {
                 if (isAttribute[i])
                     targets[i] = testSeq.compile(classGen, methodGen,
-                                                 attrNamespaceHandle);
+                            attrNamespaceHandle);
                 else
                     targets[i] = testSeq.compile(classGen, methodGen,
-                                                 elemNamespaceHandle);
-            }
-            else {
+                            elemNamespaceHandle);
+            } else {
                 targets[i] = ihLoop;
             }
         }
@@ -926,18 +912,18 @@ for (int i = 0; i < _templates.size(); i++) {
 
         // Handle pattern with match on root node - default: traverse children
         targets[DTM.ROOT_NODE] = _rootPattern != null
-            ? getTemplateInstructionHandle(_rootPattern.getTemplate())
-            : ihRecurse;
+                ? getTemplateInstructionHandle(_rootPattern.getTemplate())
+                : ihRecurse;
 
         // Handle pattern with match on root node - default: traverse children
         targets[DTM.DOCUMENT_NODE] = _rootPattern != null
-            ? getTemplateInstructionHandle(_rootPattern.getTemplate())
-            : ihRecurse;
+                ? getTemplateInstructionHandle(_rootPattern.getTemplate())
+                : ihRecurse;
 
         // Handle any pattern with match on text nodes - default: output text
         targets[DTM.TEXT_NODE] = _testSeq[DTM.TEXT_NODE] != null
-            ? _testSeq[DTM.TEXT_NODE].compile(classGen, methodGen, ihText)
-            : ihText;
+                ? _testSeq[DTM.TEXT_NODE].compile(classGen, methodGen, ihText)
+                : ihText;
 
         // This DOM-type is not in use - default: process next node
         targets[DTM.NAMESPACE_NODE] = ihLoop;
@@ -953,8 +939,8 @@ for (int i = 0; i < _templates.size(); i++) {
         if (_childNodeTestSeq != null) ihPI = ihElem;
         if (_testSeq[DTM.PROCESSING_INSTRUCTION_NODE] != null)
             targets[DTM.PROCESSING_INSTRUCTION_NODE] =
-                _testSeq[DTM.PROCESSING_INSTRUCTION_NODE].
-                compile(classGen, methodGen, ihPI);
+                    _testSeq[DTM.PROCESSING_INSTRUCTION_NODE].
+                            compile(classGen, methodGen, ihPI);
         else
             targets[DTM.PROCESSING_INSTRUCTION_NODE] = ihPI;
 
@@ -962,10 +948,10 @@ for (int i = 0; i < _templates.size(); i++) {
         InstructionHandle ihComment = ihLoop;
         if (_childNodeTestSeq != null) ihComment = ihElem;
         targets[DTM.COMMENT_NODE] = _testSeq[DTM.COMMENT_NODE] != null
-            ? _testSeq[DTM.COMMENT_NODE].compile(classGen, methodGen, ihComment)
-            : ihComment;
+                ? _testSeq[DTM.COMMENT_NODE].compile(classGen, methodGen, ihComment)
+                : ihComment;
 
-            // This DOM-type is not in use - default: process next node
+        // This DOM-type is not in use - default: process next node
         targets[DTM.CDATA_SECTION_NODE] = ihLoop;
 
         // This DOM-type is not in use - default: process next node
@@ -998,10 +984,10 @@ for (int i = 0; i < _templates.size(); i++) {
             else {
                 if (isAttribute[i])
                     targets[i] = testSeq.compile(classGen, methodGen,
-                                                 attrNamespaceHandle);
+                            attrNamespaceHandle);
                 else
                     targets[i] = testSeq.compile(classGen, methodGen,
-                                                 elemNamespaceHandle);
+                            elemNamespaceHandle);
             }
         }
 
@@ -1009,8 +995,8 @@ for (int i = 0; i < _templates.size(); i++) {
 
         // Append first code in applyTemplates() - get type of current node
         final int getType = cpg.addInterfaceMethodref(DOM_INTF,
-                                                      "getExpandedTypeID",
-                                                      "(I)I");
+                "getExpandedTypeID",
+                "(I)I");
         body.append(methodGen.loadDOM());
         body.append(new ILOAD(_currentIndex));
         body.append(new INVOKEINTERFACE(getType, 2));
@@ -1045,8 +1031,8 @@ for (int i = 0; i < _templates.size(); i++) {
         if (_importLevels != null) {
             Enumeration levels = _importLevels.keys();
             while (levels.hasMoreElements()) {
-                Integer max = (Integer)levels.nextElement();
-                Integer min = (Integer)_importLevels.get(max);
+                Integer max = (Integer) levels.nextElement();
+                Integer min = (Integer) _importLevels.get(max);
                 compileApplyImports(classGen, min.intValue(), max.intValue());
             }
         }
@@ -1054,10 +1040,10 @@ for (int i = 0; i < _templates.size(); i++) {
 
     private void compileTemplateCalls(ClassGenerator classGen,
                                       MethodGenerator methodGen,
-                                      InstructionHandle next, int min, int max){
+                                      InstructionHandle next, int min, int max) {
         Enumeration templates = _neededTemplates.keys();
         while (templates.hasMoreElements()) {
-            final Template template = (Template)templates.nextElement();
+            final Template template = (Template) templates.nextElement();
             final int prec = template.getImportPrecedence();
             if ((prec >= min) && (prec < max)) {
                 if (template.hasContents()) {
@@ -1065,8 +1051,7 @@ for (int i = 0; i < _templates.size(); i++) {
                     til.append(new GOTO_W(next));
                     _templateILs.put(template, til);
                     _templateIHs.put(template, til.getStart());
-                }
-                else {
+                } else {
                     // empty template
                     _templateIHs.put(template, next);
                 }
@@ -1078,7 +1063,7 @@ for (int i = 0; i < _templates.size(); i++) {
     public void compileApplyImports(ClassGenerator classGen, int min, int max) {
         final XSLTC xsltc = classGen.getParser().getXSLTC();
         final ConstantPoolGen cpg = classGen.getConstantPool();
-        final Vector names      = xsltc.getNamesIndex();
+        final Vector names = xsltc.getNamesIndex();
 
         // Clear some datastructures
         _namedTemplates = new Hashtable();
@@ -1095,7 +1080,7 @@ for (int i = 0; i < _templates.size(); i++) {
         _templates = new Vector();
         final Enumeration templates = oldTemplates.elements();
         while (templates.hasMoreElements()) {
-            final Template template = (Template)templates.nextElement();
+            final Template template = (Template) templates.nextElement();
             final int prec = template.getImportPrecedence();
             if ((prec >= min) && (prec < max)) addTemplate(template);
         }
@@ -1105,7 +1090,7 @@ for (int i = 0; i < _templates.size(); i++) {
 
         // Create the applyTemplates() method
         final com.sun.org.apache.bcel.internal.generic.Type[] argTypes =
-            new com.sun.org.apache.bcel.internal.generic.Type[4];
+                new com.sun.org.apache.bcel.internal.generic.Type[4];
         argTypes[0] = Util.getJCRefType(DOM_INTF_SIG);
         argTypes[1] = Util.getJCRefType(NODE_ITERATOR_SIG);
         argTypes[2] = Util.getJCRefType(TRANSLET_OUTPUT_SIG);
@@ -1119,18 +1104,18 @@ for (int i = 0; i < _templates.size(); i++) {
 
         final InstructionList mainIL = new InstructionList();
         final MethodGenerator methodGen =
-            new MethodGenerator(ACC_PUBLIC | ACC_FINAL,
-                                com.sun.org.apache.bcel.internal.generic.Type.VOID,
-                                argTypes, argNames, functionName()+'_'+max,
-                                getClassName(), mainIL,
-                                classGen.getConstantPool());
+                new MethodGenerator(ACC_PUBLIC | ACC_FINAL,
+                        com.sun.org.apache.bcel.internal.generic.Type.VOID,
+                        argTypes, argNames, functionName() + '_' + max,
+                        getClassName(), mainIL,
+                        classGen.getConstantPool());
         methodGen.addException("com.sun.org.apache.xalan.internal.xsltc.TransletException");
 
         // Create the local variable to hold the current node
         final LocalVariableGen current;
         current = methodGen.addLocalVariable2("current",
-                                              com.sun.org.apache.bcel.internal.generic.Type.INT,
-                                              null);
+                com.sun.org.apache.bcel.internal.generic.Type.INT,
+                null);
         _currentIndex = current.getIndex();
 
         mainIL.append(new ILOAD(methodGen.getLocalIndex(NODE_PNAME)));
@@ -1149,12 +1134,12 @@ for (int i = 0; i < _templates.size(); i++) {
 
         // Compile default handling of elements (traverse children)
         InstructionList ilRecurse =
-            compileDefaultRecursion(classGen, methodGen, ihLoop);
+                compileDefaultRecursion(classGen, methodGen, ihLoop);
         InstructionHandle ihRecurse = ilRecurse.getStart();
 
         // Compile default handling of text/attribute nodes (output text)
         InstructionList ilText =
-            compileDefaultText(classGen, methodGen, ihLoop);
+                compileDefaultText(classGen, methodGen, ihLoop);
         InstructionHandle ihText = ilText.getStart();
 
         // Distinguish attribute/element/namespace tests for further processing
@@ -1166,9 +1151,9 @@ for (int i = 0; i < _templates.size(); i++) {
         final boolean[] isAttribute = new boolean[types.length];
         final boolean[] isNamespace = new boolean[types.length];
         for (int i = 0; i < names.size(); i++) {
-            final String name = (String)names.elementAt(i);
-            isAttribute[i+DTM.NTYPES] = isAttributeName(name);
-            isNamespace[i+DTM.NTYPES] = isNamespaceName(name);
+            final String name = (String) names.elementAt(i);
+            isAttribute[i + DTM.NTYPES] = isAttributeName(name);
+            isNamespace[i + DTM.NTYPES] = isNamespaceName(name);
         }
 
         // Compile all templates - regardless of pattern type
@@ -1199,34 +1184,32 @@ for (int i = 0; i < _templates.size(); i++) {
         if (_childNodeTestSeq != null) {
             // Compare priorities of node() and "*"
             double nodePrio = _childNodeTestSeq.getPriority();
-            int    nodePos  = _childNodeTestSeq.getPosition();
+            int nodePos = _childNodeTestSeq.getPosition();
             double elemPrio = (0 - Double.MAX_VALUE);
-            int    elemPos  = Integer.MIN_VALUE;
+            int elemPos = Integer.MIN_VALUE;
 
             if (elemTest != null) {
                 elemPrio = elemTest.getPriority();
-                elemPos  = elemTest.getPosition();
+                elemPos = elemTest.getPosition();
             }
 
             if (elemPrio == Double.NaN || elemPrio < nodePrio ||
-                (elemPrio == nodePrio && elemPos < nodePos))
-            {
+                    (elemPrio == nodePrio && elemPos < nodePos)) {
                 ihElem = _childNodeTestSeq.compile(classGen, methodGen, ihLoop);
             }
 
             // Compare priorities of node() and text()
             final TestSeq textTest = _testSeq[DTM.TEXT_NODE];
             double textPrio = (0 - Double.MAX_VALUE);
-            int    textPos  = Integer.MIN_VALUE;
+            int textPos = Integer.MIN_VALUE;
 
             if (textTest != null) {
                 textPrio = textTest.getPriority();
-                textPos  = textTest.getPosition();
+                textPos = textTest.getPosition();
             }
 
             if (textPrio == Double.NaN || textPrio < nodePrio ||
-                (textPrio == nodePrio && textPos < nodePos))
-            {
+                    (textPrio == nodePrio && textPos < nodePos)) {
                 ihText = _childNodeTestSeq.compile(classGen, methodGen, ihLoop);
                 _testSeq[DTM.TEXT_NODE] = _childNodeTestSeq;
             }
@@ -1235,14 +1218,14 @@ for (int i = 0; i < _templates.size(); i++) {
         // Handle templates with "ns:*" pattern
         InstructionHandle elemNamespaceHandle = ihElem;
         InstructionList nsElem = compileNamespaces(classGen, methodGen,
-                                                   isNamespace, isAttribute,
-                                                   false, ihElem);
+                isNamespace, isAttribute,
+                false, ihElem);
         if (nsElem != null) elemNamespaceHandle = nsElem.getStart();
 
         // Handle templates with "ns:@*" pattern
         InstructionList nsAttr = compileNamespaces(classGen, methodGen,
-                                                   isNamespace, isAttribute,
-                                                   true, ihAttr);
+                isNamespace, isAttribute,
+                true, ihAttr);
         InstructionHandle attrNamespaceHandle = ihAttr;
         if (nsAttr != null) attrNamespaceHandle = nsAttr.getStart();
 
@@ -1261,29 +1244,28 @@ for (int i = 0; i < _templates.size(); i++) {
             else if (testSeq != null) {
                 if (isAttribute[i])
                     targets[i] = testSeq.compile(classGen, methodGen,
-                                                 attrNamespaceHandle);
+                            attrNamespaceHandle);
                 else
                     targets[i] = testSeq.compile(classGen, methodGen,
-                                                 elemNamespaceHandle);
-            }
-            else {
+                            elemNamespaceHandle);
+            } else {
                 targets[i] = ihLoop;
             }
         }
 
         // Handle pattern with match on root node - default: traverse children
         targets[DTM.ROOT_NODE] = _rootPattern != null
-            ? getTemplateInstructionHandle(_rootPattern.getTemplate())
-            : ihRecurse;
+                ? getTemplateInstructionHandle(_rootPattern.getTemplate())
+                : ihRecurse;
         // Handle pattern with match on root node - default: traverse children
         targets[DTM.DOCUMENT_NODE] = _rootPattern != null
-            ? getTemplateInstructionHandle(_rootPattern.getTemplate())
-            : ihRecurse;    // %HZ%:  Was ihLoop in XSLTC_DTM branch
+                ? getTemplateInstructionHandle(_rootPattern.getTemplate())
+                : ihRecurse;    // %HZ%:  Was ihLoop in XSLTC_DTM branch
 
         // Handle any pattern with match on text nodes - default: loop
         targets[DTM.TEXT_NODE] = _testSeq[DTM.TEXT_NODE] != null
-            ? _testSeq[DTM.TEXT_NODE].compile(classGen, methodGen, ihText)
-            : ihText;
+                ? _testSeq[DTM.TEXT_NODE].compile(classGen, methodGen, ihText)
+                : ihText;
 
         // This DOM-type is not in use - default: process next node
         targets[DTM.NAMESPACE_NODE] = ihLoop;
@@ -1299,10 +1281,9 @@ for (int i = 0; i < _templates.size(); i++) {
         if (_childNodeTestSeq != null) ihPI = ihElem;
         if (_testSeq[DTM.PROCESSING_INSTRUCTION_NODE] != null) {
             targets[DTM.PROCESSING_INSTRUCTION_NODE] =
-                _testSeq[DTM.PROCESSING_INSTRUCTION_NODE].
-                compile(classGen, methodGen, ihPI);
-        }
-        else {
+                    _testSeq[DTM.PROCESSING_INSTRUCTION_NODE].
+                            compile(classGen, methodGen, ihPI);
+        } else {
             targets[DTM.PROCESSING_INSTRUCTION_NODE] = ihPI;
         }
 
@@ -1310,10 +1291,10 @@ for (int i = 0; i < _templates.size(); i++) {
         InstructionHandle ihComment = ihLoop;
         if (_childNodeTestSeq != null) ihComment = ihElem;
         targets[DTM.COMMENT_NODE] = _testSeq[DTM.COMMENT_NODE] != null
-            ? _testSeq[DTM.COMMENT_NODE].compile(classGen, methodGen, ihComment)
-            : ihComment;
+                ? _testSeq[DTM.COMMENT_NODE].compile(classGen, methodGen, ihComment)
+                : ihComment;
 
-                // This DOM-type is not in use - default: process next node
+        // This DOM-type is not in use - default: process next node
         targets[DTM.CDATA_SECTION_NODE] = ihLoop;
 
         // This DOM-type is not in use - default: process next node
@@ -1332,7 +1313,6 @@ for (int i = 0; i < _templates.size(); i++) {
         targets[DTM.NOTATION_NODE] = ihLoop;
 
 
-
         // Now compile test sequences for various match patterns:
         for (int i = DTM.NTYPES; i < targets.length; i++) {
             final TestSeq testSeq = _testSeq[i];
@@ -1347,10 +1327,10 @@ for (int i = 0; i < _templates.size(); i++) {
             else {
                 if (isAttribute[i])
                     targets[i] = testSeq.compile(classGen, methodGen,
-                                                 attrNamespaceHandle);
+                            attrNamespaceHandle);
                 else
                     targets[i] = testSeq.compile(classGen, methodGen,
-                                                 elemNamespaceHandle);
+                            elemNamespaceHandle);
             }
         }
 
@@ -1358,14 +1338,14 @@ for (int i = 0; i < _templates.size(); i++) {
 
         // Append first code in applyTemplates() - get type of current node
         final int getType = cpg.addInterfaceMethodref(DOM_INTF,
-                                                      "getExpandedTypeID",
-                                                      "(I)I");
+                "getExpandedTypeID",
+                "(I)I");
         body.append(methodGen.loadDOM());
         body.append(new ILOAD(_currentIndex));
         body.append(new INVOKEINTERFACE(getType, 2));
 
         // Append switch() statement - main dispatch loop in applyTemplates()
-        InstructionHandle disp = body.append(new SWITCH(types,targets,ihLoop));
+        InstructionHandle disp = body.append(new SWITCH(types, targets, ihLoop));
 
         // Append all the "case:" statements
         appendTestSequences(body);
@@ -1399,8 +1379,8 @@ for (int i = 0; i < _templates.size(); i++) {
     }
 
     /**
-      * Peephole optimization.
-      */
+     * Peephole optimization.
+     */
     private void peepHoleOptimization(MethodGenerator methodGen) {
         InstructionList il = methodGen.getInstructionList();
         InstructionFinder find = new InstructionFinder(il);
@@ -1413,14 +1393,13 @@ for (int i = 0; i < _templates.size(); i++) {
         // is creating a problem in the Turkish locale
         pattern = "loadinstruction pop";
 
-        for (Iterator iter = find.search(pattern); iter.hasNext();) {
+        for (Iterator iter = find.search(pattern); iter.hasNext(); ) {
             InstructionHandle[] match = (InstructionHandle[]) iter.next();
             try {
                 if (!match[0].hasTargeters() && !match[1].hasTargeters()) {
                     il.delete(match[0], match[1]);
                 }
-            }
-            catch (TargetLostException e) {
+            } catch (TargetLostException e) {
                 // TODO: move target down into the list
             }
         }
@@ -1430,26 +1409,24 @@ for (int i = 0; i < _templates.size(); i++) {
         // changed to lower case - changing to all lower case although only the instruction with capital I
         // is creating a problem in the Turkish locale
         pattern = "iload iload swap istore";
-        for (Iterator iter = find.search(pattern); iter.hasNext();) {
+        for (Iterator iter = find.search(pattern); iter.hasNext(); ) {
             InstructionHandle[] match = (InstructionHandle[]) iter.next();
             try {
                 com.sun.org.apache.bcel.internal.generic.ILOAD iload1 =
-                    (com.sun.org.apache.bcel.internal.generic.ILOAD) match[0].getInstruction();
+                        (com.sun.org.apache.bcel.internal.generic.ILOAD) match[0].getInstruction();
                 com.sun.org.apache.bcel.internal.generic.ILOAD iload2 =
-                    (com.sun.org.apache.bcel.internal.generic.ILOAD) match[1].getInstruction();
+                        (com.sun.org.apache.bcel.internal.generic.ILOAD) match[1].getInstruction();
                 com.sun.org.apache.bcel.internal.generic.ISTORE istore =
-                    (com.sun.org.apache.bcel.internal.generic.ISTORE) match[3].getInstruction();
+                        (com.sun.org.apache.bcel.internal.generic.ISTORE) match[3].getInstruction();
 
                 if (!match[1].hasTargeters() &&
-                    !match[2].hasTargeters() &&
-                    !match[3].hasTargeters() &&
-                    iload1.getIndex() == iload2.getIndex() &&
-                    iload2.getIndex() == istore.getIndex())
-                {
+                        !match[2].hasTargeters() &&
+                        !match[3].hasTargeters() &&
+                        iload1.getIndex() == iload2.getIndex() &&
+                        iload2.getIndex() == istore.getIndex()) {
                     il.delete(match[1], match[3]);
                 }
-            }
-            catch (TargetLostException e) {
+            } catch (TargetLostException e) {
                 // TODO: move target down into the list
             }
         }
@@ -1459,19 +1436,17 @@ for (int i = 0; i < _templates.size(); i++) {
         // changed to lower case - changing to all lower case although only the instruction with capital I
         // is creating a problem in the Turkish locale
         pattern = "loadinstruction loadinstruction swap";
-        for (Iterator iter = find.search(pattern); iter.hasNext();) {
-            InstructionHandle[] match = (InstructionHandle[])iter.next();
+        for (Iterator iter = find.search(pattern); iter.hasNext(); ) {
+            InstructionHandle[] match = (InstructionHandle[]) iter.next();
             try {
                 if (!match[0].hasTargeters() &&
-                    !match[1].hasTargeters() &&
-                    !match[2].hasTargeters())
-                {
+                        !match[1].hasTargeters() &&
+                        !match[2].hasTargeters()) {
                     Instruction load_m = match[1].getInstruction();
                     il.insert(match[0], load_m);
                     il.delete(match[1], match[2]);
                 }
-            }
-            catch (TargetLostException e) {
+            } catch (TargetLostException e) {
                 // TODO: move target down into the list
             }
         }
@@ -1481,29 +1456,28 @@ for (int i = 0; i < _templates.size(); i++) {
         // changed to lower case - changing to all lower case although only the instruction with capital I
         // is creating a problem in the Turkish locale
         pattern = "aload aload";
-        for (Iterator iter = find.search(pattern); iter.hasNext();) {
-            InstructionHandle[] match = (InstructionHandle[])iter.next();
+        for (Iterator iter = find.search(pattern); iter.hasNext(); ) {
+            InstructionHandle[] match = (InstructionHandle[]) iter.next();
             try {
                 if (!match[1].hasTargeters()) {
                     com.sun.org.apache.bcel.internal.generic.ALOAD aload1 =
-                        (com.sun.org.apache.bcel.internal.generic.ALOAD) match[0].getInstruction();
+                            (com.sun.org.apache.bcel.internal.generic.ALOAD) match[0].getInstruction();
                     com.sun.org.apache.bcel.internal.generic.ALOAD aload2 =
-                        (com.sun.org.apache.bcel.internal.generic.ALOAD) match[1].getInstruction();
+                            (com.sun.org.apache.bcel.internal.generic.ALOAD) match[1].getInstruction();
 
                     if (aload1.getIndex() == aload2.getIndex()) {
                         il.insert(match[1], new DUP());
                         il.delete(match[1]);
                     }
                 }
-            }
-            catch (TargetLostException e) {
+            } catch (TargetLostException e) {
                 // TODO: move target down into the list
             }
         }
     }
 
     public InstructionHandle getTemplateInstructionHandle(Template template) {
-        return (InstructionHandle)_templateIHs.get(template);
+        return (InstructionHandle) _templateIHs.get(template);
     }
 
     /**
@@ -1520,6 +1494,6 @@ for (int i = 0; i < _templates.size(); i++) {
      */
     private static boolean isNamespaceName(String qname) {
         final int col = qname.lastIndexOf(':');
-        return (col > -1 && qname.charAt(qname.length()-1) == '*');
+        return (col > -1 && qname.charAt(qname.length() - 1) == '*');
     }
 }

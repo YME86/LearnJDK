@@ -24,6 +24,7 @@
 package com.sun.org.apache.xalan.internal.xsltc.runtime;
 
 import com.sun.org.apache.xalan.internal.utils.SecuritySupport;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.FieldPosition;
@@ -71,38 +72,41 @@ public final class BasisLibrary {
      * StringBuilder is better, however, DecimalFormat only accept StringBuffer
      */
     private static final ThreadLocal<StringBuilder> threadLocalStringBuilder =
-        new ThreadLocal<StringBuilder> () {
-            @Override protected StringBuilder initialValue() {
-                return new StringBuilder();
-            }
-    };
+            new ThreadLocal<StringBuilder>() {
+                @Override
+                protected StringBuilder initialValue() {
+                    return new StringBuilder();
+                }
+            };
 
     /**
      * ThreadLocal for StringBuffer used
      */
     private static final ThreadLocal<StringBuffer> threadLocalStringBuffer =
-        new ThreadLocal<StringBuffer> () {
-            @Override protected StringBuffer initialValue() {
-                return new StringBuffer();
-            }
-    };
+            new ThreadLocal<StringBuffer>() {
+                @Override
+                protected StringBuffer initialValue() {
+                    return new StringBuffer();
+                }
+            };
 
     /**
      * Standard function count(node-set)
      */
     public static int countF(DTMAxisIterator iterator) {
-        return(iterator.getLast());
+        return (iterator.getLast());
     }
 
     /**
      * Standard function position()
+     *
      * @deprecated This method exists only for backwards compatibility with old
-     *             translets.  New code should not reference it.
+     * translets.  New code should not reference it.
      */
     public static int positionF(DTMAxisIterator iterator) {
         return iterator.isReverse()
-                     ? iterator.getLast() - iterator.getPosition() + 1
-                     : iterator.getPosition();
+                ? iterator.getLast() - iterator.getPosition() + 1
+                : iterator.getPosition();
     }
 
     /**
@@ -117,8 +121,7 @@ public final class BasisLibrary {
                 result += Double.parseDouble(dom.getStringValueX(node));
             }
             return result;
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return Double.NaN;
         }
     }
@@ -135,15 +138,12 @@ public final class BasisLibrary {
      */
     public static String stringF(Object obj, DOM dom) {
         if (obj instanceof DTMAxisIterator) {
-            return dom.getStringValueX(((DTMAxisIterator)obj).reset().next());
-        }
-        else if (obj instanceof Node) {
-            return dom.getStringValueX(((Node)obj).node);
-        }
-        else if (obj instanceof DOM) {
-            return ((DOM)obj).getStringValue();
-        }
-        else {
+            return dom.getStringValueX(((DTMAxisIterator) obj).reset().next());
+        } else if (obj instanceof Node) {
+            return dom.getStringValueX(((Node) obj).node);
+        } else if (obj instanceof DOM) {
+            return ((DOM) obj).getStringValue();
+        } else {
             return obj.toString();
         }
     }
@@ -153,28 +153,24 @@ public final class BasisLibrary {
      */
     public static String stringF(Object obj, int node, DOM dom) {
         if (obj instanceof DTMAxisIterator) {
-            return dom.getStringValueX(((DTMAxisIterator)obj).reset().next());
-        }
-        else if (obj instanceof Node) {
-            return dom.getStringValueX(((Node)obj).node);
-        }
-        else if (obj instanceof DOM) {
+            return dom.getStringValueX(((DTMAxisIterator) obj).reset().next());
+        } else if (obj instanceof Node) {
+            return dom.getStringValueX(((Node) obj).node);
+        } else if (obj instanceof DOM) {
             // When the first argument is a DOM we want the whole
             // DOM and not just a single node - that would not make sense.
             //return ((DOM)obj).getStringValueX(node);
-            return ((DOM)obj).getStringValue();
-        }
-        else if (obj instanceof Double) {
-            Double d = (Double)obj;
+            return ((DOM) obj).getStringValue();
+        } else if (obj instanceof Double) {
+            Double d = (Double) obj;
             final String result = d.toString();
             final int length = result.length();
-            if ((result.charAt(length-2)=='.') &&
-                (result.charAt(length-1) == '0'))
-                return result.substring(0, length-2);
+            if ((result.charAt(length - 2) == '.') &&
+                    (result.charAt(length - 1) == '0'))
+                return result.substring(0, length - 2);
             else
                 return result;
-        }
-        else {
+        } else {
             return obj != null ? obj.toString() : "";
         }
     }
@@ -192,27 +188,20 @@ public final class BasisLibrary {
     public static double numberF(Object obj, DOM dom) {
         if (obj instanceof Double) {
             return ((Double) obj).doubleValue();
-        }
-        else if (obj instanceof Integer) {
+        } else if (obj instanceof Integer) {
             return ((Integer) obj).doubleValue();
-        }
-        else if (obj instanceof Boolean) {
-            return  ((Boolean) obj).booleanValue() ? 1.0 : 0.0;
-        }
-        else if (obj instanceof String) {
+        } else if (obj instanceof Boolean) {
+            return ((Boolean) obj).booleanValue() ? 1.0 : 0.0;
+        } else if (obj instanceof String) {
             return stringToReal((String) obj);
-        }
-        else if (obj instanceof DTMAxisIterator) {
+        } else if (obj instanceof DTMAxisIterator) {
             DTMAxisIterator iter = (DTMAxisIterator) obj;
             return stringToReal(dom.getStringValueX(iter.reset().next()));
-        }
-        else if (obj instanceof Node) {
+        } else if (obj instanceof Node) {
             return stringToReal(dom.getStringValueX(((Node) obj).node));
-        }
-        else if (obj instanceof DOM) {
+        } else if (obj instanceof DOM) {
             return stringToReal(((DOM) obj).getStringValue());
-        }
-        else {
+        } else {
             final String className = obj.getClass().getName();
             runTimeError(INVALID_ARGUMENT_ERR, className, "number()");
             return 0.0;
@@ -223,8 +212,8 @@ public final class BasisLibrary {
      * XSLT Standard function round()
      */
     public static double roundF(double d) {
-            return (d<-0.5 || d>0.0)?Math.floor(d+0.5):((d==0.0)?
-                        d:(Double.isNaN(d)?Double.NaN:-0.0));
+        return (d < -0.5 || d > 0.0) ? Math.floor(d + 0.5) : ((d == 0.0) ?
+                d : (Double.isNaN(d) ? Double.NaN : -0.0));
     }
 
     /**
@@ -234,28 +223,21 @@ public final class BasisLibrary {
         if (obj instanceof Double) {
             final double temp = ((Double) obj).doubleValue();
             return temp != 0.0 && !Double.isNaN(temp);
-        }
-        else if (obj instanceof Integer) {
+        } else if (obj instanceof Integer) {
             return ((Integer) obj).doubleValue() != 0;
-        }
-        else if (obj instanceof Boolean) {
-            return  ((Boolean) obj).booleanValue();
-        }
-        else if (obj instanceof String) {
+        } else if (obj instanceof Boolean) {
+            return ((Boolean) obj).booleanValue();
+        } else if (obj instanceof String) {
             return !((String) obj).equals(EMPTYSTRING);
-        }
-        else if (obj instanceof DTMAxisIterator) {
+        } else if (obj instanceof DTMAxisIterator) {
             DTMAxisIterator iter = (DTMAxisIterator) obj;
             return iter.reset().next() != DTMAxisIterator.END;
-        }
-        else if (obj instanceof Node) {
+        } else if (obj instanceof Node) {
             return true;
-        }
-        else if (obj instanceof DOM) {
+        } else if (obj instanceof DOM) {
             String temp = ((DOM) obj).getStringValue();
             return !temp.equals(EMPTYSTRING);
-        }
-        else {
+        } else {
             final String className = obj.getClass().getName();
             runTimeError(INVALID_ARGUMENT_ERR, className, "boolean()");
         }
@@ -268,13 +250,13 @@ public final class BasisLibrary {
      */
     public static String substringF(String value, double start) {
         if (Double.isNaN(start))
-            return(EMPTYSTRING);
+            return (EMPTYSTRING);
 
         final int strlen = value.length();
-        int istart = (int)Math.round(start) - 1;
+        int istart = (int) Math.round(start) - 1;
 
         if (istart > strlen)
-            return(EMPTYSTRING);
+            return (EMPTYSTRING);
         if (istart < 1)
             istart = 0;
         try {
@@ -291,21 +273,21 @@ public final class BasisLibrary {
      */
     public static String substringF(String value, double start, double length) {
         if (Double.isInfinite(start) ||
-            Double.isNaN(start) ||
-            Double.isNaN(length) ||
-            length < 0)
-            return(EMPTYSTRING);
+                Double.isNaN(start) ||
+                Double.isNaN(length) ||
+                length < 0)
+            return (EMPTYSTRING);
 
-        int istart = (int)Math.round(start) - 1;
+        int istart = (int) Math.round(start) - 1;
         final int isum;
         if (Double.isInfinite(length))
             isum = Integer.MAX_VALUE;
         else
-            isum = istart + (int)Math.round(length);
+            isum = istart + (int) Math.round(length);
 
         final int strlen = value.length();
         if (isum < 0 || istart > strlen)
-                return(EMPTYSTRING);
+            return (EMPTYSTRING);
 
         if (istart < 0)
             istart = 0;
@@ -352,7 +334,7 @@ public final class BasisLibrary {
         final int valuel = value.length();
 
         final StringBuilder result = threadLocalStringBuilder.get();
-    result.setLength(0);
+        result.setLength(0);
         for (int j, i = 0; i < valuel; i++) {
             final char ch = value.charAt(i);
             for (j = 0; j < froml; j++) {
@@ -381,7 +363,7 @@ public final class BasisLibrary {
     public static String normalize_spaceF(String value) {
         int i = 0, n = value.length();
         StringBuilder result = threadLocalStringBuilder.get();
-    result.setLength(0);
+        result.setLength(0);
 
         while (i < n && isWhiteSpace(value.charAt(i)))
             i++;
@@ -421,7 +403,7 @@ public final class BasisLibrary {
         if (idx >= 0) value = value.substring(idx + 1);
         idx = value.lastIndexOf('@');
         if (idx >= 0) value = value.substring(idx + 1);
-        return(value);
+        return (value);
     }
 
     /**
@@ -455,7 +437,7 @@ public final class BasisLibrary {
 
     /**
      * Utility function to throw a runtime error for an unsupported element.
-     *
+     * <p>
      * This is only used in forward-compatibility mode, when the control flow
      * cannot be determined. In 1.0 mode, the error message is emitted at
      * compile time.
@@ -479,14 +461,14 @@ public final class BasisLibrary {
      */
     public static String system_propertyF(String name) {
         if (name.equals("xsl:version"))
-            return("1.0");
+            return ("1.0");
         if (name.equals("xsl:vendor"))
-            return("Apache Software Foundation (Xalan XSLTC)");
+            return ("Apache Software Foundation (Xalan XSLTC)");
         if (name.equals("xsl:vendor-url"))
-            return("http://xml.apache.org/xalan-j");
+            return ("http://xml.apache.org/xalan-j");
 
         runTimeError(INVALID_ARGUMENT_ERR, name, "system-property()");
-        return(EMPTYSTRING);
+        return (EMPTYSTRING);
     }
 
     /**
@@ -506,20 +488,19 @@ public final class BasisLibrary {
      *
      * @see <a href="http://www.exslt.org/">EXSLT</a>
      */
-    public static String objectTypeF(Object obj)
-    {
-      if (obj instanceof String)
-        return "string";
-      else if (obj instanceof Boolean)
-        return "boolean";
-      else if (obj instanceof Number)
-        return "number";
-      else if (obj instanceof DOM)
-        return "RTF";
-      else if (obj instanceof DTMAxisIterator)
-        return "node-set";
-      else
-        return "unknown";
+    public static String objectTypeF(Object obj) {
+        if (obj instanceof String)
+            return "string";
+        else if (obj instanceof Boolean)
+            return "boolean";
+        else if (obj instanceof Number)
+            return "number";
+        else if (obj instanceof DOM)
+            return "RTF";
+        else if (obj instanceof DTMAxisIterator)
+            return "node-set";
+        else
+            return "unknown";
     }
 
     /**
@@ -527,14 +508,12 @@ public final class BasisLibrary {
      */
     public static DTMAxisIterator nodesetF(Object obj) {
         if (obj instanceof DOM) {
-           //final DOMAdapter adapter = (DOMAdapter) obj;
-           final DOM dom = (DOM)obj;
-           return new SingletonIterator(dom.getDocument(), true);
-        }
-        else if (obj instanceof DTMAxisIterator) {
-           return (DTMAxisIterator) obj;
-        }
-        else {
+            //final DOMAdapter adapter = (DOMAdapter) obj;
+            final DOM dom = (DOM) obj;
+            return new SingletonIterator(dom.getDocument(), true);
+        } else if (obj instanceof DTMAxisIterator) {
+            return (DTMAxisIterator) obj;
+        } else {
             final String className = obj.getClass().getName();
             runTimeError(DATA_CONVERSION_ERR, "node-set", className);
             return null;
@@ -550,27 +529,27 @@ public final class BasisLibrary {
     private static boolean compareStrings(String lstring, String rstring,
                                           int op, DOM dom) {
         switch (op) {
-    case Operators.EQ:
-            return lstring.equals(rstring);
+            case Operators.EQ:
+                return lstring.equals(rstring);
 
-    case Operators.NE:
-            return !lstring.equals(rstring);
+            case Operators.NE:
+                return !lstring.equals(rstring);
 
-    case Operators.GT:
-            return numberF(lstring, dom) > numberF(rstring, dom);
+            case Operators.GT:
+                return numberF(lstring, dom) > numberF(rstring, dom);
 
-    case Operators.LT:
-            return numberF(lstring, dom) < numberF(rstring, dom);
+            case Operators.LT:
+                return numberF(lstring, dom) < numberF(rstring, dom);
 
-    case Operators.GE:
-            return numberF(lstring, dom) >= numberF(rstring, dom);
+            case Operators.GE:
+                return numberF(lstring, dom) >= numberF(rstring, dom);
 
-    case Operators.LE:
-            return numberF(lstring, dom) <= numberF(rstring, dom);
+            case Operators.LE:
+                return numberF(lstring, dom) <= numberF(rstring, dom);
 
-        default:
-            runTimeError(RUN_TIME_INTERNAL_ERR, "compare()");
-            return false;
+            default:
+                runTimeError(RUN_TIME_INTERNAL_ERR, "compare()");
+                return false;
         }
     }
 
@@ -597,7 +576,7 @@ public final class BasisLibrary {
                     }
                 }
                 if (compareStrings(lvalue, dom.getStringValueX(rnode), op,
-                                   dom)) {
+                        dom)) {
                     return true;
                 }
             }
@@ -612,45 +591,45 @@ public final class BasisLibrary {
         int rnode;
         String value;
 
-        switch(op) {
-    case Operators.EQ:
-            rnode = iterator.next();
-            if (rnode != DTMAxisIterator.END) {
-                value = dom.getStringValueX(node);
-                do {
-                    if (node == rnode
-                          || value.equals(dom.getStringValueX(rnode))) {
-                       return true;
-                    }
-                } while ((rnode = iterator.next()) != DTMAxisIterator.END);
-            }
-            break;
-    case Operators.NE:
-            rnode = iterator.next();
-            if (rnode != DTMAxisIterator.END) {
-                value = dom.getStringValueX(node);
-                do {
-                    if (node != rnode
-                          && !value.equals(dom.getStringValueX(rnode))) {
-                        return true;
-                    }
-                } while ((rnode = iterator.next()) != DTMAxisIterator.END);
-            }
-            break;
-    case Operators.LT:
-            // Assume we're comparing document order here
-            while ((rnode = iterator.next()) != DTMAxisIterator.END) {
-                if (rnode > node) return true;
-            }
-            break;
-    case Operators.GT:
-            // Assume we're comparing document order here
-            while ((rnode = iterator.next()) != DTMAxisIterator.END) {
-                if (rnode < node) return true;
-            }
-            break;
+        switch (op) {
+            case Operators.EQ:
+                rnode = iterator.next();
+                if (rnode != DTMAxisIterator.END) {
+                    value = dom.getStringValueX(node);
+                    do {
+                        if (node == rnode
+                                || value.equals(dom.getStringValueX(rnode))) {
+                            return true;
+                        }
+                    } while ((rnode = iterator.next()) != DTMAxisIterator.END);
+                }
+                break;
+            case Operators.NE:
+                rnode = iterator.next();
+                if (rnode != DTMAxisIterator.END) {
+                    value = dom.getStringValueX(node);
+                    do {
+                        if (node != rnode
+                                && !value.equals(dom.getStringValueX(rnode))) {
+                            return true;
+                        }
+                    } while ((rnode = iterator.next()) != DTMAxisIterator.END);
+                }
+                break;
+            case Operators.LT:
+                // Assume we're comparing document order here
+                while ((rnode = iterator.next()) != DTMAxisIterator.END) {
+                    if (rnode > node) return true;
+                }
+                break;
+            case Operators.GT:
+                // Assume we're comparing document order here
+                while ((rnode = iterator.next()) != DTMAxisIterator.END) {
+                    if (rnode < node) return true;
+                }
+                break;
         }
-        return(false);
+        return (false);
     }
 
     /**
@@ -662,50 +641,50 @@ public final class BasisLibrary {
         //left.reset();
 
         switch (op) {
-    case Operators.EQ:
-            while ((node = left.next()) != DTMAxisIterator.END) {
-                if (numberF(dom.getStringValueX(node), dom) == rnumber)
-                    return true;
-            }
-            break;
+            case Operators.EQ:
+                while ((node = left.next()) != DTMAxisIterator.END) {
+                    if (numberF(dom.getStringValueX(node), dom) == rnumber)
+                        return true;
+                }
+                break;
 
-    case Operators.NE:
-            while ((node = left.next()) != DTMAxisIterator.END) {
-                if (numberF(dom.getStringValueX(node), dom) != rnumber)
-                    return true;
-            }
-            break;
+            case Operators.NE:
+                while ((node = left.next()) != DTMAxisIterator.END) {
+                    if (numberF(dom.getStringValueX(node), dom) != rnumber)
+                        return true;
+                }
+                break;
 
-    case Operators.GT:
-            while ((node = left.next()) != DTMAxisIterator.END) {
-                if (numberF(dom.getStringValueX(node), dom) > rnumber)
-                    return true;
-            }
-            break;
+            case Operators.GT:
+                while ((node = left.next()) != DTMAxisIterator.END) {
+                    if (numberF(dom.getStringValueX(node), dom) > rnumber)
+                        return true;
+                }
+                break;
 
-    case Operators.LT:
-            while ((node = left.next()) != DTMAxisIterator.END) {
-                if (numberF(dom.getStringValueX(node), dom) < rnumber)
-                    return true;
-            }
-            break;
+            case Operators.LT:
+                while ((node = left.next()) != DTMAxisIterator.END) {
+                    if (numberF(dom.getStringValueX(node), dom) < rnumber)
+                        return true;
+                }
+                break;
 
-    case Operators.GE:
-            while ((node = left.next()) != DTMAxisIterator.END) {
-                if (numberF(dom.getStringValueX(node), dom) >= rnumber)
-                    return true;
-            }
-            break;
+            case Operators.GE:
+                while ((node = left.next()) != DTMAxisIterator.END) {
+                    if (numberF(dom.getStringValueX(node), dom) >= rnumber)
+                        return true;
+                }
+                break;
 
-    case Operators.LE:
-            while ((node = left.next()) != DTMAxisIterator.END) {
-                if (numberF(dom.getStringValueX(node), dom) <= rnumber)
-                    return true;
-            }
-            break;
+            case Operators.LE:
+                while ((node = left.next()) != DTMAxisIterator.END) {
+                    if (numberF(dom.getStringValueX(node), dom) <= rnumber)
+                        return true;
+                }
+                break;
 
-        default:
-            runTimeError(RUN_TIME_INTERNAL_ERR, "compare()");
+            default:
+                runTimeError(RUN_TIME_INTERNAL_ERR, "compare()");
         }
 
         return false;
@@ -728,12 +707,11 @@ public final class BasisLibrary {
 
 
     public static boolean compare(Object left, Object right,
-                                  int op, DOM dom)
-    {
+                                  int op, DOM dom) {
         boolean result = false;
         boolean hasSimpleArgs = hasSimpleType(left) && hasSimpleType(right);
 
-    if (op != Operators.EQ && op != Operators.NE) {
+        if (op != Operators.EQ && op != Operators.NE) {
             // If node-boolean comparison -> convert node to boolean
             if (left instanceof Node || right instanceof Node) {
                 if (left instanceof Boolean) {
@@ -748,20 +726,20 @@ public final class BasisLibrary {
 
             if (hasSimpleArgs) {
                 switch (op) {
-        case Operators.GT:
-                    return numberF(left, dom) > numberF(right, dom);
+                    case Operators.GT:
+                        return numberF(left, dom) > numberF(right, dom);
 
-        case Operators.LT:
-                    return numberF(left, dom) < numberF(right, dom);
+                    case Operators.LT:
+                        return numberF(left, dom) < numberF(right, dom);
 
-        case Operators.GE:
-                    return numberF(left, dom) >= numberF(right, dom);
+                    case Operators.GE:
+                        return numberF(left, dom) >= numberF(right, dom);
 
-        case Operators.LE:
-                    return numberF(left, dom) <= numberF(right, dom);
+                    case Operators.LE:
+                        return numberF(left, dom) <= numberF(right, dom);
 
-        default:
-                    runTimeError(RUN_TIME_INTERNAL_ERR, "compare()");
+                    default:
+                        runTimeError(RUN_TIME_INTERNAL_ERR, "compare()");
                 }
             }
             // falls through
@@ -770,51 +748,48 @@ public final class BasisLibrary {
         if (hasSimpleArgs) {
             if (left instanceof Boolean || right instanceof Boolean) {
                 result = booleanF(left) == booleanF(right);
-            }
-            else if (left instanceof Double || right instanceof Double ||
-                     left instanceof Integer || right instanceof Integer) {
+            } else if (left instanceof Double || right instanceof Double ||
+                    left instanceof Integer || right instanceof Integer) {
                 result = numberF(left, dom) == numberF(right, dom);
-            }
-            else { // compare them as strings
+            } else { // compare them as strings
                 result = stringF(left, dom).equals(stringF(right, dom));
             }
 
             if (op == Operators.NE) {
                 result = !result;
             }
-        }
-        else {
+        } else {
             if (left instanceof Node) {
-                left = new SingletonIterator(((Node)left).node);
+                left = new SingletonIterator(((Node) left).node);
             }
             if (right instanceof Node) {
-                right = new SingletonIterator(((Node)right).node);
+                right = new SingletonIterator(((Node) right).node);
             }
 
             if (hasSimpleType(left) ||
-                left instanceof DOM && right instanceof DTMAxisIterator) {
+                    left instanceof DOM && right instanceof DTMAxisIterator) {
                 // swap operands and operator
-                final Object temp = right; right = left; left = temp;
+                final Object temp = right;
+                right = left;
+                left = temp;
                 op = Operators.swapOp(op);
             }
 
             if (left instanceof DOM) {
                 if (right instanceof Boolean) {
-                    result = ((Boolean)right).booleanValue();
+                    result = ((Boolean) right).booleanValue();
                     return result == (op == Operators.EQ);
                 }
 
-                final String sleft = ((DOM)left).getStringValue();
+                final String sleft = ((DOM) left).getStringValue();
 
                 if (right instanceof Number) {
-                    result = ((Number)right).doubleValue() ==
-                        stringToReal(sleft);
-                }
-                else if (right instanceof String) {
-                    result = sleft.equals((String)right);
-                }
-                else if (right instanceof DOM) {
-                    result = sleft.equals(((DOM)right).getStringValue());
+                    result = ((Number) right).doubleValue() ==
+                            stringToReal(sleft);
+                } else if (right instanceof String) {
+                    result = sleft.equals((String) right);
+                } else if (right instanceof DOM) {
+                    result = sleft.equals(((DOM) right).getStringValue());
                 }
 
                 if (op == Operators.NE) {
@@ -825,30 +800,24 @@ public final class BasisLibrary {
 
             // Next, node-set/t for t in {real, string, node-set, result-tree}
 
-            DTMAxisIterator iter = ((DTMAxisIterator)left).reset();
+            DTMAxisIterator iter = ((DTMAxisIterator) left).reset();
 
             if (right instanceof DTMAxisIterator) {
-                result = compare(iter, (DTMAxisIterator)right, op, dom);
-            }
-            else if (right instanceof String) {
-                result = compare(iter, (String)right, op, dom);
-            }
-            else if (right instanceof Number) {
-                final double temp = ((Number)right).doubleValue();
+                result = compare(iter, (DTMAxisIterator) right, op, dom);
+            } else if (right instanceof String) {
+                result = compare(iter, (String) right, op, dom);
+            } else if (right instanceof Number) {
+                final double temp = ((Number) right).doubleValue();
                 result = compare(iter, temp, op, dom);
-            }
-            else if (right instanceof Boolean) {
-                boolean temp = ((Boolean)right).booleanValue();
+            } else if (right instanceof Boolean) {
+                boolean temp = ((Boolean) right).booleanValue();
                 result = (iter.reset().next() != DTMAxisIterator.END) == temp;
-            }
-            else if (right instanceof DOM) {
-                result = compare(iter, ((DOM)right).getStringValue(),
-                                 op, dom);
-            }
-            else if (right == null) {
-                return(false);
-            }
-            else {
+            } else if (right instanceof DOM) {
+                result = compare(iter, ((DOM) right).getStringValue(),
+                        op, dom);
+            } else if (right == null) {
+                return (false);
+            } else {
                 final String className = right.getClass().getName();
                 runTimeError(INVALID_ARGUMENT_ERR, className, "compare()");
             }
@@ -863,24 +832,23 @@ public final class BasisLibrary {
         // language for context node (if any)
         String nodeLang = dom.getLanguage(node);
         if (nodeLang == null)
-            return(false);
+            return (false);
         else
             nodeLang = nodeLang.toLowerCase();
 
         // compare context node's language agains test language
         testLang = testLang.toLowerCase();
         if (testLang.length() == 2) {
-            return(nodeLang.startsWith(testLang));
-        }
-        else {
-            return(nodeLang.equals(testLang));
+            return (nodeLang.startsWith(testLang));
+        } else {
+            return (nodeLang.equals(testLang));
         }
     }
 
     private static boolean hasSimpleType(Object obj) {
         return obj instanceof Boolean || obj instanceof Double ||
-            obj instanceof Integer || obj instanceof String ||
-            obj instanceof Node || obj instanceof DOM;
+                obj instanceof Integer || obj instanceof String ||
+                obj instanceof Node || obj instanceof DOM;
     }
 
     /**
@@ -889,8 +857,7 @@ public final class BasisLibrary {
     public static double stringToReal(String s) {
         try {
             return Double.valueOf(s).doubleValue();
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return Double.NaN;
         }
     }
@@ -901,9 +868,8 @@ public final class BasisLibrary {
     public static int stringToInt(String s) {
         try {
             return Integer.parseInt(s);
-        }
-        catch (NumberFormatException e) {
-            return(-1); // ???
+        } catch (NumberFormatException e) {
+            return (-1); // ???
         }
     }
 
@@ -916,7 +882,7 @@ public final class BasisLibrary {
     static {
         NumberFormat f = NumberFormat.getInstance(Locale.getDefault());
         defaultFormatter = (f instanceof DecimalFormat) ?
-            (DecimalFormat) f : new DecimalFormat();
+                (DecimalFormat) f : new DecimalFormat();
         // Set max fraction digits so that truncation does not occur. Setting
         // the max to Integer.MAX_VALUE may cause problems with some JDK's.
         defaultFormatter.setMaximumFractionDigits(DOUBLE_FRACTION_DIGITS);
@@ -927,7 +893,7 @@ public final class BasisLibrary {
         // This formatter is used to convert numbers according to the XPath
         // 1.0 syntax which ignores locales (http://www.w3.org/TR/xpath#NT-Number)
         xpathFormatter = new DecimalFormat("",
-            new DecimalFormatSymbols(Locale.US));
+                new DecimalFormatSymbols(Locale.US));
         xpathFormatter.setMaximumFractionDigits(DOUBLE_FRACTION_DIGITS);
         xpathFormatter.setMinimumFractionDigits(0);
         xpathFormatter.setMinimumIntegerDigits(1);
@@ -946,15 +912,14 @@ public final class BasisLibrary {
             final String result = Double.toString(d);
             final int length = result.length();
             // Remove leading zeros.
-            if ((result.charAt(length-2) == '.') &&
-                (result.charAt(length-1) == '0'))
-                return result.substring(0, length-2);
+            if ((result.charAt(length - 2) == '.') &&
+                    (result.charAt(length - 1) == '0'))
+                return result.substring(0, length - 2);
             else
                 return result;
-        }
-        else {
+        } else {
             if (Double.isNaN(d) || Double.isInfinite(d))
-                return(Double.toString(d));
+                return (Double.toString(d));
 
             //Convert -0.0 to +0.0 other values remains the same
             d = d + 0.0;
@@ -971,7 +936,7 @@ public final class BasisLibrary {
      * Utility function: used in RealType to convert a real to an integer
      */
     public static int realToInt(double d) {
-        return (int)d;
+        return (int) d;
     }
 
     /**
@@ -989,16 +954,15 @@ public final class BasisLibrary {
         }
         try {
             StringBuffer result = threadLocalStringBuffer.get();
-        result.setLength(0);
+            result.setLength(0);
             if (pattern != defaultPattern) {
                 formatter.applyLocalizedPattern(pattern);
             }
-        formatter.format(number, result, _fieldPosition);
+            formatter.format(number, result, _fieldPosition);
             return result.toString();
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             runTimeError(FORMAT_NUMBER_ERR, Double.toString(number), pattern);
-            return(EMPTYSTRING);
+            return (EMPTYSTRING);
         }
     }
 
@@ -1009,13 +973,12 @@ public final class BasisLibrary {
     public static DTMAxisIterator referenceToNodeSet(Object obj) {
         // Convert var/param -> node
         if (obj instanceof Node) {
-            return(new SingletonIterator(((Node)obj).node));
+            return (new SingletonIterator(((Node) obj).node));
         }
         // Convert var/param -> node-set
         else if (obj instanceof DTMAxisIterator) {
-            return(((DTMAxisIterator)obj).cloneIterator().reset());
-        }
-        else {
+            return (((DTMAxisIterator) obj).cloneIterator().reset());
+        } else {
             final String className = obj.getClass().getName();
             runTimeError(DATA_CONVERSION_ERR, className, "node-set");
             return null;
@@ -1029,15 +992,13 @@ public final class BasisLibrary {
         if (obj instanceof Node || obj instanceof DTMAxisIterator) {
             DTMAxisIterator iter = referenceToNodeSet(obj);
             return dom.makeNodeList(iter);
-        }
-        else if (obj instanceof DOM) {
-          dom = (DOM)obj;
-          return dom.makeNodeList(DTMDefaultBase.ROOTNODE);
-        }
-        else {
+        } else if (obj instanceof DOM) {
+            dom = (DOM) obj;
+            return dom.makeNodeList(DTMDefaultBase.ROOTNODE);
+        } else {
             final String className = obj.getClass().getName();
             runTimeError(DATA_CONVERSION_ERR, className,
-                "org.w3c.dom.NodeList");
+                    "org.w3c.dom.NodeList");
             return null;
         }
     }
@@ -1049,13 +1010,11 @@ public final class BasisLibrary {
         if (obj instanceof Node || obj instanceof DTMAxisIterator) {
             DTMAxisIterator iter = referenceToNodeSet(obj);
             return dom.makeNode(iter);
-        }
-        else if (obj instanceof DOM) {
-          dom = (DOM)obj;
-          DTMAxisIterator iter = dom.getChildren(DTMDefaultBase.ROOTNODE);
-          return dom.makeNode(iter);
-        }
-        else {
+        } else if (obj instanceof DOM) {
+            dom = (DOM) obj;
+            DTMAxisIterator iter = dom.getChildren(DTMDefaultBase.ROOTNODE);
+            return dom.makeNode(iter);
+        } else {
             final String className = obj.getClass().getName();
             runTimeError(DATA_CONVERSION_ERR, className, "org.w3c.dom.Node");
             return null;
@@ -1068,8 +1027,7 @@ public final class BasisLibrary {
     public static long referenceToLong(Object obj) {
         if (obj instanceof Number) {
             return ((Number) obj).longValue();    // handles Integer and Double
-        }
-        else {
+        } else {
             final String className = obj.getClass().getName();
             runTimeError(DATA_CONVERSION_ERR, className, Long.TYPE);
             return 0;
@@ -1082,8 +1040,7 @@ public final class BasisLibrary {
     public static double referenceToDouble(Object obj) {
         if (obj instanceof Number) {
             return ((Number) obj).doubleValue();   // handles Integer and Double
-        }
-        else {
+        } else {
             final String className = obj.getClass().getName();
             runTimeError(DATA_CONVERSION_ERR, className, Double.TYPE);
             return 0;
@@ -1096,8 +1053,7 @@ public final class BasisLibrary {
     public static boolean referenceToBoolean(Object obj) {
         if (obj instanceof Boolean) {
             return ((Boolean) obj).booleanValue();
-        }
-        else {
+        } else {
             final String className = obj.getClass().getName();
             runTimeError(DATA_CONVERSION_ERR, className, Boolean.TYPE);
             return false;
@@ -1110,17 +1066,13 @@ public final class BasisLibrary {
     public static String referenceToString(Object obj, DOM dom) {
         if (obj instanceof String) {
             return (String) obj;
-        }
-        else if (obj instanceof DTMAxisIterator) {
-            return dom.getStringValueX(((DTMAxisIterator)obj).reset().next());
-        }
-        else if (obj instanceof Node) {
-            return dom.getStringValueX(((Node)obj).node);
-        }
-        else if (obj instanceof DOM) {
+        } else if (obj instanceof DTMAxisIterator) {
+            return dom.getStringValueX(((DTMAxisIterator) obj).reset().next());
+        } else if (obj instanceof Node) {
+            return dom.getStringValueX(((Node) obj).node);
+        } else if (obj instanceof DOM) {
             return ((DOM) obj).getStringValue();
-        }
-        else {
+        } else {
             final String className = obj.getClass().getName();
             runTimeError(DATA_CONVERSION_ERR, className, String.class);
             return null;
@@ -1131,8 +1083,7 @@ public final class BasisLibrary {
      * Utility function used to convert a w3c Node into an internal DOM iterator.
      */
     public static DTMAxisIterator node2Iterator(org.w3c.dom.Node node,
-        Translet translet, DOM dom)
-    {
+                                                Translet translet, DOM dom) {
         final org.w3c.dom.Node inNode = node;
         // Create a dummy NodeList which only contains the given node to make
         // use of the nodeList2Iterator() interface.
@@ -1162,9 +1113,8 @@ public final class BasisLibrary {
      * @see org.apache.xml.dtm.ref.DTMManagerDefault#getDTMHandleFromNode
      */
     private static DTMAxisIterator nodeList2IteratorUsingHandleFromNode(
-                                        org.w3c.dom.NodeList nodeList,
-                                        Translet translet, DOM dom)
-    {
+            org.w3c.dom.NodeList nodeList,
+            Translet translet, DOM dom) {
         final int n = nodeList.getLength();
         final int[] dtmHandles = new int[n];
         DTMManager dtmManager = null;
@@ -1175,18 +1125,16 @@ public final class BasisLibrary {
             int handle;
             if (dtmManager != null) {
                 handle = dtmManager.getDTMHandleFromNode(node);
-            }
-            else if (node instanceof DTMNodeProxy
-                     && ((DTMNodeProxy) node).getDTM() == dom) {
+            } else if (node instanceof DTMNodeProxy
+                    && ((DTMNodeProxy) node).getDTM() == dom) {
                 handle = ((DTMNodeProxy) node).getDTMNodeNumber();
-            }
-            else {
+            } else {
                 runTimeError(RUN_TIME_INTERNAL_ERR, "need MultiDOM");
                 return null;
             }
             dtmHandles[i] = handle;
             System.out.println("Node " + i + " has handle 0x" +
-                               Integer.toString(handle, 16));
+                    Integer.toString(handle, 16));
         }
         return new ArrayNodeListIterator(dtmHandles);
     }
@@ -1196,9 +1144,8 @@ public final class BasisLibrary {
      * DOM iterator.
      */
     public static DTMAxisIterator nodeList2Iterator(
-                                        org.w3c.dom.NodeList nodeList,
-                                        Translet translet, DOM dom)
-    {
+            org.w3c.dom.NodeList nodeList,
+            Translet translet, DOM dom) {
         // First pass: build w3c DOM for all nodes not proxied from our DOM.
         //
         // Notice: this looses some (esp. parent) context for these nodes,
@@ -1213,15 +1160,14 @@ public final class BasisLibrary {
         for (int i = 0; i < nodeList.getLength(); ++i) {
             org.w3c.dom.Node node = nodeList.item(i);
             if (node instanceof DTMNodeProxy) {
-                DTMNodeProxy proxy = (DTMNodeProxy)node;
+                DTMNodeProxy proxy = (DTMNodeProxy) node;
                 DTM nodeDTM = proxy.getDTM();
                 int handle = proxy.getDTMNodeNumber();
                 boolean isOurDOM = (nodeDTM == dom);
                 if (!isOurDOM && dtmManager != null) {
                     try {
                         isOurDOM = (nodeDTM == dtmManager.getDTM(handle));
-                    }
-                    catch (ArrayIndexOutOfBoundsException e) {
+                    } catch (ArrayIndexOutOfBoundsException e) {
                         // invalid node handle, so definitely not our doc
                     }
                 }
@@ -1241,8 +1187,7 @@ public final class BasisLibrary {
                 try {
                     AbstractTranslet at = (AbstractTranslet) translet;
                     doc = at.newDocument("", "__top__");
-                }
-                catch (javax.xml.parsers.ParserConfigurationException e) {
+                } catch (javax.xml.parsers.ParserConfigurationException e) {
                     runTimeError(RUN_TIME_INTERNAL_ERR, e.getMessage());
                     return null;
                 }
@@ -1269,7 +1214,7 @@ public final class BasisLibrary {
                     // attributes, avoiding problems with conflicting
                     // attributes or node order.
                     mid = doc.createElementNS(null, "__dummy__");
-                    mid.setAttributeNodeNS((Attr)doc.importNode(node, true));
+                    mid.setAttributeNodeNS((Attr) doc.importNode(node, true));
                     doc.getDocumentElement().appendChild(mid);
                     ++n;
                     break;
@@ -1277,8 +1222,8 @@ public final class BasisLibrary {
                     // Better play it safe for all types we aren't sure we know
                     // how to deal with.
                     runTimeError(RUN_TIME_INTERNAL_ERR,
-                                 "Don't know how to convert node type "
-                                 + nodeType);
+                            "Don't know how to convert node type "
+                                    + nodeType);
             }
         }
 
@@ -1286,20 +1231,20 @@ public final class BasisLibrary {
         DTMAxisIterator iter = null, childIter = null, attrIter = null;
         if (doc != null) {
             final MultiDOM multiDOM = (MultiDOM) dom;
-            DOM idom = (DOM)dtmManager.getDTM(new DOMSource(doc), false,
-                                              null, true, false);
+            DOM idom = (DOM) dtmManager.getDTM(new DOMSource(doc), false,
+                    null, true, false);
             // Create DOMAdapter and register with MultiDOM
             DOMAdapter domAdapter = new DOMAdapter(idom,
-                translet.getNamesArray(),
-                translet.getUrisArray(),
-                translet.getTypesArray(),
-                translet.getNamespaceArray());
+                    translet.getNamesArray(),
+                    translet.getUrisArray(),
+                    translet.getTypesArray(),
+                    translet.getNamespaceArray());
             multiDOM.addDOMAdapter(domAdapter);
 
             DTMAxisIterator iter1 = idom.getAxisIterator(Axis.CHILD);
             DTMAxisIterator iter2 = idom.getAxisIterator(Axis.CHILD);
             iter = new AbsoluteIterator(
-                new StepIterator(iter1, iter2));
+                    new StepIterator(iter1, iter2));
 
             iter.setStartNode(DTMDefaultBase.ROOTNODE);
 
@@ -1357,8 +1302,7 @@ public final class BasisLibrary {
     public static DOM referenceToResultTree(Object obj) {
         try {
             return ((DOM) obj);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             final String className = obj.getClass().getName();
             runTimeError(DATA_CONVERSION_ERR, "reference", className);
             return null;
@@ -1371,7 +1315,7 @@ public final class BasisLibrary {
      */
     public static DTMAxisIterator getSingleNode(DTMAxisIterator iterator) {
         int node = iterator.next();
-        return(new SingletonIterator(node));
+        return (new SingletonIterator(node));
     }
 
     /**
@@ -1384,20 +1328,16 @@ public final class BasisLibrary {
                             int node,
                             DOM dom) {
         try {
-            if (obj instanceof DTMAxisIterator)
-      {
+            if (obj instanceof DTMAxisIterator) {
                 DTMAxisIterator iter = (DTMAxisIterator) obj;
                 dom.copy(iter.reset(), handler);
-            }
-            else if (obj instanceof Node) {
+            } else if (obj instanceof Node) {
                 dom.copy(((Node) obj).node, handler);
-            }
-            else if (obj instanceof DOM) {
+            } else if (obj instanceof DOM) {
                 //((DOM)obj).copy(((com.sun.org.apache.xml.internal.dtm.ref.DTMDefaultBase)((DOMAdapter)obj).getDOMImpl()).getDocument(), handler);
-                DOM newDom = (DOM)obj;
+                DOM newDom = (DOM) obj;
                 newDom.copy(newDom.getDocument(), handler);
-            }
-            else {
+            } else {
                 String string = obj.toString();         // or call stringF()
                 final int length = string.length();
                 if (length > _characterArray.length)
@@ -1405,8 +1345,7 @@ public final class BasisLibrary {
                 string.getChars(0, length, _characterArray, 0);
                 handler.characters(_characterArray, 0, length);
             }
-        }
-        catch (SAXException e) {
+        } catch (SAXException e) {
             runTimeError(RUN_TIME_COPY_ERR);
         }
     }
@@ -1424,22 +1363,22 @@ public final class BasisLibrary {
             final String newPrefix = name.substring(0, firstOccur);
 
             if (firstOccur != lastOccur) {
-               final String oriPrefix = name.substring(firstOccur+1, lastOccur);
+                final String oriPrefix = name.substring(firstOccur + 1, lastOccur);
                 if (!XML11Char.isXML11ValidNCName(oriPrefix)) {
                     // even though the orignal prefix is ignored, it should still get checked for valid NCName
-                    runTimeError(INVALID_QNAME_ERR,oriPrefix+":"+localName);
+                    runTimeError(INVALID_QNAME_ERR, oriPrefix + ":" + localName);
                 }
             }
 
             // prefix must be a valid NCName
             if (!XML11Char.isXML11ValidNCName(newPrefix)) {
-                runTimeError(INVALID_QNAME_ERR,newPrefix+":"+localName);
+                runTimeError(INVALID_QNAME_ERR, newPrefix + ":" + localName);
             }
         }
 
         // local name must be a valid NCName and must not be XMLNS
-        if ((!XML11Char.isXML11ValidNCName(localName))||(localName.equals(Constants.XMLNS_PREFIX))) {
-            runTimeError(INVALID_QNAME_ERR,localName);
+        if ((!XML11Char.isXML11ValidNCName(localName)) || (localName.equals(Constants.XMLNS_PREFIX))) {
+            runTimeError(INVALID_QNAME_ERR, localName);
         }
     }
 
@@ -1449,7 +1388,7 @@ public final class BasisLibrary {
      */
     public static void checkNCName(String name) {
         if (!XML11Char.isXML11ValidNCName(name)) {
-            runTimeError(INVALID_NCNAME_ERR,name);
+            runTimeError(INVALID_NCNAME_ERR, name);
         }
     }
 
@@ -1459,7 +1398,7 @@ public final class BasisLibrary {
      */
     public static void checkQName(String name) {
         if (!XML11Char.isXML11ValidQName(name)) {
-            runTimeError(INVALID_QNAME_ERR,name);
+            runTimeError(INVALID_QNAME_ERR, name);
         }
     }
 
@@ -1467,8 +1406,7 @@ public final class BasisLibrary {
      * Utility function for the implementation of xsl:element.
      */
     public static String startXslElement(String qname, String namespace,
-        SerializationHandler handler, DOM dom, int node)
-    {
+                                         SerializationHandler handler, DOM dom, int node) {
         try {
             // Get prefix from qname
             String prefix;
@@ -1482,35 +1420,31 @@ public final class BasisLibrary {
                     try {
                         // not sure if this line of code ever works
                         namespace = dom.lookupNamespace(node, prefix);
-                    }
-                    catch(RuntimeException e) {
+                    } catch (RuntimeException e) {
                         handler.flushPending();  // need to flush or else can't get namespacemappings
                         NamespaceMappings nm = handler.getNamespaceMappings();
                         namespace = nm.lookupNamespace(prefix);
                         if (namespace == null) {
-                            runTimeError(NAMESPACE_PREFIX_ERR,prefix);
+                            runTimeError(NAMESPACE_PREFIX_ERR, prefix);
                         }
                     }
                 }
 
-                handler.startElement(namespace, qname.substring(index+1),
-                                         qname);
+                handler.startElement(namespace, qname.substring(index + 1),
+                        qname);
                 handler.namespaceAfterStartElement(prefix, namespace);
-            }
-            else {
+            } else {
                 // Need to generate a prefix?
                 if (namespace != null && namespace.length() > 0) {
                     prefix = generatePrefix();
                     qname = prefix + ':' + qname;
                     handler.startElement(namespace, qname, qname);
                     handler.namespaceAfterStartElement(prefix, namespace);
-                }
-                else {
+                } else {
                     handler.startElement(null, null, qname);
                 }
             }
-        }
-        catch (SAXException e) {
+        } catch (SAXException e) {
             throw new RuntimeException(e.getMessage());
         }
 
@@ -1537,45 +1471,45 @@ public final class BasisLibrary {
     }
 
     public static final String RUN_TIME_INTERNAL_ERR =
-                                           "RUN_TIME_INTERNAL_ERR";
+            "RUN_TIME_INTERNAL_ERR";
     public static final String RUN_TIME_COPY_ERR =
-                                           "RUN_TIME_COPY_ERR";
+            "RUN_TIME_COPY_ERR";
     public static final String DATA_CONVERSION_ERR =
-                                           "DATA_CONVERSION_ERR";
+            "DATA_CONVERSION_ERR";
     public static final String EXTERNAL_FUNC_ERR =
-                                           "EXTERNAL_FUNC_ERR";
+            "EXTERNAL_FUNC_ERR";
     public static final String EQUALITY_EXPR_ERR =
-                                           "EQUALITY_EXPR_ERR";
+            "EQUALITY_EXPR_ERR";
     public static final String INVALID_ARGUMENT_ERR =
-                                           "INVALID_ARGUMENT_ERR";
+            "INVALID_ARGUMENT_ERR";
     public static final String FORMAT_NUMBER_ERR =
-                                           "FORMAT_NUMBER_ERR";
+            "FORMAT_NUMBER_ERR";
     public static final String ITERATOR_CLONE_ERR =
-                                           "ITERATOR_CLONE_ERR";
+            "ITERATOR_CLONE_ERR";
     public static final String AXIS_SUPPORT_ERR =
-                                           "AXIS_SUPPORT_ERR";
+            "AXIS_SUPPORT_ERR";
     public static final String TYPED_AXIS_SUPPORT_ERR =
-                                           "TYPED_AXIS_SUPPORT_ERR";
+            "TYPED_AXIS_SUPPORT_ERR";
     public static final String STRAY_ATTRIBUTE_ERR =
-                                           "STRAY_ATTRIBUTE_ERR";
+            "STRAY_ATTRIBUTE_ERR";
     public static final String STRAY_NAMESPACE_ERR =
-                                           "STRAY_NAMESPACE_ERR";
+            "STRAY_NAMESPACE_ERR";
     public static final String NAMESPACE_PREFIX_ERR =
-                                           "NAMESPACE_PREFIX_ERR";
+            "NAMESPACE_PREFIX_ERR";
     public static final String DOM_ADAPTER_INIT_ERR =
-                                           "DOM_ADAPTER_INIT_ERR";
+            "DOM_ADAPTER_INIT_ERR";
     public static final String PARSER_DTD_SUPPORT_ERR =
-                                           "PARSER_DTD_SUPPORT_ERR";
+            "PARSER_DTD_SUPPORT_ERR";
     public static final String NAMESPACES_SUPPORT_ERR =
-                                           "NAMESPACES_SUPPORT_ERR";
+            "NAMESPACES_SUPPORT_ERR";
     public static final String CANT_RESOLVE_RELATIVE_URI_ERR =
-                                           "CANT_RESOLVE_RELATIVE_URI_ERR";
+            "CANT_RESOLVE_RELATIVE_URI_ERR";
     public static final String UNSUPPORTED_XSL_ERR =
-                                           "UNSUPPORTED_XSL_ERR";
+            "UNSUPPORTED_XSL_ERR";
     public static final String UNSUPPORTED_EXT_ERR =
-                                           "UNSUPPORTED_EXT_ERR";
+            "UNSUPPORTED_EXT_ERR";
     public static final String UNKNOWN_TRANSLET_VERSION_ERR =
-                                           "UNKNOWN_TRANSLET_VERSION_ERR";
+            "UNKNOWN_TRANSLET_VERSION_ERR";
     public static final String INVALID_QNAME_ERR = "INVALID_QNAME_ERR";
     public static final String INVALID_NCNAME_ERR = "INVALID_NCNAME_ERR";
     public static final String UNALLOWED_EXTENSION_FUNCTION_ERR = "UNALLOWED_EXTENSION_FUNCTION_ERR";
@@ -1600,16 +1534,16 @@ public final class BasisLibrary {
 
     public static void runTimeError(String code, Object[] args) {
         final String message = MessageFormat.format(m_bundle.getString(code),
-                                                    args);
+                args);
         throw new RuntimeException(message);
     }
 
     public static void runTimeError(String code, Object arg0) {
-        runTimeError(code, new Object[]{ arg0 } );
+        runTimeError(code, new Object[]{arg0});
     }
 
     public static void runTimeError(String code, Object arg0, Object arg1) {
-        runTimeError(code, new Object[]{ arg0, arg1 } );
+        runTimeError(code, new Object[]{arg0, arg1});
     }
 
     public static void consoleOutput(String msg) {
@@ -1621,7 +1555,7 @@ public final class BasisLibrary {
      */
     public static String replace(String base, char ch, String str) {
         return (base.indexOf(ch) < 0) ? base :
-            replace(base, String.valueOf(ch), new String[] { str });
+                replace(base, String.valueOf(ch), new String[]{str});
     }
 
     public static String replace(String base, String delim, String[] str) {
@@ -1635,8 +1569,7 @@ public final class BasisLibrary {
 
             if (k >= 0) {
                 result.append(str[k]);
-            }
-            else {
+            } else {
                 result.append(ch);
             }
         }
@@ -1653,21 +1586,21 @@ public final class BasisLibrary {
      * by the BasisLibrary's utility method mapQNametoJavaName
      * and thus get mapped to legal java variable names
      */
-    public static String mapQNameToJavaName (String base ) {
-       return replace(base, ".-:/{}?#%*",
-                      new String[] { "$dot$", "$dash$" ,"$colon$", "$slash$",
-                                     "","$colon$","$ques$","$hash$","$per$",
-                                     "$aster$"});
+    public static String mapQNameToJavaName(String base) {
+        return replace(base, ".-:/{}?#%*",
+                new String[]{"$dot$", "$dash$", "$colon$", "$slash$",
+                        "", "$colon$", "$ques$", "$hash$", "$per$",
+                        "$aster$"});
 
     }
 
     /**
-     *  Utility method to calculate string-length as a number of code points,
-     *  to avoid possible errors with string that contains
-     *  complementary characters
+     * Utility method to calculate string-length as a number of code points,
+     * to avoid possible errors with string that contains
+     * complementary characters
      */
     public static int getStringLength(String str) {
-        return str.codePointCount(0,str.length());
+        return str.codePointCount(0, str.length());
     }
 
     //-- End utility functions

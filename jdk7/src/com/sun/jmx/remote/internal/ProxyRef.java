@@ -82,8 +82,8 @@ public class ProxyRef implements RemoteRef {
      */
     @Deprecated
     public java.rmi.server.RemoteCall newCall(RemoteObject obj,
-            java.rmi.server.Operation[] op, int opnum,
-                              long hash) throws RemoteException {
+                                              java.rmi.server.Operation[] op, int opnum,
+                                              long hash) throws RemoteException {
         return ref.newCall(obj, op, opnum, hash);
     }
 

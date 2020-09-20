@@ -212,6 +212,7 @@ public class LockSupport {
         if (nanos > 0) {
             Thread t = Thread.currentThread();
             setBlocker(t, blocker);
+            // 直接 park
             UNSAFE.park(false, nanos);
             setBlocker(t, null);
         }

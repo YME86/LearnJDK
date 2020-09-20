@@ -26,12 +26,14 @@ import com.sun.org.apache.xalan.internal.XalanConstants;
 import com.sun.org.apache.xalan.internal.utils.FactoryImpl;
 import com.sun.org.apache.xalan.internal.utils.SecuritySupport;
 import com.sun.org.apache.xalan.internal.utils.XMLSecurityManager;
+
 import java.util.HashMap;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
+
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.XMLReader;
@@ -44,11 +46,11 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class XMLReaderManager {
 
     private static final String NAMESPACES_FEATURE =
-                             "http://xml.org/sax/features/namespaces";
+            "http://xml.org/sax/features/namespaces";
     private static final String NAMESPACE_PREFIXES_FEATURE =
-                             "http://xml.org/sax/features/namespace-prefixes";
+            "http://xml.org/sax/features/namespace-prefixes";
     private static final XMLReaderManager m_singletonManager =
-                                                     new XMLReaderManager();
+            new XMLReaderManager();
     private static final String property = "org.xml.sax.driver";
     /**
      * Parser factory to be used to construct XMLReader objects
@@ -68,7 +70,7 @@ public class XMLReaderManager {
     private boolean m_useServicesMechanism = true;
 
     private boolean _secureProcessing;
-     /**
+    /**
      * protocols allowed for external DTD references in source file and/or stylesheet.
      */
     private String _accessExternalDTD = XalanConstants.EXTERNAL_ACCESS_DEFAULT;
@@ -115,7 +117,7 @@ public class XMLReaderManager {
         boolean threadHasReader = (reader != null);
         String factory = SecuritySupport.getSystemProperty(property);
         if (threadHasReader && m_inUse.get(reader) != Boolean.TRUE &&
-                ( factory == null || reader.getClass().getName().equals(factory))) {
+                (factory == null || reader.getClass().getName().equals(factory))) {
             m_inUse.put(reader, Boolean.TRUE);
         } else {
             try {
@@ -132,7 +134,7 @@ public class XMLReaderManager {
                                 + e.getMessage());
                     }
                 } catch (Exception e) {
-                   try {
+                    try {
                         // If unable to create an instance, let's try to use
                         // the XMLReader from JAXP
                         if (m_parserFactory == null) {
@@ -141,9 +143,9 @@ public class XMLReaderManager {
                         }
 
                         reader = m_parserFactory.newSAXParser().getXMLReader();
-                   } catch (ParserConfigurationException pce) {
-                       throw pce;   // pass along pce
-                   }
+                    } catch (ParserConfigurationException pce) {
+                        throw pce;   // pass along pce
+                    }
                 }
                 try {
                     reader.setFeature(NAMESPACES_FEATURE, true);
@@ -173,7 +175,7 @@ public class XMLReaderManager {
             reader.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, _accessExternalDTD);
         } catch (SAXException se) {
             System.err.println("Warning:  " + reader.getClass().getName() + ": "
-                        + se.getMessage());
+                    + se.getMessage());
         }
 
         try {
@@ -188,7 +190,7 @@ public class XMLReaderManager {
             }
         } catch (SAXException se) {
             System.err.println("Warning:  " + reader.getClass().getName() + ": "
-                        + se.getMessage());
+                    + se.getMessage());
         }
 
         return reader;
@@ -207,6 +209,7 @@ public class XMLReaderManager {
             m_inUse.remove(reader);
         }
     }
+
     /**
      * Return the state of the services mechanism feature.
      */
@@ -247,9 +250,9 @@ public class XMLReaderManager {
      */
     public void setProperty(String name, Object value) {
         if (name.equals(XMLConstants.ACCESS_EXTERNAL_DTD)) {
-            _accessExternalDTD = (String)value;
+            _accessExternalDTD = (String) value;
         } else if (name.equals(XalanConstants.SECURITY_MANAGER)) {
-            _xmlSecurityManager = (XMLSecurityManager)value;
+            _xmlSecurityManager = (XMLSecurityManager) value;
         }
     }
 }

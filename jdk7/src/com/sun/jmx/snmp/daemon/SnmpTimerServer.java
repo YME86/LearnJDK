@@ -17,12 +17,12 @@ import static com.sun.jmx.defaults.JmxProperties.SNMP_ADAPTOR_LOGGER;
 
 final class SnmpTimerServer extends Thread {
 
-        // VARIABLES
+    // VARIABLES
     //----------
 
-    private SnmpInformRequest req = null ;
+    private SnmpInformRequest req = null;
 
-    SnmpQManager snmpq = null ;
+    SnmpQManager snmpq = null;
 
     // This boolean is used to stop handling requests while the corresponding SnmpQManager
     // is being destroyed.
@@ -32,11 +32,11 @@ final class SnmpTimerServer extends Thread {
     // CONSTRUCTORS
     //-------------
 
-    public SnmpTimerServer (ThreadGroup grp, SnmpQManager q) {
-        super(grp, "SnmpTimerServer") ;
-        setName("SnmpTimerServer") ;
-        snmpq = q ;
-        start() ;
+    public SnmpTimerServer(ThreadGroup grp, SnmpQManager q) {
+        super(grp, "SnmpTimerServer");
+        setName("SnmpTimerServer");
+        snmpq = q;
+        start();
     }
 
     public synchronized void stopTimerServer() {
@@ -58,7 +58,7 @@ final class SnmpTimerServer extends Thread {
 
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpTimerServer.class.getName(),
-                "run", "Timer Thread started");
+                    "run", "Timer Thread started");
         }
 
         while (true) {
@@ -66,42 +66,42 @@ final class SnmpTimerServer extends Thread {
             try {
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpTimerServer.class.getName(),
-                        "run", "Blocking for inform requests");
+                            "run", "Blocking for inform requests");
                 }
                 if (req == null) {
-                    req = snmpq.getTimeoutRequests() ;
+                    req = snmpq.getTimeoutRequests();
                 }
                 if (req != null && req.inProgress()) {
                     if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                         SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpTimerServer.class.getName(),
-                            "run", "Handle timeout inform request " + req.getRequestId());
+                                "run", "Handle timeout inform request " + req.getRequestId());
                     }
-                    req.action() ;
-                    req = null ;
+                    req.action();
+                    req = null;
                 }
                 if (isBeingDestroyed == true)
                     break;
             } catch (Exception e) {
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpTimerServer.class.getName(),
-                        "run", "Got unexpected exception", e);
+                            "run", "Got unexpected exception", e);
                 }
             } catch (ThreadDeath d) {
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpTimerServer.class.getName(),
-                        "run", "ThreadDeath, timer server unexpectedly shutting down", d);
+                            "run", "ThreadDeath, timer server unexpectedly shutting down", d);
                 }
-                throw d ;
+                throw d;
             } catch (OutOfMemoryError ome) {
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpTimerServer.class.getName(),
-                        "run", "OutOfMemoryError", ome);
+                            "run", "OutOfMemoryError", ome);
                 }
                 yield();
             } catch (Error err) {
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpTimerServer.class.getName(),
-                        "run", "Received Internal error", err);
+                            "run", "Received Internal error", err);
                 }
             }
         }

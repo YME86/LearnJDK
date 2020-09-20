@@ -27,7 +27,6 @@
 package com.sun.jmx.snmp;
 
 
-
 /**
  * Represents an SNMP gauge.
  *
@@ -40,54 +39,61 @@ public class SnmpGauge extends SnmpUnsignedInt {
 
     // CONSTRUCTORS
     //-------------
+
     /**
      * Constructs a new <CODE>SnmpGauge</CODE> from the specified integer value.
+     *
      * @param v The initialization value.
-     * @exception IllegalArgumentException The specified value is negative
-     * or larger than {@link SnmpUnsignedInt#MAX_VALUE SnmpUnsignedInt.MAX_VALUE}.
+     * @throws IllegalArgumentException The specified value is negative
+     *                                  or larger than {@link SnmpUnsignedInt#MAX_VALUE SnmpUnsignedInt.MAX_VALUE}.
      */
     public SnmpGauge(int v) throws IllegalArgumentException {
-        super(v) ;
+        super(v);
     }
 
     /**
      * Constructs a new <CODE>SnmpGauge</CODE> from the specified <CODE>Integer</CODE> value.
+     *
      * @param v The initialization value.
-     * @exception IllegalArgumentException The specified value is negative
-     * or larger than {@link SnmpUnsignedInt#MAX_VALUE SnmpUnsignedInt.MAX_VALUE}.
+     * @throws IllegalArgumentException The specified value is negative
+     *                                  or larger than {@link SnmpUnsignedInt#MAX_VALUE SnmpUnsignedInt.MAX_VALUE}.
      */
     public SnmpGauge(Integer v) throws IllegalArgumentException {
-        super(v) ;
+        super(v);
     }
 
     /**
      * Constructs a new <CODE>SnmpGauge</CODE> from the specified long value.
+     *
      * @param v The initialization value.
-     * @exception IllegalArgumentException The specified value is negative
-     * or larger than {@link SnmpUnsignedInt#MAX_VALUE SnmpUnsignedInt.MAX_VALUE}.
+     * @throws IllegalArgumentException The specified value is negative
+     *                                  or larger than {@link SnmpUnsignedInt#MAX_VALUE SnmpUnsignedInt.MAX_VALUE}.
      */
     public SnmpGauge(long v) throws IllegalArgumentException {
-        super(v) ;
+        super(v);
     }
 
     /**
      * Constructs a new <CODE>SnmpGauge</CODE> from the specified <CODE>Long</CODE> value.
+     *
      * @param v The initialization value.
-     * @exception IllegalArgumentException The specified value is negative
-     * or larger than {@link SnmpUnsignedInt#MAX_VALUE SnmpUnsignedInt.MAX_VALUE}.
+     * @throws IllegalArgumentException The specified value is negative
+     *                                  or larger than {@link SnmpUnsignedInt#MAX_VALUE SnmpUnsignedInt.MAX_VALUE}.
      */
     public SnmpGauge(Long v) throws IllegalArgumentException {
-        super(v) ;
+        super(v);
     }
 
     // PUBLIC METHODS
     //---------------
+
     /**
      * Returns a textual description of the type object.
+     *
      * @return ASN.1 textual description.
      */
     final public String getTypeName() {
-        return name ;
+        return name;
     }
 
     // VARIABLES
@@ -95,5 +101,5 @@ public class SnmpGauge extends SnmpUnsignedInt {
     /**
      * Name of the type.
      */
-    final static String name = "Gauge32" ;
+    final static String name = "Gauge32";
 }

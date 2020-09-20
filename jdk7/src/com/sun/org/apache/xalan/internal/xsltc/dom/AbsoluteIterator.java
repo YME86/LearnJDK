@@ -34,10 +34,11 @@ import com.sun.org.apache.xml.internal.dtm.ref.DTMDefaultBase;
  * setStartNode() is not totally useless, though. It is needed to obtain the
  * DOM mask, i.e. the index into the MultiDOM table that corresponds to the
  * DOM "owning" the node.
- *
+ * <p>
  * The DOM mask is cached, so successive calls to setStartNode() passing
  * nodes from other DOMs will have no effect (i.e. this iterator cannot
  * migrate between DOMs).
+ *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  */
@@ -78,10 +79,9 @@ public final class AbsoluteIterator extends DTMAxisIteratorBase {
             clone.resetPosition();
             clone._isRestartable = false;
             return clone;
-        }
-        catch (CloneNotSupportedException e) {
+        } catch (CloneNotSupportedException e) {
             BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
-                                      e.toString());
+                    e.toString());
             return null;
         }
     }

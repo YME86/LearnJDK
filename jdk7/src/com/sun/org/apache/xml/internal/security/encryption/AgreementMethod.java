@@ -22,6 +22,7 @@ package com.sun.org.apache.xml.internal.security.encryption;
 
 
 import java.util.Iterator;
+
 import com.sun.org.apache.xml.internal.security.keys.KeyInfo;
 import org.w3c.dom.Element;
 
@@ -65,14 +66,14 @@ import org.w3c.dom.Element;
  * <xmp>
  * <element name="AgreementMethod" type="xenc:AgreementMethodType"/>
  * <complexType name="AgreementMethodType" mixed="true">
- *     <sequence>
- *         <element name="KA-Nonce" minOccurs="0" type="base64Binary"/>
- *         <!-- <element ref="ds:DigestMethod" minOccurs="0"/> -->
- *         <any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
- *         <element name="OriginatorKeyInfo" minOccurs="0" type="ds:KeyInfoType"/>
- *         <element name="RecipientKeyInfo" minOccurs="0" type="ds:KeyInfoType"/>
- *     </sequence>
- *     <attribute name="Algorithm" type="anyURI" use="required"/>
+ * <sequence>
+ * <element name="KA-Nonce" minOccurs="0" type="base64Binary"/>
+ * <!-- <element ref="ds:DigestMethod" minOccurs="0"/> -->
+ * <any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+ * <element name="OriginatorKeyInfo" minOccurs="0" type="ds:KeyInfoType"/>
+ * <element name="RecipientKeyInfo" minOccurs="0" type="ds:KeyInfoType"/>
+ * </sequence>
+ * <attribute name="Algorithm" type="anyURI" use="required"/>
  * </complexType>
  * </xmp>
  *
@@ -81,18 +82,21 @@ import org.w3c.dom.Element;
 public interface AgreementMethod {
     /**
      * Returns an <code>byte</code> array.
+     *
      * @return
      */
     byte[] getKANonce();
 
     /**
      * Sets the KANonce.jj
+     *
      * @param kanonce
      */
     void setKANonce(byte[] kanonce);
 
     /**
      * Returns aditional information regarding the <code>AgreementMethod</code>.
+     *
      * @return
      */
     Iterator getAgreementMethodInformation();
@@ -101,10 +105,10 @@ public interface AgreementMethod {
      * Adds additional <code>AgreementMethod</code> information.
      *
      * @param info a <code>Element</code> that represents additional information
-     * specified by
-     *   <xmp>
-     *     <any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
-     *   </xmp>
+     *             specified by
+     *             <xmp>
+     *             <any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+     *             </xmp>
      */
     void addAgreementMethodInformation(Element info);
 
@@ -112,10 +116,10 @@ public interface AgreementMethod {
      * Removes additional <code>AgreementMethod</code> information.
      *
      * @param info a <code>Element</code> that represents additional information
-     * specified by
-     *   <xmp>
-     *     <any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
-     *   </xmp>
+     *             specified by
+     *             <xmp>
+     *             <any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+     *             </xmp>
      */
     void revoveAgreementMethodInformation(Element info);
 

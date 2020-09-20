@@ -36,11 +36,11 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
 /**
  * <code>XMLCipherInput</code> is used to wrap input passed into the
  * XMLCipher encryption operations.
- *
+ * <p>
  * In decryption mode, it takes a <code>CipherData</code> object and allows
  * callers to dereference the CipherData into the encrypted bytes that it
  * actually represents.  This takes care of all base64 encoding etc.
- *
+ * <p>
  * While primarily an internal class, this can be used by applications to
  * quickly and easily retrieve the encrypted bytes from an EncryptedType
  * object
@@ -50,66 +50,71 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
 public class XMLCipherInput {
 
     private static java.util.logging.Logger logger =
-        java.util.logging.Logger.getLogger(XMLCipher.class.getName());
+            java.util.logging.Logger.getLogger(XMLCipher.class.getName());
 
-        /** The data we are working with */
-        private CipherData _cipherData;
+    /**
+     * The data we are working with
+     */
+    private CipherData _cipherData;
 
-        /** MODES */
-        private int _mode;
+    /**
+     * MODES
+     */
+    private int _mode;
 
-        /**
-         * Constructor for processing encrypted octets
-         *
-         * @param data The <code>CipherData</code> object to read the bytes from
-         * @throws XMLEncryptionException {@link XMLEncryptionException}
-         */
+    /**
+     * Constructor for processing encrypted octets
+     *
+     * @param data The <code>CipherData</code> object to read the bytes from
+     * @throws XMLEncryptionException {@link XMLEncryptionException}
+     */
 
-        public XMLCipherInput(CipherData data) throws XMLEncryptionException {
+    public XMLCipherInput(CipherData data) throws XMLEncryptionException {
 
-                _cipherData = data;
-                _mode = XMLCipher.DECRYPT_MODE;
-                if (_cipherData == null) {
-                        throw new XMLEncryptionException("CipherData is null");
-                }
-
+        _cipherData = data;
+        _mode = XMLCipher.DECRYPT_MODE;
+        if (_cipherData == null) {
+            throw new XMLEncryptionException("CipherData is null");
         }
 
-        /**
-         * Constructor for processing encrypted octets
-         *
-         * @param input The <code>EncryptedType</code> object to read
-         * the bytes from.
-         * @throws XMLEncryptionException {@link XMLEncryptionException}
-         */
+    }
 
-        public XMLCipherInput(EncryptedType input) throws XMLEncryptionException {
+    /**
+     * Constructor for processing encrypted octets
+     *
+     * @param input The <code>EncryptedType</code> object to read
+     *              the bytes from.
+     * @throws XMLEncryptionException {@link XMLEncryptionException}
+     */
 
-                _cipherData = ((input == null) ? null : input.getCipherData());
-                _mode = XMLCipher.DECRYPT_MODE;
-                if (_cipherData == null) {
-                        throw new XMLEncryptionException("CipherData is null");
-                }
+    public XMLCipherInput(EncryptedType input) throws XMLEncryptionException {
 
+        _cipherData = ((input == null) ? null : input.getCipherData());
+        _mode = XMLCipher.DECRYPT_MODE;
+        if (_cipherData == null) {
+            throw new XMLEncryptionException("CipherData is null");
         }
 
-        /**
-         * Dereferences the input and returns it as a single byte array.
-         *
-         * @throws XMLEncryptionException
+    }
+
+    /**
+     * Dereferences the input and returns it as a single byte array.
+     *
      * @return The decripted bytes.
-         */
+     * @throws XMLEncryptionException
+     */
 
-        public byte[] getBytes() throws XMLEncryptionException {
+    public byte[] getBytes() throws XMLEncryptionException {
 
-                if (_mode == XMLCipher.DECRYPT_MODE) {
-                        return getDecryptBytes();
-                }
-                return null;
+        if (_mode == XMLCipher.DECRYPT_MODE) {
+            return getDecryptBytes();
         }
+        return null;
+    }
 
     /**
      * Internal method to get bytes in decryption mode
+     *
      * @return the decripted bytes
      * @throws XMLEncryptionException
      */
@@ -130,7 +135,7 @@ public class XMLCipherInput {
 
             try {
                 ResourceResolver resolver =
-                    ResourceResolver.getInstance(uriAttr, null);
+                        ResourceResolver.getInstance(uriAttr, null);
                 input = resolver.resolve(uriAttr, null);
             } catch (ResourceResolverException ex) {
                 throw new XMLEncryptionException("empty", ex);
@@ -148,7 +153,7 @@ public class XMLCipherInput {
                 logger.log(java.util.logging.Level.FINE, "Have transforms in cipher reference");
                 try {
                     com.sun.org.apache.xml.internal.security.transforms.Transforms dsTransforms =
-                        transforms.getDSTransforms();
+                            transforms.getDSTransforms();
                     input = dsTransforms.performTransforms(input);
                 } catch (TransformationException ex) {
                     throw new XMLEncryptionException("empty", ex);
@@ -163,10 +168,10 @@ public class XMLCipherInput {
                 throw new XMLEncryptionException("empty", ex);
             }
 
-        // retrieve the cipher text
+            // retrieve the cipher text
         } else if (_cipherData.getDataType() == CipherData.VALUE_TYPE) {
             base64EncodedEncryptedOctets =
-                _cipherData.getCipherValue().getValue();
+                    _cipherData.getCipherValue().getValue();
         } else {
             throw new XMLEncryptionException("CipherData.getDataType() returned unexpected value");
         }

@@ -41,17 +41,16 @@ import org.xml.sax.ext.LexicalHandler;
  * This class accepts SAX-like calls, then sends true SAX calls to a
  * wrapped SAX handler.  There is optimization done knowing that the ultimate
  * output is HTML.
- *
+ * <p>
  * This class is not a public API.
  *
  * @xsl.usage internal
  */
-public final class ToHTMLSAXHandler extends ToSAXHandler
-{
-        /**
-         *  Handle document type declaration (for first element only)
-         */
-        private boolean m_dtdHandled = false;
+public final class ToHTMLSAXHandler extends ToSAXHandler {
+    /**
+     * Handle document type declaration (for first element only)
+     */
+    private boolean m_dtdHandled = false;
 
     /**
      * Keeps track of whether output escaping is currently enabled
@@ -60,61 +59,56 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
 
     /**
      * Returns null.
+     *
      * @return null
      * @see Serializer#getOutputFormat()
      */
-    public Properties getOutputFormat()
-    {
+    public Properties getOutputFormat() {
         return null;
     }
 
     /**
      * Reurns null
+     *
      * @return null
      * @see Serializer#getOutputStream()
      */
-    public OutputStream getOutputStream()
-    {
+    public OutputStream getOutputStream() {
         return null;
     }
 
     /**
      * Returns null
+     *
      * @return null
      * @see Serializer#getWriter()
      */
-    public Writer getWriter()
-    {
+    public Writer getWriter() {
         return null;
     }
 
     /**
      * Does nothing.
-     *
      */
-    public void indent(int n) throws SAXException
-    {
+    public void indent(int n) throws SAXException {
     }
 
     /**
      * Does nothing.
+     *
      * @see DOMSerializer#serialize(Node)
      */
-    public void serialize(Node node) throws IOException
-    {
+    public void serialize(Node node) throws IOException {
         return;
     }
 
     /**
      * Turns special character escaping on/off.
      *
-     *
      * @param escape true if escaping is to be set on.
-     *
      * @see SerializationHandler#setEscaping(boolean)
      */
-    public boolean setEscaping(boolean escape) throws SAXException
-    {
+    public boolean setEscaping(boolean escape) throws SAXException {
         boolean oldEscapeSetting = m_escapeSetting;
         m_escapeSetting = escape;
 
@@ -129,40 +123,40 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
 
     /**
      * Does nothing
+     *
      * @param indent the number of spaces to indent per indentation level
-     * (ignored)
+     *               (ignored)
      * @see SerializationHandler#setIndent(boolean)
      */
-    public void setIndent(boolean indent)
-    {
+    public void setIndent(boolean indent) {
     }
 
     /**
      * Does nothing.
+     *
      * @param format this parameter is not used
      * @see Serializer#setOutputFormat(Properties)
      */
-    public void setOutputFormat(Properties format)
-    {
+    public void setOutputFormat(Properties format) {
     }
 
     /**
      * Does nothing.
+     *
      * @param output this parameter is ignored
      * @see Serializer#setOutputStream(OutputStream)
      */
-    public void setOutputStream(OutputStream output)
-    {
+    public void setOutputStream(OutputStream output) {
     }
 
 
     /**
      * Does nothing.
+     *
      * @param writer this parameter is ignored.
      * @see Serializer#setWriter(Writer)
      */
-    public void setWriter(Writer writer)
-    {
+    public void setWriter(Writer writer) {
     }
 
     /**
@@ -171,30 +165,29 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
     /**
      * Does nothing.
      *
-     * @param eName this parameter is ignored
-     * @param aName this parameter is ignored
-     * @param type this parameter is ignored
+     * @param eName        this parameter is ignored
+     * @param aName        this parameter is ignored
+     * @param type         this parameter is ignored
      * @param valueDefault this parameter is ignored
-     * @param value this parameter is ignored
-     * @see org.xml.sax.ext.DeclHandler#attributeDecl(String, String, String,String,String)
+     * @param value        this parameter is ignored
+     * @see org.xml.sax.ext.DeclHandler#attributeDecl(String, String, String, String, String)
      */
     public void attributeDecl(
-        String eName,
-        String aName,
-        String type,
-        String valueDefault,
-        String value)
-        throws SAXException
-    {
+            String eName,
+            String aName,
+            String type,
+            String valueDefault,
+            String value)
+            throws SAXException {
     }
 
 
     /**
      * Does nothing.
+     *
      * @see org.xml.sax.ext.DeclHandler#elementDecl(String, String)
      */
-    public void elementDecl(String name, String model) throws SAXException
-    {
+    public void elementDecl(String name, String model) throws SAXException {
         return;
     }
 
@@ -202,8 +195,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * @see org.xml.sax.ext.DeclHandler#externalEntityDecl(String, String, String)
      */
     public void externalEntityDecl(String arg0, String arg1, String arg2)
-        throws SAXException
-    {
+            throws SAXException {
     }
 
     /**
@@ -212,8 +204,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * @see org.xml.sax.DTDHandler#unparsedEntityDecl
      */
     public void internalEntityDecl(String name, String value)
-        throws SAXException
-    {
+            throws SAXException {
     }
 
     /**
@@ -227,22 +218,20 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * <p>If the element name has a namespace prefix, the prefix will
      * still be attached to the name.</p>
      *
-     *
-     * @param uri The Namespace URI, or the empty string if the
-     *        element has no Namespace URI or if Namespace
-     *        processing is not being performed.
+     * @param uri       The Namespace URI, or the empty string if the
+     *                  element has no Namespace URI or if Namespace
+     *                  processing is not being performed.
      * @param localName The local name (without prefix), or the
-     *        empty string if Namespace processing is not being
-     *        performed.
-     * @param qName The qualified name (with prefix), or the
-     *        empty string if qualified names are not available.
+     *                  empty string if Namespace processing is not being
+     *                  performed.
+     * @param qName     The qualified name (with prefix), or the
+     *                  empty string if qualified names are not available.
      * @throws org.xml.sax.SAXException Any SAX exception, possibly
-     *            wrapping another exception.
+     *                                  wrapping another exception.
      * @see org.xml.sax.ContentHandler#endElement(String, String, String)
      */
     public void endElement(String uri, String localName, String qName)
-        throws SAXException
-    {
+            throws SAXException {
         flushPending();
         m_saxHandler.endElement(uri, localName, qName);
 
@@ -254,17 +243,16 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
     /**
      * Does nothing.
      */
-    public void endPrefixMapping(String prefix) throws SAXException
-    {
+    public void endPrefixMapping(String prefix) throws SAXException {
     }
 
     /**
      * Does nothing.
+     *
      * @see org.xml.sax.ContentHandler#ignorableWhitespace(char[], int, int)
      */
     public void ignorableWhitespace(char[] ch, int start, int length)
-        throws SAXException
-    {
+            throws SAXException {
     }
 
     /**
@@ -279,41 +267,39 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * using this method.</p>
      *
      * @param target The processing instruction target.
-     * @param data The processing instruction data, or null if
-     *        none was supplied.
+     * @param data   The processing instruction data, or null if
+     *               none was supplied.
      * @throws org.xml.sax.SAXException Any SAX exception, possibly
-     *            wrapping another exception.
-     *
+     *                                  wrapping another exception.
      * @throws org.xml.sax.SAXException
      * @see org.xml.sax.ContentHandler#processingInstruction(String, String)
      */
     public void processingInstruction(String target, String data)
-        throws SAXException
-    {
+            throws SAXException {
         flushPending();
-        m_saxHandler.processingInstruction(target,data);
+        m_saxHandler.processingInstruction(target, data);
 
-                // time to fire off processing instruction event
+        // time to fire off processing instruction event
 
         if (m_tracer != null)
-                    super.fireEscapingEvent(target,data);
+            super.fireEscapingEvent(target, data);
     }
 
     /**
      * Does nothing.
+     *
      * @see org.xml.sax.ContentHandler#setDocumentLocator(Locator)
      */
-    public void setDocumentLocator(Locator arg0)
-    {
+    public void setDocumentLocator(Locator arg0) {
         super.setDocumentLocator(arg0);
     }
 
     /**
      * Does nothing.
+     *
      * @see org.xml.sax.ContentHandler#skippedEntity(String)
      */
-    public void skippedEntity(String arg0) throws SAXException
-    {
+    public void skippedEntity(String arg0) throws SAXException {
     }
 
     /**
@@ -321,32 +307,28 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * SAX method additional namespace or attribute information can occur before
      * or after this call, that is associated with this element.
      *
-     *
      * @param namespaceURI The Namespace URI, or the empty string if the
-     *        element has no Namespace URI or if Namespace
-     *        processing is not being performed.
-     * @param localName The local name (without prefix), or the
-     *        empty string if Namespace processing is not being
-     *        performed.
-     * @param qName The elements name.
-     * @param atts The attributes attached to the element, if any.
+     *                     element has no Namespace URI or if Namespace
+     *                     processing is not being performed.
+     * @param localName    The local name (without prefix), or the
+     *                     empty string if Namespace processing is not being
+     *                     performed.
+     * @param qName        The elements name.
+     * @param atts         The attributes attached to the element, if any.
      * @throws org.xml.sax.SAXException Any SAX exception, possibly
-     *            wrapping another exception.
+     *                                  wrapping another exception.
+     * @throws org.xml.sax.SAXException
      * @see org.xml.sax.ContentHandler#startElement
      * @see org.xml.sax.ContentHandler#endElement
      * @see org.xml.sax.AttributeList
-     *
-     * @throws org.xml.sax.SAXException
-     *
      * @see org.xml.sax.ContentHandler#startElement(String, String, String, Attributes)
      */
     public void startElement(
-        String namespaceURI,
-        String localName,
-        String qName,
-        Attributes atts)
-        throws SAXException
-    {
+            String namespaceURI,
+            String localName,
+            String qName,
+            Attributes atts)
+            throws SAXException {
         flushPending();
         super.startElement(namespaceURI, localName, qName, atts);
         m_saxHandler.startElement(namespaceURI, localName, qName, atts);
@@ -356,15 +338,14 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
     /**
      * Receive notification of a comment anywhere in the document. This callback
      * will be used for comments inside or outside the document element.
-     * @param ch An array holding the characters in the comment.
-     * @param start The starting position in the array.
+     *
+     * @param ch     An array holding the characters in the comment.
+     * @param start  The starting position in the array.
      * @param length The number of characters to use from the array.
      * @throws org.xml.sax.SAXException The application may raise an exception.
-     *
      * @see org.xml.sax.ext.LexicalHandler#comment(char[], int, int)
      */
-    public void comment(char[] ch, int start, int length) throws SAXException
-    {
+    public void comment(char[] ch, int start, int length) throws SAXException {
         flushPending();
         if (m_lexHandler != null)
             m_lexHandler.comment(ch, start, length);
@@ -377,35 +358,35 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
 
     /**
      * Does nothing.
+     *
      * @see org.xml.sax.ext.LexicalHandler#endCDATA()
      */
-    public void endCDATA() throws SAXException
-    {
+    public void endCDATA() throws SAXException {
         return;
     }
 
     /**
      * Does nothing.
+     *
      * @see org.xml.sax.ext.LexicalHandler#endDTD()
      */
-    public void endDTD() throws SAXException
-    {
+    public void endDTD() throws SAXException {
     }
 
     /**
      * Does nothing.
+     *
      * @see org.xml.sax.ext.LexicalHandler#startCDATA()
      */
-    public void startCDATA() throws SAXException
-    {
+    public void startCDATA() throws SAXException {
     }
 
     /**
      * Does nothing.
+     *
      * @see org.xml.sax.ext.LexicalHandler#startEntity(String)
      */
-    public void startEntity(String arg0) throws SAXException
-    {
+    public void startEntity(String arg0) throws SAXException {
     }
 
     /**
@@ -418,14 +399,10 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * input.</p>
      *
      * @throws org.xml.sax.SAXException Any SAX exception, possibly
-     *            wrapping another exception.
-     *
+     *                                  wrapping another exception.
      * @throws org.xml.sax.SAXException
-     *
-     *
      */
-    public void endDocument() throws SAXException
-    {
+    public void endDocument() throws SAXException {
         flushPending();
 
         // Close output document
@@ -439,27 +416,26 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * This method is called when all the data needed for a call to the
      * SAX handler's startElement() method has been gathered.
      */
-    protected void closeStartTag() throws SAXException
-    {
+    protected void closeStartTag() throws SAXException {
 
         m_elemContext.m_startTagOpen = false;
 
         // Now is time to send the startElement event
         m_saxHandler.startElement(
-            EMPTYSTRING,
-            m_elemContext.m_elementName,
-            m_elemContext.m_elementName,
-            m_attributes);
+                EMPTYSTRING,
+                m_elemContext.m_elementName,
+                m_elemContext.m_elementName,
+                m_attributes);
         m_attributes.clear();
 
     }
 
     /**
      * Do nothing.
+     *
      * @see SerializationHandler#close()
      */
-    public void close()
-    {
+    public void close() {
         return;
     }
 
@@ -467,16 +443,12 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * Receive notification of character data.
      *
      * @param chars The string of characters to process.
-     *
      * @throws org.xml.sax.SAXException
-     *
      * @see ExtendedContentHandler#characters(String)
      */
-    public void characters(final String chars) throws SAXException
-    {
+    public void characters(final String chars) throws SAXException {
         final int length = chars.length();
-        if (length > m_charsBuff.length)
-        {
+        if (length > m_charsBuff.length) {
             m_charsBuff = new char[length * 2 + 1];
         }
         chars.getChars(0, length, m_charsBuff, 0);
@@ -486,91 +458,87 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
 
     /**
      * A constructor
-     * @param handler the wrapped SAX content handler
+     *
+     * @param handler  the wrapped SAX content handler
      * @param encoding the encoding of the output HTML document
      */
-    public ToHTMLSAXHandler(ContentHandler handler, String encoding)
-    {
-        super(handler,encoding);
+    public ToHTMLSAXHandler(ContentHandler handler, String encoding) {
+        super(handler, encoding);
     }
+
     /**
      * A constructor.
-     * @param handler the wrapped SAX content handler
-     * @param lex the wrapped lexical handler
+     *
+     * @param handler  the wrapped SAX content handler
+     * @param lex      the wrapped lexical handler
      * @param encoding the encoding of the output HTML document
      */
     public ToHTMLSAXHandler(
-        ContentHandler handler,
-        LexicalHandler lex,
-        String encoding)
-    {
-        super(handler,lex,encoding);
+            ContentHandler handler,
+            LexicalHandler lex,
+            String encoding) {
+        super(handler, lex, encoding);
     }
 
     /**
      * An element starts, but attributes are not fully known yet.
      *
      * @param elementNamespaceURI the URI of the namespace of the element
-     * (optional)
-     * @param elementLocalName the element name, but without prefix
-     * (optional)
-     * @param elementName the element name, with prefix, if any (required)
-     *
+     *                            (optional)
+     * @param elementLocalName    the element name, but without prefix
+     *                            (optional)
+     * @param elementName         the element name, with prefix, if any (required)
      * @see ExtendedContentHandler#startElement(String)
      */
     public void startElement(
-        String elementNamespaceURI,
-        String elementLocalName,
-        String elementName) throws SAXException
-    {
+            String elementNamespaceURI,
+            String elementLocalName,
+            String elementName) throws SAXException {
 
         super.startElement(elementNamespaceURI, elementLocalName, elementName);
 
         flushPending();
 
         // Handle document type declaration (for first element only)
-        if (!m_dtdHandled)
-        {
+        if (!m_dtdHandled) {
             String doctypeSystem = getDoctypeSystem();
             String doctypePublic = getDoctypePublic();
             if ((doctypeSystem != null) || (doctypePublic != null)) {
                 if (m_lexHandler != null)
                     m_lexHandler.startDTD(
-                        elementName,
-                        doctypePublic,
-                        doctypeSystem);
+                            elementName,
+                            doctypePublic,
+                            doctypeSystem);
             }
-                        m_dtdHandled = true;
+            m_dtdHandled = true;
         }
         m_elemContext = m_elemContext.push(elementNamespaceURI, elementLocalName, elementName);
     }
+
     /**
      * An element starts, but attributes are not fully known yet.
      *
      * @param elementName the element name, with prefix, if any
-     *
      * @see ExtendedContentHandler#startElement(String)
      */
-    public void startElement(String elementName) throws SAXException
-    {
-        this.startElement(null,null, elementName);
+    public void startElement(String elementName) throws SAXException {
+        this.startElement(null, null, elementName);
     }
 
     /**
      * Receive notification of the end of an element.
+     *
      * @param elementName The element type name
      * @throws org.xml.sax.SAXException Any SAX exception, possibly
-     *     wrapping another exception.
-     *
+     *                                  wrapping another exception.
      * @see ExtendedContentHandler#endElement(String)
      */
-    public void endElement(String elementName) throws SAXException
-    {
+    public void endElement(String elementName) throws SAXException {
         flushPending();
         m_saxHandler.endElement(EMPTYSTRING, elementName, elementName);
 
         // time to fire off endElement event
-                if (m_tracer != null)
+        if (m_tracer != null)
             super.fireEndElem(elementName);
     }
 
@@ -591,26 +559,23 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * ignorableWhitespace() method rather than this one (validating
      * parsers must do so).</p>
      *
-     * @param ch The characters from the XML document.
+     * @param ch  The characters from the XML document.
      * @param off The start position in the array.
      * @param len The number of characters to read from the array.
      * @throws org.xml.sax.SAXException Any SAX exception, possibly
-     *            wrapping another exception.
+     *                                  wrapping another exception.
+     * @throws org.xml.sax.SAXException
      * @see #ignorableWhitespace
      * @see org.xml.sax.Locator
-     *
-     * @throws org.xml.sax.SAXException
-     *
      * @see org.xml.sax.ContentHandler#characters(char[], int, int)
      */
-    public void characters(char[] ch, int off, int len) throws SAXException
-    {
+    public void characters(char[] ch, int off, int len) throws SAXException {
 
         flushPending();
         m_saxHandler.characters(ch, off, len);
 
         // time to fire off characters event
-                if (m_tracer != null)
+        if (m_tracer != null)
             super.fireCharEvent(ch, off, len);
     }
 
@@ -618,49 +583,45 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * This method flushes any pending events, which can be startDocument()
      * closing the opening tag of an element, or closing an open CDATA section.
      */
-    public void flushPending() throws SAXException
-    {
-                if (m_needToCallStartDocument)
-                {
-                        startDocumentInternal();
-                        m_needToCallStartDocument = false;
-                }
+    public void flushPending() throws SAXException {
+        if (m_needToCallStartDocument) {
+            startDocumentInternal();
+            m_needToCallStartDocument = false;
+        }
         // Close any open element
-        if (m_elemContext.m_startTagOpen)
-        {
+        if (m_elemContext.m_startTagOpen) {
             closeStartTag();
             m_elemContext.m_startTagOpen = false;
         }
     }
+
     /**
      * Handle a prefix/uri mapping, which is associated with a startElement()
      * that is soon to follow. Need to close any open start tag to make
      * sure than any name space attributes due to this event are associated wih
      * the up comming element, not the current one.
-     * @see ExtendedContentHandler#startPrefixMapping
      *
-     * @param prefix The Namespace prefix being declared.
-     * @param uri The Namespace URI the prefix is mapped to.
+     * @param prefix      The Namespace prefix being declared.
+     * @param uri         The Namespace URI the prefix is mapped to.
      * @param shouldFlush true if any open tags need to be closed first, this
-     * will impact which element the mapping applies to (open parent, or its up
-     * comming child)
+     *                    will impact which element the mapping applies to (open parent, or its up
+     *                    comming child)
      * @return returns true if the call made a change to the current
      * namespace information, false if it did not change anything, e.g. if the
      * prefix/namespace mapping was already in scope from before.
-     *
      * @throws org.xml.sax.SAXException The client may throw
-     *            an exception during processing.
+     *                                  an exception during processing.
+     * @see ExtendedContentHandler#startPrefixMapping
      */
     public boolean startPrefixMapping(
-        String prefix,
-        String uri,
-        boolean shouldFlush)
-        throws SAXException
-    {
+            String prefix,
+            String uri,
+            boolean shouldFlush)
+            throws SAXException {
         // no namespace support for HTML
         if (shouldFlush)
             flushPending();
-        m_saxHandler.startPrefixMapping(prefix,uri);
+        m_saxHandler.startPrefixMapping(prefix, uri);
         return false;
     }
 
@@ -670,19 +631,15 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * This call will close any open tags so that the prefix mapping
      * will not apply to the current element, but the up comming child.
      *
-     * @see org.xml.sax.ContentHandler#startPrefixMapping
-     *
      * @param prefix The Namespace prefix being declared.
-     * @param uri The Namespace URI the prefix is mapped to.
-     *
+     * @param uri    The Namespace URI the prefix is mapped to.
      * @throws org.xml.sax.SAXException The client may throw
-     *            an exception during processing.
-     *
+     *                                  an exception during processing.
+     * @see org.xml.sax.ContentHandler#startPrefixMapping
      */
     public void startPrefixMapping(String prefix, String uri)
-        throws org.xml.sax.SAXException
-    {
-        startPrefixMapping(prefix,uri,true);
+            throws org.xml.sax.SAXException {
+        startPrefixMapping(prefix, uri, true);
     }
 
     /**
@@ -691,22 +648,19 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * startElement() and before and endElement().
      * startPrefixMapping(prefix,uri) would be used before the
      * startElement() call.
-     * @param prefix the prefix associated with the given URI.
-     * @param uri the URI of the namespace
      *
+     * @param prefix the prefix associated with the given URI.
+     * @param uri    the URI of the namespace
      * @see ExtendedContentHandler#namespaceAfterStartElement(String, String)
      */
     public void namespaceAfterStartElement(
-        final String prefix,
-        final String uri)
-        throws SAXException
-    {
+            final String prefix,
+            final String uri)
+            throws SAXException {
         // hack for XSLTC with finding URI for default namespace
-        if (m_elemContext.m_elementURI == null)
-        {
+        if (m_elemContext.m_elementURI == null) {
             String prefix1 = getPrefixPart(m_elemContext.m_elementName);
-            if (prefix1 == null && EMPTYSTRING.equals(prefix))
-            {
+            if (prefix1 == null && EMPTYSTRING.equals(prefix)) {
                 // the elements URI is not known yet, and it
                 // doesn't have a prefix, and we are currently
                 // setting the uri for prefix "", so we have
@@ -714,7 +668,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
                 m_elemContext.m_elementURI = uri;
             }
         }
-        startPrefixMapping(prefix,uri,false);
+        startPrefixMapping(prefix, uri, false);
     }
 
     /**
@@ -725,11 +679,9 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * @return true if the class was successfuly reset.
      * @see Serializer#reset()
      */
-    public boolean reset()
-    {
+    public boolean reset() {
         boolean wasReset = false;
-        if (super.reset())
-        {
+        if (super.reset()) {
             resetToHTMLSAXHandler();
             wasReset = true;
         }
@@ -738,10 +690,8 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
 
     /**
      * Reset all of the fields owned by ToHTMLSAXHandler class
-     *
      */
-    private void resetToHTMLSAXHandler()
-    {
+    private void resetToHTMLSAXHandler() {
         this.m_escapeSetting = true;
     }
 }

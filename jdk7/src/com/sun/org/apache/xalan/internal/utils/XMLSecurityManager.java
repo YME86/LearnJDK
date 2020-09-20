@@ -34,7 +34,6 @@ import com.sun.org.apache.xalan.internal.XalanConstants;
  * the Xerces Security Manager.
  *
  * @author Joe Wang Oracle Corp.
- *
  */
 public final class XMLSecurityManager {
 
@@ -51,6 +50,7 @@ public final class XMLSecurityManager {
         APIPROPERTY("property");
 
         final String literal;
+
         State(String literal) {
             this.literal = literal;
         }
@@ -143,6 +143,7 @@ public final class XMLSecurityManager {
             return null;
         }
     }
+
     /**
      * Values of the properties
      */
@@ -174,6 +175,7 @@ public final class XMLSecurityManager {
     /**
      * Instantiate Security Manager in accordance with the status of
      * secure processing
+     *
      * @param secureProcessing
      */
     public XMLSecurityManager(boolean secureProcessing) {
@@ -208,11 +210,12 @@ public final class XMLSecurityManager {
 
     /**
      * Set limit by property name and state
+     *
      * @param propertyName property name
-     * @param state the state of the property
-     * @param value the value of the property
+     * @param state        the state of the property
+     * @param value        the value of the property
      * @return true if the property is managed by the security manager; false
-     *              if otherwise.
+     * if otherwise.
      */
     public boolean setLimit(String propertyName, State state, Object value) {
         int index = getIndex(propertyName);
@@ -244,7 +247,7 @@ public final class XMLSecurityManager {
     public void setLimit(int index, State state, Object value) {
         if (index == indexEntityCountInfo) {
             //if it's explicitly set, it's treated as yes no matter the value
-            printEntityCountInfo = (String)value;
+            printEntityCountInfo = (String) value;
         } else {
             int temp = 0;
             try {
@@ -252,8 +255,10 @@ public final class XMLSecurityManager {
                 if (temp < 0) {
                     temp = 0;
                 }
-            } catch (NumberFormatException e) {}
-            setLimit(index, state, temp);        }
+            } catch (NumberFormatException e) {
+            }
+            setLimit(index, state, temp);
+        }
     }
 
     /**
@@ -323,6 +328,7 @@ public final class XMLSecurityManager {
     public int getLimitByIndex(int index) {
         return values[index];
     }
+
     /**
      * Return the value of a property by its index
      *
@@ -336,6 +342,7 @@ public final class XMLSecurityManager {
 
         return Integer.toString(values[index]);
     }
+
     /**
      * Return the state of the limit property
      *
@@ -378,6 +385,7 @@ public final class XMLSecurityManager {
 
     /**
      * Indicate if a property is set explicitly
+     *
      * @param index
      * @return
      */
@@ -388,6 +396,7 @@ public final class XMLSecurityManager {
     public boolean printEntityCountInfo() {
         return printEntityCountInfo.equals(XalanConstants.JDK_YES);
     }
+
     /**
      * Read from system properties, or those in jaxp.properties
      */
@@ -410,7 +419,7 @@ public final class XMLSecurityManager {
     /**
      * Read from system properties, or those in jaxp.properties
      *
-     * @param property the type of the property
+     * @param property        the type of the property
      * @param sysPropertyName the name of system property
      */
     private boolean getSystemProperty(Limit limit, String sysPropertyName) {

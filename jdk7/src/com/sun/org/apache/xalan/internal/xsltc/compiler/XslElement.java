@@ -46,7 +46,7 @@ import com.sun.org.apache.xml.internal.utils.XML11Char;
  */
 final class XslElement extends Instruction {
 
-    private String  _prefix;
+    private String _prefix;
     private boolean _ignore = false;
     private boolean _isLiteralName = true;
     private AttributeValueTemplate _name;
@@ -76,7 +76,7 @@ final class XslElement extends Instruction {
         String name = getAttribute("name");
         if (name == EMPTYSTRING) {
             ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_ELEM_NAME_ERR,
-                                        name, this);
+                    name, this);
             parser.reportError(WARNING, msg);
             parseChildren(parser);
             _ignore = true;     // Ignore the element if the QName is invalid
@@ -91,7 +91,7 @@ final class XslElement extends Instruction {
         if (_isLiteralName) {
             if (!XML11Char.isXML11ValidQName(name)) {
                 ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_ELEM_NAME_ERR,
-                                            name, this);
+                        name, this);
                 parser.reportError(WARNING, msg);
                 parseChildren(parser);
                 _ignore = true;         // Ignore the element if the QName is invalid
@@ -110,7 +110,7 @@ final class XslElement extends Instruction {
                 namespace = lookupNamespace(prefix);
                 if (namespace == null) {
                     ErrorMsg err = new ErrorMsg(ErrorMsg.NAMESPACE_UNDEF_ERR,
-                                                prefix, this);
+                            prefix, this);
                     parser.reportError(WARNING, err);
                     parseChildren(parser);
                     _ignore = true;     // Ignore the element if prefix is undeclared
@@ -118,8 +118,7 @@ final class XslElement extends Instruction {
                 }
                 _prefix = prefix;
                 _namespace = new AttributeValueTemplate(namespace, parser, this);
-            }
-            else {
+            } else {
                 if (prefix == EMPTYSTRING) {
                     if (Util.isLiteral(namespace)) {
                         prefix = lookupPrefix(namespace);
@@ -138,10 +137,9 @@ final class XslElement extends Instruction {
                 _prefix = prefix;
                 _namespace = new AttributeValueTemplate(namespace, parser, this);
             }
-        }
-        else {
+        } else {
             _namespace = (namespace == EMPTYSTRING) ? null :
-                         new AttributeValueTemplate(namespace, parser, this);
+                    new AttributeValueTemplate(namespace, parser, this);
         }
 
         _name = new AttributeValueTemplate(name, parser, this);
@@ -190,7 +188,7 @@ final class XslElement extends Instruction {
             if (_namespace != null) {
                 il.append(methodGen.loadHandler());
                 il.append(new PUSH(cpg, _prefix));
-                _namespace.translate(classGen,methodGen);
+                _namespace.translate(classGen, methodGen);
                 il.append(methodGen.namespace());
             }
         }
@@ -226,8 +224,8 @@ final class XslElement extends Instruction {
             // if the qname is an AVT, then the qname has to be checked at runtime if it is a valid qname
             LocalVariableGen nameValue =
                     methodGen.addLocalVariable2("nameValue",
-                                                Util.getJCRefType(STRING_SIG),
-                                                null);
+                            Util.getJCRefType(STRING_SIG),
+                            null);
 
             // store the name into a variable first so _name.translate only needs to be called once
             _name.translate(classGen, methodGen);
@@ -236,9 +234,9 @@ final class XslElement extends Instruction {
 
             // call checkQName if the name is an AVT
             final int check = cpg.addMethodref(BASIS_LIBRARY_CLASS, "checkQName",
-                            "("
-                            +STRING_SIG
-                            +")V");
+                    "("
+                            + STRING_SIG
+                            + ")V");
             il.append(new INVOKESTATIC(check));
 
             // Push handler for call to endElement()
@@ -249,8 +247,7 @@ final class XslElement extends Instruction {
 
             if (_namespace != null) {
                 _namespace.translate(classGen, methodGen);
-            }
-            else {
+            } else {
                 il.append(ACONST_NULL);
             }
 
@@ -261,11 +258,11 @@ final class XslElement extends Instruction {
 
             // Invoke BasisLibrary.startXslElemCheckQName()
             il.append(new INVOKESTATIC(
-            cpg.addMethodref(BASIS_LIBRARY_CLASS, "startXslElement",
-                    "(" + STRING_SIG
-                    + STRING_SIG
-                    + TRANSLET_OUTPUT_SIG
-                    + DOM_INTF_SIG + "I)" + STRING_SIG)));
+                    cpg.addMethodref(BASIS_LIBRARY_CLASS, "startXslElement",
+                            "(" + STRING_SIG
+                                    + STRING_SIG
+                                    + TRANSLET_OUTPUT_SIG
+                                    + DOM_INTF_SIG + "I)" + STRING_SIG)));
 
 
         }
@@ -286,7 +283,7 @@ final class XslElement extends Instruction {
         final int n = elementCount();
         for (int i = 0; i < n; i++) {
             final SyntaxTreeNode item =
-                (SyntaxTreeNode)getContents().elementAt(i);
+                    (SyntaxTreeNode) getContents().elementAt(i);
             if (_ignore && item instanceof XslAttribute) continue;
             item.translate(classGen, methodGen);
         }

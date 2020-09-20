@@ -33,8 +33,8 @@ public abstract class ServerCommunicatorAdmin {
     public ServerCommunicatorAdmin(long timeout) {
         if (logger.traceOn()) {
             logger.trace("Constructor",
-                         "Creates a new ServerCommunicatorAdmin object "+
-                         "with the timeout "+timeout);
+                    "Creates a new ServerCommunicatorAdmin object " +
+                            "with the timeout " + timeout);
         }
 
         this.timeout = timeout;
@@ -56,6 +56,7 @@ public abstract class ServerCommunicatorAdmin {
      * A caller of this method should always call the method
      * <code>rspOutgoing</code> to inform that a response is sent out
      * for the received request.
+     *
      * @return the value of the termination flag:
      * <ul><code>true</code> if the connection is already being terminated,
      * <br><code>false</code> otherwise.</ul>
@@ -65,11 +66,11 @@ public abstract class ServerCommunicatorAdmin {
             logger.trace("reqIncoming", "Receive a new request.");
         }
 
-        synchronized(lock) {
+        synchronized (lock) {
             if (terminated) {
                 logger.warning("reqIncoming",
-                               "The server has decided to close " +
-                               "this client connection.");
+                        "The server has decided to close " +
+                                "this client connection.");
             }
             ++currentJobs;
 
@@ -79,6 +80,7 @@ public abstract class ServerCommunicatorAdmin {
 
     /**
      * Tells that a response is sent out for a received request.
+     *
      * @return the value of the termination flag:
      * <ul><code>true</code> if the connection is already being terminated,
      * <br><code>false</code> otherwise.</ul>
@@ -88,10 +90,10 @@ public abstract class ServerCommunicatorAdmin {
             logger.trace("reqIncoming", "Finish a request.");
         }
 
-        synchronized(lock) {
+        synchronized (lock) {
             if (--currentJobs == 0) {
                 timestamp = System.currentTimeMillis();
-                logtime("Admin: Timestamp=",timestamp);
+                logtime("Admin: Timestamp=", timestamp);
                 // tells the adminor to restart waiting with timeout
                 lock.notify();
             }
@@ -111,10 +113,10 @@ public abstract class ServerCommunicatorAdmin {
     public void terminate() {
         if (logger.traceOn()) {
             logger.trace("terminate",
-                         "terminate the ServerCommunicatorAdmin object.");
+                    "terminate the ServerCommunicatorAdmin object.");
         }
 
-        synchronized(lock) {
+        synchronized (lock) {
             if (terminated) {
                 return;
             }
@@ -126,25 +128,25 @@ public abstract class ServerCommunicatorAdmin {
         }
     }
 
-// --------------------------------------------------------------
+    // --------------------------------------------------------------
 // private classes
 // --------------------------------------------------------------
     private class Timeout implements Runnable {
         public void run() {
             boolean stopping = false;
 
-            synchronized(lock) {
+            synchronized (lock) {
                 if (timestamp == 0) timestamp = System.currentTimeMillis();
-                logtime("Admin: timeout=",timeout);
-                logtime("Admin: Timestamp=",timestamp);
+                logtime("Admin: timeout=", timeout);
+                logtime("Admin: Timestamp=", timestamp);
 
-                while(!terminated) {
+                while (!terminated) {
                     try {
                         // wait until there is no more job
-                        while(!terminated && currentJobs != 0) {
+                        while (!terminated && currentJobs != 0) {
                             if (logger.traceOn()) {
                                 logger.trace("Timeout-run",
-                                             "Waiting without timeout.");
+                                        "Waiting without timeout.");
                             }
 
                             lock.wait();
@@ -153,16 +155,16 @@ public abstract class ServerCommunicatorAdmin {
                         if (terminated) return;
 
                         final long remaining =
-                            timeout - (System.currentTimeMillis() - timestamp);
+                                timeout - (System.currentTimeMillis() - timestamp);
 
-                        logtime("Admin: remaining timeout=",remaining);
+                        logtime("Admin: remaining timeout=", remaining);
 
                         if (remaining > 0) {
 
                             if (logger.traceOn()) {
                                 logger.trace("Timeout-run",
-                                             "Waiting with timeout: "+
-                                             remaining + " ms remaining");
+                                        "Waiting with timeout: " +
+                                                remaining + " ms remaining");
                             }
 
                             lock.wait(remaining);
@@ -171,26 +173,26 @@ public abstract class ServerCommunicatorAdmin {
                         if (currentJobs > 0) continue;
 
                         final long elapsed =
-                            System.currentTimeMillis() - timestamp;
-                        logtime("Admin: elapsed=",elapsed);
+                                System.currentTimeMillis() - timestamp;
+                        logtime("Admin: elapsed=", elapsed);
 
                         if (!terminated && elapsed > timeout) {
                             if (logger.traceOn()) {
                                 logger.trace("Timeout-run",
-                                             "timeout elapsed");
+                                        "timeout elapsed");
                             }
-                            logtime("Admin: timeout elapsed! "+
-                                    elapsed+">",timeout);
-                                // stopping
+                            logtime("Admin: timeout elapsed! " +
+                                    elapsed + ">", timeout);
+                            // stopping
                             terminated = true;
 
                             stopping = true;
                             break;
                         }
                     } catch (InterruptedException ire) {
-                        logger.warning("Timeout-run","Unexpected Exception: "+
-                                       ire);
-                        logger.debug("Timeout-run",ire);
+                        logger.warning("Timeout-run", "Unexpected Exception: " +
+                                ire);
+                        logger.debug("Timeout-run", ire);
                         return;
                     }
                 }
@@ -206,14 +208,14 @@ public abstract class ServerCommunicatorAdmin {
         }
     }
 
-    private void logtime(String desc,long time) {
-        timelogger.trace("synchro",desc+time);
+    private void logtime(String desc, long time) {
+        timelogger.trace("synchro", desc + time);
     }
 
-// --------------------------------------------------------------
+    // --------------------------------------------------------------
 // private variables
 // --------------------------------------------------------------
-    private long    timestamp;
+    private long timestamp;
 
     private final int[] lock = new int[0];
     private int currentJobs = 0;
@@ -224,9 +226,9 @@ public abstract class ServerCommunicatorAdmin {
     private boolean terminated = false;
 
     private static final ClassLogger logger =
-        new ClassLogger("javax.management.remote.misc",
-                        "ServerCommunicatorAdmin");
+            new ClassLogger("javax.management.remote.misc",
+                    "ServerCommunicatorAdmin");
     private static final ClassLogger timelogger =
-        new ClassLogger("javax.management.remote.timeout",
-                        "ServerCommunicatorAdmin");
+            new ClassLogger("javax.management.remote.timeout",
+                    "ServerCommunicatorAdmin");
 }

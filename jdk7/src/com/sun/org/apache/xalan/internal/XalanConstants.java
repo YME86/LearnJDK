@@ -31,7 +31,6 @@ import com.sun.org.apache.xalan.internal.utils.SecuritySupport;
  * Commonly used constants.
  *
  * @author Huizhe Wang, Oracle
- *
  * @version $Id: Constants.java,v 1.14 2011-06-07 04:39:40 joehw Exp $
  */
 public final class XalanConstants {
@@ -46,9 +45,11 @@ public final class XalanConstants {
     //
     // Implementation limits: API properties
     //
-    /** Oracle JAXP property prefix ("http://www.oracle.com/xml/jaxp/properties/"). */
+    /**
+     * Oracle JAXP property prefix ("http://www.oracle.com/xml/jaxp/properties/").
+     */
     public static final String ORACLE_JAXP_PROPERTY_PREFIX =
-        "http://www.oracle.com/xml/jaxp/properties/";
+            "http://www.oracle.com/xml/jaxp/properties/";
     /**
      * JDK entity expansion limit; Note that the existing system property
      * "entityExpansionLimit" with no prefix is still observed
@@ -120,7 +121,7 @@ public final class XalanConstants {
      * JDK element attribute limit; Note that the existing system property
      * "elementAttributeLimit" with no prefix is still observed
      */
-    public static final String SP_ELEMENT_ATTRIBUTE_LIMIT =  "jdk.xml.elementAttributeLimit";
+    public static final String SP_ELEMENT_ATTRIBUTE_LIMIT = "jdk.xml.elementAttributeLimit";
 
     /**
      * JDK maxOccur limit; Note that the existing system property
@@ -163,7 +164,7 @@ public final class XalanConstants {
 
     //legacy System Properties
     public final static String ENTITY_EXPANSION_LIMIT = "entityExpansionLimit";
-    public static final String ELEMENT_ATTRIBUTE_LIMIT = "elementAttributeLimit" ;
+    public static final String ELEMENT_ATTRIBUTE_LIMIT = "elementAttributeLimit";
     public final static String MAX_OCCUR_LIMIT = "maxOccurLimit";
 
     /**
@@ -172,20 +173,20 @@ public final class XalanConstants {
     public static final String JDK_YES = "yes";
 
     // Oracle Feature:
-        /**
-         * <p>Use Service Mechanism</p>
-         *
-         * <ul>
-         *   <li>
-         * {@code true} instruct an object to use service mechanism to
-         * find a service implementation. This is the default behavior.
-         *   </li>
-         *   <li>
-         * {@code false} instruct an object to skip service mechanism and
-         * use the default implementation for that service.
-         *   </li>
-         * </ul>
-         */
+    /**
+     * <p>Use Service Mechanism</p>
+     *
+     * <ul>
+     *   <li>
+     * {@code true} instruct an object to use service mechanism to
+     * find a service implementation. This is the default behavior.
+     *   </li>
+     *   <li>
+     * {@code false} instruct an object to skip service mechanism and
+     * use the default implementation for that service.
+     *   </li>
+     * </ul>
+     */
     public static final String ORACLE_FEATURE_SERVICE_MECHANISM = "http://www.oracle.com/feature/use-service-mechanism";
 
 
@@ -243,7 +244,7 @@ public final class XalanConstants {
         String javaVersion = SecuritySupport.getSystemProperty("java.version");
         String versions[] = javaVersion.split("\\.", 3);
         if (Integer.parseInt(versions[0]) >= compareTo ||
-            Integer.parseInt(versions[1]) >= compareTo) {
+                Integer.parseInt(versions[1]) >= compareTo) {
             return true;
         }
         return false;

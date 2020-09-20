@@ -25,8 +25,7 @@
 
 package com.sun.jmx.mbeanserver;
 
-import javax.management.* ;
-
+import javax.management.*;
 
 
 /**
@@ -35,7 +34,7 @@ import javax.management.* ;
  *
  * @since 1.5
  */
-public class NamedObject  {
+public class NamedObject {
 
 
     /**
@@ -52,43 +51,41 @@ public class NamedObject  {
     /**
      * Allows a named object to be created.
      *
-     *@param objectName The object name of the object.
-     *@param object A reference to the object.
+     * @param objectName The object name of the object.
+     * @param object     A reference to the object.
      */
-    public NamedObject(ObjectName objectName, DynamicMBean object)  {
+    public NamedObject(ObjectName objectName, DynamicMBean object) {
         if (objectName.isPattern()) {
-            throw new RuntimeOperationsException(new IllegalArgumentException("Invalid name->"+ objectName.toString()));
+            throw new RuntimeOperationsException(new IllegalArgumentException("Invalid name->" + objectName.toString()));
         }
-        this.name= objectName;
-        this.object= object;
+        this.name = objectName;
+        this.object = object;
     }
 
     /**
      * Allows a named object to be created.
      *
-     *@param objectName The string representation of the object name of the object.
-     *@param object A reference to the object.
-     *
-     *@exception MalformedObjectNameException The string passed does not have the format of a valid ObjectName
+     * @param objectName The string representation of the object name of the object.
+     * @param object     A reference to the object.
+     * @throws MalformedObjectNameException The string passed does not have the format of a valid ObjectName
      */
-    public NamedObject(String objectName, DynamicMBean object) throws MalformedObjectNameException{
-        ObjectName objName= new ObjectName(objectName);
+    public NamedObject(String objectName, DynamicMBean object) throws MalformedObjectNameException {
+        ObjectName objName = new ObjectName(objectName);
         if (objName.isPattern()) {
-            throw new RuntimeOperationsException(new IllegalArgumentException("Invalid name->"+ objName.toString()));
+            throw new RuntimeOperationsException(new IllegalArgumentException("Invalid name->" + objName.toString()));
         }
-        this.name= objName;
-        this.object= object;
+        this.name = objName;
+        this.object = object;
     }
 
     /**
      * Compares the current object name with another object name.
      *
-     * @param object  The Named Object that the current object name is to be
-     *        compared with.
-     *
-     * @return  True if the two named objects are equal, otherwise false.
+     * @param object The Named Object that the current object name is to be
+     *               compared with.
+     * @return True if the two named objects are equal, otherwise false.
      */
-    public boolean equals(Object object)  {
+    public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null) return false;
         if (!(object instanceof NamedObject)) return false;
@@ -99,7 +96,6 @@ public class NamedObject  {
 
     /**
      * Returns a hash code for this named object.
-     *
      */
     public int hashCode() {
         return name.hashCode();
@@ -108,15 +104,15 @@ public class NamedObject  {
     /**
      * Get the object name.
      */
-    public ObjectName getName()  {
+    public ObjectName getName() {
         return name;
     }
 
     /**
      * Get the object
      */
-    public DynamicMBean getObject()  {
+    public DynamicMBean getObject() {
         return object;
-   }
+    }
 
- }
+}

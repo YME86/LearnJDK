@@ -27,9 +27,9 @@
 package com.sun.jmx.snmp;
 
 
-
 // java imports
 //
+
 import java.util.logging.Level;
 import java.util.Vector;
 import java.net.InetAddress;
@@ -47,63 +47,62 @@ import static com.sun.jmx.defaults.JmxProperties.SNMP_LOGGER;
  * <BLOCKQUOTE>
  * <PRE>
  * Message ::= SEQUENCE {
- *    version       INTEGER { version(1) }, -- for SNMPv2
- *    community     OCTET STRING,           -- community name
- *    data          ANY                     -- an SNMPv2 PDU
+ * version       INTEGER { version(1) }, -- for SNMPv2
+ * community     OCTET STRING,           -- community name
+ * data          ANY                     -- an SNMPv2 PDU
  * }
  * </PRE>
  * </BLOCKQUOTE>
  *
  * <p><b>This API is a Sun Microsystems internal API  and is subject
  * to change without notice.</b></p>
+ *
  * @see SnmpPduFactory
  * @see SnmpPduPacket
- *
  */
 
 public class SnmpMessage extends SnmpMsg implements SnmpDefinitions {
     /**
      * Community name.
      */
-    public byte[] community ;
+    public byte[] community;
 
     /**
      * Encodes this message and puts the result in the specified byte array.
      * For internal use only.
      *
      * @param outputBytes An array to receive the resulting encoding.
-     *
-     * @exception ArrayIndexOutOfBoundsException If the result does not fit
-     *                                           into the specified array.
+     * @throws ArrayIndexOutOfBoundsException If the result does not fit
+     *                                        into the specified array.
      */
     public int encodeMessage(byte[] outputBytes) throws SnmpTooBigException {
-        int encodingLength = 0 ;
+        int encodingLength = 0;
         if (data == null)
-            throw new IllegalArgumentException("Data field is null") ;
+            throw new IllegalArgumentException("Data field is null");
 
         //
         // Reminder: BerEncoder does backward encoding !
         //
         try {
-            BerEncoder benc = new BerEncoder(outputBytes) ;
-            benc.openSequence() ;
-            benc.putAny(data, dataLength) ;
-            benc.putOctetString((community != null) ? community : new byte[0]) ;
-            benc.putInteger(version) ;
-            benc.closeSequence() ;
-            encodingLength = benc.trim() ;
-        }
-        catch(ArrayIndexOutOfBoundsException x) {
-            throw new SnmpTooBigException() ;
+            BerEncoder benc = new BerEncoder(outputBytes);
+            benc.openSequence();
+            benc.putAny(data, dataLength);
+            benc.putOctetString((community != null) ? community : new byte[0]);
+            benc.putInteger(version);
+            benc.closeSequence();
+            encodingLength = benc.trim();
+        } catch (ArrayIndexOutOfBoundsException x) {
+            throw new SnmpTooBigException();
         }
 
-        return encodingLength ;
+        return encodingLength;
     }
+
     /**
      * Returns the associated request ID.
+     *
      * @param inputBytes The flat message.
      * @return The request ID.
-     *
      * @since 1.5
      */
     public int getRequestId(byte[] inputBytes) throws SnmpStatusException {
@@ -121,49 +120,45 @@ public class SnmpMessage extends SnmpMsg implements SnmpDefinitions {
             int type = bdec2.getTag();
             bdec2.openSequence(type);
             requestId = bdec2.fetchInteger();
-        }
-        catch(BerException x) {
-            throw new SnmpStatusException("Invalid encoding") ;
+        } catch (BerException x) {
+            throw new SnmpStatusException("Invalid encoding");
         }
         try {
             bdec.closeSequence();
-        }
-        catch(BerException x) {
+        } catch (BerException x) {
         }
         try {
             bdec2.closeSequence();
-        }
-        catch(BerException x) {
+        } catch (BerException x) {
         }
         return requestId;
     }
+
     /**
      * Decodes the specified bytes and initializes this message.
      * For internal use only.
      *
      * @param inputBytes The bytes to be decoded.
-     *
-     * @exception SnmpStatusException If the specified bytes are not a valid encoding.
+     * @throws SnmpStatusException If the specified bytes are not a valid encoding.
      */
     public void decodeMessage(byte[] inputBytes, int byteCount)
-        throws SnmpStatusException {
+            throws SnmpStatusException {
         try {
-            BerDecoder bdec = new BerDecoder(inputBytes/*, byteCount */) ; // FIXME
-            bdec.openSequence() ;
-            version = bdec.fetchInteger() ;
-            community = bdec.fetchOctetString() ;
-            data = bdec.fetchAny() ;
-            dataLength = data.length ;
-            bdec.closeSequence() ;
-        }
-        catch(BerException x) {
-            throw new SnmpStatusException("Invalid encoding") ;
+            BerDecoder bdec = new BerDecoder(inputBytes/*, byteCount */); // FIXME
+            bdec.openSequence();
+            version = bdec.fetchInteger();
+            community = bdec.fetchOctetString();
+            data = bdec.fetchAny();
+            dataLength = data.length;
+            bdec.closeSequence();
+        } catch (BerException x) {
+            throw new SnmpStatusException("Invalid encoding");
         }
     }
 
     /**
      * Initializes this message with the specified <CODE>pdu</CODE>.
-     * <P>
+     * <p>
      * This method initializes the data field with an array of
      * <CODE>maxDataLength</CODE> bytes. It encodes the <CODE>pdu</CODE>.
      * The resulting encoding is stored in the data field
@@ -172,31 +167,29 @@ public class SnmpMessage extends SnmpMsg implements SnmpDefinitions {
      * If the encoding length exceeds <CODE>maxDataLength</CODE>,
      * the method throws an exception.
      *
-     * @param pdu The PDU to be encoded.
+     * @param pdu           The PDU to be encoded.
      * @param maxDataLength The maximum length permitted for the data field.
-     *
-     * @exception SnmpStatusException If the specified <CODE>pdu</CODE> is not valid.
-     * @exception SnmpTooBigException If the resulting encoding does not fit
-     * into <CODE>maxDataLength</CODE> bytes.
-     * @exception ArrayIndexOutOfBoundsException If the encoding exceeds <CODE>maxDataLength</CODE>.
-     *
+     * @throws SnmpStatusException            If the specified <CODE>pdu</CODE> is not valid.
+     * @throws SnmpTooBigException            If the resulting encoding does not fit
+     *                                        into <CODE>maxDataLength</CODE> bytes.
+     * @throws ArrayIndexOutOfBoundsException If the encoding exceeds <CODE>maxDataLength</CODE>.
      * @since 1.5
      */
     public void encodeSnmpPdu(SnmpPdu pdu, int maxDataLength)
-        throws SnmpStatusException, SnmpTooBigException {
+            throws SnmpStatusException, SnmpTooBigException {
         //
         // The easy work
         //
         SnmpPduPacket pdupacket = (SnmpPduPacket) pdu;
-        version = pdupacket.version ;
-        community = pdupacket.community ;
-        address = pdupacket.address ;
-        port = pdupacket.port ;
+        version = pdupacket.version;
+        community = pdupacket.community;
+        address = pdupacket.address;
+        port = pdupacket.port;
 
         //
         // Allocate the array to receive the encoding.
         //
-        data = new byte[maxDataLength] ;
+        data = new byte[maxDataLength];
 
         //
         // Encode the pdupacket
@@ -204,125 +197,124 @@ public class SnmpMessage extends SnmpMsg implements SnmpDefinitions {
         //
 
         try {
-            BerEncoder benc = new BerEncoder(data) ;
-            benc.openSequence() ;
-            encodeVarBindList(benc, pdupacket.varBindList) ;
+            BerEncoder benc = new BerEncoder(data);
+            benc.openSequence();
+            encodeVarBindList(benc, pdupacket.varBindList);
 
-            switch(pdupacket.type) {
+            switch (pdupacket.type) {
 
-            case pduGetRequestPdu :
-            case pduGetNextRequestPdu :
-            case pduInformRequestPdu :
-            case pduGetResponsePdu :
-            case pduSetRequestPdu :
-            case pduV2TrapPdu :
-            case pduReportPdu :
-                SnmpPduRequest reqPdu = (SnmpPduRequest)pdupacket ;
-                benc.putInteger(reqPdu.errorIndex) ;
-                benc.putInteger(reqPdu.errorStatus) ;
-                benc.putInteger(reqPdu.requestId) ;
-                break ;
+                case pduGetRequestPdu:
+                case pduGetNextRequestPdu:
+                case pduInformRequestPdu:
+                case pduGetResponsePdu:
+                case pduSetRequestPdu:
+                case pduV2TrapPdu:
+                case pduReportPdu:
+                    SnmpPduRequest reqPdu = (SnmpPduRequest) pdupacket;
+                    benc.putInteger(reqPdu.errorIndex);
+                    benc.putInteger(reqPdu.errorStatus);
+                    benc.putInteger(reqPdu.requestId);
+                    break;
 
-            case pduGetBulkRequestPdu :
-                SnmpPduBulk bulkPdu = (SnmpPduBulk)pdupacket ;
-                benc.putInteger(bulkPdu.maxRepetitions) ;
-                benc.putInteger(bulkPdu.nonRepeaters) ;
-                benc.putInteger(bulkPdu.requestId) ;
-                break ;
+                case pduGetBulkRequestPdu:
+                    SnmpPduBulk bulkPdu = (SnmpPduBulk) pdupacket;
+                    benc.putInteger(bulkPdu.maxRepetitions);
+                    benc.putInteger(bulkPdu.nonRepeaters);
+                    benc.putInteger(bulkPdu.requestId);
+                    break;
 
-            case pduV1TrapPdu :
-                SnmpPduTrap trapPdu = (SnmpPduTrap)pdupacket ;
-                benc.putInteger(trapPdu.timeStamp, SnmpValue.TimeticksTag) ;
-                benc.putInteger(trapPdu.specificTrap) ;
-                benc.putInteger(trapPdu.genericTrap) ;
-                if(trapPdu.agentAddr != null)
-                    benc.putOctetString(trapPdu.agentAddr.byteValue(), SnmpValue.IpAddressTag) ;
-                else
-                    benc.putOctetString(new byte[0], SnmpValue.IpAddressTag);
-                benc.putOid(trapPdu.enterprise.longValue()) ;
-                break ;
+                case pduV1TrapPdu:
+                    SnmpPduTrap trapPdu = (SnmpPduTrap) pdupacket;
+                    benc.putInteger(trapPdu.timeStamp, SnmpValue.TimeticksTag);
+                    benc.putInteger(trapPdu.specificTrap);
+                    benc.putInteger(trapPdu.genericTrap);
+                    if (trapPdu.agentAddr != null)
+                        benc.putOctetString(trapPdu.agentAddr.byteValue(), SnmpValue.IpAddressTag);
+                    else
+                        benc.putOctetString(new byte[0], SnmpValue.IpAddressTag);
+                    benc.putOid(trapPdu.enterprise.longValue());
+                    break;
 
-            default:
-                throw new SnmpStatusException("Invalid pdu type " + String.valueOf(pdupacket.type)) ;
+                default:
+                    throw new SnmpStatusException("Invalid pdu type " + String.valueOf(pdupacket.type));
             }
-            benc.closeSequence(pdupacket.type) ;
-            dataLength = benc.trim() ;
-        }
-        catch(ArrayIndexOutOfBoundsException x) {
-            throw new SnmpTooBigException() ;
+            benc.closeSequence(pdupacket.type);
+            dataLength = benc.trim();
+        } catch (ArrayIndexOutOfBoundsException x) {
+            throw new SnmpTooBigException();
         }
     }
+
     /**
      * Gets the PDU encoded in this message.
-     * <P>
+     * <p>
      * This method decodes the data field and returns the resulting PDU.
      *
      * @return The resulting PDU.
-     * @exception SnmpStatusException If the encoding is not valid.
-     *
+     * @throws SnmpStatusException If the encoding is not valid.
      * @since 1.5
      */
     public SnmpPdu decodeSnmpPdu()
-        throws SnmpStatusException {
+            throws SnmpStatusException {
         //
         // Decode the pdu
         //
-        SnmpPduPacket pdu = null ;
-        BerDecoder bdec = new BerDecoder(data) ;
+        SnmpPduPacket pdu = null;
+        BerDecoder bdec = new BerDecoder(data);
         try {
-            int type = bdec.getTag() ;
-            bdec.openSequence(type) ;
-            switch(type) {
+            int type = bdec.getTag();
+            bdec.openSequence(type);
+            switch (type) {
 
-            case pduGetRequestPdu :
-            case pduGetNextRequestPdu :
-            case pduInformRequestPdu :
-            case pduGetResponsePdu :
-            case pduSetRequestPdu :
-            case pduV2TrapPdu :
-            case pduReportPdu :
-                SnmpPduRequest reqPdu = new SnmpPduRequest() ;
-                reqPdu.requestId = bdec.fetchInteger() ;
-                reqPdu.errorStatus = bdec.fetchInteger() ;
-                reqPdu.errorIndex = bdec.fetchInteger() ;
-                pdu = reqPdu ;
-                break ;
+                case pduGetRequestPdu:
+                case pduGetNextRequestPdu:
+                case pduInformRequestPdu:
+                case pduGetResponsePdu:
+                case pduSetRequestPdu:
+                case pduV2TrapPdu:
+                case pduReportPdu:
+                    SnmpPduRequest reqPdu = new SnmpPduRequest();
+                    reqPdu.requestId = bdec.fetchInteger();
+                    reqPdu.errorStatus = bdec.fetchInteger();
+                    reqPdu.errorIndex = bdec.fetchInteger();
+                    pdu = reqPdu;
+                    break;
 
-            case pduGetBulkRequestPdu :
-                SnmpPduBulk bulkPdu = new SnmpPduBulk() ;
-                bulkPdu.requestId = bdec.fetchInteger() ;
-                bulkPdu.nonRepeaters = bdec.fetchInteger() ;
-                bulkPdu.maxRepetitions = bdec.fetchInteger() ;
-                pdu = bulkPdu ;
-                break ;
+                case pduGetBulkRequestPdu:
+                    SnmpPduBulk bulkPdu = new SnmpPduBulk();
+                    bulkPdu.requestId = bdec.fetchInteger();
+                    bulkPdu.nonRepeaters = bdec.fetchInteger();
+                    bulkPdu.maxRepetitions = bdec.fetchInteger();
+                    pdu = bulkPdu;
+                    break;
 
-            case pduV1TrapPdu :
-                SnmpPduTrap trapPdu = new SnmpPduTrap() ;
-                trapPdu.enterprise = new SnmpOid(bdec.fetchOid()) ;
-                byte []b = bdec.fetchOctetString(SnmpValue.IpAddressTag);
-                if(b.length != 0)
-                    trapPdu.agentAddr = new SnmpIpAddress(b) ;
-                else
-                    trapPdu.agentAddr = null;
-                trapPdu.genericTrap = bdec.fetchInteger() ;
-                trapPdu.specificTrap = bdec.fetchInteger() ;
-                trapPdu.timeStamp = bdec.fetchInteger(SnmpValue.TimeticksTag) ;
-                pdu = trapPdu ;
-                break ;
+                case pduV1TrapPdu:
+                    SnmpPduTrap trapPdu = new SnmpPduTrap();
+                    trapPdu.enterprise = new SnmpOid(bdec.fetchOid());
+                    byte[] b = bdec.fetchOctetString(SnmpValue.IpAddressTag);
+                    if (b.length != 0)
+                        trapPdu.agentAddr = new SnmpIpAddress(b);
+                    else
+                        trapPdu.agentAddr = null;
+                    trapPdu.genericTrap = bdec.fetchInteger();
+                    trapPdu.specificTrap = bdec.fetchInteger();
+                    trapPdu.timeStamp = bdec.fetchInteger(SnmpValue.TimeticksTag);
+                    pdu = trapPdu;
+                    break;
 
-            default:
-                throw new SnmpStatusException(snmpRspWrongEncoding) ;
+                default:
+                    throw new SnmpStatusException(snmpRspWrongEncoding);
             }
-            pdu.type = type ;
-            pdu.varBindList = decodeVarBindList(bdec) ;
-            bdec.closeSequence() ;
-        } catch(BerException e) {
+            pdu.type = type;
+            pdu.varBindList = decodeVarBindList(bdec);
+            bdec.closeSequence();
+        } catch (BerException e) {
             if (SNMP_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_LOGGER.logp(Level.FINEST, SnmpMessage.class.getName(),
                         "decodeSnmpPdu", "BerException", e);
             }
             throw new SnmpStatusException(snmpRspWrongEncoding);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             // bug id 4654066
             if (SNMP_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_LOGGER.logp(Level.FINEST, SnmpMessage.class.getName(),
@@ -334,13 +326,14 @@ public class SnmpMessage extends SnmpMsg implements SnmpDefinitions {
         //
         // The easy work
         //
-        pdu.version = version ;
-        pdu.community = community ;
-        pdu.address = address ;
-        pdu.port = port ;
+        pdu.version = version;
+        pdu.community = community;
+        pdu.address = address;
+        pdu.port = port;
 
         return pdu;
     }
+
     /**
      * Dumps this message in a string.
      *
@@ -349,12 +342,11 @@ public class SnmpMessage extends SnmpMsg implements SnmpDefinitions {
     public String printMessage() {
         StringBuffer sb = new StringBuffer();
         if (community == null) {
-            sb.append("Community: null") ;
-        }
-        else {
-            sb.append("Community: {\n") ;
-            sb.append(dumpHexBuffer(community, 0, community.length)) ;
-            sb.append("\n}\n") ;
+            sb.append("Community: null");
+        } else {
+            sb.append("Community: {\n");
+            sb.append(dumpHexBuffer(community, 0, community.length));
+            sb.append("\n}\n");
         }
         return sb.append(super.printMessage()).toString();
     }

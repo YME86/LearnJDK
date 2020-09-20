@@ -22,6 +22,7 @@ package com.sun.org.apache.xml.internal.security.encryption;
 
 
 import java.util.Iterator;
+
 import org.w3c.dom.Element;
 
 
@@ -33,10 +34,10 @@ import org.w3c.dom.Element;
  * It is defined as follows:
  * <xmp>
  * <complexType name='ReferenceType'>
- *     <sequence>
- *         <any namespace='##other' minOccurs='0' maxOccurs='unbounded'/>
- *     </sequence>
- *     <attribute name='URI' type='anyURI' use='required'/>
+ * <sequence>
+ * <any namespace='##other' minOccurs='0' maxOccurs='unbounded'/>
+ * </sequence>
+ * <attribute name='URI' type='anyURI' use='required'/>
  * </complexType>
  * </xmp>
  *
@@ -50,7 +51,7 @@ public interface Reference {
      * <code>EncryptedKey</code> element.
      *
      * @return an Uniform Resource Identifier that qualifies an
-     *   <code>EncryptedType</code>.
+     * <code>EncryptedType</code>.
      */
     String getURI();
 
@@ -60,7 +61,7 @@ public interface Reference {
      * <code>EncryptedKey</code> element.
      *
      * @param uri the Uniform Resource Identifier that qualifies an
-     *   <code>EncryptedType</code>.
+     *            <code>EncryptedType</code>.
      */
     void setURI(String uri);
 

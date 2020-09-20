@@ -61,8 +61,13 @@ class SimpleNode implements Node {
     public void jjtClose() {
     }
 
-    public void jjtSetParent(Node n) { parent = n; }
-    public Node jjtGetParent() { return parent; }
+    public void jjtSetParent(Node n) {
+        parent = n;
+    }
+
+    public Node jjtGetParent() {
+        return parent;
+    }
 
     public void jjtAddChild(Node n, int i) {
         if (children == null) {
@@ -93,20 +98,21 @@ class SimpleNode implements Node {
     public void buildTrapEntries(Hashtable<InetAddress, Vector<String>> dest) {
         if (children != null) {
             for (int i = 0; i < children.length; ++i) {
-                SimpleNode n = (SimpleNode)children[i];
+                SimpleNode n = (SimpleNode) children[i];
                 if (n != null) {
                     n.buildTrapEntries(dest);
                 }
             } /* end of loop */
         }
     }
+
     /**
      * Build the Inform entries from the syntactic tree.
      */
     public void buildInformEntries(Hashtable<InetAddress, Vector<String>> dest) {
         if (children != null) {
             for (int i = 0; i < children.length; ++i) {
-                SimpleNode n = (SimpleNode)children[i];
+                SimpleNode n = (SimpleNode) children[i];
                 if (n != null) {
                     n.buildInformEntries(dest);
                 }
@@ -120,7 +126,7 @@ class SimpleNode implements Node {
     public void buildAclEntries(PrincipalImpl owner, AclImpl acl) {
         if (children != null) {
             for (int i = 0; i < children.length; ++i) {
-                SimpleNode n = (SimpleNode)children[i];
+                SimpleNode n = (SimpleNode) children[i];
                 if (n != null) {
                     n.buildAclEntries(owner, acl);
                 }
@@ -136,8 +142,13 @@ class SimpleNode implements Node {
        toString(String), otherwise overriding toString() is probably all
        you need to do. */
 
-    public String toString() { return ParserTreeConstants.jjtNodeName[id]; }
-    public String toString(String prefix) { return prefix + toString(); }
+    public String toString() {
+        return ParserTreeConstants.jjtNodeName[id];
+    }
+
+    public String toString(String prefix) {
+        return prefix + toString();
+    }
 
     /* Override this method if you want to customize how the node dumps
        out its children. */
@@ -145,7 +156,7 @@ class SimpleNode implements Node {
     public void dump(String prefix) {
         if (children != null) {
             for (int i = 0; i < children.length; ++i) {
-                SimpleNode n = (SimpleNode)children[i];
+                SimpleNode n = (SimpleNode) children[i];
                 if (n != null) {
                     n.dump(prefix + " ");
                 }

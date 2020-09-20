@@ -85,34 +85,28 @@ public final class ResultTreeType extends Type {
      * The translation to int is undefined since result trees
      * are always converted to reals in arithmetic expressions.
      *
-     * @param classGen A BCEL class generator
+     * @param classGen  A BCEL class generator
      * @param methodGen A BCEL method generator
-     * @param type An instance of the type to translate the result tree to
+     * @param type      An instance of the type to translate the result tree to
      * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             Type type) {
         if (type == Type.String) {
-            translateTo(classGen, methodGen, (StringType)type);
-        }
-        else if (type == Type.Boolean) {
-            translateTo(classGen, methodGen, (BooleanType)type);
-        }
-        else if (type == Type.Real) {
-            translateTo(classGen, methodGen, (RealType)type);
-        }
-        else if (type == Type.NodeSet) {
-            translateTo(classGen, methodGen, (NodeSetType)type);
-        }
-        else if (type == Type.Reference) {
-            translateTo(classGen, methodGen, (ReferenceType)type);
-        }
-        else if (type == Type.Object) {
+            translateTo(classGen, methodGen, (StringType) type);
+        } else if (type == Type.Boolean) {
+            translateTo(classGen, methodGen, (BooleanType) type);
+        } else if (type == Type.Real) {
+            translateTo(classGen, methodGen, (RealType) type);
+        } else if (type == Type.NodeSet) {
+            translateTo(classGen, methodGen, (NodeSetType) type);
+        } else if (type == Type.Reference) {
+            translateTo(classGen, methodGen, (ReferenceType) type);
+        } else if (type == Type.Object) {
             translateTo(classGen, methodGen, (ObjectType) type);
-        }
-        else {
+        } else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                        toString(), type.toString());
+                    toString(), type.toString());
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }
@@ -121,9 +115,9 @@ public final class ResultTreeType extends Type {
      * Expects an result tree on the stack and pushes a boolean.
      * Translates a result tree to a boolean by first converting it to string.
      *
-     * @param classGen A BCEL class generator
+     * @param classGen  A BCEL class generator
      * @param methodGen A BCEL method generator
-     * @param type An instance of BooleanType (any)
+     * @param type      An instance of BooleanType (any)
      * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
@@ -139,9 +133,9 @@ public final class ResultTreeType extends Type {
     /**
      * Expects an result tree on the stack and pushes a string.
      *
-     * @param classGen A BCEL class generator
+     * @param classGen  A BCEL class generator
      * @param methodGen A BCEL method generator
-     * @param type An instance of StringType (any)
+     * @param type      An instance of StringType (any)
      * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
@@ -151,11 +145,10 @@ public final class ResultTreeType extends Type {
 
         if (_methodName == null) {
             int index = cpg.addInterfaceMethodref(DOM_INTF,
-                                                  "getStringValue",
-                                                  "()"+STRING_SIG);
+                    "getStringValue",
+                    "()" + STRING_SIG);
             il.append(new INVOKEINTERFACE(index, 1));
-        }
-        else {
+        } else {
             final String className = classGen.getClassName();
             final int current = methodGen.getLocalIndex("current");
 
@@ -166,7 +159,7 @@ public final class ResultTreeType extends Type {
             }
             il.append(DUP);
             il.append(new GETFIELD(cpg.addFieldref(className, "_dom",
-                                                   DOM_INTF_SIG)));
+                    DOM_INTF_SIG)));
 
             // Create a new instance of a StringValueHandler
             int index = cpg.addMethodref(STRING_VALUE_HANDLER, "<init>", "()V");
@@ -177,21 +170,21 @@ public final class ResultTreeType extends Type {
 
             // Store new Handler into a local variable
             final LocalVariableGen handler =
-                methodGen.addLocalVariable("rt_to_string_handler",
-                                           Util.getJCRefType(STRING_VALUE_HANDLER_SIG),
-                                           null, null);
+                    methodGen.addLocalVariable("rt_to_string_handler",
+                            Util.getJCRefType(STRING_VALUE_HANDLER_SIG),
+                            null, null);
             handler.setStart(il.append(new ASTORE(handler.getIndex())));
 
             // Call the method that implements this result tree
             index = cpg.addMethodref(className, _methodName,
-                                     "("+DOM_INTF_SIG+TRANSLET_OUTPUT_SIG+")V");
+                    "(" + DOM_INTF_SIG + TRANSLET_OUTPUT_SIG + ")V");
             il.append(new INVOKEVIRTUAL(index));
 
             // Restore new handler and call getValue()
             handler.setEnd(il.append(new ALOAD(handler.getIndex())));
             index = cpg.addMethodref(STRING_VALUE_HANDLER,
-                                     "getValue",
-                                     "()" + STRING_SIG);
+                    "getValue",
+                    "()" + STRING_SIG);
             il.append(new INVOKEVIRTUAL(index));
         }
     }
@@ -200,9 +193,9 @@ public final class ResultTreeType extends Type {
      * Expects an result tree on the stack and pushes a real.
      * Translates a result tree into a real by first converting it to string.
      *
-     * @param classGen A BCEL class generator
+     * @param classGen  A BCEL class generator
      * @param methodGen A BCEL method generator
-     * @param type An instance of RealType (any)
+     * @param type      An instance of RealType (any)
      * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
@@ -215,9 +208,9 @@ public final class ResultTreeType extends Type {
      * Expects a result tree on the stack and pushes a boxed result tree.
      * Result trees are already boxed so the translation is just a NOP.
      *
-     * @param classGen A BCEL class generator
+     * @param classGen  A BCEL class generator
      * @param methodGen A BCEL method generator
-     * @param type An instance of ReferenceType (any)
+     * @param type      An instance of ReferenceType (any)
      * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
@@ -227,8 +220,7 @@ public final class ResultTreeType extends Type {
 
         if (_methodName == null) {
             il.append(NOP);
-        }
-        else {
+        } else {
             LocalVariableGen domBuilder, newDom;
             final String className = classGen.getClassName();
             final int current = methodGen.getLocalIndex("current");
@@ -243,58 +235,58 @@ public final class ResultTreeType extends Type {
             // Create new instance of DOM class (with RTF_INITIAL_SIZE nodes)
             il.append(methodGen.loadDOM());
             int index = cpg.addInterfaceMethodref(DOM_INTF,
-                                 "getResultTreeFrag",
-                                 "(IZ)" + DOM_INTF_SIG);
+                    "getResultTreeFrag",
+                    "(IZ)" + DOM_INTF_SIG);
             il.append(new PUSH(cpg, RTF_INITIAL_SIZE));
             il.append(new PUSH(cpg, false));
-            il.append(new INVOKEINTERFACE(index,3));
+            il.append(new INVOKEINTERFACE(index, 3));
             il.append(DUP);
 
             // Store new DOM into a local variable
             newDom = methodGen.addLocalVariable("rt_to_reference_dom",
-                                                Util.getJCRefType(DOM_INTF_SIG),
-                                                null, null);
+                    Util.getJCRefType(DOM_INTF_SIG),
+                    null, null);
             il.append(new CHECKCAST(cpg.addClass(DOM_INTF_SIG)));
             newDom.setStart(il.append(new ASTORE(newDom.getIndex())));
 
             // Overwrite old handler with DOM handler
             index = cpg.addInterfaceMethodref(DOM_INTF,
-                                 "getOutputDomBuilder",
-                                 "()" + TRANSLET_OUTPUT_SIG);
+                    "getOutputDomBuilder",
+                    "()" + TRANSLET_OUTPUT_SIG);
 
-            il.append(new INVOKEINTERFACE(index,1));
+            il.append(new INVOKEINTERFACE(index, 1));
             //index = cpg.addMethodref(DOM_IMPL,
-                //                   "getOutputDomBuilder",
-                //                   "()" + TRANSLET_OUTPUT_SIG);
+            //                   "getOutputDomBuilder",
+            //                   "()" + TRANSLET_OUTPUT_SIG);
             //il.append(new INVOKEVIRTUAL(index));
             il.append(DUP);
             il.append(DUP);
 
             // Store DOM handler in a local in order to call endDocument()
             domBuilder =
-                methodGen.addLocalVariable("rt_to_reference_handler",
-                                           Util.getJCRefType(TRANSLET_OUTPUT_SIG),
-                                           null, null);
+                    methodGen.addLocalVariable("rt_to_reference_handler",
+                            Util.getJCRefType(TRANSLET_OUTPUT_SIG),
+                            null, null);
             domBuilder.setStart(il.append(new ASTORE(domBuilder.getIndex())));
 
             // Call startDocument on the new handler
             index = cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
-                                              "startDocument", "()V");
+                    "startDocument", "()V");
             il.append(new INVOKEINTERFACE(index, 1));
 
             // Call the method that implements this result tree
             index = cpg.addMethodref(className,
-                                     _methodName,
-                                     "("
-                                     + DOM_INTF_SIG
-                                     + TRANSLET_OUTPUT_SIG
-                                     +")V");
+                    _methodName,
+                    "("
+                            + DOM_INTF_SIG
+                            + TRANSLET_OUTPUT_SIG
+                            + ")V");
             il.append(new INVOKEVIRTUAL(index));
 
             // Call endDocument on the DOM handler
             domBuilder.setEnd(il.append(new ALOAD(domBuilder.getIndex())));
             index = cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
-                                              "endDocument", "()V");
+                    "endDocument", "()V");
             il.append(new INVOKEINTERFACE(index, 1));
 
             // Push the new DOM on the stack
@@ -310,9 +302,9 @@ public final class ResultTreeType extends Type {
      * such as <xsl:apply-templates> and <xsl:for-each> without the DOM
      * parameter/variable being updates as well.
      *
-     * @param classGen A BCEL class generator
+     * @param classGen  A BCEL class generator
      * @param methodGen A BCEL method generator
-     * @param type An instance of NodeSetType (any)
+     * @param type      An instance of NodeSetType (any)
      * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
@@ -328,41 +320,41 @@ public final class ResultTreeType extends Type {
         // XPath expressions and patterns to work for the iterator we create.
         il.append(classGen.loadTranslet()); // get names array
         il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
-                                               NAMES_INDEX,
-                                               NAMES_INDEX_SIG)));
+                NAMES_INDEX,
+                NAMES_INDEX_SIG)));
         il.append(classGen.loadTranslet()); // get uris array
         il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
-                                               URIS_INDEX,
-                                               URIS_INDEX_SIG)));
+                URIS_INDEX,
+                URIS_INDEX_SIG)));
         il.append(classGen.loadTranslet()); // get types array
         il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
-                                               TYPES_INDEX,
-                                               TYPES_INDEX_SIG)));
+                TYPES_INDEX,
+                TYPES_INDEX_SIG)));
         il.append(classGen.loadTranslet()); // get namespaces array
         il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
-                                               NAMESPACE_INDEX,
-                                               NAMESPACE_INDEX_SIG)));
+                NAMESPACE_INDEX,
+                NAMESPACE_INDEX_SIG)));
         // Pass the type mappings to the DOM adapter
         final int mapping = cpg.addInterfaceMethodref(DOM_INTF,
-                                                      "setupMapping",
-                                                      "(["+STRING_SIG+
-                                                      "["+STRING_SIG+
-                                                      "[I" +
-                                                      "["+STRING_SIG+")V");
+                "setupMapping",
+                "([" + STRING_SIG +
+                        "[" + STRING_SIG +
+                        "[I" +
+                        "[" + STRING_SIG + ")V");
         il.append(new INVOKEINTERFACE(mapping, 5));
         il.append(DUP);
 
         // Create an iterator for the root node of the DOM adapter
         final int iter = cpg.addInterfaceMethodref(DOM_INTF,
-                                                   "getIterator",
-                                                   "()"+NODE_ITERATOR_SIG);
+                "getIterator",
+                "()" + NODE_ITERATOR_SIG);
         il.append(new INVOKEINTERFACE(iter, 1));
     }
 
     /**
      * Subsume result tree into ObjectType.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             ObjectType type) {
@@ -374,9 +366,9 @@ public final class ResultTreeType extends Type {
      * It does not push a 0 or a 1 but instead returns branchhandle list
      * to be appended to the false list.
      *
-     * @param classGen A BCEL class generator
+     * @param classGen  A BCEL class generator
      * @param methodGen A BCEL method generator
-     * @param type An instance of BooleanType (any)
+     * @param type      An instance of BooleanType (any)
      * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateToDesynthesized
      */
     public FlowList translateToDesynthesized(ClassGenerator classGen,
@@ -394,9 +386,9 @@ public final class ResultTreeType extends Type {
      * to W3C Node or W3C NodeList and the translation is done
      * via node-set type.
      *
-     * @param classGen A BCEL class generator
+     * @param classGen  A BCEL class generator
      * @param methodGen A BCEL method generator
-     * @param clazz An reference to the Class to translate to
+     * @param clazz     An reference to the Class to translate to
      * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
@@ -408,26 +400,22 @@ public final class ResultTreeType extends Type {
         if (className.equals("org.w3c.dom.Node")) {
             translateTo(classGen, methodGen, Type.NodeSet);
             int index = cpg.addInterfaceMethodref(DOM_INTF,
-                                                  MAKE_NODE,
-                                                  MAKE_NODE_SIG2);
+                    MAKE_NODE,
+                    MAKE_NODE_SIG2);
             il.append(new INVOKEINTERFACE(index, 2));
-        }
-        else if (className.equals("org.w3c.dom.NodeList")) {
+        } else if (className.equals("org.w3c.dom.NodeList")) {
             translateTo(classGen, methodGen, Type.NodeSet);
             int index = cpg.addInterfaceMethodref(DOM_INTF,
-                                                  MAKE_NODE_LIST,
-                                                  MAKE_NODE_LIST_SIG2);
+                    MAKE_NODE_LIST,
+                    MAKE_NODE_LIST_SIG2);
             il.append(new INVOKEINTERFACE(index, 2));
-        }
-        else if (className.equals("java.lang.Object")) {
+        } else if (className.equals("java.lang.Object")) {
             il.append(NOP);
-        }
-        else if (className.equals("java.lang.String")) {
+        } else if (className.equals("java.lang.String")) {
             translateTo(classGen, methodGen, Type.String);
-        }
-        else {
+        } else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                        toString(), className);
+                    toString(), className);
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }
@@ -452,7 +440,7 @@ public final class ResultTreeType extends Type {
      * Returns the class name of an internal type's external representation.
      */
     public String getClassName() {
-        return(DOM_INTF);
+        return (DOM_INTF);
     }
 
     public Instruction LOAD(int slot) {

@@ -27,7 +27,6 @@
 package com.sun.jmx.snmp;
 
 
-
 /**
  * Represents a <CODE>get-bulk</CODE> PDU as defined in RFC 1448.
  * <P>
@@ -43,21 +42,23 @@ package com.sun.jmx.snmp;
  */
 
 public class SnmpPduBulk extends SnmpPduPacket
-    implements SnmpPduBulkType {
+        implements SnmpPduBulkType {
     private static final long serialVersionUID = -7431306775883371046L;
 
     /**
      * The <CODE>non-repeaters</CODE> value.
+     *
      * @serial
      */
-    public int            nonRepeaters ;
+    public int nonRepeaters;
 
 
     /**
      * The <CODE>max-repetitions</CODE> value.
+     *
      * @serial
      */
-    public int            maxRepetitions ;
+    public int maxRepetitions;
 
 
     /**
@@ -67,9 +68,10 @@ public class SnmpPduBulk extends SnmpPduPacket
      * and {@link com.sun.jmx.snmp.SnmpDefinitions#snmpVersionTwo snmpVersionTwo}.
      */
     public SnmpPduBulk() {
-        type = pduGetBulkRequestPdu ;
-        version = snmpVersionTwo ;
+        type = pduGetBulkRequestPdu;
+        version = snmpVersionTwo;
     }
+
     /**
      * Implements the <CODE>SnmpPduBulkType</CODE> interface.
      *
@@ -78,6 +80,7 @@ public class SnmpPduBulk extends SnmpPduPacket
     public void setMaxRepetitions(int i) {
         maxRepetitions = i;
     }
+
     /**
      * Implements the <CODE>SnmpPduBulkType</CODE> interface.
      *
@@ -86,18 +89,25 @@ public class SnmpPduBulk extends SnmpPduPacket
     public void setNonRepeaters(int i) {
         nonRepeaters = i;
     }
+
     /**
      * Implements the <CODE>SnmpPduBulkType</CODE> interface.
      *
      * @since 1.5
      */
-    public int getMaxRepetitions() { return maxRepetitions; }
+    public int getMaxRepetitions() {
+        return maxRepetitions;
+    }
+
     /**
      * Implements the <CODE>SnmpPduBulkType</CODE> interface.
      *
      * @since 1.5
      */
-    public int getNonRepeaters() { return nonRepeaters; }
+    public int getNonRepeaters() {
+        return nonRepeaters;
+    }
+
     /**
      * Implements the <CODE>SnmpAckPdu</CODE> interface.
      *

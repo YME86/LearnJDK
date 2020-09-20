@@ -28,7 +28,6 @@ import com.sun.org.apache.bcel.internal.generic.Instruction;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.Stylesheet;
 
 /**
- *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
@@ -42,7 +41,7 @@ public final class NodeSortRecordGenerator extends ClassGenerator {
                                    int accessFlags, String[] interfaces,
                                    Stylesheet stylesheet) {
         super(className, superClassName, fileName,
-              accessFlags, interfaces, stylesheet);
+                accessFlags, interfaces, stylesheet);
         _aloadTranslet = new ALOAD(TRANSLET_INDEX);
     }
 

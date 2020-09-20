@@ -89,21 +89,20 @@ public class StAXEvent2SAX implements XMLReader, Locator {
     }
 
     public void setContentHandler(ContentHandler handler) throws
-        NullPointerException
-    {
+            NullPointerException {
         _sax = handler;
         if (handler instanceof LexicalHandler) {
             _lex = (LexicalHandler) handler;
         }
 
         if (handler instanceof SAXImpl) {
-            _saxImpl = (SAXImpl)handler;
+            _saxImpl = (SAXImpl) handler;
         }
     }
 
 
     public void parse(InputSource unused) throws IOException, SAXException {
-       try {
+        try {
             bridge();
         } catch (XMLStreamException e) {
             throw new SAXException(e);
@@ -141,7 +140,7 @@ public class StAXEvent2SAX implements XMLReader, Locator {
 
         try {
             // remembers the nest level of elements to know when we are done.
-            int depth=0;
+            int depth = 0;
             boolean startedAtDocument = false;
 
             XMLEvent event = staxEventReader.peek();
@@ -150,13 +149,13 @@ public class StAXEvent2SAX implements XMLReader, Locator {
                 throw new IllegalStateException();
             }
 
-            if (event.getEventType() == XMLStreamConstants.START_DOCUMENT){
+            if (event.getEventType() == XMLStreamConstants.START_DOCUMENT) {
                 startedAtDocument = true;
-                version = ((StartDocument)event).getVersion();
-                if (((StartDocument)event).encodingSet())
-                    encoding = ((StartDocument)event).getCharacterEncodingScheme();
-                event=staxEventReader.nextEvent(); // that gets the one we peeked at
-                event=staxEventReader.nextEvent(); // that really gets the next one
+                version = ((StartDocument) event).getVersion();
+                if (((StartDocument) event).encodingSet())
+                    encoding = ((StartDocument) event).getCharacterEncodingScheme();
+                event = staxEventReader.nextEvent(); // that gets the one we peeked at
+                event = staxEventReader.nextEvent(); // that really gets the next one
             }
 
             handleStartDocument(event);
@@ -164,25 +163,25 @@ public class StAXEvent2SAX implements XMLReader, Locator {
             // Handle the prolog: http://www.w3.org/TR/REC-xml/#NT-prolog
             while (event.getEventType() != XMLStreamConstants.START_ELEMENT) {
                 switch (event.getEventType()) {
-                    case XMLStreamConstants.CHARACTERS :
+                    case XMLStreamConstants.CHARACTERS:
                         handleCharacters(event.asCharacters());
                         break;
-                    case XMLStreamConstants.PROCESSING_INSTRUCTION :
-                        handlePI((ProcessingInstruction)event);
+                    case XMLStreamConstants.PROCESSING_INSTRUCTION:
+                        handlePI((ProcessingInstruction) event);
                         break;
-                    case XMLStreamConstants.COMMENT :
+                    case XMLStreamConstants.COMMENT:
                         handleComment();
                         break;
-                    case XMLStreamConstants.DTD :
+                    case XMLStreamConstants.DTD:
                         handleDTD();
                         break;
-                    case XMLStreamConstants.SPACE :
+                    case XMLStreamConstants.SPACE:
                         handleSpace();
                         break;
-                    default :
+                    default:
                         throw new InternalError("processing prolog event: " + event);
                 }
-                event=staxEventReader.nextEvent();
+                event = staxEventReader.nextEvent();
             }
 
             // Process the (document) element
@@ -191,74 +190,74 @@ public class StAXEvent2SAX implements XMLReader, Locator {
                 // XMLEvent.
                 // The spec only really describes 11 of them.
                 switch (event.getEventType()) {
-                    case XMLStreamConstants.START_ELEMENT :
+                    case XMLStreamConstants.START_ELEMENT:
                         depth++;
                         handleStartElement(event.asStartElement());
                         break;
-                    case XMLStreamConstants.END_ELEMENT :
+                    case XMLStreamConstants.END_ELEMENT:
                         handleEndElement(event.asEndElement());
                         depth--;
                         break;
-                    case XMLStreamConstants.CHARACTERS :
+                    case XMLStreamConstants.CHARACTERS:
                         handleCharacters(event.asCharacters());
                         break;
-                    case XMLStreamConstants.ENTITY_REFERENCE :
+                    case XMLStreamConstants.ENTITY_REFERENCE:
                         handleEntityReference();
                         break;
-                    case XMLStreamConstants.PROCESSING_INSTRUCTION :
-                        handlePI((ProcessingInstruction)event);
+                    case XMLStreamConstants.PROCESSING_INSTRUCTION:
+                        handlePI((ProcessingInstruction) event);
                         break;
-                    case XMLStreamConstants.COMMENT :
+                    case XMLStreamConstants.COMMENT:
                         handleComment();
                         break;
-                    case XMLStreamConstants.DTD :
+                    case XMLStreamConstants.DTD:
                         handleDTD();
                         break;
-                    case XMLStreamConstants.ATTRIBUTE :
+                    case XMLStreamConstants.ATTRIBUTE:
                         handleAttribute();
                         break;
-                    case XMLStreamConstants.NAMESPACE :
+                    case XMLStreamConstants.NAMESPACE:
                         handleNamespace();
                         break;
-                    case XMLStreamConstants.CDATA :
+                    case XMLStreamConstants.CDATA:
                         handleCDATA();
                         break;
-                    case XMLStreamConstants.ENTITY_DECLARATION :
+                    case XMLStreamConstants.ENTITY_DECLARATION:
                         handleEntityDecl();
                         break;
-                    case XMLStreamConstants.NOTATION_DECLARATION :
+                    case XMLStreamConstants.NOTATION_DECLARATION:
                         handleNotationDecl();
                         break;
-                    case XMLStreamConstants.SPACE :
+                    case XMLStreamConstants.SPACE:
                         handleSpace();
                         break;
-                    default :
+                    default:
                         throw new InternalError("processing event: " + event);
                 }
 
-                event=staxEventReader.nextEvent();
-            } while (depth!=0);
+                event = staxEventReader.nextEvent();
+            } while (depth != 0);
 
             if (startedAtDocument) {
                 // Handle the Misc (http://www.w3.org/TR/REC-xml/#NT-Misc) that can follow the document element
                 while (event.getEventType() != XMLStreamConstants.END_DOCUMENT) {
                     switch (event.getEventType()) {
-                        case XMLStreamConstants.CHARACTERS :
+                        case XMLStreamConstants.CHARACTERS:
                             handleCharacters(event.asCharacters());
                             break;
-                        case XMLStreamConstants.PROCESSING_INSTRUCTION :
-                            handlePI((ProcessingInstruction)event);
+                        case XMLStreamConstants.PROCESSING_INSTRUCTION:
+                            handlePI((ProcessingInstruction) event);
                             break;
-                        case XMLStreamConstants.COMMENT :
+                        case XMLStreamConstants.COMMENT:
                             handleComment();
                             break;
-                        case XMLStreamConstants.SPACE :
+                        case XMLStreamConstants.SPACE:
                             handleSpace();
                             break;
-                        default :
+                        default:
                             throw new InternalError("processing misc event after document element: " + event);
                     }
-                    event=staxEventReader.nextEvent();
+                    event = staxEventReader.nextEvent();
                 }
             }
 
@@ -278,19 +277,24 @@ public class StAXEvent2SAX implements XMLReader, Locator {
             public int getColumnNumber() {
                 return event.getLocation().getColumnNumber();
             }
+
             public int getLineNumber() {
                 return event.getLocation().getLineNumber();
             }
+
             public String getPublicId() {
                 return event.getLocation().getPublicId();
             }
+
             public String getSystemId() {
                 return event.getLocation().getSystemId();
             }
-            public String getXMLVersion(){
+
+            public String getXMLVersion() {
                 return version;
             }
-            public String getEncoding(){
+
+            public String getEncoding() {
                 return encoding;
             }
 
@@ -299,11 +303,11 @@ public class StAXEvent2SAX implements XMLReader, Locator {
     }
 
     private void handlePI(ProcessingInstruction event)
-        throws XMLStreamException {
+            throws XMLStreamException {
         try {
             _sax.processingInstruction(
-                event.getTarget(),
-                event.getData());
+                    event.getTarget(),
+                    event.getData());
         } catch (SAXException e) {
             throw new XMLStreamException(e);
         }
@@ -312,9 +316,9 @@ public class StAXEvent2SAX implements XMLReader, Locator {
     private void handleCharacters(Characters event) throws XMLStreamException {
         try {
             _sax.characters(
-                event.getData().toCharArray(),
-                0,
-                event.getData().length());
+                    event.getData().toCharArray(),
+                    0,
+                    event.getData().length());
         } catch (SAXException e) {
             throw new XMLStreamException(e);
         }
@@ -325,7 +329,7 @@ public class StAXEvent2SAX implements XMLReader, Locator {
 
         //construct prefix:localName from qName
         String qname = "";
-        if (qName.getPrefix() != null && qName.getPrefix().trim().length() != 0){
+        if (qName.getPrefix() != null && qName.getPrefix().trim().length() != 0) {
             qname = qName.getPrefix() + ":";
         }
         qname += qName.getLocalPart();
@@ -333,14 +337,14 @@ public class StAXEvent2SAX implements XMLReader, Locator {
         try {
             // fire endElement
             _sax.endElement(
-                qName.getNamespaceURI(),
-                qName.getLocalPart(),
-                qname);
+                    qName.getNamespaceURI(),
+                    qName.getLocalPart(),
+                    qname);
 
             // end namespace bindings
-            for( Iterator i = event.getNamespaces(); i.hasNext();) {
-                String prefix = (String)i.next();
-                if( prefix == null ) { // true for default namespace
+            for (Iterator i = event.getNamespaces(); i.hasNext(); ) {
+                String prefix = (String) i.next();
+                if (prefix == null) { // true for default namespace
                     prefix = "";
                 }
                 _sax.endPrefixMapping(prefix);
@@ -351,17 +355,17 @@ public class StAXEvent2SAX implements XMLReader, Locator {
     }
 
     private void handleStartElement(StartElement event)
-        throws XMLStreamException {
+            throws XMLStreamException {
         try {
             // start namespace bindings
-            for (Iterator i = event.getNamespaces(); i.hasNext();) {
-                String prefix = ((Namespace)i.next()).getPrefix();
+            for (Iterator i = event.getNamespaces(); i.hasNext(); ) {
+                String prefix = ((Namespace) i.next()).getPrefix();
                 if (prefix == null) { // true for default namespace
                     prefix = "";
                 }
                 _sax.startPrefixMapping(
-                    prefix,
-                    event.getNamespaceURI(prefix));
+                        prefix,
+                        event.getNamespaceURI(prefix));
             }
 
             // fire startElement
@@ -376,10 +380,10 @@ public class StAXEvent2SAX implements XMLReader, Locator {
 
             Attributes saxAttrs = getAttributes(event);
             _sax.startElement(
-                qName.getNamespaceURI(),
-                qName.getLocalPart(),
-                rawname,
-                saxAttrs);
+                    qName.getNamespaceURI(),
+                    qName.getLocalPart(),
+                    rawname,
+                    saxAttrs);
         } catch (SAXException e) {
             throw new XMLStreamException(e);
         }
@@ -393,9 +397,9 @@ public class StAXEvent2SAX implements XMLReader, Locator {
     private Attributes getAttributes(StartElement event) {
         AttributesImpl attrs = new AttributesImpl();
 
-        if ( !event.isStartElement() ) {
+        if (!event.isStartElement()) {
             throw new InternalError(
-                "getAttributes() attempting to process: " + event);
+                    "getAttributes() attempting to process: " + event);
         }
 
         // in SAX, namespace declarations are not part of attributes by default.
@@ -403,8 +407,8 @@ public class StAXEvent2SAX implements XMLReader, Locator {
         // we don't use it.) So don't add xmlns:* to attributes.
 
         // gather non-namespace attrs
-        for (Iterator i = event.getAttributes(); i.hasNext();) {
-            Attribute staxAttr = (javax.xml.stream.events.Attribute)i.next();
+        for (Iterator i = event.getAttributes(); i.hasNext(); ) {
+            Attribute staxAttr = (javax.xml.stream.events.Attribute) i.next();
 
             String uri = staxAttr.getName().getNamespaceURI();
             if (uri == null) {
@@ -494,8 +498,7 @@ public class StAXEvent2SAX implements XMLReader, Locator {
      * be called.
      */
     public boolean getFeature(String name) throws SAXNotRecognizedException,
-        SAXNotSupportedException
-    {
+            SAXNotSupportedException {
         return false;
     }
 
@@ -504,8 +507,7 @@ public class StAXEvent2SAX implements XMLReader, Locator {
      * be called.
      */
     public void setFeature(String name, boolean value) throws
-        SAXNotRecognizedException, SAXNotSupportedException
-    {
+            SAXNotRecognizedException, SAXNotSupportedException {
     }
 
     /**
@@ -528,8 +530,7 @@ public class StAXEvent2SAX implements XMLReader, Locator {
      * be called.
      */
     public void setEntityResolver(EntityResolver resolver) throws
-        NullPointerException
-    {
+            NullPointerException {
     }
 
     /**
@@ -545,8 +546,7 @@ public class StAXEvent2SAX implements XMLReader, Locator {
      * be called.
      */
     public void setErrorHandler(ErrorHandler handler) throws
-        NullPointerException
-    {
+            NullPointerException {
     }
 
     /**
@@ -554,7 +554,7 @@ public class StAXEvent2SAX implements XMLReader, Locator {
      * be called.
      */
     public void setProperty(String name, Object value) throws
-        SAXNotRecognizedException, SAXNotSupportedException {
+            SAXNotRecognizedException, SAXNotSupportedException {
     }
 
     /**
@@ -562,8 +562,7 @@ public class StAXEvent2SAX implements XMLReader, Locator {
      * be called.
      */
     public Object getProperty(String name) throws SAXNotRecognizedException,
-        SAXNotSupportedException
-    {
+            SAXNotSupportedException {
         return null;
     }
 

@@ -56,42 +56,44 @@ final class ConcatCall extends FunctionCall {
         return _type = Type.String;
     }
 
-    /** translate leaves a String on the stack */
+    /**
+     * translate leaves a String on the stack
+     */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
         final ConstantPoolGen cpg = classGen.getConstantPool();
         final InstructionList il = methodGen.getInstructionList();
         final int nArgs = argumentCount();
 
         switch (nArgs) {
-        case 0:
-            il.append(new PUSH(cpg, EMPTYSTRING));
-            break;
+            case 0:
+                il.append(new PUSH(cpg, EMPTYSTRING));
+                break;
 
-        case 1:
-            argument().translate(classGen, methodGen);
-            break;
+            case 1:
+                argument().translate(classGen, methodGen);
+                break;
 
-        default:
-            final int initBuffer = cpg.addMethodref(STRING_BUFFER_CLASS,
-                                                    "<init>", "()V");
-            final Instruction append =
-                new INVOKEVIRTUAL(cpg.addMethodref(STRING_BUFFER_CLASS,
-                                                   "append",
-                                                   "("+STRING_SIG+")"
-                                                   +STRING_BUFFER_SIG));
+            default:
+                final int initBuffer = cpg.addMethodref(STRING_BUFFER_CLASS,
+                        "<init>", "()V");
+                final Instruction append =
+                        new INVOKEVIRTUAL(cpg.addMethodref(STRING_BUFFER_CLASS,
+                                "append",
+                                "(" + STRING_SIG + ")"
+                                        + STRING_BUFFER_SIG));
 
-            final int toString = cpg.addMethodref(STRING_BUFFER_CLASS,
-                                                  "toString",
-                                                  "()"+STRING_SIG);
+                final int toString = cpg.addMethodref(STRING_BUFFER_CLASS,
+                        "toString",
+                        "()" + STRING_SIG);
 
-            il.append(new NEW(cpg.addClass(STRING_BUFFER_CLASS)));
-            il.append(DUP);
-            il.append(new INVOKESPECIAL(initBuffer));
-            for (int i = 0; i < nArgs; i++) {
-                argument(i).translate(classGen, methodGen);
-                il.append(append);
-            }
-            il.append(new INVOKEVIRTUAL(toString));
+                il.append(new NEW(cpg.addClass(STRING_BUFFER_CLASS)));
+                il.append(DUP);
+                il.append(new INVOKESPECIAL(initBuffer));
+                for (int i = 0; i < nArgs; i++) {
+                    argument(i).translate(classGen, methodGen);
+                    il.append(append);
+                }
+                il.append(new INVOKEVIRTUAL(toString));
         }
     }
 }

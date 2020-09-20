@@ -53,7 +53,7 @@ public class DTMConfigurationException extends DTMException {
      * given <code>Exception</code> base cause of the error.
      *
      * @param e The exception to be encapsulated in a
-     * DTMConfigurationException.
+     *          DTMConfigurationException.
      */
     public DTMConfigurationException(Throwable e) {
         super(e);
@@ -64,7 +64,7 @@ public class DTMConfigurationException extends DTMException {
      * given <code>Exception</code> base cause and detail message.
      *
      * @param msg The detail message.
-     * @param e The exception to be wrapped in a DTMConfigurationException
+     * @param e   The exception to be wrapped in a DTMConfigurationException
      */
     public DTMConfigurationException(String msg, Throwable e) {
         super(msg, e);
@@ -81,7 +81,7 @@ public class DTMConfigurationException extends DTMException {
      * @param locator The locator object for the error or warning.
      */
     public DTMConfigurationException(String message,
-                                             SourceLocator locator) {
+                                     SourceLocator locator) {
         super(message, locator);
     }
 
@@ -91,11 +91,11 @@ public class DTMConfigurationException extends DTMException {
      * @param message The error or warning message, or null to
      *                use the message from the embedded exception.
      * @param locator The locator object for the error or warning.
-     * @param e Any exception.
+     * @param e       Any exception.
      */
     public DTMConfigurationException(String message,
-                                             SourceLocator locator,
-                                             Throwable e) {
+                                     SourceLocator locator,
+                                     Throwable e) {
         super(message, locator, e);
     }
 }

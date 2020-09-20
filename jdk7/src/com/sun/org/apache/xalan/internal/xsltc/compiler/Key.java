@@ -78,13 +78,14 @@ final class Key extends TopLevelElement {
 
     /**
      * Parse the <xsl:key> element and attributes
+     *
      * @param parser A reference to the stylesheet parser
      */
     public void parseContents(Parser parser) {
 
         // Get the required attributes and parser XPath expressions
         final String name = getAttribute("name");
-        if (!XML11Char.isXML11ValidQName(name)){
+        if (!XML11Char.isXML11ValidQName(name)) {
             ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, name, this);
             parser.reportError(Constants.ERROR, err);
         }
@@ -113,6 +114,7 @@ final class Key extends TopLevelElement {
 
     /**
      * Returns a String-representation of this key's name
+     *
      * @return The key's name (from the <xsl:key> elements 'name' attribute).
      */
     public String getName() {
@@ -126,8 +128,7 @@ final class Key extends TopLevelElement {
         // Cast node values to string values (except for nodesets)
         _useType = _use.typeCheck(stable);
         if (_useType instanceof StringType == false &&
-            _useType instanceof NodeSetType == false)
-        {
+                _useType instanceof NodeSetType == false) {
             _use = new CastExpr(_use, Type.String);
         }
 
@@ -147,26 +148,26 @@ final class Key extends TopLevelElement {
 
         // DOM.getStringValueX(nodeIndex) => String
         final int getNodeValue = cpg.addInterfaceMethodref(DOM_INTF,
-                                                           GET_NODE_VALUE,
-                                                           "(I)"+STRING_SIG);
+                GET_NODE_VALUE,
+                "(I)" + STRING_SIG);
 
         final int getNodeIdent = cpg.addInterfaceMethodref(DOM_INTF,
-                                                           "getNodeIdent",
-                                                           "(I)"+NODE_SIG);
+                "getNodeIdent",
+                "(I)" + NODE_SIG);
 
         // AbstractTranslet.SetKeyIndexDom(name, Dom) => void
         final int keyDom = cpg.addMethodref(TRANSLET_CLASS,
-                                         "setKeyIndexDom",
-                                         "("+STRING_SIG+DOM_INTF_SIG+")V");
+                "setKeyIndexDom",
+                "(" + STRING_SIG + DOM_INTF_SIG + ")V");
 
 
         // This variable holds the id of the node we found with the "match"
         // attribute of xsl:key. This is the id we store, with the value we
         // get from the nodes we find here, in the index for this key.
         final LocalVariableGen parentNode =
-            methodGen.addLocalVariable("parentNode",
-                                       Util.getJCRefType("I"),
-                                       null, null);
+                methodGen.addLocalVariable("parentNode",
+                        Util.getJCRefType("I"),
+                        null, null);
 
         // Get the 'parameter' from the stack and store it in a local var.
         parentNode.setStart(il.append(new ISTORE(parentNode.getIndex())));
@@ -225,29 +226,29 @@ final class Key extends TopLevelElement {
 
         // AbstractTranslet.buildKeyIndex(name,node_id,value) => void
         final int key = cpg.addMethodref(TRANSLET_CLASS,
-                                         "buildKeyIndex",
-                                         "("+STRING_SIG+"I"+OBJECT_SIG+")V");
+                "buildKeyIndex",
+                "(" + STRING_SIG + "I" + OBJECT_SIG + ")V");
 
         // AbstractTranslet.SetKeyIndexDom(name, Dom) => void
         final int keyDom = cpg.addMethodref(TRANSLET_CLASS,
-                                         "setKeyIndexDom",
-                                         "("+STRING_SIG+DOM_INTF_SIG+")V");
+                "setKeyIndexDom",
+                "(" + STRING_SIG + DOM_INTF_SIG + ")V");
 
         final int getNodeIdent = cpg.addInterfaceMethodref(DOM_INTF,
-                                                           "getNodeIdent",
-                                                           "(I)"+NODE_SIG);
+                "getNodeIdent",
+                "(I)" + NODE_SIG);
 
         // DOM.getAxisIterator(root) => NodeIterator
         final int git = cpg.addInterfaceMethodref(DOM_INTF,
-                                                  "getAxisIterator",
-                                                  "(I)"+NODE_ITERATOR_SIG);
+                "getAxisIterator",
+                "(I)" + NODE_ITERATOR_SIG);
 
         il.append(methodGen.loadCurrentNode());
         il.append(methodGen.loadIterator());
 
         // Get an iterator for all nodes in the DOM
         il.append(methodGen.loadDOM());
-        il.append(new PUSH(cpg,Axis.DESCENDANT));
+        il.append(new PUSH(cpg, Axis.DESCENDANT));
         il.append(new INVOKEINTERFACE(git, 2));
 
         // Reset the iterator to start with the root node
@@ -270,8 +271,7 @@ final class Key extends TopLevelElement {
             // Pass current node as parameter (we're indexing on that node)
             il.append(methodGen.loadCurrentNode());
             traverseNodeSet(classGen, methodGen, key);
-        }
-        else {
+        } else {
             il.append(classGen.loadTranslet());
             il.append(DUP);
             il.append(new PUSH(cpg, _name.toString()));

@@ -31,47 +31,50 @@ import com.sun.org.apache.xml.internal.security.utils.resolver.ResourceResolverS
 import org.w3c.dom.Attr;
 
 /**
- *
  * @author $Author: mullan $
  */
 
 public class ResolverAnonymous extends ResourceResolverSpi {
 
-   private XMLSignatureInput _input = null;
+    private XMLSignatureInput _input = null;
 
-   /**
-    * @param filename
+    /**
+     * @param filename
      * @throws FileNotFoundException
      * @throws IOException
      */
-   public ResolverAnonymous(String filename) throws FileNotFoundException, IOException {
-      this._input = new XMLSignatureInput(new FileInputStream(filename));
-   }
+    public ResolverAnonymous(String filename) throws FileNotFoundException, IOException {
+        this._input = new XMLSignatureInput(new FileInputStream(filename));
+    }
 
-   /**
-    * @param is
+    /**
+     * @param is
      */
-   public ResolverAnonymous(InputStream is) {
-      this._input = new XMLSignatureInput(is);
-   }
+    public ResolverAnonymous(InputStream is) {
+        this._input = new XMLSignatureInput(is);
+    }
 
-   /** @inheritDoc */
-   public XMLSignatureInput engineResolve(Attr uri, String BaseURI) {
-      return this._input;
-   }
+    /**
+     * @inheritDoc
+     */
+    public XMLSignatureInput engineResolve(Attr uri, String BaseURI) {
+        return this._input;
+    }
 
-   /**
-    * @inheritDoc
-    */
-   public boolean engineCanResolve(Attr uri, String BaseURI) {
-      if (uri == null) {
-         return true;
-      }
-      return false;
-   }
+    /**
+     * @inheritDoc
+     */
+    public boolean engineCanResolve(Attr uri, String BaseURI) {
+        if (uri == null) {
+            return true;
+        }
+        return false;
+    }
 
-   /** @inheritDoc */
-   public String[] engineGetPropertyKeys() {
-      return new String[0];
-   }
+    /**
+     * @inheritDoc
+     */
+    public String[] engineGetPropertyKeys() {
+        return new String[0];
+    }
 }

@@ -22,6 +22,7 @@
  * $Id: MethodGenerator.java,v 1.10 2010-11-01 04:34:19 joehw Exp $
  */
 package com.sun.org.apache.xalan.internal.xsltc.compiler.util;
+
 import com.sun.org.apache.bcel.internal.generic.Instruction;
 
 /**
@@ -44,7 +45,7 @@ class OutlineableChunkStart extends MarkerInstruction {
      * there should be no need to create an instance of this class.
      */
     public static final Instruction OUTLINEABLECHUNKSTART =
-                                                new OutlineableChunkStart();
+            new OutlineableChunkStart();
 
     /**
      * Private default constructor.  As it has no fields,
@@ -56,6 +57,7 @@ class OutlineableChunkStart extends MarkerInstruction {
 
     /**
      * Get the name of this instruction.  Used for debugging.
+     *
      * @return the instruction name
      */
     public String getName() {
@@ -64,6 +66,7 @@ class OutlineableChunkStart extends MarkerInstruction {
 
     /**
      * Get the name of this instruction.  Used for debugging.
+     *
      * @return the instruction name
      */
     public String toString() {
@@ -72,6 +75,7 @@ class OutlineableChunkStart extends MarkerInstruction {
 
     /**
      * Get the name of this instruction.  Used for debugging.
+     *
      * @return the instruction name
      */
     public String toString(boolean verbose) {

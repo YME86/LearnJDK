@@ -50,7 +50,7 @@ public abstract class ClientCommunicatorAdmin {
     /**
      * Called by a client to inform of getting an IOException.
      */
-    public void gotIOException (IOException ioe) throws IOException {
+    public void gotIOException(IOException ioe) throws IOException {
         restart(ioe);
     }
 
@@ -73,7 +73,7 @@ public abstract class ClientCommunicatorAdmin {
      * Terminates this object.
      */
     public void terminate() {
-        synchronized(lock) {
+        synchronized (lock) {
             if (state == TERMINATED) {
                 return;
             }
@@ -89,7 +89,7 @@ public abstract class ClientCommunicatorAdmin {
 
     private void restart(IOException ioe) throws IOException {
         // check state
-        synchronized(lock) {
+        synchronized (lock) {
             if (state == TERMINATED) {
                 throw new IOException("The client has been closed.");
             } else if (state == FAILED) { // already failed to re-start by another thread
@@ -97,7 +97,7 @@ public abstract class ClientCommunicatorAdmin {
             } else if (state == RE_CONNECTING) {
                 // restart process has been called by another thread
                 // we need to wait
-                while(state == RE_CONNECTING) {
+                while (state == RE_CONNECTING) {
                     try {
                         lock.wait();
                     } catch (InterruptedException ire) {
@@ -124,7 +124,7 @@ public abstract class ClientCommunicatorAdmin {
         // re-starting
         try {
             doStart();
-            synchronized(lock) {
+            synchronized (lock) {
                 if (state == TERMINATED) {
                     throw new IOException("The client has been closed.");
                 }
@@ -137,9 +137,9 @@ public abstract class ClientCommunicatorAdmin {
             return;
         } catch (Exception e) {
             logger.warning("restart", "Failed to restart: " + e);
-            logger.debug("restart",e);
+            logger.debug("restart", e);
 
-            synchronized(lock) {
+            synchronized (lock) {
                 if (state == TERMINATED) {
                     throw new IOException("The client has been closed.");
                 }
@@ -162,7 +162,7 @@ public abstract class ClientCommunicatorAdmin {
         }
     }
 
-// --------------------------------------------------------------
+    // --------------------------------------------------------------
 // private varaibles
 // --------------------------------------------------------------
     private class Checker implements Runnable {
@@ -184,30 +184,30 @@ public abstract class ClientCommunicatorAdmin {
                 try {
                     checkConnection();
                 } catch (Exception e) {
-                    synchronized(lock) {
+                    synchronized (lock) {
                         if (state == TERMINATED || myThread.isInterrupted()) {
                             break;
                         }
                     }
 
-                    e = (Exception)EnvHelp.getCause(e);
+                    e = (Exception) EnvHelp.getCause(e);
 
                     if (e instanceof IOException &&
-                        !(e instanceof InterruptedIOException)) {
+                            !(e instanceof InterruptedIOException)) {
                         try {
-                            restart((IOException)e);
+                            restart((IOException) e);
                         } catch (Exception ee) {
                             logger.warning("Checker-run",
-                                           "Failed to check connection: "+ e);
+                                    "Failed to check connection: " + e);
                             logger.warning("Checker-run", "stopping");
-                            logger.debug("Checker-run",e);
+                            logger.debug("Checker-run", e);
 
                             break;
                         }
                     } else {
                         logger.warning("Checker-run",
-                                     "Failed to check the connection: " + e);
-                        logger.debug("Checker-run",e);
+                                "Failed to check the connection: " + e);
+                        logger.debug("Checker-run", e);
 
                         // XXX stop checking?
 
@@ -230,7 +230,7 @@ public abstract class ClientCommunicatorAdmin {
         private Thread myThread;
     }
 
-// --------------------------------------------------------------
+    // --------------------------------------------------------------
 // private variables
 // --------------------------------------------------------------
     private final Checker checker;
@@ -247,6 +247,6 @@ public abstract class ClientCommunicatorAdmin {
     private final int[] lock = new int[0];
 
     private static final ClassLogger logger =
-        new ClassLogger("javax.management.remote.misc",
-                        "ClientCommunicatorAdmin");
+            new ClassLogger("javax.management.remote.misc",
+                    "ClientCommunicatorAdmin");
 }

@@ -51,61 +51,94 @@ import org.w3c.dom.NodeList;
  */
 public class Transforms extends SignatureElementProxy {
 
-    /** {@link java.util.logging} logging facility */
+    /**
+     * {@link java.util.logging} logging facility
+     */
     static java.util.logging.Logger log =
-        java.util.logging.Logger.getLogger(Transforms.class.getName());
-    /** Canonicalization - Required Canonical XML (omits comments) */
+            java.util.logging.Logger.getLogger(Transforms.class.getName());
+    /**
+     * Canonicalization - Required Canonical XML (omits comments)
+     */
     public static final String TRANSFORM_C14N_OMIT_COMMENTS
-        = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
-    /** Canonicalization - Recommended Canonical XML with Comments */
+            = Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS;
+    /**
+     * Canonicalization - Recommended Canonical XML with Comments
+     */
     public static final String TRANSFORM_C14N_WITH_COMMENTS
-        = Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS;
-    /** Canonicalization - Required Canonical XML 1.1 (omits comments) */
+            = Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS;
+    /**
+     * Canonicalization - Required Canonical XML 1.1 (omits comments)
+     */
     public static final String TRANSFORM_C14N11_OMIT_COMMENTS
-        = Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS;
-    /** Canonicalization - Recommended Canonical XML 1.1 with Comments */
+            = Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS;
+    /**
+     * Canonicalization - Recommended Canonical XML 1.1 with Comments
+     */
     public static final String TRANSFORM_C14N11_WITH_COMMENTS
-        = Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS;
-    /** Canonicalization - Required Exclusive Canonicalization (omits comments) */
+            = Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS;
+    /**
+     * Canonicalization - Required Exclusive Canonicalization (omits comments)
+     */
     public static final String TRANSFORM_C14N_EXCL_OMIT_COMMENTS
-        = Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS;
-    /** Canonicalization - Recommended Exclusive Canonicalization with Comments */
+            = Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS;
+    /**
+     * Canonicalization - Recommended Exclusive Canonicalization with Comments
+     */
     public static final String TRANSFORM_C14N_EXCL_WITH_COMMENTS
-        = Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS;
-    /** Transform - Optional XSLT */
+            = Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS;
+    /**
+     * Transform - Optional XSLT
+     */
     public static final String TRANSFORM_XSLT
-        = "http://www.w3.org/TR/1999/REC-xslt-19991116";
-    /** Transform - Required base64 decoding */
+            = "http://www.w3.org/TR/1999/REC-xslt-19991116";
+    /**
+     * Transform - Required base64 decoding
+     */
     public static final String TRANSFORM_BASE64_DECODE
-        = Constants.SignatureSpecNS + "base64";
-    /** Transform - Recommended XPath */
+            = Constants.SignatureSpecNS + "base64";
+    /**
+     * Transform - Recommended XPath
+     */
     public static final String TRANSFORM_XPATH
-        = "http://www.w3.org/TR/1999/REC-xpath-19991116";
-    /** Transform - Required Enveloped Signature */
+            = "http://www.w3.org/TR/1999/REC-xpath-19991116";
+    /**
+     * Transform - Required Enveloped Signature
+     */
     public static final String TRANSFORM_ENVELOPED_SIGNATURE
-        = Constants.SignatureSpecNS + "enveloped-signature";
-    /** Transform - XPointer */
+            = Constants.SignatureSpecNS + "enveloped-signature";
+    /**
+     * Transform - XPointer
+     */
     public static final String TRANSFORM_XPOINTER
-        = "http://www.w3.org/TR/2001/WD-xptr-20010108";
-    /** Transform - XPath Filter v2.0 */
+            = "http://www.w3.org/TR/2001/WD-xptr-20010108";
+    /**
+     * Transform - XPath Filter v2.0
+     */
     public static final String TRANSFORM_XPATH2FILTER04
-        = "http://www.w3.org/2002/04/xmldsig-filter2";
-    /** Transform - XPath Filter */
+            = "http://www.w3.org/2002/04/xmldsig-filter2";
+    /**
+     * Transform - XPath Filter
+     */
     public static final String TRANSFORM_XPATH2FILTER
-        = "http://www.w3.org/2002/06/xmldsig-filter2";
-    /** Transform - XPath Filter  CHGP private */
+            = "http://www.w3.org/2002/06/xmldsig-filter2";
+    /**
+     * Transform - XPath Filter  CHGP private
+     */
     public static final String TRANSFORM_XPATHFILTERCHGP
-        = "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter";
+            = "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter";
 
-    Element []transforms;
+    Element[] transforms;
 
-    protected Transforms() { };
+    protected Transforms() {
+    }
+
+    ;
 
     /**
      * Constructs {@link Transforms}.
      *
      * @param doc the {@link Document} in which <code>XMLSignature</code> will
-     * be placed
+     *            be placed
      */
     public Transforms(Document doc) {
         super(doc);
@@ -116,7 +149,7 @@ public class Transforms extends SignatureElementProxy {
      * Constructs {@link Transforms} from {@link Element} which is
      * <code>Transforms</code> Element
      *
-     * @param element  is <code>Transforms</code> element
+     * @param element is <code>Transforms</code> element
      * @param BaseURI the URI where the XML instance was stored
      * @throws DOMException
      * @throws InvalidTransformException
@@ -125,9 +158,9 @@ public class Transforms extends SignatureElementProxy {
      * @throws XMLSignatureException
      */
     public Transforms(Element element, String BaseURI)
-           throws DOMException, XMLSignatureException,
-                  InvalidTransformException, TransformationException,
-                  XMLSecurityException {
+            throws DOMException, XMLSignatureException,
+            InvalidTransformException, TransformationException,
+            XMLSecurityException {
 
         super(element, BaseURI);
 
@@ -136,8 +169,8 @@ public class Transforms extends SignatureElementProxy {
         if (numberOfTransformElems == 0) {
 
             // At least one Transform element must be present. Bad.
-            Object exArgs[] = { Constants._TAG_TRANSFORM,
-                                Constants._TAG_TRANSFORMS };
+            Object exArgs[] = {Constants._TAG_TRANSFORM,
+                    Constants._TAG_TRANSFORMS};
 
             throw new TransformationException("xml.WrongContent", exArgs);
         }
@@ -148,11 +181,11 @@ public class Transforms extends SignatureElementProxy {
      * algorithm URI</code>
      *
      * @param transformURI the URI form of transform that indicates which
-     * transformation is applied to data
+     *                     transformation is applied to data
      * @throws TransformationException
      */
     public void addTransform(String transformURI)
-           throws TransformationException {
+            throws TransformationException {
 
         try {
             if (log.isLoggable(java.util.logging.Level.FINE))
@@ -170,14 +203,14 @@ public class Transforms extends SignatureElementProxy {
      * Adds the <code>Transform</code> with the specified <code>Transform
      * algorithm URI</code>
      *
-     * @param transformURI the URI form of transform that indicates which
-     * transformation is applied to data
+     * @param transformURI   the URI form of transform that indicates which
+     *                       transformation is applied to data
      * @param contextElement
      * @throws TransformationException
      * @see Transform#getInstance(Document doc, String algorithmURI, Element childElement)
      */
     public void addTransform(String transformURI, Element contextElement)
-           throws TransformationException {
+            throws TransformationException {
 
         try {
             if (log.isLoggable(java.util.logging.Level.FINE))
@@ -196,13 +229,13 @@ public class Transforms extends SignatureElementProxy {
      * algorithm URI</code>.
      *
      * @param transformURI the URI form of transform that indicates which
-     * transformation is applied to data
+     *                     transformation is applied to data
      * @param contextNodes
      * @throws TransformationException
      * @see Transform#getInstance(Document doc, String algorithmURI, NodeList contextNodes)
      */
     public void addTransform(String transformURI, NodeList contextNodes)
-           throws TransformationException {
+            throws TransformationException {
 
         try {
             Transform transform = new Transform(this._doc, transformURI, contextNodes);
@@ -236,7 +269,7 @@ public class Transforms extends SignatureElementProxy {
      * @throws TransformationException
      */
     public XMLSignatureInput performTransforms(
-        XMLSignatureInput xmlSignatureInput) throws TransformationException {
+            XMLSignatureInput xmlSignatureInput) throws TransformationException {
         return performTransforms(xmlSignatureInput, null);
     }
 
@@ -245,25 +278,25 @@ public class Transforms extends SignatureElementProxy {
      * returns the result of these transformations.
      *
      * @param xmlSignatureInput the input for the <code>Transform</code>s
-     * @param os where to output the last transformation.
+     * @param os                where to output the last transformation.
      * @return the result of the <code>Transforms</code>
      * @throws TransformationException
      */
     public XMLSignatureInput performTransforms(
-        XMLSignatureInput xmlSignatureInput, OutputStream os)
-        throws TransformationException {
+            XMLSignatureInput xmlSignatureInput, OutputStream os)
+            throws TransformationException {
 
         try {
-            int last=this.getLength()-1;
+            int last = this.getLength() - 1;
             for (int i = 0; i < last; i++) {
                 Transform t = this.item(i);
                 if (log.isLoggable(java.util.logging.Level.FINE)) {
                     log.log(java.util.logging.Level.FINE, "Perform the (" + i + ")th " + t.getURI()
-                        + " transform");
+                            + " transform");
                 }
                 xmlSignatureInput = t.performTransform(xmlSignatureInput);
             }
-            if (last>=0) {
+            if (last >= 0) {
                 Transform t = this.item(last);
                 xmlSignatureInput = t.performTransform(xmlSignatureInput, os);
             }
@@ -283,11 +316,10 @@ public class Transforms extends SignatureElementProxy {
      *
      * @return the number of transformations
      */
-    public int getLength()
-    {
+    public int getLength() {
         if (transforms == null) {
             transforms = XMLUtils.selectDsNodes
-                (this._constructionElement.getFirstChild(), "Transform");
+                    (this._constructionElement.getFirstChild(), "Transform");
         }
         return transforms.length;
     }
@@ -305,7 +337,7 @@ public class Transforms extends SignatureElementProxy {
         try {
             if (transforms == null) {
                 transforms = XMLUtils.selectDsNodes
-                    (this._constructionElement.getFirstChild(), "Transform");
+                        (this._constructionElement.getFirstChild(), "Transform");
             }
             return new Transform(transforms[i], this._baseURI);
         } catch (XMLSecurityException ex) {
@@ -313,7 +345,9 @@ public class Transforms extends SignatureElementProxy {
         }
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     */
     public String getBaseLocalName() {
         return Constants._TAG_TRANSFORMS;
     }

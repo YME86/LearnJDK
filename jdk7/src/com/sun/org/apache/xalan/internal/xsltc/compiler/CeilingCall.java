@@ -45,6 +45,6 @@ final class CeilingCall extends FunctionCall {
         final InstructionList il = methodGen.getInstructionList();
         argument(0).translate(classGen, methodGen);
         il.append(new INVOKESTATIC(cpg.addMethodref(MATH_CLASS,
-                                                    "ceil", "(D)D")));
+                "ceil", "(D)D")));
     }
 }

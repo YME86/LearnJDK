@@ -37,6 +37,7 @@ import javax.management.MBeanServer;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
+
 import com.sun.jmx.mbeanserver.MXBeanMappingFactory;
 import sun.reflect.misc.ReflectUtil;
 
@@ -47,8 +48,7 @@ import sun.reflect.misc.ReflectUtil;
  * MBeans comfortably.
  *
  * @param <M> either Method or ConvertingMethod, for Standard MBeans
- * and MXBeans respectively.
- *
+ *            and MXBeans respectively.
  * @since 1.6
  */
 /*
@@ -128,8 +128,8 @@ public abstract class MBeanSupport<M>
             throw new NotCompliantMBeanException("Null MBean interface");
         if (!mbeanInterfaceType.isInstance(resource)) {
             final String msg =
-                "Resource class " + resource.getClass().getName() +
-                " is not an instance of " + mbeanInterfaceType.getName();
+                    "Resource class " + resource.getClass().getName() +
+                            " is not an instance of " + mbeanInterfaceType.getName();
             throw new NotCompliantMBeanException(msg);
         }
         ReflectUtil.checkPackageAccess(mbeanInterfaceType);
@@ -139,7 +139,9 @@ public abstract class MBeanSupport<M>
         this.mbeanInfo = introspector.getMBeanInfo(resource, perInterface);
     }
 
-    /** Return the appropriate introspector for this type of MBean. */
+    /**
+     * Return the appropriate introspector for this type of MBean.
+     */
     abstract MBeanIntrospector<M> getMBeanIntrospector();
 
     /**
@@ -159,6 +161,7 @@ public abstract class MBeanSupport<M>
     // call the contained object's preRegister etc methods even if it has them
     public abstract void register(MBeanServer mbs, ObjectName name)
             throws Exception;
+
     public abstract void unregister();
 
     public final ObjectName preRegister(MBeanServer server, ObjectName name)
@@ -201,8 +204,8 @@ public abstract class MBeanSupport<M>
 
     public final Object getAttribute(String attribute)
             throws AttributeNotFoundException,
-                   MBeanException,
-                   ReflectionException {
+            MBeanException,
+            ReflectionException {
         return perInterface.getAttribute(resource, attribute, getCookie());
     }
 
@@ -222,9 +225,9 @@ public abstract class MBeanSupport<M>
 
     public final void setAttribute(Attribute attribute)
             throws AttributeNotFoundException,
-                   InvalidAttributeValueException,
-                   MBeanException,
-                   ReflectionException {
+            InvalidAttributeValueException,
+            MBeanException,
+            ReflectionException {
         final String name = attribute.getName();
         final Object value = attribute.getValue();
         perInterface.setAttribute(resource, name, value, getCookie());
@@ -247,10 +250,10 @@ public abstract class MBeanSupport<M>
     }
 
     public final Object invoke(String operation, Object[] params,
-                         String[] signature)
+                               String[] signature)
             throws MBeanException, ReflectionException {
         return perInterface.invoke(resource, operation, params, signature,
-                                   getCookie());
+                getCookie());
     }
 
     // Overridden by StandardMBeanSupport

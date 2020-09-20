@@ -48,42 +48,40 @@ public interface NotificationAccessController {
     /**
      * This method is called when a remote
      * {@link javax.management.remote.JMXConnector} invokes the method
-     * {@link javax.management.MBeanServerConnection#addNotificationListener(ObjectName,NotificationListener,NotificationFilter,Object)}.
+     * {@link javax.management.MBeanServerConnection#addNotificationListener(ObjectName, NotificationListener, NotificationFilter, Object)}.
      *
      * @param connectionId the {@code connectionId} of the remote client
-     * adding the listener.
-     * @param name the name of the MBean where the listener is to be added.
-     * @param subject the authenticated subject representing the remote client.
-     *
+     *                     adding the listener.
+     * @param name         the name of the MBean where the listener is to be added.
+     * @param subject      the authenticated subject representing the remote client.
      * @throws SecurityException if the remote client with the supplied
-     * authenticated subject does not have the rights to add a listener
-     * to the supplied MBean.
+     *                           authenticated subject does not have the rights to add a listener
+     *                           to the supplied MBean.
      */
     public void addNotificationListener(String connectionId,
                                         ObjectName name,
                                         Subject subject)
-        throws SecurityException;
+            throws SecurityException;
 
     /**
      * This method is called when a remote
      * {@link javax.management.remote.JMXConnector} invokes the method
-     * {@link javax.management.MBeanServerConnection#removeNotificationListener(ObjectName,NotificationListener)}
+     * {@link javax.management.MBeanServerConnection#removeNotificationListener(ObjectName, NotificationListener)}
      * or the method
-     * {@link javax.management.MBeanServerConnection#removeNotificationListener(ObjectName,NotificationListener,NotificationFilter,Object)}.
+     * {@link javax.management.MBeanServerConnection#removeNotificationListener(ObjectName, NotificationListener, NotificationFilter, Object)}.
      *
      * @param connectionId the {@code connectionId} of the remote client
-     * removing the listener.
-     * @param name the name of the MBean where the listener is to be removed.
-     * @param subject the authenticated subject representing the remote client.
-     *
+     *                     removing the listener.
+     * @param name         the name of the MBean where the listener is to be removed.
+     * @param subject      the authenticated subject representing the remote client.
      * @throws SecurityException if the remote client with the supplied
-     * authenticated subject does not have the rights to remove a listener
-     * from the supplied MBean.
+     *                           authenticated subject does not have the rights to remove a listener
+     *                           from the supplied MBean.
      */
     public void removeNotificationListener(String connectionId,
                                            ObjectName name,
                                            Subject subject)
-        throws SecurityException;
+            throws SecurityException;
 
     /**
      * This method is called before the
@@ -92,19 +90,18 @@ public interface NotificationAccessController {
      * listener represented by the authenticated subject.
      *
      * @param connectionId the {@code connectionId} of the remote client
-     * receiving the notification.
-     * @param name the name of the MBean forwarding the notification.
+     *                     receiving the notification.
+     * @param name         the name of the MBean forwarding the notification.
      * @param notification the notification to be forwarded to the interested
-     * remote listener.
-     * @param subject the authenticated subject representing the remote client.
-     *
+     *                     remote listener.
+     * @param subject      the authenticated subject representing the remote client.
      * @throws SecurityException if the remote client with
-     * the supplied authenticated subject does not have the
-     * rights to receive the notification.
+     *                           the supplied authenticated subject does not have the
+     *                           rights to receive the notification.
      */
     public void fetchNotification(String connectionId,
                                   ObjectName name,
                                   Notification notification,
                                   Subject subject)
-        throws SecurityException;
+            throws SecurityException;
 }

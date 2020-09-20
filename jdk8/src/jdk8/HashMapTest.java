@@ -15,7 +15,7 @@ public class HashMapTest {
     @Test
     public void hashMapTestOne(){
         Map<Person,String> map = new HashMap<Person, String>();
-        Person person = new Person(1,"person",0);
+        Person person = new Person(1,"person",1);
         Person theOtherPerson = new Person(1,"theOtherPerson",1);
 //        System.out.println(person==theOtherPerson);
         map.put(person,"123");

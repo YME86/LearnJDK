@@ -42,7 +42,7 @@ public class ServiceName {
      * The value is <CODE>JMImplementation:type=MBeanServerDelegate</CODE>.
      */
     public static final String DELEGATE =
-        "JMImplementation:type=MBeanServerDelegate" ;
+            "JMImplementation:type=MBeanServerDelegate";
 
     /**
      * The default key properties for registering the class loader of the

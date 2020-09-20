@@ -10,9 +10,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -42,7 +42,7 @@ import org.w3c.dom.Text;
 public abstract class ElementProxy {
 
     protected static final java.util.logging.Logger log =
-        java.util.logging.Logger.getLogger(ElementProxy.class.getName());
+            java.util.logging.Logger.getLogger(ElementProxy.class.getName());
 
     /** Field constructionElement */
     protected Element _constructionElement = null;
@@ -75,7 +75,7 @@ public abstract class ElementProxy {
 
         this._doc = doc;
         this._constructionElement =
-            createElementForFamilyLocal(this._doc, this.getBaseNamespace(), this.getBaseLocalName());
+                createElementForFamilyLocal(this._doc, this.getBaseNamespace(), this.getBaseLocalName());
     }
 
     /**
@@ -117,7 +117,7 @@ public abstract class ElementProxy {
 
 
     protected Element createElementForFamilyLocal(
-        Document doc, String namespace, String localName
+            Document doc, String namespace, String localName
     ) {
         Element result = null;
         if (namespace == null) {
@@ -246,10 +246,10 @@ public abstract class ElementProxy {
         String actualLocalName = this._constructionElement.getLocalName();
         String actualNamespaceUri = this._constructionElement.getNamespaceURI();
 
-        if(!expectedNamespaceUri.equals(actualNamespaceUri)
-            && !expectedLocalName.equals(actualLocalName)) {
-            Object exArgs[] = { actualNamespaceUri + ":" + actualLocalName,
-                                expectedNamespaceUri + ":" + expectedLocalName};
+        if (!expectedNamespaceUri.equals(actualNamespaceUri)
+                && !expectedLocalName.equals(actualLocalName)) {
+            Object exArgs[] = {actualNamespaceUri + ":" + actualLocalName,
+                    expectedNamespaceUri + ":" + expectedLocalName};
             throw new XMLSecurityException("xml.WrongElement", exArgs);
         }
     }
@@ -310,8 +310,8 @@ public abstract class ElementProxy {
     public void addBase64Text(byte[] bytes) {
         if (bytes != null) {
             Text t = XMLUtils.ignoreLineBreaks()
-                ? this._doc.createTextNode(Base64.encode(bytes))
-                : this._doc.createTextNode("\n" + Base64.encode(bytes) + "\n");
+                    ? this._doc.createTextNode(Base64.encode(bytes))
+                    : this._doc.createTextNode("\n" + Base64.encode(bytes) + "\n");
             this._constructionElement.appendChild(t);
         }
     }
@@ -338,12 +338,12 @@ public abstract class ElementProxy {
      * @throws Base64DecodingException
      */
     public BigInteger getBigIntegerFromChildElement(
-        String localname, String namespace
+            String localname, String namespace
     ) throws Base64DecodingException {
         return Base64.decodeBigIntegerFromText(
-            XMLUtils.selectNodeText(
-                this._constructionElement.getFirstChild(), namespace, localname, 0
-            )
+                XMLUtils.selectNodeText(
+                        this._constructionElement.getFirstChild(), namespace, localname, 0
+                )
         );
     }
 
@@ -357,11 +357,11 @@ public abstract class ElementProxy {
      */
     @Deprecated
     public byte[] getBytesFromChildElement(String localname, String namespace)
-        throws XMLSecurityException {
+            throws XMLSecurityException {
         Element e =
-            XMLUtils.selectNode(
-                this._constructionElement.getFirstChild(), namespace, localname, 0
-            );
+                XMLUtils.selectNode(
+                        this._constructionElement.getFirstChild(), namespace, localname, 0
+                );
 
         return Base64.decode(e);
     }
@@ -413,7 +413,7 @@ public abstract class ElementProxy {
         Node sibling = this._constructionElement.getFirstChild();
         while (sibling != null) {
             if (localname.equals(sibling.getLocalName())
-                && namespace.equals(sibling.getNamespaceURI())) {
+                    && namespace.equals(sibling.getNamespaceURI())) {
                 number++;
             }
             sibling = sibling.getNextSibling();
@@ -435,7 +435,7 @@ public abstract class ElementProxy {
      * @throws XMLSecurityException
      */
     public void setXPathNamespaceContext(String prefix, String uri)
-        throws XMLSecurityException {
+            throws XMLSecurityException {
         String ns;
 
         if ((prefix == null) || (prefix.length() == 0)) {
@@ -452,7 +452,7 @@ public abstract class ElementProxy {
 
         if (a != null) {
             if (!a.getNodeValue().equals(uri)) {
-                Object exArgs[] = { ns, this._constructionElement.getAttributeNS(null, ns) };
+                Object exArgs[] = {ns, this._constructionElement.getAttributeNS(null, ns)};
 
                 throw new XMLSecurityException("namespacePrefixAlreadyUsedByOtherURI", exArgs);
             }
@@ -472,12 +472,12 @@ public abstract class ElementProxy {
      *    caller does not have permission to set the default prefix
      */
     public static void setDefaultPrefix(String namespace, String prefix)
-        throws XMLSecurityException {
+            throws XMLSecurityException {
         JavaUtils.checkRegisterPermission();
         if (prefixMappings.containsValue(prefix)) {
             String storedPrefix = prefixMappings.get(namespace);
             if (!storedPrefix.equals(prefix)) {
-                Object exArgs[] = { prefix, namespace, storedPrefix };
+                Object exArgs[] = {prefix, namespace, storedPrefix};
 
                 throw new XMLSecurityException("prefix.AlreadyAssigned", exArgs);
             }
@@ -504,7 +504,7 @@ public abstract class ElementProxy {
         setDefaultPrefix("http://www.w3.org/2002/06/xmldsig-filter2", "dsig-xpath");
         setDefaultPrefix("http://www.w3.org/2001/10/xml-exc-c14n#", "ec");
         setDefaultPrefix(
-            "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter", "xx"
+                "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter", "xx"
         );
     }
 
@@ -525,8 +525,7 @@ public abstract class ElementProxy {
             attr.setValue(value);
             getElement().setAttributeNodeNS(attr);
             getElement().setIdAttributeNode(attr, true);
-        }
-        else {
+        } else {
             getElement().removeAttributeNS(null, attrName);
         }
     }

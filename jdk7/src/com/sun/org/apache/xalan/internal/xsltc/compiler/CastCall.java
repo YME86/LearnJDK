@@ -65,7 +65,7 @@ final class CastCall extends FunctionCall {
         // Check that the function was passed exactly two arguments
         if (argumentCount() != 2) {
             throw new TypeCheckError(new ErrorMsg(ErrorMsg.ILLEGAL_ARG_ERR,
-                                                  getName(), this));
+                    getName(), this));
         }
 
         // The first argument must be a literal String
@@ -73,20 +73,18 @@ final class CastCall extends FunctionCall {
         if (exp instanceof LiteralExpr) {
             _className = ((LiteralExpr) exp).getValue();
             _type = Type.newObjectType(_className);
-        }
-        else {
+        } else {
             throw new TypeCheckError(new ErrorMsg(ErrorMsg.NEED_LITERAL_ERR,
-                                                  getName(), this));
+                    getName(), this));
         }
 
-         // Second argument must be of type reference or object
+        // Second argument must be of type reference or object
         _right = argument(1);
         Type tright = _right.typeCheck(stable);
         if (tright != Type.Reference &&
-            tright instanceof ObjectType == false)
-        {
+                tright instanceof ObjectType == false) {
             throw new TypeCheckError(new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                                  tright, _type, this));
+                    tright, _type, this));
         }
 
         return _type;

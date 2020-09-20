@@ -43,25 +43,27 @@ import java.security.PrivilegedAction;
  */
 
 public final class IIOPHelper {
-    private IIOPHelper() { }
+    private IIOPHelper() {
+    }
 
     // loads IIOPProxy implementation class if available
     private static final String IMPL_CLASS =
-        "com.sun.jmx.remote.protocol.iiop.IIOPProxyImpl";
+            "com.sun.jmx.remote.protocol.iiop.IIOPProxyImpl";
     private static final IIOPProxy proxy =
-        AccessController.doPrivileged(new PrivilegedAction<IIOPProxy>() {
-            public IIOPProxy run() {
-                try {
-                    Class<?> c = Class.forName(IMPL_CLASS, true, null);
-                    return (IIOPProxy)c.newInstance();
-                } catch (ClassNotFoundException cnf) {
-                    return null;
-                } catch (InstantiationException e) {
-                    throw new AssertionError(e);
-                } catch (IllegalAccessException e) {
-                    throw new AssertionError(e);
+            AccessController.doPrivileged(new PrivilegedAction<IIOPProxy>() {
+                public IIOPProxy run() {
+                    try {
+                        Class<?> c = Class.forName(IMPL_CLASS, true, null);
+                        return (IIOPProxy) c.newInstance();
+                    } catch (ClassNotFoundException cnf) {
+                        return null;
+                    } catch (InstantiationException e) {
+                        throw new AssertionError(e);
+                    } catch (IllegalAccessException e) {
+                        throw new AssertionError(e);
+                    }
                 }
-            }});
+            });
 
     /**
      * Returns true if RMI-IIOP and CORBA is available.
@@ -101,9 +103,8 @@ public final class IIOPHelper {
     /**
      * Returns the ORB associated with the given stub
      *
-     * @throws  UnsupportedOperationException
-     *          if the object does not support the operation that
-     *          was invoked
+     * @throws UnsupportedOperationException if the object does not support the operation that
+     *                                       was invoked
      */
     public static Object getOrb(Object stub) {
         ensureAvailable();
@@ -114,8 +115,7 @@ public final class IIOPHelper {
      * Connects the Stub to the given ORB.
      */
     public static void connect(Object stub, Object orb)
-        throws RemoteException
-    {
+            throws RemoteException {
         ensureAvailable();
         proxy.connect(stub, orb);
     }

@@ -53,7 +53,6 @@ import org.xml.sax.DocumentHandler;
  * format or method are missing, the default is an XML serializer with
  * UTF-8 encoding and now indentation.
  *
- *
  * @author <a href="mailto:arkin@intalio.com">Assaf Arkin</a>
  * @author <a href="mailto:Scott_Boag/CAM/Lotus@lotus.com">Scott Boag</a>
  * @see DocumentHandler
@@ -61,8 +60,7 @@ import org.xml.sax.DocumentHandler;
  * @see OutputFormat
  * @see DOMSerializer
  */
-public interface Serializer
-{
+public interface Serializer {
 
 
     /**
@@ -78,7 +76,7 @@ public interface Serializer
      * This method should not be called while the serializer is in
      * the process of serializing a document.
      */
-    public void setOutputCharStream( Writer output );
+    public void setOutputCharStream(Writer output);
 
 
     /**
@@ -90,7 +88,7 @@ public interface Serializer
      *
      * @param format The output format to use
      */
-    public void setOutputFormat( OutputFormat format );
+    public void setOutputFormat(OutputFormat format);
 
 
     /**
@@ -99,7 +97,7 @@ public interface Serializer
      * interface, it should return null.
      */
     public DocumentHandler asDocumentHandler()
-        throws IOException;
+            throws IOException;
 
 
     /**
@@ -108,7 +106,7 @@ public interface Serializer
      * interface, it should return null.
      */
     public ContentHandler asContentHandler()
-        throws IOException;
+            throws IOException;
 
 
     /**
@@ -117,7 +115,7 @@ public interface Serializer
      * interface, it should return null.
      */
     public DOMSerializer asDOMSerializer()
-        throws IOException;
+            throws IOException;
 
 
 }

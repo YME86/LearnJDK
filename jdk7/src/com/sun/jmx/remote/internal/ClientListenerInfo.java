@@ -84,16 +84,16 @@ public class ClientListenerInfo {
 
 
     public boolean sameAs(ObjectName name, NotificationListener listener) {
-        return ( getObjectName().equals(name) &&
-                 getListener() == listener);
+        return (getObjectName().equals(name) &&
+                getListener() == listener);
     }
 
 
     public boolean sameAs(ObjectName name, NotificationListener listener, NotificationFilter filter, Object handback) {
-        return ( getObjectName().equals(name) &&
-                 getListener() == listener &&
-                 getNotificationFilter() == filter &&
-                 getHandback() == handback);
+        return (getObjectName().equals(name) &&
+                getListener() == listener &&
+                getNotificationFilter() == filter &&
+                getHandback() == handback);
     }
 
     private final ObjectName name;

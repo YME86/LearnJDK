@@ -27,6 +27,7 @@ package com.sun.jmx.snmp.daemon;
 
 // java imports
 //
+
 import java.util.logging.Level;
 import java.util.Vector;
 
@@ -43,6 +44,7 @@ import com.sun.jmx.snmp.SnmpStatusException;
 // SNMP Runtime import
 //
 import static com.sun.jmx.defaults.JmxProperties.SNMP_ADAPTOR_LOGGER;
+
 import com.sun.jmx.snmp.agent.SnmpMibAgent;
 import com.sun.jmx.snmp.agent.SnmpMibRequest;
 import com.sun.jmx.snmp.daemon.SnmpAdaptorServer;
@@ -54,6 +56,7 @@ import com.sun.jmx.snmp.ThreadContext;
 
 class SnmpSubNextRequestHandler extends SnmpSubRequestHandler {
     private SnmpAdaptorServer server = null;
+
     /**
      * The constuctor initialize the subrequest with the whole varbind
      * list contained in the original request.
@@ -61,7 +64,7 @@ class SnmpSubNextRequestHandler extends SnmpSubRequestHandler {
     protected SnmpSubNextRequestHandler(SnmpAdaptorServer server,
                                         SnmpMibAgent agent,
                                         SnmpPdu req) {
-        super(agent,req);
+        super(agent, req);
         init(req, server);
     }
 
@@ -74,7 +77,7 @@ class SnmpSubNextRequestHandler extends SnmpSubRequestHandler {
         init(req, server);
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSubNextRequestHandler.class.getName(),
-                "SnmpSubNextRequestHandler", "Constructor : " + this);
+                    "SnmpSubNextRequestHandler", "Constructor : " + this);
         }
     }
 
@@ -83,17 +86,17 @@ class SnmpSubNextRequestHandler extends SnmpSubRequestHandler {
 
         // The translation table is easy in this case ...
         //
-        final int max= translation.length;
-        final SnmpVarBind[] list= req.varBindList;
+        final int max = translation.length;
+        final SnmpVarBind[] list = req.varBindList;
         final NonSyncVector<SnmpVarBind> nonSyncVarBind =
-                ((NonSyncVector<SnmpVarBind>)varBind);
-        for(int i=0; i < max; i++) {
-            translation[i]= i;
+                ((NonSyncVector<SnmpVarBind>) varBind);
+        for (int i = 0; i < max; i++) {
+            translation[i] = i;
             // we need to allocate a new SnmpVarBind. Otherwise the first
             // sub request will modify the list...
             //
             final SnmpVarBind newVarBind =
-                new SnmpVarBind(list[i].oid, list[i].value);
+                    new SnmpVarBind(list[i].oid, list[i].value);
             nonSyncVarBind.addNonSyncElement(newVarBind);
         }
     }
@@ -103,12 +106,12 @@ class SnmpSubNextRequestHandler extends SnmpSubRequestHandler {
         try {
             /* NPCTE fix for bugId 4492741, esc 0, 16-August-2001 */
             final ThreadContext oldContext =
-                ThreadContext.push("SnmpUserData",data);
+                    ThreadContext.push("SnmpUserData", data);
             try {
                 if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                     SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSubRequestHandler.class.getName(),
-                        "run", "[" + Thread.currentThread() +
-                          "]:getNext operation on " + agent.getMibName());
+                            "run", "[" + Thread.currentThread() +
+                                    "]:getNext operation on " + agent.getMibName());
                 }
 
                 // Always call with V2. So the merge of the responses will
@@ -121,48 +124,48 @@ class SnmpSubNextRequestHandler extends SnmpSubRequestHandler {
             /* end of NPCTE fix for bugId 4492741 */
 
 
-        } catch(SnmpStatusException x) {
-            errorStatus = x.getStatus() ;
-            errorIndex=  x.getErrorIndex();
+        } catch (SnmpStatusException x) {
+            errorStatus = x.getStatus();
+            errorIndex = x.getErrorIndex();
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSubRequestHandler.class.getName(),
-                    "run", "[" + Thread.currentThread() +
-                      "]:an Snmp error occured during the operation", x);
+                        "run", "[" + Thread.currentThread() +
+                                "]:an Snmp error occured during the operation", x);
             }
-        }
-        catch(Exception x) {
-            errorStatus = SnmpDefinitions.snmpRspGenErr ;
+        } catch (Exception x) {
+            errorStatus = SnmpDefinitions.snmpRspGenErr;
             if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
                 SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSubRequestHandler.class.getName(),
-                    "run", "[" + Thread.currentThread() +
-                      "]:a generic error occured during the operation", x);
+                        "run", "[" + Thread.currentThread() +
+                                "]:a generic error occured during the operation", x);
             }
         }
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSubRequestHandler.class.getName(),
-                "run", "[" + Thread.currentThread() +  "]:operation completed");
+                    "run", "[" + Thread.currentThread() + "]:operation completed");
         }
     }
 
     /**
      * The method updates the varbind list of the subrequest.
      */
-    protected  void updateRequest(SnmpVarBind var, int pos) {
+    protected void updateRequest(SnmpVarBind var, int pos) {
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSubRequestHandler.class.getName(),
-                "updateRequest", "Copy :" + var);
+                    "updateRequest", "Copy :" + var);
         }
-        int size= varBind.size();
-        translation[size]= pos;
+        int size = varBind.size();
+        translation[size] = pos;
         final SnmpVarBind newVarBind =
-            new SnmpVarBind(var.oid, var.value);
+                new SnmpVarBind(var.oid, var.value);
         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINEST)) {
             SNMP_ADAPTOR_LOGGER.logp(Level.FINEST, SnmpSubRequestHandler.class.getName(),
-                "updateRequest", "Copied :" + newVarBind);
+                    "updateRequest", "Copied :" + newVarBind);
         }
 
         varBind.addElement(newVarBind);
     }
+
     /**
      * The method updates a given var bind list with the result of a
      * previsouly invoked operation.
@@ -172,17 +175,17 @@ class SnmpSubNextRequestHandler extends SnmpSubRequestHandler {
      */
     protected void updateResult(SnmpVarBind[] result) {
 
-        final int max=varBind.size();
-        for(int i= 0; i< max ; i++) {
+        final int max = varBind.size();
+        for (int i = 0; i < max; i++) {
             // May be we should control the position ...
             //
-            final int index= translation[i];
-            final SnmpVarBind elmt=
-                (SnmpVarBind)((NonSyncVector)varBind).elementAtNonSync(i);
+            final int index = translation[i];
+            final SnmpVarBind elmt =
+                    (SnmpVarBind) ((NonSyncVector) varBind).elementAtNonSync(i);
 
-            final SnmpVarBind vb= result[index];
+            final SnmpVarBind vb = result[index];
             if (vb == null) {
-                result[index]= elmt;
+                result[index] = elmt;
                 /* NPCTE fix for bugid 4381195 esc 0. <J.C.> < 17-Oct-2000> */
                 // if ((elmt != null) &&  (elmt.value == null) &&
                 //    (version == snmpVersionTwo))
@@ -191,12 +194,12 @@ class SnmpSubNextRequestHandler extends SnmpSubRequestHandler {
                 continue;
             }
 
-            final SnmpValue val= vb.value;
-            if ((val == null)|| (val == SnmpVarBind.endOfMibView)){
+            final SnmpValue val = vb.value;
+            if ((val == null) || (val == SnmpVarBind.endOfMibView)) {
                 /* NPCTE fix for bugid 4381195 esc 0. <J.C.> < 17-Oct-2000> */
                 if ((elmt != null) &&
-                    (elmt.value != SnmpVarBind.endOfMibView))
-                    result[index]= elmt;
+                        (elmt.value != SnmpVarBind.endOfMibView))
+                    result[index] = elmt;
                 // else if ((val == null) && (version == snmpVersionTwo))
                 //    vb.value = SnmpVarBind.endOfMibView;
                 continue;
@@ -214,21 +217,20 @@ class SnmpSubNextRequestHandler extends SnmpSubRequestHandler {
             //
             int comp = elmt.oid.compareTo(vb.oid);
             if (comp < 0) {
-              // Take the smallest (lexicographically)
+                // Take the smallest (lexicographically)
                 //
-                result[index]= elmt;
-            }
-            else {
-                if(comp == 0) {
+                result[index] = elmt;
+            } else {
+                if (comp == 0) {
                     // Must compare agent used for reply
                     // Take the deeper within the reply
                     if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                         SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSubRequestHandler.class.getName(),
-                            "updateResult"," oid overlapping. Oid : " +
-                              elmt.oid + "value :" + elmt.value);
+                                "updateResult", " oid overlapping. Oid : " +
+                                        elmt.oid + "value :" + elmt.value);
                         SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSubRequestHandler.class.getName(),
-                            "updateResult","Already present varBind : " +
-                              vb);
+                                "updateResult", "Already present varBind : " +
+                                        vb);
                     }
 
                     SnmpOid oid = vb.oid;
@@ -236,12 +238,12 @@ class SnmpSubNextRequestHandler extends SnmpSubRequestHandler {
 
                     if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                         SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSubRequestHandler.class.getName(),
-                            "updateResult","Deeper agent : " + deeperAgent);
+                                "updateResult", "Deeper agent : " + deeperAgent);
                     }
-                    if(deeperAgent == agent) {
+                    if (deeperAgent == agent) {
                         if (SNMP_ADAPTOR_LOGGER.isLoggable(Level.FINER)) {
                             SNMP_ADAPTOR_LOGGER.logp(Level.FINER, SnmpSubRequestHandler.class.getName(),
-                                "updateResult","The current agent is the deeper one. Update the value with the current one");
+                                    "updateResult", "The current agent is the deeper one. Update the value with the current one");
                         }
                         result[index].value = elmt.value;
                     }

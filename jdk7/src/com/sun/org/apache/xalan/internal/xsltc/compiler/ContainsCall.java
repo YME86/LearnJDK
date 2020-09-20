@@ -102,8 +102,8 @@ final class ContainsCall extends FunctionCall {
         _base.translate(classGen, methodGen);
         _token.translate(classGen, methodGen);
         il.append(new INVOKEVIRTUAL(cpg.addMethodref(STRING_CLASS,
-                                                     "indexOf",
-                                                     "("+STRING_SIG+")I")));
+                "indexOf",
+                "(" + STRING_SIG + ")I")));
         _falseList.add(il.append(new IFLT(null)));
     }
 }

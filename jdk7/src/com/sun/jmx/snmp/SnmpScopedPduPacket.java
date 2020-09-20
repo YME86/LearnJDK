@@ -30,10 +30,11 @@ import java.io.Serializable;
 import com.sun.jmx.snmp.SnmpSecurityParameters;
 
 import com.sun.jmx.snmp.SnmpDefinitions;
+
 /**
  * Is the fully decoded representation of an SNMP V3 packet.
  * <P>
- *
+ * <p>
  * Classes are derived from <CODE>SnmpPdu</CODE> to
  * represent the different forms of SNMP pdu
  * ({@link com.sun.jmx.snmp.SnmpScopedPduRequest SnmpScopedPduRequest},
@@ -43,12 +44,12 @@ import com.sun.jmx.snmp.SnmpDefinitions;
  *
  * <p><b>This API is a Sun Microsystems internal API  and is subject
  * to change without notice.</b></p>
- * @see SnmpV3Message
  *
+ * @see SnmpV3Message
  * @since 1.5
  */
 public abstract class SnmpScopedPduPacket extends SnmpPdu
-    implements Serializable {
+        implements Serializable {
     /**
      * Message max size the pdu sender can deal with.
      */
@@ -61,7 +62,7 @@ public abstract class SnmpScopedPduPacket extends SnmpPdu
 
     /**
      * Message flags. Reportable flag  and security level.</P>
-     *<PRE>
+     * <PRE>
      * --  .... ...1   authFlag
      * --  .... ..1.   privFlag
      * --  .... .1..   reportableFlag
@@ -70,7 +71,7 @@ public abstract class SnmpScopedPduPacket extends SnmpPdu
      * --  .... ..01   is OK, means authNoPriv
      * --  .... ..10   reserved, must NOT be used.
      * --  .... ..11   is OK, means authPriv
-     *</PRE>
+     * </PRE>
      */
     public byte msgFlags = 0;
 

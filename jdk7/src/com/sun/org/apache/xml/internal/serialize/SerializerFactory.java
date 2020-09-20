@@ -23,6 +23,7 @@ package com.sun.org.apache.xml.internal.serialize;
 
 import com.sun.org.apache.xerces.internal.utils.ObjectFactory;
 import com.sun.org.apache.xerces.internal.utils.SecuritySupport;
+
 import java.io.OutputStream;
 import java.io.Writer;
 import java.io.UnsupportedEncodingException;
@@ -30,51 +31,48 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 
 /**
- *
- *
- * @version $Revision: 1.6 $ $Date: 2010-11-01 04:40:36 $
  * @author <a href="mailto:Scott_Boag/CAM/Lotus@lotus.com">Scott Boag</a>
  * @author <a href="mailto:arkin@intalio.com">Assaf Arkin</a>
+ * @version $Revision: 1.6 $ $Date: 2010-11-01 04:40:36 $
  */
-public abstract class SerializerFactory
-{
+public abstract class SerializerFactory {
 
 
     public static final String FactoriesProperty = "com.sun.org.apache.xml.internal.serialize.factories";
 
 
-    private static Hashtable  _factories = new Hashtable();
+    private static Hashtable _factories = new Hashtable();
 
 
-    static
-    {
+    static {
         SerializerFactory factory;
-        String            list;
-        StringTokenizer   token;
-        String            className;
+        String list;
+        StringTokenizer token;
+        String className;
 
         // The default factories are always registered first,
         // any factory specified in the properties file and supporting
         // the same method will override the default factory.
-        factory =  new SerializerFactoryImpl( Method.XML );
-        registerSerializerFactory( factory );
-        factory =  new SerializerFactoryImpl( Method.HTML );
-        registerSerializerFactory( factory );
-        factory =  new SerializerFactoryImpl( Method.XHTML );
-        registerSerializerFactory( factory );
-        factory =  new SerializerFactoryImpl( Method.TEXT );
-        registerSerializerFactory( factory );
+        factory = new SerializerFactoryImpl(Method.XML);
+        registerSerializerFactory(factory);
+        factory = new SerializerFactoryImpl(Method.HTML);
+        registerSerializerFactory(factory);
+        factory = new SerializerFactoryImpl(Method.XHTML);
+        registerSerializerFactory(factory);
+        factory = new SerializerFactoryImpl(Method.TEXT);
+        registerSerializerFactory(factory);
 
-        list = SecuritySupport.getSystemProperty( FactoriesProperty );
-        if ( list != null ) {
-            token = new StringTokenizer( list, " ;,:" );
-            while ( token.hasMoreTokens() ) {
+        list = SecuritySupport.getSystemProperty(FactoriesProperty);
+        if (list != null) {
+            token = new StringTokenizer(list, " ;,:");
+            while (token.hasMoreTokens()) {
                 className = token.nextToken();
                 try {
-                    factory = (SerializerFactory) ObjectFactory.newInstance( className, true);
-                    if ( _factories.containsKey( factory.getSupportedMethod() ) )
-                        _factories.put( factory.getSupportedMethod(), factory );
-                } catch ( Exception except ) { }
+                    factory = (SerializerFactory) ObjectFactory.newInstance(className, true);
+                    if (_factories.containsKey(factory.getSupportedMethod()))
+                        _factories.put(factory.getSupportedMethod(), factory);
+                } catch (Exception except) {
+                }
             }
         }
     }
@@ -84,13 +82,12 @@ public abstract class SerializerFactory
      * Register a serializer factory, keyed by the given
      * method string.
      */
-    public static void registerSerializerFactory( SerializerFactory factory )
-    {
+    public static void registerSerializerFactory(SerializerFactory factory) {
         String method;
 
-        synchronized ( _factories ) {
+        synchronized (_factories) {
             method = factory.getSupportedMethod();
-            _factories.put( method, factory );
+            _factories.put(method, factory);
         }
     }
 
@@ -99,9 +96,8 @@ public abstract class SerializerFactory
      * Register a serializer factory, keyed by the given
      * method string.
      */
-    public static SerializerFactory getSerializerFactory( String method )
-    {
-        return (SerializerFactory) _factories.get( method );
+    public static SerializerFactory getSerializerFactory(String method) {
+        return (SerializerFactory) _factories.get(method);
     }
 
 
@@ -129,8 +125,8 @@ public abstract class SerializerFactory
      * using the writer as the output character stream.  If this
      * method is used, the encoding property will be ignored.
      */
-    public abstract Serializer makeSerializer( Writer writer,
-                                               OutputFormat format );
+    public abstract Serializer makeSerializer(Writer writer,
+                                              OutputFormat format);
 
 
     /**
@@ -139,11 +135,11 @@ public abstract class SerializerFactory
      * output format.
      *
      * @throws UnsupportedEncodingException The specified encoding is
-     *   not supported
+     *                                      not supported
      */
-    public abstract Serializer makeSerializer( OutputStream output,
-                                               OutputFormat format )
-        throws UnsupportedEncodingException;
+    public abstract Serializer makeSerializer(OutputStream output,
+                                              OutputFormat format)
+            throws UnsupportedEncodingException;
 
 
 }

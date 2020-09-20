@@ -31,77 +31,77 @@ import org.w3c.dom.Element;
 
 /**
  * This class is abstract class for a child KeyInfo Elemnet.
- *
+ * <p>
  * If you want the your KeyResolver, at firstly you must extand this class, and register
  * as following in config.xml
  * <PRE>
- *  &lt;KeyResolver URI="http://www.w3.org/2000/09/xmldsig#KeyValue"
- *   JAVACLASS="MyPackage.MyKeyValueImpl"//gt;
+ * &lt;KeyResolver URI="http://www.w3.org/2000/09/xmldsig#KeyValue"
+ * JAVACLASS="MyPackage.MyKeyValueImpl"//gt;
  * </PRE>
  *
  * @author $Author: mullan $
  * @version $Revision: 1.5 $
  */
 public abstract class KeyResolverSpi {
-   /**
-    * This method helps the {@link com.sun.org.apache.xml.internal.security.utils.resolver.ResourceResolver} to decide whether a
-    * {@link com.sun.org.apache.xml.internal.security.utils.resolver.ResourceResolverSpi} is able to perform the requested action.
-    *
-    * @param element
-    * @param BaseURI
-    * @param storage
-    * @return
-    */
-   public boolean engineCanResolve(Element element, String BaseURI,
-                                                    StorageResolver storage) {
-           throw new UnsupportedOperationException();
-   }
+    /**
+     * This method helps the {@link com.sun.org.apache.xml.internal.security.utils.resolver.ResourceResolver} to decide whether a
+     * {@link com.sun.org.apache.xml.internal.security.utils.resolver.ResourceResolverSpi} is able to perform the requested action.
+     *
+     * @param element
+     * @param BaseURI
+     * @param storage
+     * @return
+     */
+    public boolean engineCanResolve(Element element, String BaseURI,
+                                    StorageResolver storage) {
+        throw new UnsupportedOperationException();
+    }
 
-   /**
-    * Method engineResolvePublicKey
-    *
-    * @param element
-    * @param BaseURI
-    * @param storage
-    * @return resolved public key from the registered from the element.
-    *
-    * @throws KeyResolverException
-    */
-   public PublicKey engineResolvePublicKey(
-      Element element, String BaseURI, StorageResolver storage)
-         throws KeyResolverException {
-           throw new UnsupportedOperationException();
-    };
+    /**
+     * Method engineResolvePublicKey
+     *
+     * @param element
+     * @param BaseURI
+     * @param storage
+     * @return resolved public key from the registered from the element.
+     * @throws KeyResolverException
+     */
+    public PublicKey engineResolvePublicKey(
+            Element element, String BaseURI, StorageResolver storage)
+            throws KeyResolverException {
+        throw new UnsupportedOperationException();
+    }
 
-   /**
-    * Method engineResolvePublicKey
-    *
-    * @param element
-    * @param BaseURI
-    * @param storage
-    * @return resolved public key from the registered from the element.
-    *
-    * @throws KeyResolverException
-    */
+    ;
+
+    /**
+     * Method engineResolvePublicKey
+     *
+     * @param element
+     * @param BaseURI
+     * @param storage
+     * @return resolved public key from the registered from the element.
+     * @throws KeyResolverException
+     */
     public PublicKey engineLookupAndResolvePublicKey(
-      Element element, String BaseURI, StorageResolver storage)
-         throws KeyResolverException {
+            Element element, String BaseURI, StorageResolver storage)
+            throws KeyResolverException {
         KeyResolverSpi tmp = cloneIfNeeded();
         if (!tmp.engineCanResolve(element, BaseURI, storage))
-                return null;
-            return tmp.engineResolvePublicKey(element, BaseURI, storage);
+            return null;
+        return tmp.engineResolvePublicKey(element, BaseURI, storage);
     }
 
     private KeyResolverSpi cloneIfNeeded() throws KeyResolverException {
-        KeyResolverSpi tmp=this;
+        KeyResolverSpi tmp = this;
         if (globalResolver) {
-                try {
-                        tmp = (KeyResolverSpi) getClass().newInstance();
-                } catch (InstantiationException e) {
-                        throw new KeyResolverException("",e);
-                } catch (IllegalAccessException e) {
-                        throw new KeyResolverException("",e);
-                }
+            try {
+                tmp = (KeyResolverSpi) getClass().newInstance();
+            } catch (InstantiationException e) {
+                throw new KeyResolverException("", e);
+            } catch (IllegalAccessException e) {
+                throw new KeyResolverException("", e);
+            }
         }
         return tmp;
     }
@@ -113,34 +113,35 @@ public abstract class KeyResolverSpi {
      * @param BaseURI
      * @param storage
      * @return resolved X509Certificate key from the registered from the elements
-     *
      * @throws KeyResolverException
      */
     public X509Certificate engineResolveX509Certificate(
-       Element element, String BaseURI, StorageResolver storage)
-          throws KeyResolverException{
-                   throw new UnsupportedOperationException();
-    };
+            Element element, String BaseURI, StorageResolver storage)
+            throws KeyResolverException {
+        throw new UnsupportedOperationException();
+    }
 
-   /**
-    * Method engineResolveCertificate
-    *
-    * @param element
-    * @param BaseURI
-    * @param storage
-    * @return resolved X509Certificate key from the registered from the elements
-    *
-    * @throws KeyResolverException
-    */
+    ;
+
+    /**
+     * Method engineResolveCertificate
+     *
+     * @param element
+     * @param BaseURI
+     * @param storage
+     * @return resolved X509Certificate key from the registered from the elements
+     * @throws KeyResolverException
+     */
     public X509Certificate engineLookupResolveX509Certificate(
-      Element element, String BaseURI, StorageResolver storage)
-         throws KeyResolverException {
+            Element element, String BaseURI, StorageResolver storage)
+            throws KeyResolverException {
         KeyResolverSpi tmp = cloneIfNeeded();
         if (!tmp.engineCanResolve(element, BaseURI, storage))
-                return null;
+            return null;
         return tmp.engineResolveX509Certificate(element, BaseURI, storage);
 
     }
+
     /**
      * Method engineResolveSecretKey
      *
@@ -148,78 +149,81 @@ public abstract class KeyResolverSpi {
      * @param BaseURI
      * @param storage
      * @return resolved SecretKey key from the registered from the elements
-     *
      * @throws KeyResolverException
      */
     public SecretKey engineResolveSecretKey(
-       Element element, String BaseURI, StorageResolver storage)
-          throws KeyResolverException{
-                   throw new UnsupportedOperationException();
-    };
+            Element element, String BaseURI, StorageResolver storage)
+            throws KeyResolverException {
+        throw new UnsupportedOperationException();
+    }
 
-   /**
-    * Method engineResolveSecretKey
-    *
-    * @param element
-    * @param BaseURI
-    * @param storage
-    * @return resolved SecretKey key from the registered from the elements
-    *
-    * @throws KeyResolverException
-    */
-   public SecretKey engineLookupAndResolveSecretKey(
-      Element element, String BaseURI, StorageResolver storage)
-         throws KeyResolverException {
-           KeyResolverSpi tmp = cloneIfNeeded();
-           if (!tmp.engineCanResolve(element, BaseURI, storage))
-                   return null;
-                return tmp.engineResolveSecretKey(element, BaseURI, storage);
-   }
+    ;
 
-   /** Field _properties */
-   protected java.util.Map _properties = null;
+    /**
+     * Method engineResolveSecretKey
+     *
+     * @param element
+     * @param BaseURI
+     * @param storage
+     * @return resolved SecretKey key from the registered from the elements
+     * @throws KeyResolverException
+     */
+    public SecretKey engineLookupAndResolveSecretKey(
+            Element element, String BaseURI, StorageResolver storage)
+            throws KeyResolverException {
+        KeyResolverSpi tmp = cloneIfNeeded();
+        if (!tmp.engineCanResolve(element, BaseURI, storage))
+            return null;
+        return tmp.engineResolveSecretKey(element, BaseURI, storage);
+    }
 
-   protected boolean globalResolver=false;
+    /**
+     * Field _properties
+     */
+    protected java.util.Map _properties = null;
 
-   /**
-    * Method engineSetProperty
-    *
-    * @param key
-    * @param value
-    */
-   public void engineSetProperty(String key, String value) {
-           if (_properties==null)
-                   _properties=new HashMap();
-      this._properties.put(key, value);
-   }
+    protected boolean globalResolver = false;
 
-   /**
-    * Method engineGetProperty
-    *
-    * @param key
-    * @return obtain the property appointed by key
-    */
-   public String engineGetProperty(String key) {
-           if (_properties==null)
-                   return null;
+    /**
+     * Method engineSetProperty
+     *
+     * @param key
+     * @param value
+     */
+    public void engineSetProperty(String key, String value) {
+        if (_properties == null)
+            _properties = new HashMap();
+        this._properties.put(key, value);
+    }
 
-      return (String) this._properties.get(key);
-   }
+    /**
+     * Method engineGetProperty
+     *
+     * @param key
+     * @return obtain the property appointed by key
+     */
+    public String engineGetProperty(String key) {
+        if (_properties == null)
+            return null;
 
-   /**
-    * Method understandsProperty
-    *
-    * @param propertyToTest
-    * @return true if understood the property
-    */
-   public boolean understandsProperty(String propertyToTest) {
-           if (_properties==null)
-                   return false;
+        return (String) this._properties.get(key);
+    }
 
-      return  this._properties.get(propertyToTest)!=null;
-   }
-   public void setGlobalResolver(boolean globalResolver) {
+    /**
+     * Method understandsProperty
+     *
+     * @param propertyToTest
+     * @return true if understood the property
+     */
+    public boolean understandsProperty(String propertyToTest) {
+        if (_properties == null)
+            return false;
+
+        return this._properties.get(propertyToTest) != null;
+    }
+
+    public void setGlobalResolver(boolean globalResolver) {
         this.globalResolver = globalResolver;
-   }
+    }
 
 }

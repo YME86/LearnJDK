@@ -112,6 +112,7 @@ public class Util {
 
     /**
      * Computes a descriptor hashcode from its names and values.
+     *
      * @param names  the sorted array of descriptor names.
      * @param values the array of descriptor values.
      * @return a hash code value, as described in {@link #hashCode(Descriptor)}
@@ -127,8 +128,8 @@ public class Util {
                 h = Arrays.deepHashCode((Object[]) v);
             } else if (v.getClass().isArray()) {
                 h = Arrays.deepHashCode(new Object[]{v}) - 31;
-            // hashcode of a list containing just v is
-            // v.hashCode() + 31, see List.hashCode()
+                // hashcode of a list containing just v is
+                // v.hashCode() + 31, see List.hashCode()
             } else {
                 h = v.hashCode();
             }
@@ -137,26 +138,26 @@ public class Util {
         return hash;
     }
 
-    /** Match a part of a string against a shell-style pattern.
-        The only pattern characters recognized are <code>?</code>,
-        standing for any one character,
-        and <code>*</code>, standing for any string of
-        characters, including the empty string. For instance,
-        {@code wildmatch("sandwich","sa?d*ch",1,4,1,4)} will match
-        {@code "and"} against {@code "a?d"}.
-
-        @param str  the string containing the sequence to match.
-        @param pat  a string containing a pattern to match the sub string
-                    against.
-        @param stri   the index in the string at which matching should begin.
-        @param strend the index in the string at which the matching should
-                      end.
-        @param pati   the index in the pattern at which matching should begin.
-        @param patend the index in the pattern at which the matching should
-                      end.
-
-        @return true if and only if the string matches the pattern.
-    */
+    /**
+     * Match a part of a string against a shell-style pattern.
+     * The only pattern characters recognized are <code>?</code>,
+     * standing for any one character,
+     * and <code>*</code>, standing for any string of
+     * characters, including the empty string. For instance,
+     * {@code wildmatch("sandwich","sa?d*ch",1,4,1,4)} will match
+     * {@code "and"} against {@code "a?d"}.
+     *
+     * @param str    the string containing the sequence to match.
+     * @param pat    a string containing a pattern to match the sub string
+     *               against.
+     * @param stri   the index in the string at which matching should begin.
+     * @param strend the index in the string at which the matching should
+     *               end.
+     * @param pati   the index in the pattern at which matching should begin.
+     * @param patend the index in the pattern at which the matching should
+     *               end.
+     * @return true if and only if the string matches the pattern.
+     */
     /* The algorithm is a classical one.  We advance pointers in
        parallel through str and pat.  If we encounter a star in pat,
        we remember its position and continue advancing.  If at any
@@ -176,7 +177,7 @@ public class Util {
        YC, so the whole string looks like AXBYC.
     */
     private static boolean wildmatch(final String str, final String pat,
-            int stri, final int strend, int pati, final int patend) {
+                                     int stri, final int strend, int pati, final int patend) {
 
         // System.out.println("matching "+pat.substring(pati,patend)+
         //        " against "+str.substring(stri, strend));
@@ -192,24 +193,24 @@ public class Util {
             if (pati < patend) {
                 final char patc = pat.charAt(pati);
                 switch (patc) {
-                case '?':
-                    if (stri == strend)
-                        break;
-                    stri++;
-                    pati++;
-                    continue;
-                case '*':
-                    pati++;
-                    starpati = pati;
-                    starstri = stri;
-                    continue;
-                default:
-                    if (stri < strend && str.charAt(stri) == patc) {
+                    case '?':
+                        if (stri == strend)
+                            break;
                         stri++;
                         pati++;
                         continue;
-                    }
-                    break;
+                    case '*':
+                        pati++;
+                        starpati = pati;
+                        starstri = stri;
+                        continue;
+                    default:
+                        if (stri < strend && str.charAt(stri) == patc) {
+                            stri++;
+                            pati++;
+                            continue;
+                        }
+                        break;
                 }
             } else if (stri == strend)
                 return true;
@@ -225,17 +226,17 @@ public class Util {
         }
     }
 
-    /** Match a string against a shell-style pattern.  The only pattern
-        characters recognized are <code>?</code>, standing for any one
-        character, and <code>*</code>, standing for any string of
-        characters, including the empty string.
-
-        @param str the string to match.
-        @param pat the pattern to match the string against.
-
-        @return true if and only if the string matches the pattern.
-    */
+    /**
+     * Match a string against a shell-style pattern.  The only pattern
+     * characters recognized are <code>?</code>, standing for any one
+     * character, and <code>*</code>, standing for any string of
+     * characters, including the empty string.
+     *
+     * @param str the string to match.
+     * @param pat the pattern to match the string against.
+     * @return true if and only if the string matches the pattern.
+     */
     public static boolean wildmatch(String str, String pat) {
-        return wildmatch(str,pat,0,str.length(),0,pat.length());
+        return wildmatch(str, pat, 0, str.length(), 0, pat.length());
     }
 }

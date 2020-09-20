@@ -32,9 +32,9 @@ package com.sun.org.apache.xml.internal.security.encryption;
  * <xmp>
  * <element name='EncryptedData' type='xenc:EncryptedDataType'/>
  * <complexType name='EncryptedDataType'>
- *     <complexContent>
- *         <extension base='xenc:EncryptedType'/>
- *     </complexContent>
+ * <complexContent>
+ * <extension base='xenc:EncryptedType'/>
+ * </complexContent>
  * </complexType>
  * </xmp>
  *

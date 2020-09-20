@@ -71,6 +71,7 @@ public interface MBeanServerInterceptor extends MBeanServer {
      */
     public Object instantiate(String className)
             throws ReflectionException, MBeanException;
+
     /**
      * This method should never be called.
      * Usually throws UnsupportedOperationException.
@@ -78,19 +79,20 @@ public interface MBeanServerInterceptor extends MBeanServer {
     public Object instantiate(String className, ObjectName loaderName)
             throws ReflectionException, MBeanException,
             InstanceNotFoundException;
+
     /**
      * This method should never be called.
      * Usually throws UnsupportedOperationException.
      */
     public Object instantiate(String className, Object[] params,
-            String[] signature) throws ReflectionException, MBeanException;
+                              String[] signature) throws ReflectionException, MBeanException;
 
     /**
      * This method should never be called.
      * Usually throws UnsupportedOperationException.
      */
     public Object instantiate(String className, ObjectName loaderName,
-            Object[] params, String[] signature)
+                              Object[] params, String[] signature)
             throws ReflectionException, MBeanException,
             InstanceNotFoundException;
 
@@ -116,7 +118,7 @@ public interface MBeanServerInterceptor extends MBeanServer {
      */
     @Deprecated
     public ObjectInputStream deserialize(String className,
-            ObjectName loaderName, byte[] data)
+                                         ObjectName loaderName, byte[] data)
             throws InstanceNotFoundException, OperationsException,
             ReflectionException;
 

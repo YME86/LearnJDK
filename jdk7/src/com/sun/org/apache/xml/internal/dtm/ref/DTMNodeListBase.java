@@ -21,6 +21,7 @@
  * $Id: DTMNodeListBase.java,v 1.2.4.1 2005/09/15 08:15:04 suresh_emailid Exp $
  */
 package com.sun.org.apache.xml.internal.dtm.ref;
+
 import org.w3c.dom.Node;
 
 /**
@@ -31,7 +32,7 @@ import org.w3c.dom.Node;
  * generally considered by the DOM WG to have be a mistake... but I'm
  * told that some of the XPath/XSLT folks say they must have this
  * solution.
- *
+ * <p>
  * Please note that this is not necessarily equivlaent to a DOM
  * NodeList operating over the same document. In particular:
  * <ul>
@@ -51,7 +52,6 @@ import org.w3c.dom.Node;
  * </ul>
  *
  * <p>State: In progress!!</p>
- *
  */
 public class DTMNodeListBase implements org.w3c.dom.NodeList {
     public DTMNodeListBase() {
@@ -64,10 +64,11 @@ public class DTMNodeListBase implements org.w3c.dom.NodeList {
      * Returns the <code>index</code>th item in the collection. If
      * <code>index</code> is greater than or equal to the number of nodes in
      * the list, this returns <code>null</code>.
+     *
      * @param index Index into the collection.
      * @return The node at the <code>index</code>th position in the
-     *   <code>NodeList</code>, or <code>null</code> if that is not a valid
-     *   index.
+     * <code>NodeList</code>, or <code>null</code> if that is not a valid
+     * index.
      */
     public Node item(int index) {
         return null;

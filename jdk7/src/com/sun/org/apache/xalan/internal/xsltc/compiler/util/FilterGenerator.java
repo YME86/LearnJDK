@@ -31,6 +31,7 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.Stylesheet;
  * This class implements auxliary classes needed to compile
  * filters (predicates). These classes defined a single method
  * of type <tt>TestGenerator</tt>.
+ *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  */
@@ -43,7 +44,7 @@ public final class FilterGenerator extends ClassGenerator {
                            int accessFlags, String[] interfaces,
                            Stylesheet stylesheet) {
         super(className, superClassName, fileName,
-              accessFlags, interfaces, stylesheet);
+                accessFlags, interfaces, stylesheet);
 
         _aloadTranslet = new ALOAD(TRANSLET_INDEX);
     }

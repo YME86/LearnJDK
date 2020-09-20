@@ -26,6 +26,7 @@
 package com.sun.jmx.snmp.tasks;
 
 import java.util.ArrayList;
+
 import com.sun.jmx.snmp.tasks.Task;
 import com.sun.jmx.snmp.tasks.TaskServer;
 
@@ -60,19 +61,21 @@ public class ThreadService implements TaskServer {
      * {@link com.sun.jmx.snmp.tasks.Task#cancel() task.cancel()} will be called.
      * This implementation of TaskServer uses a thread pool to execute
      * the submitted tasks.
+     *
      * @param task The task to be executed.
-     * @exception IllegalArgumentException if the submitted task is null.
+     * @throws IllegalArgumentException if the submitted task is null.
      **/
     public void submitTask(Task task) throws IllegalArgumentException {
-        submitTask((Runnable)task);
+        submitTask((Runnable) task);
     }
 
     /**
      * Submit a task to be executed.
      * This implementation of TaskServer uses a thread pool to execute
      * the submitted tasks.
+     *
      * @param task The task to be executed.
-     * @exception IllegalArgumentException if the submitted task is null.
+     * @throws IllegalArgumentException if the submitted task is null.
      **/
     public void submitTask(Runnable task) throws IllegalArgumentException {
         stateCheck();
@@ -81,7 +84,7 @@ public class ThreadService implements TaskServer {
             throw new IllegalArgumentException("No task specified.");
         }
 
-        synchronized(jobList) {
+        synchronized (jobList) {
             jobList.add(jobList.size(), task);
 
             jobList.notify();
@@ -94,7 +97,7 @@ public class ThreadService implements TaskServer {
         stateCheck();
 
         Runnable removed = null;
-        synchronized(jobList) {
+        synchronized (jobList) {
             int lg = jobList.indexOf(task);
             if (lg >= 0) {
                 removed = jobList.remove(lg);
@@ -109,14 +112,14 @@ public class ThreadService implements TaskServer {
         stateCheck();
 
         final Object[] jobs;
-        synchronized(jobList) {
+        synchronized (jobList) {
             jobs = jobList.toArray();
             jobList.clear();
         }
         final int len = jobs.length;
-        for (int i=0; i<len ; i++) {
+        for (int i = 0; i < len; i++) {
             final Object o = jobs[i];
-            if (o!= null && o instanceof Task) ((Task)o).cancel();
+            if (o != null && o instanceof Task) ((Task) o).cancel();
         }
     }
 
@@ -129,13 +132,13 @@ public class ThreadService implements TaskServer {
 
         terminated = true;
 
-        synchronized(jobList) {
+        synchronized (jobList) {
             jobList.notifyAll();
         }
 
         removeAll();
 
-        for (int i=0; i<currThreds; i++) {
+        for (int i = 0; i < currThreds; i++) {
             try {
                 threadList[i].interrupt();
             } catch (Exception e) {
@@ -153,7 +156,7 @@ public class ThreadService implements TaskServer {
     //
     private class ExecutorThread extends Thread {
         public ExecutorThread() {
-            super(threadGroup, "ThreadService-"+counter++);
+            super(threadGroup, "ThreadService-" + counter++);
             setDaemon(true);
 
             // init
@@ -165,10 +168,10 @@ public class ThreadService implements TaskServer {
 
         public void run() {
 
-            while(!terminated) {
+            while (!terminated) {
                 Runnable job = null;
 
-                synchronized(jobList) {
+                synchronized (jobList) {
                     if (jobList.size() > 0) {
                         job = jobList.remove(0);
                         if (jobList.size() > 0) {
@@ -205,7 +208,7 @@ public class ThreadService implements TaskServer {
         }
     }
 
-// private methods
+    // private methods
     private void stateCheck() throws IllegalStateException {
         if (terminated) {
             throw new IllegalStateException("The thread service has been terminated.");
@@ -214,7 +217,7 @@ public class ThreadService implements TaskServer {
 
     private void createThread() {
         if (idle < 1) {
-            synchronized(threadList) {
+            synchronized (threadList) {
                 if (jobList.size() > 0 && currThreds < minThreads) {
                     ExecutorThread et = new ExecutorThread();
                     et.start();
@@ -225,7 +228,7 @@ public class ThreadService implements TaskServer {
     }
 
 
-// protected or private variables
+    // protected or private variables
 // ------------------------------
     private ArrayList<Runnable> jobList = new ArrayList<Runnable>(0);
 

@@ -24,6 +24,7 @@ package com.sun.org.apache.xpath.internal.res;
 
 import com.sun.org.apache.bcel.internal.util.SecuritySupport;
 import com.sun.org.apache.xml.internal.res.XMLMessages;
+
 import java.util.ListResourceBundle;
 
 /**
@@ -48,9 +49,8 @@ public class XPATHMessages extends XMLMessages {
      * localized to the given locale.
      *
      * @param msgKey The key for the message text.
-     * @param args The arguments to be used as replacement text in the message
-     * created.
-     *
+     * @param args   The arguments to be used as replacement text in the message
+     *               created.
      * @return The formatted message string.
      */
     public static final String createXPATHMessage(String msgKey, Object args[]) //throws Exception
@@ -71,9 +71,8 @@ public class XPATHMessages extends XMLMessages {
      * localized to the given locale.
      *
      * @param msgKey The key for the message text.
-     * @param args The arguments to be used as replacement text in the message
-     * created.
-     *
+     * @param args   The arguments to be used as replacement text in the message
+     *               created.
      * @return The formatted warning string.
      */
     public static final String createXPATHWarning(String msgKey, Object args[]) //throws Exception
@@ -94,14 +93,13 @@ public class XPATHMessages extends XMLMessages {
      * localized to the given locale.
      *
      * @param fResourceBundle The resource bundle to use.
-     * @param msgKey The message key to use.
-     * @param args The arguments to be used as replacement text in the message
-     * created.
-     *
+     * @param msgKey          The message key to use.
+     * @param args            The arguments to be used as replacement text in the message
+     *                        created.
      * @return The formatted message string.
      */
     public static final String createXPATHMsg(ListResourceBundle fResourceBundle,
-            String msgKey, Object args[]) //throws Exception
+                                              String msgKey, Object args[]) //throws Exception
     {
 
         String fmsg = null;

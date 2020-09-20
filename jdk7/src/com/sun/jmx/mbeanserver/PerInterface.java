@@ -68,8 +68,8 @@ final class PerInterface<M> {
 
     Object getAttribute(Object resource, String attribute, Object cookie)
             throws AttributeNotFoundException,
-                   MBeanException,
-                   ReflectionException {
+            MBeanException,
+            ReflectionException {
 
         final M cm = getters.get(attribute);
         if (cm == null) {
@@ -86,9 +86,9 @@ final class PerInterface<M> {
     void setAttribute(Object resource, String attribute, Object value,
                       Object cookie)
             throws AttributeNotFoundException,
-                   InvalidAttributeValueException,
-                   MBeanException,
-                   ReflectionException {
+            InvalidAttributeValueException,
+            MBeanException,
+            ReflectionException {
 
         final M cm = setters.get(attribute);
         if (cm == null) {
@@ -110,7 +110,7 @@ final class PerInterface<M> {
         if (list == null) {
             final String msg = "No such operation: " + operation;
             return noSuchMethod(msg, resource, operation, params, signature,
-                                cookie);
+                    cookie);
         }
         if (signature == null)
             signature = new String[0];
@@ -133,7 +133,7 @@ final class PerInterface<M> {
                         "this signature: " + badSig;
             }
             return noSuchMethod(msg, resource, operation, params, signature,
-                                cookie);
+                    cookie);
         }
         return introspector.invokeM(found.method, resource, params, cookie);
     }
@@ -166,9 +166,9 @@ final class PerInterface<M> {
 
         // Construct the exception that we will probably throw
         final NoSuchMethodException nsme =
-            new NoSuchMethodException(operation + sigString(signature));
+                new NoSuchMethodException(operation + sigString(signature));
         final ReflectionException exception =
-            new ReflectionException(nsme, msg);
+                new ReflectionException(nsme, msg);
 
         if (introspector.isMXBean())
             throw exception; // No compatibility requirement here
@@ -196,7 +196,7 @@ final class PerInterface<M> {
             if (rest != 0)
                 methods = getters;
         } else if (signature.length == 1 &&
-                   operation.startsWith("set")) {
+                operation.startsWith("set")) {
             rest = 3;
             methods = setters;
         }
@@ -238,12 +238,12 @@ final class PerInterface<M> {
             if (getter != null) {
                 introspector.checkMethod(getter);
                 final Object old = getters.put(attributeName, getter);
-                assert(old == null);
+                assert (old == null);
             }
             if (setter != null) {
                 introspector.checkMethod(setter);
                 final Object old = setters.put(attributeName, setter);
-                assert(old == null);
+                assert (old == null);
             }
         }
 

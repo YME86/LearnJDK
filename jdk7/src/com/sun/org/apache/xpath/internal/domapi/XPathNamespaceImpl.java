@@ -36,8 +36,6 @@ import org.w3c.dom.xpath.XPathNamespace;
 import org.w3c.dom.UserDataHandler;
 
 /**
- *
- *
  * The <code>XPathNamespace</code> interface is returned by
  * <code>XPathResult</code> interfaces to represent the XPath namespace node
  * type that DOM lacks. There is no public constructor for this node type.
@@ -67,9 +65,10 @@ import org.w3c.dom.UserDataHandler;
  * node may be changed incomatibly, in which case incompatible changes to
  * field values may be required to implement versions beyond XPath 1.0.
  * <p>See also the <a href='http://www.w3.org/TR/2004/NOTE-DOM-Level-3-XPath-20040226'>Document Object Model (DOM) Level 3 XPath Specification</a>.
- *
+ * <p>
  * This implementation wraps the DOM attribute node that contained the
  * namespace declaration.
+ *
  * @xsl.usage internal
  */
 
@@ -89,7 +88,7 @@ class XPathNamespaceImpl implements XPathNamespace {
      * @see com.sun.org.apache.xalan.internal.dom3.xpath.XPathNamespace#getOwnerElement()
      */
     public Element getOwnerElement() {
-        return ((Attr)m_attributeNode).getOwnerElement();
+        return ((Attr) m_attributeNode).getOwnerElement();
     }
 
     /**
@@ -214,7 +213,7 @@ class XPathNamespaceImpl implements XPathNamespace {
      * @see org.w3c.dom.Node#cloneNode(boolean)
      */
     public Node cloneNode(boolean arg0) {
-        throw new DOMException(DOMException.NOT_SUPPORTED_ERR,null);
+        throw new DOMException(DOMException.NOT_SUPPORTED_ERR, null);
     }
 
     /**
@@ -270,7 +269,7 @@ class XPathNamespaceImpl implements XPathNamespace {
         return m_attributeNode.hasAttributes();
     }
 
-    public String getBaseURI ( ) {
+    public String getBaseURI() {
         return null;
     }
 

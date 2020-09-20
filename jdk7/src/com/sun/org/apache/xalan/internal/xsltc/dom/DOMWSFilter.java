@@ -52,8 +52,7 @@ public class DOMWSFilter implements DTMWSFilter {
      * to the <code>StripFilter</code> interface.
      *
      * @param translet A translet that also implements the StripFilter
-     * interface.
-     *
+     *                 interface.
      * @see com.sun.org.apache.xml.internal.dtm.DTMWSFilter
      * @see com.sun.org.apache.xalan.internal.xsltc.StripFilter
      */
@@ -74,29 +73,28 @@ public class DOMWSFilter implements DTMWSFilter {
      * user code.
      *
      * @param node int handle of the node.
-     * @param dtm the DTM that owns this node
+     * @param dtm  the DTM that owns this node
      * @return one of <code>NOTSTRIP</code>, <code>STRIP</code> or
      * <code>INHERIT</code>.
      */
     public short getShouldStripSpace(int node, DTM dtm) {
         if (m_filter != null && dtm instanceof DOM) {
-            DOM dom = (DOM)dtm;
+            DOM dom = (DOM) dtm;
             int type = 0;
 
             if (dtm instanceof DOMEnhancedForDTM) {
-                DOMEnhancedForDTM mappableDOM = (DOMEnhancedForDTM)dtm;
+                DOMEnhancedForDTM mappableDOM = (DOMEnhancedForDTM) dtm;
 
                 short[] mapping;
                 if (dtm == m_currentDTM) {
                     mapping = m_currentMapping;
-                }
-                else {
-                    mapping = (short[])m_mappings.get(dtm);
+                } else {
+                    mapping = (short[]) m_mappings.get(dtm);
                     if (mapping == null) {
                         mapping = mappableDOM.getMapping(
-                                     m_translet.getNamesArray(),
-                                     m_translet.getUrisArray(),
-                                     m_translet.getTypesArray());
+                                m_translet.getNamesArray(),
+                                m_translet.getUrisArray(),
+                                m_translet.getTypesArray());
                         m_mappings.put(dtm, mapping);
                         m_currentDTM = dtm;
                         m_currentMapping = mapping;
@@ -111,12 +109,11 @@ public class DOMWSFilter implements DTMWSFilter {
                 // range of the mapping array, it means that the expType is not for one
                 // of the recognized names. In this case we can just set the type to -1.
                 if (expType >= 0 && expType < mapping.length)
-                  type = mapping[expType];
+                    type = mapping[expType];
                 else
-                  type = -1;
+                    type = -1;
 
-            }
-            else {
+            } else {
                 return INHERIT;
             }
 

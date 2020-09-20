@@ -26,7 +26,9 @@ package com.sun.jmx.snmp.internal;
 
 import com.sun.jmx.snmp.SnmpEngine;
 import com.sun.jmx.snmp.SnmpUnknownModelException;
+
 import java.util.Hashtable;
+
 /**
  * SNMP sub system interface. To allow engine framework integration, a sub system must implement this interface. A sub system is a model manager. Every model is identified by an ID. A sub system can retrieve a previously registered model using this ID.
  * <P> Every sub system is associated to its SNMP engine.
@@ -36,19 +38,22 @@ import java.util.Hashtable;
 public interface SnmpSubSystem {
     /**
      * Returns the associated engine.
+     *
      * @return The engine.
      */
     public SnmpEngine getEngine();
 
     /**
      * Adds a model to this sub system.
-     * @param id The model ID.
+     *
+     * @param id    The model ID.
      * @param model The model to add.
      */
     public void addModel(int id, SnmpModel model);
 
     /**
      * Removes a model from this sub system.
+     *
      * @param id The model ID to remove.
      * @return The removed model.
      */
@@ -56,6 +61,7 @@ public interface SnmpSubSystem {
 
     /**
      * Gets a model from this sub system.
+     *
      * @param id The model ID to get.
      * @return The model.
      */

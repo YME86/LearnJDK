@@ -28,7 +28,8 @@
 package com.sun.jmx.snmp.IPAcl;
 
 class JDMInformCommunity extends SimpleNode {
-    protected String community= "";
+    protected String community = "";
+
     JDMInformCommunity(int id) {
         super(id);
     }

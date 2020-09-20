@@ -54,7 +54,7 @@ class FilterExpr extends Expression {
     /**
      * Primary expression of this filter. I.e., 'e' in '(e)[p1]...[pn]'.
      */
-    private Expression   _primary;
+    private Expression _primary;
 
     /**
      * Array of predicates in '(e)[p1]...[pn]'.
@@ -69,7 +69,7 @@ class FilterExpr extends Expression {
 
     protected Expression getExpr() {
         if (_primary instanceof CastExpr)
-            return ((CastExpr)_primary).getExpr();
+            return ((CastExpr) _primary).getExpr();
         else
             return _primary;
     }
@@ -80,7 +80,7 @@ class FilterExpr extends Expression {
         if (_predicates != null) {
             final int n = _predicates.size();
             for (int i = 0; i < n; i++) {
-                final Expression exp = (Expression)_predicates.elementAt(i);
+                final Expression exp = (Expression) _predicates.elementAt(i);
                 exp.setParser(parser);
                 exp.setParent(this);
             }
@@ -103,10 +103,9 @@ class FilterExpr extends Expression {
         boolean canOptimize = _primary instanceof KeyCall;
 
         if (ptype instanceof NodeSetType == false) {
-            if (ptype instanceof ReferenceType)  {
+            if (ptype instanceof ReferenceType) {
                 _primary = new CastExpr(_primary, Type.NodeSet);
-            }
-            else {
+            } else {
                 throw new TypeCheckError(this);
             }
         }
@@ -137,8 +136,7 @@ class FilterExpr extends Expression {
                                      int predicateIndex) {
         if (predicateIndex >= 0) {
             translatePredicates(classGen, methodGen, predicateIndex);
-        }
-        else {
+        } else {
             _primary.translate(classGen, methodGen);
         }
     }
@@ -158,8 +156,7 @@ class FilterExpr extends Expression {
         // If not predicates left, translate primary expression
         if (predicateIndex < 0) {
             translateFilterExpr(classGen, methodGen, predicateIndex);
-        }
-        else {
+        } else {
             // Get the next predicate to be translated
             Predicate predicate = (Predicate) _predicates.get(predicateIndex--);
 
@@ -168,8 +165,8 @@ class FilterExpr extends Expression {
 
             if (predicate.isNthPositionFilter()) {
                 int nthIteratorIdx = cpg.addMethodref(NTH_ITERATOR_CLASS,
-                                       "<init>",
-                                       "("+NODE_ITERATOR_SIG+"I)V");
+                        "<init>",
+                        "(" + NODE_ITERATOR_SIG + "I)V");
 
                 // Backwards branches are prohibited if an uninitialized object
                 // is on the stack by section 4.9.4 of the JVM Specification,
@@ -184,16 +181,16 @@ class FilterExpr extends Expression {
                 // avoid the problem.
                 LocalVariableGen iteratorTemp
                         = methodGen.addLocalVariable("filter_expr_tmp1",
-                                         Util.getJCRefType(NODE_ITERATOR_SIG),
-                                         null, null);
+                        Util.getJCRefType(NODE_ITERATOR_SIG),
+                        null, null);
                 iteratorTemp.setStart(
                         il.append(new ASTORE(iteratorTemp.getIndex())));
 
                 predicate.translate(classGen, methodGen);
                 LocalVariableGen predicateValueTemp
                         = methodGen.addLocalVariable("filter_expr_tmp2",
-                                         Util.getJCRefType("I"),
-                                         null, null);
+                        Util.getJCRefType("I"),
+                        null, null);
                 predicateValueTemp.setStart(
                         il.append(new ISTORE(predicateValueTemp.getIndex())));
 
@@ -205,12 +202,12 @@ class FilterExpr extends Expression {
                         il.append(new ILOAD(predicateValueTemp.getIndex())));
                 il.append(new INVOKESPECIAL(nthIteratorIdx));
             } else {
-                    // Translate predicates from right to left
+                // Translate predicates from right to left
                 final int initCNLI = cpg.addMethodref(CURRENT_NODE_LIST_ITERATOR,
-                                                      "<init>",
-                                                      "("+NODE_ITERATOR_SIG+"Z"+
-                                                      CURRENT_NODE_LIST_FILTER_SIG +
-                                                      NODE_SIG+TRANSLET_SIG+")V");
+                        "<init>",
+                        "(" + NODE_ITERATOR_SIG + "Z" +
+                                CURRENT_NODE_LIST_FILTER_SIG +
+                                NODE_SIG + TRANSLET_SIG + ")V");
 
                 // Backwards branches are prohibited if an uninitialized object is
                 // on the stack by section 4.9.4 of the JVM Specification, 2nd Ed.
@@ -223,17 +220,17 @@ class FilterExpr extends Expression {
 
 
                 LocalVariableGen nodeIteratorTemp =
-                    methodGen.addLocalVariable("filter_expr_tmp1",
-                                               Util.getJCRefType(NODE_ITERATOR_SIG),
-                                               null, null);
+                        methodGen.addLocalVariable("filter_expr_tmp1",
+                                Util.getJCRefType(NODE_ITERATOR_SIG),
+                                null, null);
                 nodeIteratorTemp.setStart(
                         il.append(new ASTORE(nodeIteratorTemp.getIndex())));
 
                 predicate.translate(classGen, methodGen);
                 LocalVariableGen filterTemp =
-                    methodGen.addLocalVariable("filter_expr_tmp2",
-                                  Util.getJCRefType(CURRENT_NODE_LIST_FILTER_SIG),
-                                  null, null);
+                        methodGen.addLocalVariable("filter_expr_tmp2",
+                                Util.getJCRefType(CURRENT_NODE_LIST_FILTER_SIG),
+                                null, null);
                 filterTemp.setStart(il.append(new ASTORE(filterTemp.getIndex())));
 
                 // Create a CurrentNodeListIterator

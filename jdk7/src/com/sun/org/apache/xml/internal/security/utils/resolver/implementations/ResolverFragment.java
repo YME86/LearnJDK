@@ -21,7 +21,6 @@
 package com.sun.org.apache.xml.internal.security.utils.resolver.implementations;
 
 
-
 import com.sun.org.apache.xml.internal.security.signature.XMLSignatureInput;
 import com.sun.org.apache.xml.internal.security.utils.XMLUtils;
 import com.sun.org.apache.xml.internal.security.utils.resolver.ResourceResolverException;
@@ -42,33 +41,36 @@ import org.w3c.dom.Node;
  */
 public class ResolverFragment extends ResourceResolverSpi {
 
-   /** {@link java.util.logging} logging facility */
+    /**
+     * {@link java.util.logging} logging facility
+     */
     static java.util.logging.Logger log =
-        java.util.logging.Logger.getLogger(
-                            ResolverFragment.class.getName());
-   public boolean engineIsThreadSafe() {
-           return true;
-   }
-   /**
-    * Method engineResolve
-    *
-    * @inheritDoc
-    * @param uri
-    * @param baseURI
-    */
-   public XMLSignatureInput engineResolve(Attr uri, String baseURI)
-       throws ResourceResolverException
-   {
+            java.util.logging.Logger.getLogger(
+                    ResolverFragment.class.getName());
+
+    public boolean engineIsThreadSafe() {
+        return true;
+    }
+
+    /**
+     * Method engineResolve
+     *
+     * @param uri
+     * @param baseURI
+     * @inheritDoc
+     */
+    public XMLSignatureInput engineResolve(Attr uri, String baseURI)
+            throws ResourceResolverException {
         String uriNodeValue = uri.getNodeValue();
         Document doc = uri.getOwnerElement().getOwnerDocument();
 
         Node selectedElem = null;
         if (uriNodeValue.equals("")) {
 
-           /*
-            * Identifies the node-set (minus any comment nodes) of the XML
-            * resource containing the signature
-            */
+            /*
+             * Identifies the node-set (minus any comment nodes) of the XML
+             * resource containing the signature
+             */
 
             log.log(java.util.logging.Level.FINE, "ResolverFragment with empty URI (means complete document)");
             selectedElem = doc;
@@ -86,17 +88,17 @@ public class ResolverFragment extends ResourceResolverSpi {
 
             selectedElem = doc.getElementById(id);
             if (selectedElem == null) {
-                Object exArgs[] = { id };
+                Object exArgs[] = {id};
                 throw new ResourceResolverException(
-                    "signature.Verification.MissingID", exArgs, uri, baseURI);
+                        "signature.Verification.MissingID", exArgs, uri, baseURI);
             }
             if (secureValidation) {
                 Element start = uri.getOwnerDocument().getDocumentElement();
                 if (!XMLUtils.protectAgainstWrappingAttack(start, id)) {
-                    Object exArgs[] = { id };
+                    Object exArgs[] = {id};
                     throw new ResourceResolverException(
-                        "signature.Verification.MultipleIDs", exArgs,
-                        uri, baseURI);
+                            "signature.Verification.MultipleIDs", exArgs,
+                            uri, baseURI);
                 }
             }
             if (log.isLoggable(java.util.logging.Level.FINE))
@@ -115,35 +117,35 @@ public class ResolverFragment extends ResourceResolverSpi {
         return result;
     }
 
-   /**
-    * Method engineCanResolve
-    * @inheritDoc
-    * @param uri
-    * @param BaseURI
-    *
-    */
-   public boolean engineCanResolve(Attr uri, String BaseURI) {
+    /**
+     * Method engineCanResolve
+     *
+     * @param uri
+     * @param BaseURI
+     * @inheritDoc
+     */
+    public boolean engineCanResolve(Attr uri, String BaseURI) {
 
-      if (uri == null) {
-         log.log(java.util.logging.Level.FINE, "Quick fail for null uri");
-         return false;
-      }
+        if (uri == null) {
+            log.log(java.util.logging.Level.FINE, "Quick fail for null uri");
+            return false;
+        }
 
-      String uriNodeValue = uri.getNodeValue();
+        String uriNodeValue = uri.getNodeValue();
 
-      if  (uriNodeValue.equals("") ||
-             (
-            (uriNodeValue.charAt(0)=='#')
-              && !((uriNodeValue.charAt(1)=='x') && uriNodeValue.startsWith("#xpointer("))
-              )
-           ){
-         if (log.isLoggable(java.util.logging.Level.FINE))
+        if (uriNodeValue.equals("") ||
+                (
+                        (uriNodeValue.charAt(0) == '#')
+                                && !((uriNodeValue.charAt(1) == 'x') && uriNodeValue.startsWith("#xpointer("))
+                )
+        ) {
+            if (log.isLoggable(java.util.logging.Level.FINE))
                 log.log(java.util.logging.Level.FINE, "State I can resolve reference: \"" + uriNodeValue + "\"");
-         return true;
-      }
-      if (log.isLoggable(java.util.logging.Level.FINE))
-        log.log(java.util.logging.Level.FINE, "Do not seem to be able to resolve reference: \"" + uriNodeValue + "\"");
-      return false;
-   }
+            return true;
+        }
+        if (log.isLoggable(java.util.logging.Level.FINE))
+            log.log(java.util.logging.Level.FINE, "Do not seem to be able to resolve reference: \"" + uriNodeValue + "\"");
+        return false;
+    }
 
 }

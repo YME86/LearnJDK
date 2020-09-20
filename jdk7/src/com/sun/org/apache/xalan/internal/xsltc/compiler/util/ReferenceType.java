@@ -45,7 +45,8 @@ import com.sun.org.apache.xml.internal.dtm.DTM;
  * @author Erwin Bolwidt <ejb@klomp.org>
  */
 public final class ReferenceType extends Type {
-    protected ReferenceType() {}
+    protected ReferenceType() {
+    }
 
     public String toString() {
         return "reference";
@@ -68,34 +69,26 @@ public final class ReferenceType extends Type {
      * The translation to int is undefined since references
      * are always converted to reals in arithmetic expressions.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             Type type) {
         if (type == Type.String) {
             translateTo(classGen, methodGen, (StringType) type);
-        }
-        else if (type == Type.Real) {
+        } else if (type == Type.Real) {
             translateTo(classGen, methodGen, (RealType) type);
-        }
-        else if (type == Type.Boolean) {
+        } else if (type == Type.Boolean) {
             translateTo(classGen, methodGen, (BooleanType) type);
-        }
-        else if (type == Type.NodeSet) {
+        } else if (type == Type.NodeSet) {
             translateTo(classGen, methodGen, (NodeSetType) type);
-        }
-        else if (type == Type.Node) {
+        } else if (type == Type.Node) {
             translateTo(classGen, methodGen, (NodeType) type);
-        }
-        else if (type == Type.ResultTree) {
+        } else if (type == Type.ResultTree) {
             translateTo(classGen, methodGen, (ResultTreeType) type);
-        }
-        else if (type == Type.Object) {
+        } else if (type == Type.Object) {
             translateTo(classGen, methodGen, (ObjectType) type);
-        }
-        else if (type == Type.Reference ) {
-        }
-        else {
+        } else if (type == Type.Reference) {
+        } else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.INTERNAL_ERR, type.toString());
             classGen.getParser().reportError(Constants.FATAL, err);
         }
@@ -104,7 +97,7 @@ public final class ReferenceType extends Type {
     /**
      * Translates reference into object of internal type <code>type</code>.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             StringType type) {
@@ -115,25 +108,24 @@ public final class ReferenceType extends Type {
         // If no current, conversion is a top-level
         if (current < 0) {
             il.append(new PUSH(cpg, DTM.ROOT_NODE));  // push root node
-        }
-        else {
+        } else {
             il.append(new ILOAD(current));
         }
         il.append(methodGen.loadDOM());
         final int stringF = cpg.addMethodref(BASIS_LIBRARY_CLASS,
-                                             "stringF",
-                                             "("
-                                             + OBJECT_SIG
-                                             + NODE_SIG
-                                             + DOM_INTF_SIG
-                                             + ")" + STRING_SIG);
+                "stringF",
+                "("
+                        + OBJECT_SIG
+                        + NODE_SIG
+                        + DOM_INTF_SIG
+                        + ")" + STRING_SIG);
         il.append(new INVOKESTATIC(stringF));
     }
 
     /**
      * Translates a reference into an object of internal type <code>type</code>.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             RealType type) {
@@ -142,17 +134,17 @@ public final class ReferenceType extends Type {
 
         il.append(methodGen.loadDOM());
         int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "numberF",
-                                     "("
-                                     + OBJECT_SIG
-                                     + DOM_INTF_SIG
-                                     + ")D");
+                "("
+                        + OBJECT_SIG
+                        + DOM_INTF_SIG
+                        + ")D");
         il.append(new INVOKESTATIC(index));
     }
 
     /**
      * Translates a reference to an object of internal type <code>type</code>.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             BooleanType type) {
@@ -160,26 +152,26 @@ public final class ReferenceType extends Type {
         final InstructionList il = methodGen.getInstructionList();
 
         int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "booleanF",
-                                     "("
-                                     + OBJECT_SIG
-                                     + ")Z");
+                "("
+                        + OBJECT_SIG
+                        + ")Z");
         il.append(new INVOKESTATIC(index));
     }
 
     /**
      * Casts a reference into a NodeIterator.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             NodeSetType type) {
         final ConstantPoolGen cpg = classGen.getConstantPool();
         final InstructionList il = methodGen.getInstructionList();
         int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "referenceToNodeSet",
-                                     "("
-                                     + OBJECT_SIG
-                                     + ")"
-                                     + NODE_ITERATOR_SIG);
+                "("
+                        + OBJECT_SIG
+                        + ")"
+                        + NODE_ITERATOR_SIG);
         il.append(new INVOKESTATIC(index));
 
         // Reset this iterator
@@ -201,21 +193,21 @@ public final class ReferenceType extends Type {
     /**
      * Casts a reference into a ResultTree.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             ResultTreeType type) {
         final ConstantPoolGen cpg = classGen.getConstantPool();
         final InstructionList il = methodGen.getInstructionList();
         int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "referenceToResultTree",
-                                     "(" + OBJECT_SIG + ")" + DOM_INTF_SIG);
+                "(" + OBJECT_SIG + ")" + DOM_INTF_SIG);
         il.append(new INVOKESTATIC(index));
     }
 
     /**
      * Subsume reference into ObjectType.
      *
-     * @see     com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
+     * @see com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
                             ObjectType type) {
@@ -231,94 +223,79 @@ public final class ReferenceType extends Type {
         final InstructionList il = methodGen.getInstructionList();
 
         int referenceToLong = cpg.addMethodref(BASIS_LIBRARY_CLASS,
-                                               "referenceToLong",
-                                               "(" + OBJECT_SIG + ")J");
+                "referenceToLong",
+                "(" + OBJECT_SIG + ")J");
         int referenceToDouble = cpg.addMethodref(BASIS_LIBRARY_CLASS,
-                                                 "referenceToDouble",
-                                                "(" + OBJECT_SIG + ")D");
+                "referenceToDouble",
+                "(" + OBJECT_SIG + ")D");
         int referenceToBoolean = cpg.addMethodref(BASIS_LIBRARY_CLASS,
-                                                  "referenceToBoolean",
-                                                 "(" + OBJECT_SIG + ")Z");
+                "referenceToBoolean",
+                "(" + OBJECT_SIG + ")Z");
 
         if (clazz.getName().equals("java.lang.Object")) {
             il.append(NOP);
-        }
-        else if (clazz == Double.TYPE) {
+        } else if (clazz == Double.TYPE) {
             il.append(new INVOKESTATIC(referenceToDouble));
-        }
-        else if (clazz.getName().equals("java.lang.Double")) {
+        } else if (clazz.getName().equals("java.lang.Double")) {
             il.append(new INVOKESTATIC(referenceToDouble));
             Type.Real.translateTo(classGen, methodGen, Type.Reference);
-        }
-        else if (clazz == Float.TYPE) {
+        } else if (clazz == Float.TYPE) {
             il.append(new INVOKESTATIC(referenceToDouble));
             il.append(D2F);
-        }
-        else if (clazz.getName().equals("java.lang.String")) {
+        } else if (clazz.getName().equals("java.lang.String")) {
             int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "referenceToString",
-                                         "("
-                                         + OBJECT_SIG
-                                         + DOM_INTF_SIG
-                                         + ")"
-                                         + "Ljava/lang/String;");
+                    "("
+                            + OBJECT_SIG
+                            + DOM_INTF_SIG
+                            + ")"
+                            + "Ljava/lang/String;");
             il.append(methodGen.loadDOM());
             il.append(new INVOKESTATIC(index));
-        }
-        else if (clazz.getName().equals("org.w3c.dom.Node")) {
+        } else if (clazz.getName().equals("org.w3c.dom.Node")) {
             int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "referenceToNode",
-                                         "("
-                                         + OBJECT_SIG
-                                         + DOM_INTF_SIG
-                                         + ")"
-                                         + "Lorg/w3c/dom/Node;");
+                    "("
+                            + OBJECT_SIG
+                            + DOM_INTF_SIG
+                            + ")"
+                            + "Lorg/w3c/dom/Node;");
             il.append(methodGen.loadDOM());
             il.append(new INVOKESTATIC(index));
-        }
-        else if (clazz.getName().equals("org.w3c.dom.NodeList")) {
+        } else if (clazz.getName().equals("org.w3c.dom.NodeList")) {
             int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "referenceToNodeList",
-                                         "("
-                                         + OBJECT_SIG
-                                         + DOM_INTF_SIG
-                                         + ")"
-                                         + "Lorg/w3c/dom/NodeList;");
+                    "("
+                            + OBJECT_SIG
+                            + DOM_INTF_SIG
+                            + ")"
+                            + "Lorg/w3c/dom/NodeList;");
             il.append(methodGen.loadDOM());
             il.append(new INVOKESTATIC(index));
-        }
-        else if (clazz.getName().equals("com.sun.org.apache.xalan.internal.xsltc.DOM")) {
+        } else if (clazz.getName().equals("com.sun.org.apache.xalan.internal.xsltc.DOM")) {
             translateTo(classGen, methodGen, Type.ResultTree);
-        }
-        else if (clazz == Long.TYPE) {
+        } else if (clazz == Long.TYPE) {
             il.append(new INVOKESTATIC(referenceToLong));
-        }
-        else if (clazz == Integer.TYPE) {
+        } else if (clazz == Integer.TYPE) {
             il.append(new INVOKESTATIC(referenceToLong));
             il.append(L2I);
-        }
-        else if (clazz == Short.TYPE) {
+        } else if (clazz == Short.TYPE) {
             il.append(new INVOKESTATIC(referenceToLong));
             il.append(L2I);
             il.append(I2S);
-        }
-        else if (clazz == Byte.TYPE) {
+        } else if (clazz == Byte.TYPE) {
             il.append(new INVOKESTATIC(referenceToLong));
             il.append(L2I);
             il.append(I2B);
-        }
-        else if (clazz == Character.TYPE) {
+        } else if (clazz == Character.TYPE) {
             il.append(new INVOKESTATIC(referenceToLong));
             il.append(L2I);
             il.append(I2C);
-        }
-        else if (clazz == java.lang.Boolean.TYPE) {
+        } else if (clazz == java.lang.Boolean.TYPE) {
             il.append(new INVOKESTATIC(referenceToBoolean));
-        }
-        else if (clazz.getName().equals("java.lang.Boolean")) {
+        } else if (clazz.getName().equals("java.lang.Boolean")) {
             il.append(new INVOKESTATIC(referenceToBoolean));
             Type.Boolean.translateTo(classGen, methodGen, Type.Reference);
-        }
-        else {
+        } else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                        toString(), clazz.getName());
+                    toString(), clazz.getName());
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }
@@ -331,10 +308,9 @@ public final class ReferenceType extends Type {
                               Class clazz) {
         if (clazz.getName().equals("java.lang.Object")) {
             methodGen.getInstructionList().append(NOP);
-        }
-        else {
+        } else {
             ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
-                                toString(), clazz.getName());
+                    toString(), clazz.getName());
             classGen.getParser().reportError(Constants.FATAL, err);
         }
     }

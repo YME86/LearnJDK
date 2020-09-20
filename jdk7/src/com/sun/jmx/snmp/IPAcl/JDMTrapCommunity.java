@@ -29,24 +29,25 @@
 package com.sun.jmx.snmp.IPAcl;
 
 class JDMTrapCommunity extends SimpleNode {
-  protected String community= "";
-  JDMTrapCommunity(int id) {
-    super(id);
-  }
+    protected String community = "";
 
-  JDMTrapCommunity(Parser p, int id) {
-    super(p, id);
-  }
+    JDMTrapCommunity(int id) {
+        super(id);
+    }
 
-  public static Node jjtCreate(int id) {
-      return new JDMTrapCommunity(id);
-  }
+    JDMTrapCommunity(Parser p, int id) {
+        super(p, id);
+    }
 
-  public static Node jjtCreate(Parser p, int id) {
-      return new JDMTrapCommunity(p, id);
-  }
+    public static Node jjtCreate(int id) {
+        return new JDMTrapCommunity(id);
+    }
 
-  public String getCommunity() {
+    public static Node jjtCreate(Parser p, int id) {
+        return new JDMTrapCommunity(p, id);
+    }
+
+    public String getCommunity() {
         return community;
-  }
+    }
 }

@@ -33,7 +33,7 @@ import org.w3c.dom.Node;
  * generally considered by the DOM WG to have be a mistake... but I'm
  * told that some of the XPath/XSLT folks say they must have this
  * solution.
- *
+ * <p>
  * Please note that this is not necessarily equivlaent to a DOM
  * NodeList operating over the same document. In particular:
  * <ul>
@@ -53,7 +53,7 @@ import org.w3c.dom.Node;
  * </ul>
  *
  * <p>State: In progress!!</p>
- * */
+ */
 public class DTMChildIterNodeList extends DTMNodeListBase {
     private int m_firstChild;
     private DTM m_parentDTM;
@@ -66,19 +66,18 @@ public class DTMChildIterNodeList extends DTMNodeListBase {
     /**
      * Public constructor: Create a NodeList to support
      * DTMNodeProxy.getChildren().
-     *
+     * <p>
      * Unfortunately AxisIterators and DTMIterators don't share an API,
      * so I can't use the existing Axis.CHILD iterator. Rather than
      * create Yet Another Class, let's set up a special case of this
      * one.
      *
-     * @param parentDTM The DTM containing this node
+     * @param parentDTM    The DTM containing this node
      * @param parentHandle DTM node-handle integer
-     *
      */
-    public DTMChildIterNodeList(DTM parentDTM,int parentHandle) {
-        m_parentDTM=parentDTM;
-        m_firstChild=parentDTM.getFirstChild(parentHandle);
+    public DTMChildIterNodeList(DTM parentDTM, int parentHandle) {
+        m_parentDTM = parentDTM;
+        m_firstChild = parentDTM.getFirstChild(parentHandle);
     }
 
 
@@ -89,15 +88,16 @@ public class DTMChildIterNodeList extends DTMNodeListBase {
      * Returns the <code>index</code>th item in the collection. If
      * <code>index</code> is greater than or equal to the number of nodes in
      * the list, this returns <code>null</code>.
+     *
      * @param index Index into the collection.
      * @return The node at the <code>index</code>th position in the
-     *   <code>NodeList</code>, or <code>null</code> if that is not a valid
-     *   index.
+     * <code>NodeList</code>, or <code>null</code> if that is not a valid
+     * index.
      */
     public Node item(int index) {
-        int handle=m_firstChild;
-        while(--index>=0 && handle!=DTM.NULL) {
-            handle=m_parentDTM.getNextSibling(handle);
+        int handle = m_firstChild;
+        while (--index >= 0 && handle != DTM.NULL) {
+            handle = m_parentDTM.getNextSibling(handle);
         }
         if (handle == DTM.NULL) {
             return null;
@@ -110,10 +110,10 @@ public class DTMChildIterNodeList extends DTMNodeListBase {
      * is 0 to <code>length-1</code> inclusive.
      */
     public int getLength() {
-        int count=0;
-        for (int handle=m_firstChild;
-             handle!=DTM.NULL;
-             handle=m_parentDTM.getNextSibling(handle)) {
+        int count = 0;
+        for (int handle = m_firstChild;
+             handle != DTM.NULL;
+             handle = m_parentDTM.getNextSibling(handle)) {
             ++count;
         }
         return count;

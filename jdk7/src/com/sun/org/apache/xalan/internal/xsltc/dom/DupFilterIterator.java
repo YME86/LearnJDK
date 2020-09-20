@@ -33,6 +33,7 @@ import com.sun.org.apache.xml.internal.dtm.ref.DTMDefaultBase;
  * Removes duplicates and sorts a source iterator. The nodes from the
  * source are collected in an array upon calling setStartNode(). This
  * array is later sorted and duplicates are ignored in next().
+ *
  * @author G. Todd Miller
  */
 public final class DupFilterIterator extends DTMAxisIteratorBase {
@@ -81,6 +82,7 @@ public final class DupFilterIterator extends DTMAxisIteratorBase {
 
     /**
      * Set the start node for this iterator
+     *
      * @param node The start node
      * @return A reference to this node iterator
      */
@@ -130,15 +132,14 @@ public final class DupFilterIterator extends DTMAxisIteratorBase {
     public DTMAxisIterator cloneIterator() {
         try {
             final DupFilterIterator clone =
-                (DupFilterIterator) super.clone();
+                    (DupFilterIterator) super.clone();
             clone._nodes = (IntegerArray) _nodes.clone();
             clone._source = _source.cloneIterator();
             clone._isRestartable = false;
             return clone.reset();
-        }
-        catch (CloneNotSupportedException e) {
+        } catch (CloneNotSupportedException e) {
             BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
-                                      e.toString());
+                    e.toString());
             return null;
         }
     }

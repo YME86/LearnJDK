@@ -22,6 +22,7 @@ package com.sun.org.apache.xml.internal.security.c14n.helper;
 
 import com.sun.org.apache.xml.internal.security.utils.Constants;
 import org.w3c.dom.Attr;
+
 import java.io.Serializable;
 import java.util.Comparator;
 
@@ -30,13 +31,13 @@ import java.util.Comparator;
  *
  * <UL>
  * <LI>Namespace nodes have a lesser document order position than attribute
- *   nodes.
+ * nodes.
  * <LI> An element's namespace nodes are sorted lexicographically by
- *   local name (the default namespace node, if one exists, has no
- *   local name and is therefore lexicographically least).
+ * local name (the default namespace node, if one exists, has no
+ * local name and is therefore lexicographically least).
  * <LI> An element's attribute nodes are sorted lexicographically with
- *   namespace URI as the primary key and local name as the secondary
- *   key (an empty namespace URI is lexicographically least).
+ * namespace URI as the primary key and local name as the secondary
+ * key (an empty namespace URI is lexicographically least).
  * </UL>
  *
  * @author Christian Geuer-Pollmann
@@ -46,27 +47,26 @@ public class AttrCompare implements Comparator, Serializable {
     private final static long serialVersionUID = -7113259629930576230L;
     private final static int ATTR0_BEFORE_ATTR1 = -1;
     private final static int ATTR1_BEFORE_ATTR0 = 1;
-    private final static String XMLNS=Constants.NamespaceSpecNS;
+    private final static String XMLNS = Constants.NamespaceSpecNS;
 
     /**
      * Compares two attributes based on the C14n specification.
      *
      * <UL>
      * <LI>Namespace nodes have a lesser document order position than
-     *   attribute nodes.
+     * attribute nodes.
      * <LI> An element's namespace nodes are sorted lexicographically by
-     *   local name (the default namespace node, if one exists, has no
-     *   local name and is therefore lexicographically least).
+     * local name (the default namespace node, if one exists, has no
+     * local name and is therefore lexicographically least).
      * <LI> An element's attribute nodes are sorted lexicographically with
-     *   namespace URI as the primary key and local name as the secondary
-     *   key (an empty namespace URI is lexicographically least).
+     * namespace URI as the primary key and local name as the secondary
+     * key (an empty namespace URI is lexicographically least).
      * </UL>
      *
      * @param obj0 casted Attr
      * @param obj1 casted Attr
      * @return returns a negative integer, zero, or a positive integer as
-     *   obj0 is less than, equal to, or greater than obj1
-     *
+     * obj0 is less than, equal to, or greater than obj1
      */
     public int compare(Object obj0, Object obj1) {
 
@@ -75,8 +75,8 @@ public class AttrCompare implements Comparator, Serializable {
         String namespaceURI0 = attr0.getNamespaceURI();
         String namespaceURI1 = attr1.getNamespaceURI();
 
-        boolean isNamespaceAttr0 = XMLNS==namespaceURI0;
-        boolean isNamespaceAttr1 = XMLNS==namespaceURI1;
+        boolean isNamespaceAttr0 = XMLNS == namespaceURI0;
+        boolean isNamespaceAttr1 = XMLNS == namespaceURI1;
 
         if (isNamespaceAttr0) {
             if (isNamespaceAttr1) {

@@ -39,23 +39,27 @@ import org.xml.sax.SAXException;
 public abstract class TransformSpi {
     /**
      * For API compatibility not thread safe.
+     *
      * @deprecated
      */
     protected Transform _transformObject = null;
+
     /**
      * Set the transform object.
      * Depeprecated For API compatibility.
+     *
      * @param transform the Transform
      * @deprecated
      */
     protected void setTransform(Transform transform) {
         this._transformObject = transform;
     }
+
     /**
      * The mega method which MUST be implemented by the Transformation Algorithm.
      *
-     * @param input {@link XMLSignatureInput} as the input of transformation
-     * @param os where to output this transformation.
+     * @param input            {@link XMLSignatureInput} as the input of transformation
+     * @param os               where to output this transformation.
      * @param _transformObject the Transform
      * @return {@link XMLSignatureInput} as the result of transformation
      * @throws CanonicalizationException
@@ -66,13 +70,14 @@ public abstract class TransformSpi {
      * @throws TransformationException
      */
     protected XMLSignatureInput enginePerformTransform(
-        XMLSignatureInput input, OutputStream os, Transform _transformObject)
-        throws IOException,
-               CanonicalizationException, InvalidCanonicalizerException,
-               TransformationException, ParserConfigurationException,
-               SAXException {
+            XMLSignatureInput input, OutputStream os, Transform _transformObject)
+            throws IOException,
+            CanonicalizationException, InvalidCanonicalizerException,
+            TransformationException, ParserConfigurationException,
+            SAXException {
         return enginePerformTransform(input, _transformObject);
     }
+
     /**
      * The mega method which MUST be implemented by the Transformation Algorithm.
      * In order to be compatible with preexisting Transform implementations,
@@ -80,7 +85,7 @@ public abstract class TransformSpi {
      * methods. Subclasses should override this with a thread-safe
      * implementation.
      *
-     * @param input {@link XMLSignatureInput} as the input of transformation
+     * @param input            {@link XMLSignatureInput} as the input of transformation
      * @param _transformObject the Transform
      * @return {@link XMLSignatureInput} as the result of transformation
      * @throws CanonicalizationException
@@ -91,26 +96,26 @@ public abstract class TransformSpi {
      * @throws TransformationException
      */
     protected XMLSignatureInput enginePerformTransform(
-        XMLSignatureInput input, Transform _transformObject)
-        throws IOException,
-               CanonicalizationException, InvalidCanonicalizerException,
-               TransformationException, ParserConfigurationException,
-               SAXException {
+            XMLSignatureInput input, Transform _transformObject)
+            throws IOException,
+            CanonicalizationException, InvalidCanonicalizerException,
+            TransformationException, ParserConfigurationException,
+            SAXException {
         //Default implementation overide with a much better
         try {
-                TransformSpi tmp = (TransformSpi) getClass().newInstance();
+            TransformSpi tmp = (TransformSpi) getClass().newInstance();
             tmp.setTransform(_transformObject);
             return tmp.enginePerformTransform(input);
         } catch (InstantiationException e) {
-            throw new TransformationException("",e);
+            throw new TransformationException("", e);
         } catch (IllegalAccessException e) {
-            throw new TransformationException("",e);
+            throw new TransformationException("", e);
         }
     }
 
     /**
      * The mega method which MUST be implemented by the Transformation Algorithm.
-     * @deprecated
+     *
      * @param input {@link XMLSignatureInput} as the input of transformation
      * @return {@link XMLSignatureInput} as the result of transformation
      * @throws CanonicalizationException
@@ -119,15 +124,17 @@ public abstract class TransformSpi {
      * @throws ParserConfigurationException
      * @throws SAXException
      * @throws TransformationException
+     * @deprecated
      */
     protected XMLSignatureInput enginePerformTransform(
-        XMLSignatureInput input)
-        throws IOException,
-               CanonicalizationException, InvalidCanonicalizerException,
-               TransformationException, ParserConfigurationException,
-               SAXException {
+            XMLSignatureInput input)
+            throws IOException,
+            CanonicalizationException, InvalidCanonicalizerException,
+            TransformationException, ParserConfigurationException,
+            SAXException {
         throw new UnsupportedOperationException();
     }
+
     /**
      * Returns the URI representation of <code>Transformation algorithm</code>
      *
