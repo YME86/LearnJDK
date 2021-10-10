@@ -1,7 +1,5 @@
 package jvm;
 
-import org.openjdk.jol.info.ClassLayout;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +7,7 @@ import java.util.List;
  * @author yinchao
  * @date 2020/4/9 18:29
  */
-public class Test {
+public class GCTest {
 
     /**
      * -XX:+PrintTenuringDistribution 每次 Mainor GC 的时候输出年龄
@@ -30,9 +28,9 @@ public class Test {
      */
     @org.junit.Test
     public void testMaxAge() {
-        List<Test> list = new ArrayList<>();
+        List<GCTest> list = new ArrayList<>();
         while (true) {
-            list.add(new Test());
+            list.add(new GCTest());
 //            Thread.sleep(1000);
         }
     }

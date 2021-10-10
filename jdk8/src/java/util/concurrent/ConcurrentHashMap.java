@@ -591,10 +591,10 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
     /*
      * Encodings for Node hash fields. See above for explanation.
      */
-    static final int MOVED     = -1; // hash for forwarding nodes
-    static final int TREEBIN   = -2; // hash for roots of trees
+    static final int MOVED     = -1; // hash for forwarding nodes 正在扩容中
+    static final int TREEBIN   = -2; // hash for roots of trees 正在树化
     static final int RESERVED  = -3; // hash for transient reservations
-    static final int HASH_BITS = 0x7fffffff; // usable bits of normal node hash
+    static final int HASH_BITS = 0x7fffffff; // usable bits of normal node hash 正常的 hash 值
 
     /** Number of CPUS, to place bounds on some sizings */
     static final int NCPU = Runtime.getRuntime().availableProcessors();
@@ -619,6 +619,10 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
     static class Node<K,V> implements Map.Entry<K,V> {
         final int hash;
         final K key;
+        /**
+         * attention：V 和 next 都是用 volatile 修饰的对象，这样来保证对象可见性
+         *  get 操作不加锁就是因为这两个 volatile，和数组用 volatile 没有关系
+         */
         volatile V val;
         volatile Node<K,V> next;
 
@@ -769,6 +773,9 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
     /**
      * The array of bins. Lazily initialized upon first insertion.
      * Size is always a power of two. Accessed directly by iterators.
+     *
+     * attention:使用了 volatile 关键字修饰,使得 table 的指向修改了立刻可见,而对于里面的元素，修改了是不一定立刻可见的
+     *  这里用 volatile 主要是在扩容时，使得修改老数组为新数组时立刻可见，而非保证里面的元素的可见性
      */
     transient volatile Node<K,V>[] table;
 
@@ -930,6 +937,8 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
      * {@code null}.  (There can be at most one such mapping.)
      *
      * @throws NullPointerException if the specified key is null
+     *
+     * attention: 在1.8中 ConcurrentHashMap 的 get 操作全程不需要加锁，这也是它比其他并发集合比如 hashtable、用 Collections.synchronizedMap() 包装的 hashmap 安全效率高的原因之一。
      */
     public V get(Object key) {
         Node<K,V>[] tab; Node<K,V> e, p; int n, eh; K ek;
@@ -1015,15 +1024,18 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
             Node<K,V> f; int n, i, fh;
             if (tab == null || (n = tab.length) == 0)
                 tab = initTable();
+            // 首先获取到哈希数组下标的第一个元素
             else if ((f = tabAt(tab, i = (n - 1) & hash)) == null) {
                 if (casTabAt(tab, i, null,
                              new Node<K,V>(hash, key, value, null)))
                     break;                   // no lock when adding to empty bin
             }
+            // 如果正在扩容，那么多线程帮助扩容
             else if ((fh = f.hash) == MOVED)
                 tab = helpTransfer(tab, f);
             else {
                 V oldVal = null;
+                // 对第一个元素加锁
                 synchronized (f) {
                     if (tabAt(tab, i) == f) {
                         if (fh >= 0) {

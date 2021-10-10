@@ -2,23 +2,45 @@ import jvm.A;
 import org.junit.Test;
 import org.openjdk.jol.info.ClassLayout;
 
+import java.nio.ByteOrder;
+
 /**
  * @author yinchao
  * @date 2020/4/11 03:16
  */
 public class SynchronizedTest {
-    private A a = new A();
+    private final A a = new A();
 
-    public static void main(String[] args) {
+    public static void main (String[] args) throws InterruptedException {
+        //mainTest();
         SynchronizedTest synchronizedTest = new SynchronizedTest();
-        synchronizedTest.lock();
-        Thread t1 = new Thread() {
-            @Override
-            public void run() {
-                synchronizedTest.lock();
-            }
-        };
+        synchronizedTest.testSynchronized3();
+    }
+
+    private static void mainTest () throws InterruptedException {
+        /**
+         *
+         * 默认小端存储
+         *
+         * 小端序：数据的高位字节存放在地址的高端 低位字节存放在地址低端
+         * 大端序： 数据的高位字节存放在地址的低端 低位字节存放在地址高端
+         *
+         * 比如一个整形0x1234567，1是高位数据，7是低位数据。按照小端序放在内存地址的高位，比如 01 放在 0x100，23 就放在 0x101 以此类推。
+         *
+         * 大端序反之。67 放在 0x100,45 在 0x101, 23 -> 0x102, 01-> 0x103
+         */
+        System.out.println("默认存储方式:" + ByteOrder.nativeOrder());
+        SynchronizedTest synchronizedTest = new SynchronizedTest();
+        Thread t0 = new Thread(synchronizedTest::lock);
+        t0.start();
+        t0.join();
+        System.out.println("t0 is over");
+        Thread t1 = new Thread(synchronizedTest::lock);
         t1.start();
+        t1.join();
+        System.out.println("t1 is over");
+        synchronizedTest.lock();
+        System.out.println("main is over");
     }
 
     /**
@@ -31,58 +53,77 @@ public class SynchronizedTest {
      * 2. 而是可以直接升级为轻量锁
      */
     @org.junit.Test
-    public void testSynchronized() {
+    public void testSynchronized () {
         // 101 无锁可偏向
         System.out.println(ClassLayout.parseInstance(a).toPrintable());
-        System.out.println(Integer.toHexString(a.hashCode()));
+        System.out.println(Integer.toBinaryString(a.hashCode()) + " " + Integer.toHexString(a.hashCode()));
         // 001 无锁不可偏向 -> 不可偏向的偏向锁
         System.out.println(ClassLayout.parseInstance(a).toPrintable(a));
-        synchronized (a) {
-            System.out.println(Integer.toHexString(Thread.currentThread().hashCode()));
-            // 不可偏向的偏向所直接升级为 000 轻量锁
+        printCurrentThread();
+        synchronized (this.a) {
+            // 不可偏向的偏向锁直接升级为 000 轻量锁
             System.out.println(ClassLayout.parseInstance(a).toPrintable(a));
         }
+        System.out.println(ClassLayout.parseInstance(a).toPrintable(a));
     }
 
     @Test
-    public void testSynchronized2() {
-        A a = new A();
-        synchronized (a) {
-            // 101 无锁可偏向
-            System.out.println(ClassLayout.parseInstance(a).toPrintable(a));
+    public void testSynchronized2 () {
+        A b = new A();
+        System.out.println(ClassLayout.parseInstance(b).toPrintable(b));
+        printCurrentThread();
+        synchronized (b) {
+            // 如果偏向锁延迟为0，则:101 无锁可偏向
+            System.out.println(ClassLayout.parseInstance(b).toPrintable(b));
+            // 如果偏向锁延迟为400，则:000 偏向锁
         }
+        // 偏向锁不会主动撤销，线程id不会主动置零
+        System.out.println(ClassLayout.parseInstance(b).toPrintable(b));
     }
 
+    /**
+     * 都是重量级锁 10
+     */
     @Test
-    public void testSynchronized3() {
-        Thread t1 = new Thread() {
-            @Override
-            public void run() {
-                lock();
+    public void testSynchronized3 () throws InterruptedException {
+        SynchronizedTest synchronizedTest = new SynchronizedTest();
+        Thread t1 = new Thread(() -> {
+            synchronized (synchronizedTest.a) {
+                System.out.println("============= into lock method =============\n" + ClassLayout.parseInstance(synchronizedTest.a).toPrintable(synchronizedTest.a));
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("t1 is over");
             }
-        };
+        });
         t1.start();
-        try {
-            t1.join();
-        } catch (Exception e) {
-        }
-        Thread t2 = new Thread() {
-            @Override
-            public void run() {
-                lock();
+        Thread t2 = new Thread(() -> {
+            synchronized (synchronizedTest.a) {
+                System.out.println("============= into lock method =============\n" + ClassLayout.parseInstance(synchronizedTest.a).toPrintable(synchronizedTest.a));
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("t2 is over");
             }
-        };
+        });
         t2.start();
+        t2.join();
     }
 
-    private void lock() {
-        synchronized (a) {
-            System.out.println(Thread.currentThread().getName());
-            System.out.println(ClassLayout.parseInstance(a).toPrintable(a));
-            try {
-                Thread.sleep(4000);
-            } catch (Exception e) {
-            }
+    private void lock () {
+        System.out.println("============= into lock method =============\n" + ClassLayout.parseInstance(this.a).toPrintable(this.a));
+        printCurrentThread();
+        synchronized (this.a) {
+            System.out.println(ClassLayout.parseInstance(this.a).toPrintable(this.a));
         }
+        System.out.println("======================== out lock method ========================\n" + ClassLayout.parseInstance(this.a).toPrintable(this.a));
+    }
+
+    private void printCurrentThread () {
+        System.out.println(Thread.currentThread().getName() + " " + Long.toBinaryString(Thread.currentThread().getId()) + " " + Long.toHexString(Thread.currentThread().getId()) + " " + Integer.toBinaryString(Thread.currentThread().hashCode()) + " " + Integer.toHexString(Thread.currentThread().hashCode()));
     }
 }
